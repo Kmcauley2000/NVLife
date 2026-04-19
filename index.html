@@ -257,7 +257,7 @@ Goodsprings:{n:"Goodsprings",r:"Mojave South",d:"A quiet frontier town. Clean wa
   {n:"Goodsprings Source",e:"💧",d:"Fresh water. Geckos lurk nearby.",en:["gecko","gecko","mantis"],lt:["purified_water","gecko_hide","herbs"]},
   {n:"Abandoned Schoolhouse",e:"🏚",d:"Giant mantises nest inside.",en:["mantis","mantis","radroach"],lt:["scrap","duct_tape","ammo_9mm","bobby_pin"]}]},
 Primm:{n:"Primm",r:"Mojave South",d:"A border town overrun by convicts.",e:"🎰",t:"town",
-  b:["vikki_vance","mojave_express","sheriff_office"],dg:2,fac:"NCR",
+  b:["vikki_vance","mojave_express","sheriff_office","bison_steve"],dg:2,fac:"NCR",
   sur:[{n:"Highway 93",e:"🛣",d:"Convicts patrol the road.",en:["convict","convict","convict"],lt:["pistol_10mm","revolver_357","leather_armor","stimpak","ammo_10mm","ammo_357"]},
   {n:"NCRCF Perimeter",e:"🏗",d:"The prison is close. Dangerous.",en:["powder_ganger","powder_ganger","convict"],lt:["dynamite","powder_charge","ammo_9mm"]}]},
 Nipton:{n:"Nipton",r:"Mojave South",d:"A town destroyed by the Legion as an example.",e:"🔥",t:"ruins",
@@ -321,6 +321,14 @@ NellisAFB:{n:"Nellis AFB",r:"East Mojave",d:"A fortified air base ringed with ar
   b:["nellis_bar","nellis_supply","nellis_med"],dg:3,fac:"None",
   sur:[{n:"Runway Wreckage",e:"🛩",d:"Twisted aircraft parts and unexploded ordnance litter the ground.",en:["mantis","radscorpion","cazador"],lt:["scrap","sensor_module","energy_cell","ammo_556"]},
   {n:"Array Station",e:"📡",d:"A communications site full of salvage and dangerous pests.",en:["radscorpion","nightstalker","mantis"],lt:["sensor_module","stimpak","pre_war_money","energy_cell"]}]},
+CampForlornHope:{n:"Camp Forlorn Hope",r:"East Mojave",d:"A battered NCR camp holding the line under constant pressure.",e:"⛺",t:"camp",
+  b:["forlorn_bar","forlorn_supply","forlorn_med"],dg:3,fac:"NCR",
+  sur:[{n:"Forward Trenches",e:"🪖",d:"Exposed defenses, spent casings, and constant sniper fear.",en:["legion_scout","legion_recruit","super_mutant"],lt:["ammo_556","stimpak","doctor_bag","ncr_armor"]},
+  {n:"Dry Shoreline",e:"🏜",d:"Broken crates and river silt where raiders and scouts move quietly.",en:["glowing_one","radscorpion","legion_scout"],lt:["cowboy_repeater","ammo_357","pre_war_money","med_x"]}]},
+TradingPost188:{n:"188 Trading Post",r:"Mojave Central",d:"A busy overpass market where caravans, mercs, and drifters cross paths.",e:"🛣",t:"trading_post",
+  b:["post188_bar","post188_supply","post188_office"],dg:2,fac:"None",
+  sur:[{n:"Overpass Market",e:"🧰",d:"Stalls, scrap piles, and impatient guards watching every hand.",en:["freeside_thug","convict","super_mutant"],lt:["cowboy_repeater","ammo_357","doctor_bag","pre_war_money"]},
+  {n:"Dry Wash",e:"🏜",d:"A shallow gully used by smugglers, scavengers, and anything hungry.",en:["glowing_one","gecko","mantis"],lt:["duct_tape","scrap","stimpak","ammo_9mm"]}]},
 HooverDam:{n:"Hoover Dam",r:"East Mojave",d:"The prize everyone's fighting for.",e:"🏗",t:"dam",
   b:["dam_offices","dam_power"],dg:2,fac:"NCR",
   sur:[{n:"Dam Exterior",e:"🌊",d:"NCR patrols. Legion scouts across the river.",en:["legion_scout","legion_scout"],lt:["ammo_556","stimpak","ncr_armor"]}]}
@@ -330,15 +338,15 @@ const ROADS={
 Goodsprings:{Primm:1,FreesideN:4,Sloan:2,MojaveOutpost:2},
 Primm:{Goodsprings:1,Nipton:2,Novac:2,CampMcCarran:3,MojaveOutpost:1},
 Nipton:{Primm:2,NelsonCamp:2,Novac:3,CampSearchlight:2},
-Novac:{Primm:2,Nipton:3,BoulderCity:2,HiddenValley:2,NelsonCamp:2},
-BoulderCity:{Novac:2,FreesideN:1,HooverDam:1,NellisAFB:2},
+Novac:{Primm:2,Nipton:3,BoulderCity:2,HiddenValley:2,NelsonCamp:2,CampForlornHope:2},
+BoulderCity:{Novac:2,FreesideN:1,HooverDam:1,NellisAFB:2,TradingPost188:1},
 FreesideN:{Goodsprings:4,BoulderCity:1,TheStrip:1,CampMcCarran:1,RedRockCanyon:2,Westside:1},
 TheStrip:{FreesideN:1,CampMcCarran:1},
-CampMcCarran:{FreesideN:1,TheStrip:1,Primm:3,HiddenValley:2,Westside:1},
+CampMcCarran:{FreesideN:1,TheStrip:1,Primm:3,HiddenValley:2,Westside:1,TradingPost188:1},
 HiddenValley:{CampMcCarran:2,Novac:2,Jacobstown:3},
 Jacobstown:{HiddenValley:3,FreesideN:3,RedRockCanyon:2,Sloan:3},
 RedRockCanyon:{FreesideN:2,Jacobstown:2,Sloan:2},
-NelsonCamp:{Nipton:2,Novac:2,TheFort:3,CampSearchlight:1,CottonwoodCove:1},
+NelsonCamp:{Nipton:2,Novac:2,TheFort:3,CampSearchlight:1,CottonwoodCove:1,CampForlornHope:1},
 TheFort:{NelsonCamp:3,HooverDam:2,CottonwoodCove:2},
 CampSearchlight:{Nipton:2,NelsonCamp:1,HooverDam:2},
 CottonwoodCove:{NelsonCamp:1,TheFort:2},
@@ -346,7 +354,9 @@ Sloan:{Goodsprings:2,RedRockCanyon:2,Jacobstown:3},
 MojaveOutpost:{Goodsprings:2,Primm:1},
 Westside:{FreesideN:1,CampMcCarran:1},
 NellisAFB:{BoulderCity:2,HooverDam:2},
-HooverDam:{BoulderCity:1,TheFort:2,CampSearchlight:2,NellisAFB:2}
+CampForlornHope:{Novac:2,NelsonCamp:1,HooverDam:1},
+TradingPost188:{BoulderCity:1,CampMcCarran:1,HooverDam:1},
+HooverDam:{BoulderCity:1,TheFort:2,CampSearchlight:2,NellisAFB:2,CampForlornHope:1,TradingPost188:1}
 };
 
 // ============================================================
@@ -406,6 +416,8 @@ ammo_556:{n:"5.56mm Rounds",t:"ammo",e:"🔸",p:4,w:0.1,stack:1},
 ammo_308:{n:".308 Rounds",t:"ammo",e:"🔸",p:5,w:0.15,stack:1},
 ammo_shells:{n:"Shotgun Shells",t:"ammo",e:"🔸",p:4,w:0.2,stack:1},
 energy_cell:{n:"Energy Cells",t:"ammo",e:"⚡",p:5,w:0.1,stack:1},
+doctor_bag:{n:"Doctor's Bag",t:"c",e:"🩹",hp:55,p:85,w:1},
+cowboy_repeater:{n:"Cowboy Repeater",t:"w",e:"🔫",a:19,p:190,w:5.8,ammo:"ammo_357"},
 // Materials
 scrap:{n:"Scrap Metal",t:"m",e:"⚙",p:12,w:1},
 duct_tape:{n:"Duct Tape",t:"m",e:"🔧",p:10,w:0.5},
@@ -441,6 +453,8 @@ legion_centurion:{n:"Legion Centurion",hp:120,a:28,d:15,xp:60,e:"🦅",loot:["th
 legion_scout:{n:"Legion Scout",hp:35,a:11,d:5,xp:15,e:"👁",loot:["machete","healing_powder","legion_coin"]},
 great_khan:{n:"Great Khan",hp:45,a:13,d:6,xp:18,e:"🏹",loot:["ammo_9mm","ammo_357","jet","stimpak","revolver_357"]},
 securitron:{n:"Securitron",hp:80,a:22,d:14,xp:40,e:"🤖",loot:["energy_cell","sensor_module","scrap"]},
+super_mutant:{n:"Super Mutant",hp:95,a:24,d:11,xp:45,e:"💪",loot:["ammo_556","scrap","stimpak","cowboy_repeater"]},
+glowing_one:{n:"Glowing One",hp:65,a:17,d:5,xp:30,e:"☢️",loot:["doctor_bag","med_x","pre_war_money","stimpak"]},
 deathclaw:{n:"Deathclaw",hp:200,a:40,d:18,xp:100,e:"🦖",loot:["super_stimpak","super_stimpak","combat_armor"],boss:1},
 };
 
@@ -450,9 +464,10 @@ saloon:{n:"Prospector Saloon",e:"🍺",am:["The radio plays Big Iron...","Trudy 
 general_store:{n:"General Store",e:"🏪",am:["Dusty shelves. The essentials.","Chet looks suspicious.","Ammo behind the counter."]},
 gas_station:{n:"Gas Station",e:"⛽",am:["Pumps are dry. Workshop still works.","Grease and old tools."]},
 doc_house:{n:"Doc Mitchell's House",e:"🏥",am:["Medical equipment hums.","The doc paces thoughtfully."]},
-vikki_vance:{n:"Vikki & Vance Casino",e:"🎰",am:["The slots don't pay much.","Johnson Nash sits at his desk."]},
-mojave_express:{n:"Mojave Express",e:"📦",am:["Courier packages line the walls.","A delivery manifest on the desk."]},
-sheriff_office:{n:"Sheriff's Office",e:"⭐",am:["Empty since the convicts came.","Wanted posters on the wall."]},
+vikki_vance:{n:"Vikki & Vance Casino",e:"🎰",am:["The casino floor is quiet, but Primm Slim still delivers his pitch.","Johnson Nash keeps one eye on the tables and another on the Mojave Express ledger.","Ruby Nash has something hot on the stove for anyone with caps."]},
+mojave_express:{n:"Primm Mojave Express",e:"📦",am:["Half-sorted parcels and courier crates are stacked against the wall.","A battered terminal still holds the last Mojave Express manifests.","ED-E emits a burst of static from a corner workbench."]},
+sheriff_office:{n:"Primm Sheriff's Office",e:"⭐",am:["Dusty desks, a jail key rack, and old law books fill the room.","Deputy reports cover the walls while NCR papers sit in neat stacks.","The town still feels like it is waiting for someone to restore order."]},
+bison_steve:{n:"Bison Steve Hotel",e:"🏨",am:["The lobby is wrecked, but scraps of old luxury remain.","Broken slot machines and shattered glass crunch underfoot.","Someone is holed up inside and very eager to be rescued."]},
 nipton_hall:{n:"Nipton Town Hall",e:"🏛",am:["Burned. The lottery happened here.","Legion banners hang from posts."]},
 dino_bite:{n:"Dino Bite Gift Shop",e:"🦕",am:["Cliff Briscoe arranges toys.","Dino souvenirs everywhere."]},
 motel:{n:"Novac Motel",e:"🏨",am:["Rooms available. 100 caps a night.","Someone watches from the dinosaur."]},
@@ -499,12 +514,27 @@ westside_lodge:{n:"Westside Rooms",e:"🏨",am:["Cheap beds, thin walls, and a l
 nellis_bar:{n:"Boomer Mess Hall",e:"🍺",am:["Military trays, loud stories, and old bomber pride fill the hall.","Someone is always talking about artillery or history."]},
 nellis_supply:{n:"Boomer Supply Hangar",e:"📦",am:["Ammo tins, tools, and salvaged aircraft parts are stacked high.","Even the spare parts feel dangerous here."]},
 nellis_med:{n:"Boomer Aid Station",e:"🏥",am:["Field dressings and spare chems are ready for the next accident.","The smell of antiseptic barely covers the fuel in the air."]},
+forlorn_bar:{n:"Forlorn Hope Mess",e:"🍺",am:["Exhausted NCR troopers eat in tense silence.","Every table carries stories of raids, losses, and stubborn survival."]},
+forlorn_supply:{n:"Forlorn Hope Quartermaster",e:"📦",am:["Bandages, rifle parts, and ration tins are stacked with military precision.","Nothing here feels plentiful, only necessary."]},
+forlorn_med:{n:"Forlorn Hope Aid Tent",e:"🏥",am:["Wounded troopers rest behind thin canvas walls.","The medics work fast because they have to."]},
+post188_bar:{n:"188 Caravan Stop",e:"🍺",am:["Caravan guards and traders argue over prices and rumors.","The overpass shakes whenever a heavy rig crawls by above."]},
+post188_supply:{n:"188 Supply Kiosk",e:"📦",am:["A compact stall selling ammo, junk, and anything useful on the road.","Merchants here always seem to know more than they say."]},
+post188_office:{n:"188 Broker's Office",e:"🏢",am:["Trade ledgers, route notes, and escort contracts cover the desk.","If money moves through the Mojave, someone here has heard about it."]},
 dam_offices:{n:"Dam Offices",e:"🏢",am:["NCR administration.","Power management systems."]},
 dam_power:{n:"Dam Power Plant",e:"⚡",am:["Turbines hum. The Mojave's lifeline.","Engineers maintain the generators."]},
 };
 
 // Factions
 const FACTIONS={NCR:"New California Republic",Legion:"Caesar's Legion",House:"Mr. House",BOS:"Brotherhood of Steel",Followers:"Followers of the Apocalypse",Kings:"The Kings",Khans:"Great Khans"};
+
+const PRIMM_NPCS={
+  johnson_nash:{name:"Johnson Nash",male:true,age:63,role:"Mojave Express agent",icon:"👴",line:"Package couriers, not package thieves. That's how Primm used to work."},
+  ruby_nash:{name:"Ruby Nash",male:false,age:61,role:"Casino cook",icon:"👵",line:"If you've got caps, I've got something warm and edible."},
+  primm_slim:{name:"Primm Slim",male:true,age:25,role:"Deputy robot greeter",icon:"🤖",line:"Howdy, pardner! Welcome to the Vikki and Vance Casino and Museum!"},
+  ede:{name:"ED-E",male:true,age:5,role:"Damaged eyebot",icon:"🤖",line:"The eyebot crackles with static and plays a short burst of old-world audio."},
+  deputy_beagle:{name:"Deputy Beagle",male:true,age:39,role:"Primm deputy",icon:"👮",line:"I am a deputy, you know. This town is in a terrible state."},
+  lieutenant_hayes:{name:"Lieutenant Hayes",male:true,age:34,role:"NCR officer",icon:"🪖",line:"We can hold the roads, but Primm still needs real law and order."}
+};
 
 // Names
 const FM=["Cass","Marcus","Boone","Rex","Arcade","Raul","Craig","Eddie","Victor","Hank","Joe","Mick","Ralph","Jack","Tommy","Dean","Dog","Frank","Mike","Butch","Leo","Wayne","Ricky","Steve","Pete"];
@@ -1166,22 +1196,27 @@ function openBld(bId){
   const b=BLDS[bId];if(!b)return;
   const npc=mkNPC();
   const o=$('BO');const bi=$('BI');bi.innerHTML='';
+  const isPrimmSpecial=['vikki_vance','mojave_express','sheriff_office','bison_steve'].includes(bId);
 
   const hd=el('div','bh');
   hd.innerHTML=`<div class="bb" onclick="closeBld()">‹</div><div style="flex:1;font-size:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:var(--amber)">${b.e} ${b.n}</div><div style="font-size:11px;color:var(--amber)">💰${S.caps}</div>`;
   bi.appendChild(hd);
   bi.appendChild(el('div','ba',rndA(b.am)));
 
-  // NPC
-  const np=el('div','bn');np.style.cursor='pointer';
-  np.innerHTML=`<div style="font-size:28px">${npc.male?'👨':'👩'}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
-  np.onclick=()=>openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
-  bi.appendChild(np);
+  if(!isPrimmSpecial){
+    const np=el('div','bn');np.style.cursor='pointer';
+    np.innerHTML=`<div style="font-size:28px">${npc.male?'👨':'👩'}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
+    np.onclick=()=>openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
+    bi.appendChild(np);
+  }
 
   const body=el('div','bp');
 
-  // Building-specific content
-  if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
+  if(bId==='vikki_vance'){bldPrimmVikki(body)}
+  else if(bId==='mojave_express'){bldPrimmExpress(body)}
+  else if(bId==='sheriff_office'){bldPrimmSheriff(body)}
+  else if(bId==='bison_steve'){bldPrimmBison(body)}
+  else if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
   else if(bId.includes('store')||bId.includes('supply')||bId.includes('ralph')||bId.includes('armory')||bId.includes('quartermaster')){bldShop(body,bId)}
   else if(bId.includes('doc')||bId.includes('med')||bId.includes('fort')||bId.includes('jacobstown_doc')){bldMedical(body)}
   else if(bId.includes('motel')||bId.includes('lodge')||bId.includes('lucky_38')){bldRest(body,bId)}
@@ -1194,6 +1229,116 @@ function openBld(bId){
   bi.appendChild(body);o.classList.add('A');
 }
 function closeBld(){$('BO').classList.remove('A');upAll()}
+
+function namedNpcRel(id){return S.relationships.find(r=>r.name===PRIMM_NPCS[id].name)}
+function addNamedNpcCard(body,id){
+  const npc=PRIMM_NPCS[id];if(!npc)return;
+  const ex=namedNpcRel(id);
+  const nc=el('div','bn');nc.style.cursor='pointer';
+  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.onclick=()=>openPrimmNPC(id);
+  body.appendChild(nc);
+}
+function queueNamedQuest(id,prefix,capBonus=10,xpBonus=5){
+  const npc=PRIMM_NPCS[id];if(!npc)return;
+  const q=mkQuest(npc.name);q.rg+=capBonus;q.rx+=xpBonus;q.name=prefix+': '+q.name;
+  window._pendingQuest=q;closeDlg();showResult('New Quest!','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');
+}
+function openPrimmNPC(id){
+  const npc=PRIMM_NPCS[id];if(!npc)return;
+  const rel=namedNpcRel(id);
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
+  <div class="npc-line">"${npc.line}"</div>`;
+
+  if(id==='johnson_nash'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Johnson Nash','📦',['He remembers the courier job that passed through Primm before Benny headed for New Vegas.','He points you toward the Strip and reminds you that business in Primm collapsed after the convict takeover.'],'Continue','upAll()')">📦 Ask about the courier</button>`;
+    h+=`<button class="bt pip" onclick="queueNamedQuest('johnson_nash','Mojave Express',15,10)">📜 Ask for delivery work</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(PRIMM_NPCS['johnson_nash'],S.relationships.find(r=>r.name===PRIMM_NPCS['johnson_nash'].name))">💬 Talk</button>`;
+  }else if(id==='ruby_nash'){
+    h+=`<button class="bt go" onclick="if(S.caps<8){notify('Not enough caps.');return}S.caps-=8;S.hp=Math.min(S.maxHp,S.hp+18);S.ap=Math.min(S.maxAp,S.ap+8);advanceTime(1);log('Ruby Nash serves you a hot meal.','e');closeDlg();showResult('Ruby Nash','🍲',['❤ +18 HP','⚡ +8 AP','⏰ 1 hour passed'],'Continue','upAll()')">🍲 Buy Ruby's meal (8 caps)</button>`;
+    h+=`<button class="bt" onclick="closeDlg();showResult('Ruby Nash','🗣',['Ruby says Primm used to be lively before the Powder Gangers hit the town.','She insists the casino would bounce back if law and trade ever returned.'],'Continue','upAll()')">🗣 Ask about Primm</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(PRIMM_NPCS['ruby_nash'],S.relationships.find(r=>r.name===PRIMM_NPCS['ruby_nash'].name))">💬 Talk</button>`;
+  }else if(id==='primm_slim'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Primm Slim','🤖',['Primm Slim launches into a polished retelling of the exploits of Vikki and Vance.','For a moment, the empty casino feels alive again.'],'Continue','upAll()')">🎙 Hear the Vikki & Vance story</button>`;
+    h+=`<button class="bt" onclick="closeDlg();showResult('Primm Slim','⭐',['Slim proudly explains that with the right paperwork he could be programmed to uphold the law in Primm.','He seems very enthusiastic about being sheriff.'],'Continue','upAll()')">⭐ Ask about law in Primm</button>`;
+  }else if(id==='ede'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('ED-E','📻',['The eyebot emits a series of old recordings and navigation chirps.','It sounds like it still wants to keep moving east.'],'Continue','upAll()')">📻 Listen to ED-E</button>`;
+    h+=`<button class="bt" onclick="closeDlg();showResult('ED-E','🔧',['You look over the damaged eyebot chassis.','With the right tools, somebody could probably get it flying again.'],'Continue','upAll()')">🔧 Inspect damage</button>`;
+  }else if(id==='deputy_beagle'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Deputy Beagle','🚨',['Beagle complains that the Powder Gangers overwhelmed Primm before help could arrive.','He insists the town still needs a proper sheriff.'],'Continue','upAll()')">🚨 Ask about the convicts</button>`;
+    h+=`<button class="bt pip" onclick="queueNamedQuest('deputy_beagle','Primm Deputy',15,10)">📜 Ask for deputy work</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(PRIMM_NPCS['deputy_beagle'],S.relationships.find(r=>r.name===PRIMM_NPCS['deputy_beagle'].name))">💬 Talk</button>`;
+  }else if(id==='lieutenant_hayes'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Lieutenant Hayes','🪖',['Hayes says the NCR can patrol the roads, but Primm needs local authority to truly recover.','He mentions several options for who could wear the badge.'],'Continue','upAll()')">🪖 Ask about NCR help</button>`;
+    h+=`<button class="bt pip" onclick="queueNamedQuest('lieutenant_hayes','NCR Patrol',20,12)">📜 Ask for an NCR assignment</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(PRIMM_NPCS['lieutenant_hayes'],S.relationships.find(r=>r.name===PRIMM_NPCS['lieutenant_hayes'].name))">💬 Talk</button>`;
+  }
+
+  h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  openDlg(h);
+}
+function buildBuyButtons(body,items,bId){
+  items.forEach(id=>{
+    const it=ITEMS[id];if(!it)return;
+    const price=Math.round(it.p*(1-((S.special?S.special[3]:5)*.02)));
+    const sb=el('button','bt',`${it.e} ${it.n} — ${price} caps`);
+    sb.onclick=()=>{if(S.caps<price){notify('Not enough caps.');return}S.caps-=price;S.inv.push(id);log('Bought '+it.n+'.','n');openBld(bId)};
+    body.appendChild(sb);
+  });
+}
+function bldPrimmVikki(body){
+  body.appendChild(el('div','bs2','Casino Floor'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Primm's main casino still has working tables, cheap drinks, and just enough warmth to make it feel like the town can survive.</div>`));
+  [10,25,50,100].forEach(bet=>{
+    const gb=el('button','bt',`🎰 Play a hand — ${bet} caps`);
+    gb.onclick=()=>{if(S.caps<bet){notify('Not enough.');return}const luck=S.special?S.special[6]:5;const win=R()<(.35+luck*.03);if(win){const w=Math.floor(bet*(1.5+luck*.1));S.caps+=w-bet;log('Won '+w+' caps at Vikki & Vance!','e');closeBld();showResult('Winner!','🎰',['💰 +'+w+' caps','The old casino pays out.'],'Continue','upAll()')}else{S.caps-=bet;log('Lost '+bet+' caps at Vikki & Vance.','e');closeBld();showResult('Bust','💸',['💰 -'+bet+' caps','Primm takes your money.'],'Continue','upAll()')}};
+    body.appendChild(gb);
+  });
+  const drinkBtn=el('button','bt','🍸 Cheap whiskey (5 caps) — +5 HP');
+  drinkBtn.onclick=()=>{if(S.caps<5){notify('Not enough.');return}S.caps-=5;S.hp=Math.min(S.maxHp,S.hp+5);log('You knock back a drink at Vikki & Vance.','e');openBld('vikki_vance')};
+  body.appendChild(drinkBtn);
+  const mealBtn=el('button','bt go','🍲 Ruby Nash special (8 caps) — +18 HP, +8 AP');
+  mealBtn.onclick=()=>{if(S.caps<8){notify('Not enough caps.');return}S.caps-=8;S.hp=Math.min(S.maxHp,S.hp+18);S.ap=Math.min(S.maxAp,S.ap+8);advanceTime(1);log('Ruby Nash fixes you a hot meal.','e');closeBld();showResult('Fed and Restored','🍲',['❤ +18 HP','⚡ +8 AP','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(mealBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  ['johnson_nash','ruby_nash','primm_slim'].forEach(id=>addNamedNpcCard(body,id));
+}
+function bldPrimmExpress(body){
+  body.appendChild(el('div','bs2','Courier Office'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The office still has enough stock left for a courier to patch up, reload, and head back out onto the road.</div>`));
+  body.appendChild(el('div','bs2','Buy Supplies'));
+  buildBuyButtons(body,['stimpak','purified_water','sunset_sars','ammo_9mm','ammo_10mm','ammo_357','doctor_bag','cowboy_repeater'], 'mojave_express');
+  const manifestBtn=el('button','bt','📋 Check the manifest board');
+  manifestBtn.onclick=()=>{closeBld();showResult('Courier Ledger','📋',['Old Mojave Express records mention a high-value package crossing through Primm.','Johnson Nash clearly never forgot that delivery.'],'Continue','upAll()')};
+  body.appendChild(manifestBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  ['johnson_nash','ede'].forEach(id=>addNamedNpcCard(body,id));
+}
+function bldPrimmSheriff(body){
+  body.appendChild(el('div','bs2','Law & Order'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The office is half museum, half war room. Files, warrants, and NCR notes all point to the same problem: Primm needs a sheriff.</div>`));
+  const boardBtn=el('button','bt','📌 Read the wanted board');
+  boardBtn.onclick=()=>{closeBld();showResult('Wanted Board','📌',['The notices blame convicts, raiders, and caravan thieves for strangling trade through Primm.','Every sheet makes it clearer why the town needs protection.'],'Continue','upAll()')};
+  body.appendChild(boardBtn);
+  const sheriffBtn=el('button','bt pip','⭐ Review sheriff options');
+  sheriffBtn.onclick=()=>{closeBld();showResult('Future of Primm','⭐',['Possible candidates are discussed in the office: NCR lawmen, an old convict sheriff, or even Primm Slim with the right paperwork.','None of it matters unless someone takes responsibility for the town.'],'Continue','upAll()')};
+  body.appendChild(sheriffBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  addNamedNpcCard(body,'lieutenant_hayes');
+}
+function bldPrimmBison(body){
+  body.appendChild(el('div','bs2','Derelict Hotel'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The Bison Steve is wrecked, but old luggage, broken furniture, and abandoned rooms still make it worth checking.</div>`));
+  const searchBtn=el('button','bt','🔎 Search the front desk');
+  searchBtn.onclick=()=>{advanceTime(1);const finds=['pre_war_money','stimpak','sunset_sars','ammo_9mm'];const pick=rndA(finds);S.inv.push(pick);log('You search the Bison Steve and find '+ITEMS[pick].n+'.','e');closeBld();showResult('Found Supplies','🔎',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(searchBtn);
+  const roomBtn=el('button','bt','🛏 Search the upstairs rooms');
+  roomBtn.onclick=()=>{advanceTime(1);const caps=rnd(6,18);S.caps+=caps;log('You search the upstairs rooms and find '+caps+' caps.','e');closeBld();showResult('Hidden Stash','💰',['You turn over a mattress and pocket '+caps+' caps.','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(roomBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  addNamedNpcCard(body,'deputy_beagle');
+}
 
 function bldBar(body,bId){
   body.appendChild(el('div','bs2','Services'));
@@ -1247,8 +1392,8 @@ function bldShop(body,bId){
 }
 function getShopInventory(bId){
   const general=[{id:'stimpak'},{id:'purified_water'},{id:'sunset_sars'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'duct_tape'},{id:'bobby_pin'}];
-  const guns=[{id:'pistol_9mm'},{id:'pistol_10mm'},{id:'revolver_357'},{id:'varmint_rifle'},{id:'service_rifle'},{id:'caravan_shotgun'},{id:'ammo_556'},{id:'ammo_308'},{id:'ammo_shells'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'combat_knife'}];
-  const medical=[{id:'stimpak'},{id:'super_stimpak'},{id:'antivenom'},{id:'purified_water'},{id:'med_x'}];
+  const guns=[{id:'pistol_9mm'},{id:'pistol_10mm'},{id:'revolver_357'},{id:'cowboy_repeater'},{id:'varmint_rifle'},{id:'service_rifle'},{id:'caravan_shotgun'},{id:'ammo_556'},{id:'ammo_308'},{id:'ammo_shells'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'combat_knife'}];
+  const medical=[{id:'stimpak'},{id:'super_stimpak'},{id:'doctor_bag'},{id:'antivenom'},{id:'purified_water'},{id:'med_x'}];
   const legion=[{id:'machete'},{id:'healing_powder'},{id:'healing_powder'},{id:'antivenom'}];
   const bos=[{id:'laser_pistol'},{id:'laser_rifle'},{id:'energy_cell'},{id:'energy_cell'},{id:'stimpak'},{id:'combat_helmet'},{id:'sensor_module'}];
   const khans=[{id:'pistol_9mm'},{id:'revolver_357'},{id:'ammo_9mm'},{id:'ammo_357'},{id:'ammo_shells'},{id:'caravan_shotgun'},{id:'jet'},{id:'psycho'},{id:'stimpak'},{id:'combat_knife'}];
