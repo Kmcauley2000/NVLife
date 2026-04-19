@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a1a0e">
+<title>Fallout: New Vegas RPG</title>
+<style>
+:root{--bg:#1a1a0e;--panel:#242418;--panel2:#1e1e14;--amber:#f0c850;--amber2:#c9a230;--green:#4aff4a;--green2:#2ecc2e;--red:#ff4444;--blue:#4488cc;--text:#e8e4d0;--muted:#9a9680;--line:#3a3828;--pip:#14cc64;--hp-red:#cc3333;--ap-blue:#3388cc;--xp-gold:#ccaa33;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+@font-face{font-family:'Pip';src:local('Courier New'),local('Courier');font-weight:normal}
+body{background:var(--bg);font-family:'Courier New',monospace;color:var(--text);min-height:100dvh;overscroll-behavior:none;font-size:13px}
+#W{max-width:430px;margin:0 auto;min-height:100dvh;overflow:hidden;position:relative;
+background:linear-gradient(180deg,#1a1a0e 0%,#141410 100%)}
+#H{position:sticky;top:0;background:linear-gradient(180deg,#1a1808,#141408);
+color:var(--amber);text-align:center;padding:calc(var(--st)+6px) 12px 5px;
+font-size:13px;font-weight:bold;letter-spacing:3px;z-index:100;
+border-bottom:1px solid #3a3418;text-transform:uppercase}
+#H .sub{font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:1px}
+#SB{background:#0e0e08;color:var(--text);font-size:10px;display:flex;flex-wrap:wrap;padding:2px 4px;gap:1px;border-bottom:1px solid #282818}
+#SB .s{flex:1 1 auto;text-align:center;padding:2px 3px;white-space:nowrap}
+#SB .s b{color:var(--amber)}
+#SB .s .g{color:var(--green)}
+#SB .s .r{color:var(--red)}
+.scanline{position:fixed;top:0;left:50%;transform:translateX(-50%);width:430px;height:100%;
+pointer-events:none;z-index:999;
+background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px)}
+#C{padding:10px;padding-bottom:calc(90px + var(--sb))}
+.T{display:none}.T.A{display:block}
+#N{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+background:linear-gradient(0deg,#0e0e06,#1a1a0e);display:flex;
+border-top:1px solid var(--amber2);z-index:100;padding-bottom:var(--sb)}
+#N button{flex:1;padding:6px 1px 4px;background:0 0;color:var(--muted);border:0;
+font-size:8px;text-align:center;cursor:pointer;line-height:1.3;font-family:'Courier New',monospace}
+#N button i{font-size:14px;display:block;font-style:normal}
+#N button.A{background:#2a2a10;color:var(--amber)}
+.sh{color:var(--amber2);padding:3px 0;margin:10px 0 4px;font-size:10px;letter-spacing:2px;
+text-transform:uppercase;border-bottom:1px solid #2a2818}
+.cd{background:var(--panel);border:1px solid #2a2818;border-radius:6px;padding:8px;margin:4px 0}
+.bt{display:block;width:100%;padding:8px 10px;margin:3px 0;background:#2a2a18;color:var(--text);
+border:1px solid #3a3828;border-radius:4px;font-family:'Courier New',monospace;font-size:12px;
+cursor:pointer;text-align:left;transition:transform 80ms}
+.bt:active{transform:scale(.97);filter:brightness(1.1)}
+.bt.go{background:#2a3a18;color:var(--green);border-color:#3a4828}
+.bt.dn{background:#3a1818;color:var(--red);border-color:#4a2828}
+.bt.pip{background:#182a1a;color:var(--pip);border-color:#1a3a1a}
+.bt:disabled{opacity:.4;transform:none}
+.bt.sm{display:inline-block;width:auto;padding:4px 8px;font-size:10px;margin:2px}
+.hb{background:#1a1a10;border-radius:3px;height:7px;overflow:hidden;margin:2px 0;border:1px solid #2a2818}
+.hf{height:100%;border-radius:2px;transition:width .3s}
+.hf.hp{background:var(--hp-red)}.hf.ap{background:var(--ap-blue)}.hf.xp{background:var(--xp-gold)}
+.hf.g{background:var(--green2)}.hf.lo{background:var(--amber2)}.hf.cr{background:var(--red)}
+.bc{display:flex;align-items:center;gap:8px;padding:7px 8px;background:var(--panel);
+border:1px solid #2a2818;border-radius:5px;margin:3px 0;cursor:pointer}
+.bc:active{background:#2a2a1a}
+/* Overlays */
+#CO{position:fixed;inset:0;background:rgba(5,5,2,.9);display:none;justify-content:center;
+align-items:flex-start;z-index:200;padding-top:8px;overflow-y:auto}
+#CP{background:var(--panel);border:1px solid var(--amber2);border-radius:8px;padding:10px;
+width:96%;max-width:400px;max-height:92vh;overflow-y:auto}
+/* Building overlay */
+#BO{position:fixed;inset:0;background:var(--bg);z-index:150;overflow-y:auto;display:none}
+#BO.A{display:block}
+.bh{display:flex;align-items:center;gap:8px;padding:calc(var(--st)+8px) 10px 8px;
+background:#141408;border-bottom:1px solid #2a2818;position:sticky;top:0;z-index:10}
+.bb{font-size:20px;color:var(--amber);cursor:pointer;padding:4px 8px}
+.bp{padding:10px}
+.bs2{color:var(--amber2);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+padding:3px 0;margin:10px 0 4px;border-bottom:1px solid #2a2818}
+.ba{font-size:11px;color:var(--muted);font-style:italic;padding:6px 0;text-align:center;
+border-bottom:1px solid #1a1810;margin-bottom:8px}
+.bn{display:flex;align-items:center;gap:10px;padding:8px;background:#1a1a10;border-radius:6px;margin:4px 0}
+/* Travel overlay */
+#TO{position:fixed;inset:0;background:var(--bg);z-index:160;overflow-y:auto;display:none}
+#TO.A{display:block}
+/* Dialog */
+#DO{position:fixed;inset:0;background:rgba(5,5,2,.88);z-index:250;display:none;
+justify-content:center;align-items:center;overflow-y:auto;padding:20px 10px}
+#DO.A{display:flex}
+#DB{background:var(--panel);border:1px solid var(--amber2);border-radius:8px;padding:14px;
+width:94%;max-width:380px;max-height:85vh;overflow-y:auto}
+/* Result popup */
+#RP{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--panel);
+border:1px solid var(--amber2);border-radius:10px;padding:18px;width:90%;max-width:340px;
+z-index:350;text-align:center;box-shadow:0 0 30px rgba(0,0,0,.6);display:none;opacity:0;transition:opacity .2s}
+#RP.show{display:block;opacity:1}
+#RBG{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:340;display:none}
+#RBG.show{display:block}
+/* Ticker */
+#TK{position:fixed;top:calc(var(--st) + 44px);left:50%;transform:translateX(-50%);
+width:90%;max-width:400px;z-index:300;pointer-events:none}
+#TK .tk{background:#1a2a10;color:var(--green);padding:6px 12px;border-radius:4px;
+font-size:11px;text-align:center;opacity:0;transition:opacity .3s;border:1px solid #2a3a18}
+#TK .tk.show{opacity:1}
+/* Notification */
+#NF{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--panel);
+color:var(--amber);padding:10px 20px;border-radius:6px;font-size:12px;z-index:400;
+opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--amber2)}
+#NF.show{opacity:1}
+/* Log */
+.log-group{margin:4px 0;border:1px solid #2a2818;border-radius:4px;overflow:hidden}
+.log-header{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;
+background:var(--panel2);cursor:pointer;font-size:11px}
+.log-header:active{background:#1a1a12}
+.log-entries{display:none;padding:4px 8px 6px;font-size:11px;line-height:1.5}
+.log-entries.open{display:block}
+.log-entry{padding:2px 0;border-bottom:1px dotted #1a1810}
+.log-entry:last-child{border-bottom:none}
+.combat-log{color:var(--red)}.event-log{color:var(--green2)}.quest-log{color:var(--blue)}
+/* SPECIAL bars */
+.sp-bar{display:flex;align-items:center;gap:6px;margin:2px 0;font-size:11px}
+.sp-label{width:14px;color:var(--amber);font-weight:bold;text-align:center}
+.sp-fill-bg{flex:1;height:6px;background:#1a1a10;border-radius:3px;overflow:hidden;border:1px solid #2a2818}
+.sp-fill{height:100%;background:var(--green2);border-radius:2px;transition:width .3s}
+.sp-val{width:16px;text-align:right;color:var(--muted);font-size:10px}
+/* Tap button */
+.tap-btn{width:100%;padding:16px;background:linear-gradient(135deg,#2a3a18,#1a2a10);
+color:var(--green);border:2px solid #3a4a28;border-radius:8px;font-family:'Courier New',monospace;
+font-size:16px;font-weight:bold;cursor:pointer;text-align:center;letter-spacing:2px;
+text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
+.tap-btn:active{transform:scale(.95);box-shadow:0 0 20px rgba(74,255,74,.2) inset}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease}
+@keyframes dmgFloat{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+.dmg-float{position:absolute;color:var(--red);font-weight:bold;font-size:14px;pointer-events:none;animation:dmgFloat .8s forwards}
+.npc-line{font-size:12px;font-style:italic;color:var(--muted);padding:6px 8px;border-left:2px solid var(--amber2);margin:6px 0}
+.qc{background:#1a1a10;border:1px solid #2a2818;border-radius:4px;padding:8px;margin:6px 0}
+/* Inventory card */
+.inv-card{background:var(--panel2);border:1px solid #2a2818;border-radius:5px;padding:6px 8px;margin:3px 0}
+.inv-row{display:flex;align-items:center;justify-content:space-between;gap:6px}
+/* Combat */
+.combat-panel{background:#1a0a0a;border:1px solid #3a1818;border-radius:6px;padding:10px;margin:4px 0}
+.enemy-portrait{text-align:center;font-size:48px;margin:8px 0}
+.combat-bar{display:flex;gap:4px;margin:4px 0;flex-wrap:wrap}
+.combat-bar .bt{flex:1;min-width:80px;text-align:center}
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+<div id="W">
+<div id="H">FALLOUT: NEW VEGAS<div class="sub">Mojave Wasteland</div></div>
+<div id="SB"></div>
+<div id="C">
+<div id="world-tab" class="T A"></div>
+<div id="char-tab" class="T"></div>
+<div id="inv-tab" class="T"></div>
+<div id="roads-tab" class="T"></div>
+<div id="log-tab" class="T"></div>
+</div>
+</div>
+<div id="N">
+<button onclick="switchTab('world')" id="nb-world" class="A"><i>🏜</i>World</button>
+<button onclick="switchTab('char')" id="nb-char"><i>👤</i>Char</button>
+<button onclick="switchTab('inv')" id="nb-inv"><i>🎒</i>Items</button>
+<button onclick="switchTab('roads')" id="nb-roads"><i>🗺</i>Travel</button>
+<button onclick="switchTab('log')" id="nb-log"><i>📋</i>Log</button>
+</div>
+<div id="BO"><div id="BI"></div></div>
+<div id="TO">
+<div style="padding:calc(var(--st)+10px) 12px 12px">
+<div style="text-align:center;font-size:48px;margin:20px 0" id="TS">🏜</div>
+<div style="text-align:center;font-size:14px;margin-bottom:12px" id="TT"></div>
+<div class="hb" style="margin:8px 20px"><div class="hf g" id="TB" style="width:0%"></div></div>
+<div id="TC" style="padding:0 10px"></div>
+<button class="bt go" id="TN" style="display:none;text-align:center;margin:8px 10px" onclick="travelCont()">Continue</button>
+</div>
+</div>
+<div id="DO"><div id="DB"></div></div>
+<div id="CO"><div id="CP"></div></div>
+<div id="RBG"></div><div id="RP"></div>
+<div id="TK"><div class="tk" id="ticker-inner"></div></div>
+<div id="NF"></div>
+
+<script>
+// ============================================================
+// UTILITIES
+// ============================================================
+const $=id=>document.getElementById(id);
+const el=(t,c,h)=>{const e=document.createElement(t||'div');if(c)e.className=c;if(h)e.innerHTML=h;return e};
+function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function rndA(a){return a[Math.floor(Math.random()*a.length)]}
+function R(){return Math.random()}
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function notify(m,d=2200){const n=$('NF');n.textContent=m;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),d)}
+function showResult(title,emoji,lines,btnText,btnFn){
+  const rp=$('RP');const bg=$('RBG');
+  rp.innerHTML=`<div style="font-size:40px;margin-bottom:8px">${emoji}</div><div style="font-size:15px;font-weight:bold;margin-bottom:8px;color:var(--amber)">${title}</div>${lines.map(l=>'<div style="font-size:11px;margin:3px 0;color:var(--muted)">'+l+'</div>').join('')}<button class="bt go" style="margin-top:10px;text-align:center" onclick="closeResult();${btnFn||''}">${btnText||'Continue'}</button>`;
+  rp.style.display='block';bg.style.display='block';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{rp.classList.add('show');bg.classList.add('show')}));
+}
+function closeResult(){$('RP').classList.remove('show');$('RBG').classList.remove('show');setTimeout(()=>{$('RP').style.display='none';$('RBG').style.display='none'},200)}
+function openDlg(h){$('DB').innerHTML=h;$('DO').classList.add('A')}
+function closeDlg(){$('DO').classList.remove('A')}
+
+function resumeExpeditionAfterCombat(){
+  if(!window._resumeArea)return upAll();
+  $('TO').classList.add('A');
+  runExpedition(window._resumeArea,window._resumeStep||0);
+}
+function resumeTravelAfterCombat(){
+  $('TO').classList.add('A');
+  if(tQ.length) nextTEv();
+  else finTravel();
+}
+function acceptPendingQuest(){
+  if(!window._pendingQuest)return;
+  accQuest(window._pendingQuest);
+  window._pendingQuest=null;
+}
+function npcActPending(action){
+  if(!window._npcTarget)return;
+  npcAct(action,window._npcTarget);
+}
+function resetTransientState(){
+  combat=null;
+  tQ=[];
+  tDest=null;
+  window._resumeArea=null;
+  window._resumeStep=0;
+  window._pendingQuest=null;
+  window._npcTarget=null;
+  try{closeResult()}catch(e){}
+  try{closeDlg()}catch(e){}
+  if($('CO'))$('CO').style.display='none';
+  if($('TO'))$('TO').classList.remove('A');
+  if($('BO'))$('BO').classList.remove('A');
+  if($('TN')){$('TN').style.display='none';$('TN').onclick=null;}
+}
+function startFreshGame(){
+  localStorage.removeItem('fnv_rpg');
+  S=null;
+  resetTransientState();
+  if(typeof switchTab==='function')switchTab('world');
+  newGame();
+}
+function confirmNewGame(){
+  openDlg(`<div style="text-align:center">
+  <div style="font-size:42px;margin-bottom:8px">⚠️</div>
+  <div style="font-size:15px;font-weight:bold;color:var(--amber);margin-bottom:6px">Start New Game?</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:12px">Your current save will be erased.</div>
+  <button class="bt dn" style="text-align:center" onclick="closeDlg();startFreshGame()">Yes, start over</button>
+  <button class="bt" style="text-align:center" onclick="closeDlg()">Cancel</button>
+  </div>`);
+}
+
+// ============================================================
+// DATA - LOCATIONS
+// ============================================================
+const LOCS={
+Goodsprings:{n:"Goodsprings",r:"Mojave South",d:"A quiet frontier town. Clean water, honest people.",e:"🏘",t:"town",
+  b:["saloon","general_store","gas_station","doc_house"],dg:1,fac:"NCR",
+  sur:[{n:"Goodsprings Cemetery",e:"⚰",d:"Where they left you for dead.",en:["gecko","bloatfly"],lt:["ammo_9mm","stimpak","sunset_sars"]},
+  {n:"Goodsprings Source",e:"💧",d:"Fresh water. Geckos lurk nearby.",en:["gecko","gecko","mantis"],lt:["purified_water","gecko_hide","herbs"]},
+  {n:"Abandoned Schoolhouse",e:"🏚",d:"Giant mantises nest inside.",en:["mantis","mantis","radroach"],lt:["scrap","duct_tape","ammo_9mm","bobby_pin"]}]},
+Primm:{n:"Primm",r:"Mojave South",d:"A border town overrun by convicts.",e:"🎰",t:"town",
+  b:["vikki_vance","mojave_express","sheriff_office"],dg:2,fac:"NCR",
+  sur:[{n:"Highway 93",e:"🛣",d:"Convicts patrol the road.",en:["convict","convict","convict"],lt:["pistol_10mm","revolver_357","leather_armor","stimpak","ammo_10mm","ammo_357"]},
+  {n:"NCRCF Perimeter",e:"🏗",d:"The prison is close. Dangerous.",en:["powder_ganger","powder_ganger","convict"],lt:["dynamite","powder_charge","ammo_9mm"]}]},
+Nipton:{n:"Nipton",r:"Mojave South",d:"A town destroyed by the Legion as an example.",e:"🔥",t:"ruins",
+  b:["nipton_hall"],dg:3,fac:"Legion",
+  sur:[{n:"Nipton Road",e:"🛤",d:"Legion patrols and radscorpions.",en:["legion_recruit","radscorpion"],lt:["machete","healing_powder","legion_coin","revolver_357","ammo_357"]},
+  {n:"Burned Houses",e:"🏚",d:"Ash and ruin. Scavengeable.",en:["radroach","gecko"],lt:["pre_war_money","scrap","duct_tape"]}]},
+Novac:{n:"Novac",r:"Mojave Central",d:"A motel town with a giant dinosaur.",e:"🦖",t:"town",
+  b:["dino_bite","motel","mcbride_house"],dg:2,fac:"NCR",
+  sur:[{n:"REPCONN Test Site",e:"☢",d:"Ghouls and nightkin. Extremely dangerous.",en:["feral_ghoul","feral_ghoul","nightkin"],lt:["energy_cell","laser_rifle","stealth_boy","stimpak","sensor_module"]},
+  {n:"Highway Patrol",e:"🛣",d:"Cazadores and Legion scouts.",en:["cazador","legion_recruit"],lt:["antivenom","machete","stimpak"]}]},
+BoulderCity:{n:"Boulder City",r:"Mojave Central",d:"NCR memorial site. Tense standoff with Khans.",e:"🏛",t:"town",
+  b:["boulder_bar","ncr_memorial"],dg:2,fac:"NCR",
+  sur:[{n:"Boulder City Ruins",e:"🧱",d:"Rubble and tension.",en:["great_khan","great_khan"],lt:["ammo_9mm","stimpak","jet"]}]},
+FreesideN:{n:"Freeside",r:"New Vegas",d:"The slums outside the Strip. Kings territory.",e:"👑",t:"district",
+  b:["atomic_wrangler","kings_hq","mick_ralph","old_mormon_fort"],dg:2,fac:"None",
+  sur:[{n:"Freeside Streets",e:"🏚",d:"Thugs and desperate people.",en:["freeside_thug","freeside_thug"],lt:["switchblade","jet","stimpak","nuka_cola"]},
+  {n:"East Gate",e:"🚪",d:"The entrance to the Strip... if you can afford it.",en:[],lt:[]}]},
+TheStrip:{n:"The Strip",r:"New Vegas",d:"The jewel of the Mojave. Mr. House's domain.",e:"🎰",t:"city",
+  b:["lucky_38","gomorrah","ultra_luxe","tops_casino"],dg:1,fac:"House",
+  sur:[{n:"Strip Streets",e:"🌃",d:"Bright lights and securitrons.",en:[],lt:["pre_war_money","fancy_lad","nuka_cola"]}]},
+CampMcCarran:{n:"Camp McCarran",r:"New Vegas",d:"NCR's main base of operations in the Mojave.",e:"🏕",t:"base",
+  b:["mccarran_supply","mccarran_med","mccarran_hq"],dg:1,fac:"NCR",
+  sur:[{n:"Fiend Territory",e:"☠",d:"Psycho-addled raiders everywhere.",en:["fiend","fiend","fiend"],lt:["jet","psycho","ammo_556","combat_knife"]}]},
+HiddenValley:{n:"Hidden Valley",r:"Mojave Central",d:"Brotherhood of Steel bunker, hidden underground.",e:"⚙",t:"bunker",
+  b:["bos_armory","bos_lab"],dg:1,fac:"BOS",
+  sur:[{n:"Valley Patrols",e:"🏜",d:"Scorpions in the sand.",en:["radscorpion","radscorpion"],lt:["sensor_module","energy_cell","scrap"]}]},
+Jacobstown:{n:"Jacobstown",r:"Mojave North",d:"A refuge for super mutants trying to live peacefully.",e:"🏔",t:"settlement",
+  b:["jacobstown_lodge","jacobstown_doc"],dg:2,fac:"None",
+  sur:[{n:"Mountain Trails",e:"⛰",d:"Cazadores and nightstalkers.",en:["cazador","nightstalker","nightstalker"],lt:["antivenom","stimpak","bighorner_meat"]}]},
+RedRockCanyon:{n:"Red Rock Canyon",r:"West Mojave",d:"Home of the Great Khans. Harsh, hidden, and dangerous.",e:"🏜",t:"camp",
+  b:["khan_bar","khan_supply","khan_hq"],dg:2,fac:"Khans",
+  sur:[{n:"Canyon Pass",e:"🪨",d:"Narrow trails watched by Khan lookouts.",en:["great_khan","great_khan","cazador"],lt:["ammo_9mm","jet","stimpak","scrap"]},
+  {n:"Drug Lab Caves",e:"🧪",d:"Chem fumes, hidden caches, and trouble.",en:["great_khan","fiend"],lt:["jet","psycho","stimpak","pre_war_money"]}]},
+NelsonCamp:{n:"Nelson",r:"Mojave South",d:"A town captured by Caesar's Legion.",e:"⚔",t:"camp",
+  b:["legion_tent"],dg:3,fac:"Legion",
+  sur:[{n:"Nelson Approach",e:"🏜",d:"Legion territory. Very dangerous.",en:["legion_veteran","legion_recruit","legion_recruit"],lt:["machete","thermic_lance","healing_powder","legion_coin"]}]},
+TheFort:{n:"The Fort",r:"East Mojave",d:"Caesar's main camp. The heart of the Legion.",e:"🏛",t:"fortress",
+  b:["caesars_tent","legion_arena","legion_supply"],dg:3,fac:"Legion",
+  sur:[{n:"Fortification Hill",e:"⛰",d:"Heavily guarded.",en:["legion_centurion","legion_veteran"],lt:["super_stimpak","thermic_lance","legion_coin","power_fist"]}]},
+CampSearchlight:{n:"Camp Searchlight",r:"East Mojave",d:"A ruined NCR town choked with radiation, ash, and restless dead.",e:"☢",t:"ruins",
+  b:["searchlight_bar","searchlight_supply","searchlight_med"],dg:3,fac:"NCR",
+  sur:[{n:"Searchlight Fire Station",e:"🚒",d:"Collapsed NCR gear, scorched walls, and glowing dust.",en:["feral_ghoul","feral_ghoul","radscorpion"],lt:["stimpak","ammo_556","scrap","ncr_armor"]},
+  {n:"Church Basement",e:"⛪",d:"A dark shelter full of old supplies and lingering danger.",en:["feral_ghoul","feral_ghoul","nightkin"],lt:["med_x","super_stimpak","pre_war_money","energy_cell"]}]},
+CottonwoodCove:{n:"Cottonwood Cove",r:"East Mojave",d:"A Legion-controlled river port hidden below the cliffs.",e:"🚤",t:"camp",
+  b:["cove_bar","cove_supply","cove_tent"],dg:3,fac:"Legion",
+  sur:[{n:"Slave Pens",e:"⛓",d:"Crude cages, watchfires, and brutal Legion discipline.",en:["legion_recruit","legion_recruit","legion_veteran"],lt:["healing_powder","legion_coin","machete","stimpak"]},
+  {n:"Riverside Cliffs",e:"🪨",d:"Steep rocks above the Colorado, watched by scouts.",en:["legion_scout","legion_scout","cazador"],lt:["ammo_357","pre_war_money","healing_powder","antivenom"]}]},
+Sloan:{n:"Sloan",r:"West Mojave",d:"A quarry settlement on edge, with deathclaws stalking the worksites.",e:"⛏",t:"settlement",
+  b:["sloan_bar","sloan_supply","sloan_office"],dg:3,fac:"NCR",
+  sur:[{n:"Quarry Entrance",e:"🪨",d:"Heavy machinery, scattered supplies, and signs of recent attacks.",en:["deathclaw","radscorpion"],lt:["ammo_556","scrap","stimpak","combat_armor"]},
+  {n:"Worker Barracks",e:"🛏",d:"Miners' bunks, old lockers, and emergency caches.",en:["gecko","radroach","mantis"],lt:["sunset_sars","duct_tape","stimpak","ammo_9mm"]}]},
+MojaveOutpost:{n:"Mojave Outpost",r:"Mojave South",d:"A dusty NCR checkpoint guarding the long highway south.",e:"🚧",t:"outpost",
+  b:["outpost_bar","outpost_supply","outpost_office"],dg:1,fac:"NCR",
+  sur:[{n:"Highway Checkpoint",e:"🛣",d:"Sandbags, roadblocks, and patrols watching the southern road.",en:["convict","gecko"],lt:["ammo_556","stimpak","sunset_sars","scrap"]},
+  {n:"Rocky Pass",e:"🪨",d:"A windswept cut through the hills where ambushers sometimes wait.",en:["convict","powder_ganger","gecko"],lt:["ammo_9mm","duct_tape","pre_war_money","varmint_rifle"]}]},
+Westside:{n:"Westside",r:"New Vegas",d:"A rough independent neighborhood surviving just beyond the city lights.",e:"🏚",t:"district",
+  b:["westside_bar","westside_supply","westside_lodge"],dg:2,fac:"None",
+  sur:[{n:"Westside Streets",e:"🛣",d:"Narrow lanes, locals keeping watch, and trouble after dark.",en:["freeside_thug","freeside_thug","fiend"],lt:["switchblade","stimpak","nuka_cola","pre_war_money"]},
+  {n:"Community Gardens",e:"🌿",d:"A rare patch of green fenced off from scavengers and raiders.",en:["gecko","mantis","radroach"],lt:["herbs","purified_water","duct_tape","fancy_lad"]}]},
+NellisAFB:{n:"Nellis AFB",r:"East Mojave",d:"A fortified air base ringed with artillery and old world wreckage.",e:"✈",t:"base",
+  b:["nellis_bar","nellis_supply","nellis_med"],dg:3,fac:"None",
+  sur:[{n:"Runway Wreckage",e:"🛩",d:"Twisted aircraft parts and unexploded ordnance litter the ground.",en:["mantis","radscorpion","cazador"],lt:["scrap","sensor_module","energy_cell","ammo_556"]},
+  {n:"Array Station",e:"📡",d:"A communications site full of salvage and dangerous pests.",en:["radscorpion","nightstalker","mantis"],lt:["sensor_module","stimpak","pre_war_money","energy_cell"]}]},
+HooverDam:{n:"Hoover Dam",r:"East Mojave",d:"The prize everyone's fighting for.",e:"🏗",t:"dam",
+  b:["dam_offices","dam_power"],dg:2,fac:"NCR",
+  sur:[{n:"Dam Exterior",e:"🌊",d:"NCR patrols. Legion scouts across the river.",en:["legion_scout","legion_scout"],lt:["ammo_556","stimpak","ncr_armor"]}]}
+};
+
+const ROADS={
+Goodsprings:{Primm:1,FreesideN:4,Sloan:2,MojaveOutpost:2},
+Primm:{Goodsprings:1,Nipton:2,Novac:2,CampMcCarran:3,MojaveOutpost:1},
+Nipton:{Primm:2,NelsonCamp:2,Novac:3,CampSearchlight:2},
+Novac:{Primm:2,Nipton:3,BoulderCity:2,HiddenValley:2,NelsonCamp:2},
+BoulderCity:{Novac:2,FreesideN:1,HooverDam:1,NellisAFB:2},
+FreesideN:{Goodsprings:4,BoulderCity:1,TheStrip:1,CampMcCarran:1,RedRockCanyon:2,Westside:1},
+TheStrip:{FreesideN:1,CampMcCarran:1},
+CampMcCarran:{FreesideN:1,TheStrip:1,Primm:3,HiddenValley:2,Westside:1},
+HiddenValley:{CampMcCarran:2,Novac:2,Jacobstown:3},
+Jacobstown:{HiddenValley:3,FreesideN:3,RedRockCanyon:2,Sloan:3},
+RedRockCanyon:{FreesideN:2,Jacobstown:2,Sloan:2},
+NelsonCamp:{Nipton:2,Novac:2,TheFort:3,CampSearchlight:1,CottonwoodCove:1},
+TheFort:{NelsonCamp:3,HooverDam:2,CottonwoodCove:2},
+CampSearchlight:{Nipton:2,NelsonCamp:1,HooverDam:2},
+CottonwoodCove:{NelsonCamp:1,TheFort:2},
+Sloan:{Goodsprings:2,RedRockCanyon:2,Jacobstown:3},
+MojaveOutpost:{Goodsprings:2,Primm:1},
+Westside:{FreesideN:1,CampMcCarran:1},
+NellisAFB:{BoulderCity:2,HooverDam:2},
+HooverDam:{BoulderCity:1,TheFort:2,CampSearchlight:2,NellisAFB:2}
+};
+
+// ============================================================
+// DATA - ITEMS
+// ============================================================
+const ITEMS={
+// Consumables
+stimpak:{n:"Stimpak",t:"c",e:"💉",hp:40,p:50,w:0.5},
+super_stimpak:{n:"Super Stimpak",t:"c",e:"💉",hp:80,p:100,w:0.5,rare:1},
+purified_water:{n:"Purified Water",t:"c",e:"💧",hp:8,p:20,w:0.5},
+sunset_sars:{n:"Sunset Sarsaparilla",t:"c",e:"🍺",hp:5,p:5,w:1},
+nuka_cola:{n:"Nuka-Cola",t:"c",e:"🥤",hp:6,p:10,w:1},
+fancy_lad:{n:"Fancy Lads Snack",t:"c",e:"🍰",hp:10,p:8,w:0.5},
+gecko_steak:{n:"Gecko Steak",t:"c",e:"🥩",hp:15,p:12,w:1},
+bighorner_meat:{n:"Bighorner Steak",t:"c",e:"🥩",hp:20,p:15,w:1},
+healing_powder:{n:"Healing Powder",t:"c",e:"🌿",hp:18,p:12,w:0.5},
+antivenom:{n:"Antivenom",t:"c",e:"💊",hp:10,p:25,w:0.5},
+herbs:{n:"Wasteland Herbs",t:"c",e:"🌿",hp:5,p:4,w:0.3},
+// Chems
+jet:{n:"Jet",t:"chem",e:"💨",p:30,w:0.2,buff:{ap:20}},
+psycho:{n:"Psycho",t:"chem",e:"💀",p:40,w:0.2,buff:{dmg:15}},
+med_x:{n:"Med-X",t:"chem",e:"💊",p:50,w:0.2,buff:{dr:15}},
+stealth_boy:{n:"Stealth Boy",t:"chem",e:"👻",p:100,w:0.5,rare:1},
+// Weapons
+pistol_9mm:{n:"9mm Pistol",t:"w",e:"🔫",a:8,p:50,w:2.5,ammo:"ammo_9mm"},
+pistol_10mm:{n:"10mm Pistol",t:"w",e:"🔫",a:12,p:80,w:3,ammo:"ammo_10mm"},
+revolver_357:{n:".357 Magnum Revolver",t:"w",e:"🔫",a:16,p:140,w:3.2,ammo:"ammo_357"},
+varmint_rifle:{n:"Varmint Rifle",t:"w",e:"🔫",a:14,p:60,w:5.5,ammo:"ammo_556"},
+service_rifle:{n:"Service Rifle",t:"w",e:"🔫",a:24,p:220,w:6,ammo:"ammo_556"},
+assault_carbine:{n:"Assault Carbine",t:"w",e:"🔫",a:32,p:420,w:5.5,ammo:"ammo_556",rare:1},
+hunting_rifle:{n:"Hunting Rifle",t:"w",e:"🔫",a:25,p:200,w:7,ammo:"ammo_308"},
+sniper_rifle:{n:"Sniper Rifle",t:"w",e:"🔫",a:40,p:520,w:8,ammo:"ammo_308",rare:1},
+caravan_shotgun:{n:"Caravan Shotgun",t:"w",e:"🔫",a:20,p:170,w:5.5,ammo:"ammo_shells"},
+combat_shotgun:{n:"Combat Shotgun",t:"w",e:"🔫",a:30,p:300,w:7,ammo:"ammo_shells",rare:1},
+laser_pistol:{n:"Laser Pistol",t:"w",e:"⚡",a:18,p:120,w:3,ammo:"energy_cell"},
+laser_rifle:{n:"Laser Rifle",t:"w",e:"⚡",a:28,p:260,w:5.5,ammo:"energy_cell"},
+plasma_rifle:{n:"Plasma Rifle",t:"w",e:"⚡",a:35,p:400,w:8,ammo:"energy_cell",rare:1},
+machete:{n:"Machete",t:"w",e:"🔪",a:10,p:30,w:3},
+combat_knife:{n:"Combat Knife",t:"w",e:"🗡",a:7,p:25,w:1},
+switchblade:{n:"Switchblade",t:"w",e:"🔪",a:4,p:10,w:1},
+power_fist:{n:"Power Fist",t:"w",e:"👊",a:28,p:250,w:6,rare:1},
+thermic_lance:{n:"Thermic Lance",t:"w",e:"🔱",a:40,p:500,w:10,rare:2},
+maria:{n:"Maria",t:"w",e:"🔫",a:22,p:600,desc:"Benny's gun. 9mm, gold-plated.",w:2.5,ammo:"ammo_9mm",rare:2},
+// Armor
+leather_armor:{n:"Leather Armor",t:"a",e:"🧥",d:6,p:40,w:8,slot:"body"},
+ncr_armor:{n:"NCR Trooper Armor",t:"a",e:"🦺",d:10,p:80,w:12,slot:"body"},
+metal_armor:{n:"Metal Armor",t:"a",e:"🛡",d:14,p:200,w:18,slot:"body",rare:1},
+combat_armor:{n:"Combat Armor",t:"a",e:"🛡",d:18,p:350,w:16,slot:"body",rare:1},
+power_armor:{n:"T-45d Power Armor",t:"a",e:"🤖",d:28,p:800,w:30,slot:"body",rare:2},
+headwrap:{n:"Head Wrap",t:"a",e:"🪖",d:1,p:5,w:1,slot:"head"},
+combat_helmet:{n:"Combat Helmet",t:"a",e:"🪖",d:4,p:40,w:3,slot:"head"},
+// Ammo
+ammo_9mm:{n:"9mm Rounds",t:"ammo",e:"🔸",p:2,w:0.1,stack:1},
+ammo_10mm:{n:"10mm Rounds",t:"ammo",e:"🔸",p:3,w:0.1,stack:1},
+ammo_357:{n:".357 Magnum Rounds",t:"ammo",e:"🔸",p:4,w:0.1,stack:1},
+ammo_556:{n:"5.56mm Rounds",t:"ammo",e:"🔸",p:4,w:0.1,stack:1},
+ammo_308:{n:".308 Rounds",t:"ammo",e:"🔸",p:5,w:0.15,stack:1},
+ammo_shells:{n:"Shotgun Shells",t:"ammo",e:"🔸",p:4,w:0.2,stack:1},
+energy_cell:{n:"Energy Cells",t:"ammo",e:"⚡",p:5,w:0.1,stack:1},
+// Materials
+scrap:{n:"Scrap Metal",t:"m",e:"⚙",p:12,w:1},
+duct_tape:{n:"Duct Tape",t:"m",e:"🔧",p:10,w:0.5},
+bobby_pin:{n:"Bobby Pin",t:"m",e:"📎",p:3,w:0.1},
+sensor_module:{n:"Sensor Module",t:"m",e:"📡",p:30,w:1},
+pre_war_money:{n:"Pre-War Money",t:"m",e:"💵",p:15,w:0.1},
+powder_charge:{n:"Powder Charge",t:"m",e:"💣",p:20,w:1},
+dynamite:{n:"Dynamite",t:"m",e:"🧨",p:30,w:1},
+gecko_hide:{n:"Gecko Hide",t:"m",e:"🦎",p:18,w:1.5},
+legion_coin:{n:"Legion Denarius",t:"m",e:"🪙",p:20,w:0.1},
+};
+
+// ============================================================
+// DATA - ENEMIES
+// ============================================================
+const ENEMIES={
+gecko:{n:"Gecko",hp:20,a:4,d:0,xp:8,e:"🦎",loot:["gecko_hide","gecko_steak"]},
+bloatfly:{n:"Bloatfly",hp:15,a:3,d:0,xp:5,e:"🪰",loot:["herbs"]},
+mantis:{n:"Giant Mantis",hp:25,a:6,d:1,xp:10,e:"🦗",loot:["scrap"]},
+radroach:{n:"Radroach",hp:10,a:2,d:0,xp:3,e:"🪳",loot:["herbs"]},
+radscorpion:{n:"Radscorpion",hp:60,a:15,d:5,xp:25,e:"🦂",loot:["antivenom","stimpak"]},
+cazador:{n:"Cazador",hp:45,a:18,d:3,xp:30,e:"🐝",loot:["antivenom","stimpak"]},
+nightstalker:{n:"Night Stalker",hp:40,a:12,d:4,xp:20,e:"🐍",loot:["stimpak","herbs"]},
+nightkin:{n:"Nightkin",hp:100,a:25,d:12,xp:60,e:"👹",loot:["stealth_boy","super_stimpak"]},
+feral_ghoul:{n:"Feral Ghoul",hp:35,a:10,d:2,xp:15,e:"🧟",loot:["stimpak","pre_war_money"]},
+convict:{n:"Escaped Convict",hp:30,a:8,d:3,xp:12,e:"👤",loot:["ammo_9mm","switchblade","sunset_sars"]},
+powder_ganger:{n:"Powder Ganger",hp:35,a:10,d:4,xp:15,e:"💥",loot:["dynamite","ammo_9mm","stimpak"]},
+freeside_thug:{n:"Freeside Thug",hp:30,a:7,d:3,xp:10,e:"🔪",loot:["switchblade","jet","pre_war_money"]},
+fiend:{n:"Fiend",hp:40,a:14,d:5,xp:20,e:"☠",loot:["jet","psycho","ammo_9mm","ammo_10mm","combat_knife","pistol_10mm"]},
+legion_recruit:{n:"Legion Recruit",hp:40,a:12,d:6,xp:18,e:"⚔",loot:["machete","healing_powder","legion_coin"]},
+legion_veteran:{n:"Legion Veteran",hp:70,a:20,d:10,xp:35,e:"⚔",loot:["thermic_lance","super_stimpak","legion_coin"]},
+legion_centurion:{n:"Legion Centurion",hp:120,a:28,d:15,xp:60,e:"🦅",loot:["thermic_lance","super_stimpak","power_fist","legion_coin"]},
+legion_scout:{n:"Legion Scout",hp:35,a:11,d:5,xp:15,e:"👁",loot:["machete","healing_powder","legion_coin"]},
+great_khan:{n:"Great Khan",hp:45,a:13,d:6,xp:18,e:"🏹",loot:["ammo_9mm","ammo_357","jet","stimpak","revolver_357"]},
+securitron:{n:"Securitron",hp:80,a:22,d:14,xp:40,e:"🤖",loot:["energy_cell","sensor_module","scrap"]},
+deathclaw:{n:"Deathclaw",hp:200,a:40,d:18,xp:100,e:"🦖",loot:["super_stimpak","super_stimpak","combat_armor"],boss:1},
+};
+
+// Buildings
+const BLDS={
+saloon:{n:"Prospector Saloon",e:"🍺",am:["The radio plays Big Iron...","Trudy wipes the counter.","Someone argues in the corner."]},
+general_store:{n:"General Store",e:"🏪",am:["Dusty shelves. The essentials.","Chet looks suspicious.","Ammo behind the counter."]},
+gas_station:{n:"Gas Station",e:"⛽",am:["Pumps are dry. Workshop still works.","Grease and old tools."]},
+doc_house:{n:"Doc Mitchell's House",e:"🏥",am:["Medical equipment hums.","The doc paces thoughtfully."]},
+vikki_vance:{n:"Vikki & Vance Casino",e:"🎰",am:["The slots don't pay much.","Johnson Nash sits at his desk."]},
+mojave_express:{n:"Mojave Express",e:"📦",am:["Courier packages line the walls.","A delivery manifest on the desk."]},
+sheriff_office:{n:"Sheriff's Office",e:"⭐",am:["Empty since the convicts came.","Wanted posters on the wall."]},
+nipton_hall:{n:"Nipton Town Hall",e:"🏛",am:["Burned. The lottery happened here.","Legion banners hang from posts."]},
+dino_bite:{n:"Dino Bite Gift Shop",e:"🦕",am:["Cliff Briscoe arranges toys.","Dino souvenirs everywhere."]},
+motel:{n:"Novac Motel",e:"🏨",am:["Rooms available. 100 caps a night.","Someone watches from the dinosaur."]},
+mcbride_house:{n:"McBride's Brahmin Ranch",e:"🐄",am:["Brahmin low in the pen.","McBride looks worried."]},
+boulder_bar:{n:"Boulder City Bar",e:"🍺",am:["NCR soldiers drink quietly.","Tension in the air."]},
+ncr_memorial:{n:"NCR Memorial",e:"🏛",am:["Names of the fallen at the dam.","Flowers left by visitors."]},
+atomic_wrangler:{n:"Atomic Wrangler",e:"🎲",am:["The Garret twins run a tight ship.","Gamblers lose their caps."]},
+kings_hq:{n:"The King's School of Impersonation",e:"👑",am:["The King sits in his throne.","Rex pants by the door."]},
+mick_ralph:{n:"Mick & Ralph's",e:"🏪",am:["If they don't have it, you don't need it.","Under the counter deals available."]},
+old_mormon_fort:{n:"Old Mormon Fort",e:"🏥",am:["The Followers of the Apocalypse help the sick.","Julie Farkas organizes supplies."]},
+lucky_38:{n:"Lucky 38",e:"🏰",am:["Mr. House's tower. Securitrons everywhere.","The presidential suite awaits."]},
+gomorrah:{n:"Gomorrah",e:"🎰",am:["The Omertas run this joint.","Smoke and noise."]},
+ultra_luxe:{n:"Ultra-Luxe",e:"🥂",am:["The White Glove Society. Very exclusive.","Fine dining of a... special kind."]},
+tops_casino:{n:"The Tops",e:"🎤",am:["The Chairmen welcome high rollers.","Benny was last seen here."]},
+mccarran_supply:{n:"Camp McCarran Supply",e:"📦",am:["Military supplies. Good stock.","NCR prices, NCR quality."]},
+mccarran_med:{n:"Camp McCarran Medic",e:"🏥",am:["Field hospital. Busy.","Wounded soldiers everywhere."]},
+mccarran_hq:{n:"McCarran HQ",e:"🏛",am:["Colonel Hsu manages the operation.","Maps and reports cover every surface."]},
+bos_armory:{n:"Brotherhood Armory",e:"⚙",am:["Power armor and energy weapons.","Locked behind clearance levels."]},
+bos_lab:{n:"Brotherhood Lab",e:"🔬",am:["Pre-war tech under study.","Scribes work around the clock."]},
+jacobstown_lodge:{n:"Jacobstown Lodge",e:"🏠",am:["Marcus keeps the peace.","Super mutants play chess."]},
+jacobstown_doc:{n:"Jacobstown Doctor",e:"🏥",am:["Dr. Henry researches nightkin madness.","Medical supplies available."]},
+khan_bar:{n:"Khan Bar",e:"🍺",am:["Chem talk and hard stares fill the room.","A battered radio hums in the corner."]},
+khan_supply:{n:"Khan Supply",e:"📦",am:["Ammo crates, chems, and rough trade deals.","The Great Khans always have something to sell."]},
+khan_hq:{n:"Khan Longhouse",e:"🏕",am:["Plans for raids and survival are argued over here.","The Great Khans watch strangers carefully."]},
+legion_tent:{n:"Legion Command Tent",e:"⛺",am:["Discipline and cruelty in equal measure.","A slave kneels nearby."]},
+caesars_tent:{n:"Caesar's Tent",e:"🏛",am:["The man himself holds court.","Praetorian guards flank the entrance."]},
+legion_arena:{n:"Legion Arena",e:"⚔",am:["Blood on the sand.","Crowds cheer for death."]},
+legion_supply:{n:"Legion Quartermaster",e:"📦",am:["Melee weapons and healing powder.","No guns. Legion way."]},
+searchlight_bar:{n:"Searchlight Tavern",e:"🍺",am:["Dusty tables and NCR ghosts in every story.","A cracked jukebox hums faintly in the corner."]},
+searchlight_supply:{n:"Searchlight Outpost Supply",e:"📦",am:["An old NCR stockroom picked clean, but not empty.","Ammo tins and ration crates line the shelves."]},
+searchlight_med:{n:"Searchlight Aid Station",e:"🏥",am:["Emergency beds remain where the NCR left them.","A faint antiseptic smell cuts through the ash."]},
+cove_bar:{n:"Cove Mess Hall",e:"🍺",am:["Legionaries eat in silence under harsh watch.","Smoke, stew, and muttered prayers fill the air."]},
+cove_supply:{n:"Cove Quartermaster",e:"📦",am:["Crates of captured gear sit beside Legion packs.","Everything here feels confiscated from someone else."]},
+cove_tent:{n:"Cove Command Tent",e:"⛺",am:["Maps of the river crossings lie open on a table.","A veteran eyes every newcomer with suspicion."]},
+sloan_bar:{n:"Sloan Mess Hall",e:"🍺",am:["Miners trade deathclaw stories over warm drinks.","Dust covers every table and boot print."]},
+sloan_supply:{n:"Sloan Supply Shed",e:"📦",am:["Work gear, blasting tools, and emergency ammo share the same shelves.","Everything feels half-abandoned but still useful."]},
+sloan_office:{n:"Foreman's Office",e:"🏢",am:["Shift notes, NCR forms, and quarry maps cover the desk.","Warnings about Quarry Junction are pinned everywhere."]},
+outpost_bar:{n:"Outpost Canteen",e:"🍺",am:["NCR troopers trade road gossip over lukewarm drinks.","Dust blows in every time the door opens."]},
+outpost_supply:{n:"Outpost Supply Depot",e:"📦",am:["Crates of ammo, rations, and spare uniforms line the walls.","A tired quartermaster counts every bullet twice."]},
+outpost_office:{n:"Ranger Desk",e:"🏢",am:["Patrol reports and bounty sheets are stacked across the desk.","A map of the southern roads is covered in pins and notes."]},
+westside_bar:{n:"Casa Madrid Bar",e:"🍺",am:["Locals keep their voices low around strangers.","A cracked jukebox still fights to be heard."]},
+westside_supply:{n:"Westside Market",e:"📦",am:["Fresh produce sits beside scavenged junk and ammo boxes.","Every trade feels half business, half test."]},
+westside_lodge:{n:"Westside Rooms",e:"🏨",am:["Cheap beds, thin walls, and a lock that mostly works.","Travelers pass through, but locals notice everyone."]},
+nellis_bar:{n:"Boomer Mess Hall",e:"🍺",am:["Military trays, loud stories, and old bomber pride fill the hall.","Someone is always talking about artillery or history."]},
+nellis_supply:{n:"Boomer Supply Hangar",e:"📦",am:["Ammo tins, tools, and salvaged aircraft parts are stacked high.","Even the spare parts feel dangerous here."]},
+nellis_med:{n:"Boomer Aid Station",e:"🏥",am:["Field dressings and spare chems are ready for the next accident.","The smell of antiseptic barely covers the fuel in the air."]},
+dam_offices:{n:"Dam Offices",e:"🏢",am:["NCR administration.","Power management systems."]},
+dam_power:{n:"Dam Power Plant",e:"⚡",am:["Turbines hum. The Mojave's lifeline.","Engineers maintain the generators."]},
+};
+
+// Factions
+const FACTIONS={NCR:"New California Republic",Legion:"Caesar's Legion",House:"Mr. House",BOS:"Brotherhood of Steel",Followers:"Followers of the Apocalypse",Kings:"The Kings",Khans:"Great Khans"};
+
+// Names
+const FM=["Cass","Marcus","Boone","Rex","Arcade","Raul","Craig","Eddie","Victor","Hank","Joe","Mick","Ralph","Jack","Tommy","Dean","Dog","Frank","Mike","Butch","Leo","Wayne","Ricky","Steve","Pete"];
+const FF=["Rose","Veronica","Cass","Julie","Jane","Maria","Lucy","Sarah","Alice","Ruby","Sunny","Trudy","Linda","Melissa","Gloria","Diana","Beth","Nora","Sharon","Kim","Rita","Stella","Carla"];
+const LN=["Walker","Stone","Cobb","Nash","Cruz","Hunt","Vance","Rivers","Cole","Black","West","Hayes","Grant","Reed","Torres","Mills","Hayes","Fox","Drake","Quinn","Sharp","Vega","Cross"];
+
+// Backgrounds
+const BACKGROUNDS=[
+{id:'courier',n:'The Courier',d:'Shot in the head and left for dead. You got better.',gold:30,atk:5,def:3,spd:5,items:['pistol_9mm','stimpak','ammo_9mm','ammo_9mm','ammo_9mm','ammo_9mm','ammo_9mm','ammo_9mm','sunset_sars'],loc:'Goodsprings',class:'courier',karma:0},
+{id:'ncr_deserter',n:'NCR Deserter',d:'Fled the army. The Mojave eats deserters.',gold:50,atk:6,def:5,spd:4,items:['varmint_rifle','ncr_armor','ammo_556','ammo_556','ammo_556','ammo_556','ammo_556','stimpak'],loc:'Primm',class:'soldier',karma:-5},
+{id:'tribal',n:'Tribal Wanderer',d:'Your tribe was wiped out. You survived.',gold:10,atk:7,def:4,spd:6,items:['machete','healing_powder','healing_powder','herbs'],loc:'Goodsprings',class:'tribal',karma:5},
+{id:'gambler',n:'Strip Gambler',d:'Lady Luck has a sense of humor.',gold:120,atk:3,def:2,spd:4,items:['switchblade','fancy_lad','nuka_cola','pre_war_money'],loc:'FreesideN',class:'gambler',karma:0},
+{id:'scavenger',n:'Wasteland Scavenger',d:'One man\'s junk is your livelihood.',gold:40,atk:4,def:3,spd:5,items:['combat_knife','duct_tape','scrap','bobby_pin','bobby_pin','stimpak'],loc:'Novac',class:'scavenger',karma:0},
+{id:'ex_legion',n:'Ex-Legionary',d:'Branded a traitor. Caesar wants your head.',gold:20,atk:8,def:6,spd:4,items:['machete','healing_powder','legion_coin','leather_armor'],loc:'Nipton',class:'legion',karma:-10},
+{id:'follower',n:'Follower of the Apocalypse',d:'Knowledge is the best weapon.',gold:60,atk:3,def:2,spd:4,items:['stimpak','stimpak','purified_water','herbs','herbs'],loc:'FreesideN',class:'doctor',karma:10},
+{id:'bos_exile',n:'Brotherhood Exile',d:'Cast out for asking questions.',gold:35,atk:6,def:7,spd:3,items:['laser_pistol','energy_cell','energy_cell','energy_cell','energy_cell','energy_cell','combat_helmet'],loc:'HiddenValley',class:'knight',karma:5},
+];
+
+const SPECIAL_LABELS=['S','P','E','C','I','A','L'];
+const SPECIAL_NAMES=['Strength','Perception','Endurance','Charisma','Intelligence','Agility','Luck'];
+
+// ============================================================
+// STATE
+// ============================================================
+let S=null,combat=null,tQ=[],tDest=null;
+
+const BASE={name:"Courier",hp:80,maxHp:80,ap:60,maxAp:60,xp:0,level:1,caps:30,
+special:[5,5,5,5,5,5,5],perks:[],
+atk:5,def:3,spd:4,loc:"Goodsprings",
+gear:{w:null,body:null,head:null},inv:[],quests:[],
+rep:{NCR:0,Legion:0,House:0,BOS:0,Followers:0,Kings:0,Khans:0},
+kills:{},days:1,hours:8,log:[],karma:0,
+bg:null,class:'courier',
+// Social
+spouse:null,children:[],companions:[],relationships:[],
+properties:[],
+age:25,isMale:true,
+// World
+worldEvents:[],lastWorldTick:0,
+fame:0,bounty:0,
+// Progression
+scavengeCount:0,capsEarned:0,killCount:0,questsComplete:0,
+settlements:[],army:{soldiers:0,quality:1,morale:50,max:0},
+};
+
+function save(){try{localStorage.setItem('fnv_rpg',JSON.stringify(S))}catch(e){}}
+function load(){const d=localStorage.getItem('fnv_rpg');if(d){try{S=JSON.parse(d);migrate();return true}catch(e){}}return false}
+function migrate(){
+  if(!S.special)S.special=[5,5,5,5,5,5,5];
+  if(!S.companions)S.companions=[];
+  if(!S.properties)S.properties=[];
+  if(!S.settlements)S.settlements=[];
+  if(!S.army)S.army={soldiers:0,quality:1,morale:50,max:0};
+  if(!S.hours)S.hours=8;
+  if(!S.ap)S.ap=60;if(!S.maxAp)S.maxAp=60;
+  if(!S.worldEvents)S.worldEvents=[];
+  if(!S.relationships)S.relationships=[];
+  if(!S.spouse)S.spouse=null;
+  if(!S.children)S.children=[];
+  if(S.bounty===undefined)S.bounty=0;
+  if(!S.perks)S.perks=[];
+}
+
+function newGame(){
+  S=clone(BASE);
+  const bg=rndA(BACKGROUNDS);
+  window._bgI=BACKGROUNDS.indexOf(bg);
+  const autoMale=R()<.5;
+  const autoName=(autoMale?rndA(FM):rndA(FF))+' '+rndA(LN);
+  window._autoName=autoName;window._autoMale=autoMale;
+  openDlg(`<div style="text-align:center">
+  <div style="font-size:48px;margin-bottom:6px">${autoMale?'👨':'👩'}</div>
+  <div style="font-size:16px;font-weight:bold;margin-bottom:4px;color:var(--amber)">${autoName}</div>
+  <div style="font-size:12px;color:var(--green);margin-bottom:4px">${bg.n}</div>
+  <div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:10px">${bg.d}</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;font-size:10px;margin-bottom:10px">
+  <div style="background:var(--panel2);padding:4px;border-radius:3px">⚔ ATK ${bg.atk}</div>
+  <div style="background:var(--panel2);padding:4px;border-radius:3px">🛡 DEF ${bg.def}</div>
+  <div style="background:var(--panel2);padding:4px;border-radius:3px">💨 SPD ${bg.spd}</div>
+  <div style="background:var(--panel2);padding:4px;border-radius:3px">💰 ${bg.gold} caps</div>
+  <div style="background:var(--panel2);padding:4px;border-radius:3px">📍 ${LOCS[bg.loc]?.n}</div>
+  <div style="background:var(--panel2);padding:4px;border-radius:3px">⚖ Karma ${bg.karma}</div>
+  </div>
+  <button class="bt go" style="text-align:center" onclick="quickStart(window._autoName,window._autoMale)">Begin as ${autoName.split(' ')[0]}</button>
+  <button class="bt" style="text-align:center" onclick="closeDlg();newGame()">🔄 Reroll</button>
+  <button class="bt" style="text-align:center" onclick="closeDlg();customChar()">✏ Customize</button>
+  </div>`);
+}
+function quickStart(name,male){
+  const bg=BACKGROUNDS[window._bgI];
+  S.name=name;S.isMale=male;S.atk=bg.atk;S.def=bg.def;S.spd=bg.spd;
+  S.caps=bg.gold;S.bg=bg.id;S.class=bg.class;S.karma=bg.karma||0;
+  S.loc=bg.loc;S.inv=clone(bg.items);S.maxHp=calcMaxHp();S.hp=S.maxHp;
+  S.maxAp=calcMaxAp();S.ap=S.maxAp;
+  closeDlg();
+  log(S.name+' — '+bg.n+'.','q');
+  log(bg.d,'e');
+  upAll();save();
+}
+function customChar(){
+  const bg=BACKGROUNDS[window._bgI];
+  openDlg(`<h3 style="text-align:center;color:var(--amber)">${bg.n}</h3>
+  <p style="font-size:11px;font-style:italic;color:var(--muted);margin-bottom:8px;text-align:center">${bg.d}</p>
+  <input id="ni" type="text" placeholder="Your name..." style="width:100%;padding:7px;font-family:'Courier New',monospace;font-size:13px;border:1px solid #3a3828;border-radius:4px;background:var(--panel2);color:var(--text);margin-bottom:6px">
+  <div style="display:flex;gap:6px;margin-bottom:8px">
+  <button class="bt" onclick="window._autoMale=true;this.style.borderColor='var(--amber)';this.nextElementSibling.style.borderColor='#3a3828'" style="flex:1;text-align:center;border:2px solid var(--amber)">♂ Male</button>
+  <button class="bt" onclick="window._autoMale=false;this.style.borderColor='var(--amber)';this.previousElementSibling.style.borderColor='#3a3828'" style="flex:1;text-align:center;border:2px solid #3a3828">♀ Female</button>
+  </div>
+  <button class="bt go" style="text-align:center" onclick="finishCustom()">Start Game</button>`);
+}
+function finishCustom(){
+  const bg=BACKGROUNDS[window._bgI];
+  const name=$('ni')?.value?.trim()||(rndA(FM)+' '+rndA(LN));
+  quickStart(name,window._autoMale!==false);
+}
+
+// ============================================================
+// STAT HELPERS
+// ============================================================
+function calcMaxHp(){return 60+S.level*8+(S.special?S.special[2]*6:0)}
+function calcMaxAp(){return 50+(S.special?S.special[5]*3:0)+S.level*2}
+function atkPow(){let a=S.atk+Math.floor(S.level*.5)+(S.special?Math.floor(S.special[0]*0.8):0);if(S.gear.w){const w=ITEMS[S.gear.w];if(w)a+=w.a||0}return a}
+function defPow(){let d=S.def+Math.floor(S.level*.3)+(S.special?Math.floor(S.special[2]*0.5):0);if(S.gear.body){const a=ITEMS[S.gear.body];if(a)d+=a.d||0}if(S.gear.head){const h=ITEMS[S.gear.head];if(h)d+=h.d||0}return d}
+function xpNeed(l){return Math.floor(50*Math.pow(1.4,l-1))}
+function hpPct(h,m){return Math.max(0,Math.min(100,Math.round(h/m*100)))}
+function countItem(id){return S&&S.inv?S.inv.filter(x=>x===id).length:0}
+function getEquippedWeapon(){return S&&S.gear&&S.gear.w?ITEMS[S.gear.w]||null:null}
+function getEquippedWeaponAmmoId(){const w=getEquippedWeapon();return w&&w.ammo?w.ammo:null}
+function getEquippedWeaponAmmoCount(){const ammoId=getEquippedWeaponAmmoId();return ammoId?countItem(ammoId):0}
+function getCombatAttackProfile(consumeAmmo){
+  let a=S.atk+Math.floor(S.level*.5)+(S.special?Math.floor(S.special[0]*0.8):0);
+  const w=getEquippedWeapon();
+  if(!w)return{atk:a,weapon:null,ammoId:null,ammoName:'',hadAmmo:true,gun:false,usedAmmo:false};
+  if(!w.ammo){
+    a+=w.a||0;
+    return{atk:a,weapon:w,ammoId:null,ammoName:'',hadAmmo:true,gun:false,usedAmmo:false};
+  }
+  const ammoId=w.ammo;
+  const ammoIdx=S.inv.indexOf(ammoId);
+  const ammoName=ITEMS[ammoId]?.n||'ammo';
+  if(ammoIdx!==-1){
+    if(consumeAmmo)S.inv.splice(ammoIdx,1);
+    a+=w.a||0;
+    return{atk:a,weapon:w,ammoId,ammoName,hadAmmo:true,gun:true,usedAmmo:!!consumeAmmo};
+  }
+  return{atk:Math.max(1,a+Math.max(1,Math.floor((w.a||0)*0.2))),weapon:w,ammoId,ammoName,hadAmmo:false,gun:true,usedAmmo:false};
+}
+
+// ============================================================
+// LOGGING
+// ============================================================
+function log(text,type='n'){
+  if(!S.log)S.log=[];
+  let dg=S.log.find(g=>g.day===S.days);
+  if(!dg){dg={day:S.days,entries:[]};S.log.unshift(dg)}
+  dg.entries.push({text,type});
+  if(S.log.length>40)S.log.pop();
+  // Ticker
+  const ti=$('ticker-inner');
+  if(ti){ti.textContent=text.replace(/<[^>]*>/g,'');ti.classList.add('show');
+  clearTimeout(window._tt);window._tt=setTimeout(()=>ti.classList.remove('show'),3000)}
+}
+
+// ============================================================
+// UI CORE
+// ============================================================
+function switchTab(t){
+  ['world','char','inv','roads','log'].forEach(id=>{
+    $(id+'-tab').classList.toggle('A',id===t);
+    $('nb-'+id).classList.toggle('A',id===t);
+  });
+  refreshActiveTab();
+}
+function refreshActiveTab(){
+  if(!S)return;
+  if($('world-tab').classList.contains('A'))upWorld();
+  if($('char-tab').classList.contains('A'))upChar();
+  if($('inv-tab').classList.contains('A'))upInv();
+  if($('roads-tab').classList.contains('A'))upRoads();
+  if($('log-tab').classList.contains('A'))upLog();
+}
+function upAll(){upSB();refreshActiveTab();save()}
+
+function upSB(){
+  const sb=$('SB');if(!S)return;
+  const hp=hpPct(S.hp,S.maxHp);
+  sb.innerHTML=`<div class="s">❤ <b class="${hp<=25?'r':''}">${S.hp}/${S.maxHp}</b></div>
+  <div class="s">⚡ <b>${S.ap}</b></div>
+  <div class="s">💰 <b>${S.caps}</b></div>
+  <div class="s">⭐ <b>Lv${S.level}</b></div>
+  <div class="s">📅 <b>D${S.days}</b></div>`;
+}
+
+function timeStr(){
+  const h=S.hours%24;
+  const ampm=h>=12?'PM':'AM';
+  const h12=h%12||12;
+  const period=h>=6&&h<18?'☀':'🌙';
+  return `${period} ${h12}${ampm}`;
+}
+
+function upWorld(){
+  const tab=$('world-tab');if(!S)return;tab.innerHTML='';
+  const loc=LOCS[S.loc];if(!loc)return;
+
+  // Location header
+  const hdr=el('div','cd fade-in');
+  hdr.innerHTML=`<div style="display:flex;align-items:center;gap:10px">
+  <div style="font-size:32px">${loc.e}</div>
+  <div style="flex:1"><div style="font-size:15px;font-weight:bold;color:var(--amber)">${loc.n}</div>
+  <div style="font-size:10px;color:var(--muted)">${loc.r} · ${timeStr()} · ${'☠'.repeat(loc.dg)}</div>
+  <div style="font-size:11px;color:var(--muted);margin-top:2px;font-style:italic">${loc.d}</div></div></div>`;
+  tab.appendChild(hdr);
+
+  // Scavenge tap button
+  tab.appendChild(el('div','sh','Scavenge'));
+  const tapDiv=el('div','');
+  tapDiv.innerHTML=`<button class="tap-btn" onclick="doScavenge()">⛏ SCAVENGE ${loc.n}</button>
+  <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:3px">Tap to search for loot, caps, and encounters</div>`;
+  tab.appendChild(tapDiv);
+
+  // Surroundings
+  tab.appendChild(el('div','sh','Surroundings'));
+  const surs=loc.sur||[];
+  if(surs.length){
+    surs.forEach((s,i)=>{
+      const sc=el('div','bc');
+      sc.innerHTML=`<div style="font-size:24px">${s.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${s.n}</div><div style="font-size:10px;color:var(--muted)">${s.d}</div></div><div style="color:var(--muted)">›</div>`;
+      sc.onclick=()=>explore(i);
+      tab.appendChild(sc);
+    });
+  }
+
+  // Buildings
+  tab.appendChild(el('div','sh','Locations'));
+  (loc.b||[]).forEach(bId=>{
+    const b=BLDS[bId];if(!b)return;
+    const bc2=el('div','bc');
+    bc2.innerHTML=`<div style="font-size:22px">${b.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${b.n}</div></div><div style="color:var(--muted)">›</div>`;
+    bc2.onclick=()=>openBld(bId);
+    tab.appendChild(bc2);
+  });
+
+  // Property
+  const propBtn=el('div','bc');
+  propBtn.innerHTML=`<div style="font-size:22px">🏠</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Property${S.properties.length?' ('+S.properties.length+')':''}</div><div style="font-size:10px;color:var(--muted)">${S.properties.length?'+'+S.properties.reduce((a,p)=>a+(p.income||0),0)+' caps/day':'Browse safehouse options'}</div></div><div style="color:var(--muted)">›</div>`;
+  propBtn.onclick=()=>openPropertyMenu();
+  tab.appendChild(propBtn);
+
+  // Faction standing
+  if(loc.fac&&loc.fac!=='None'){
+    tab.appendChild(el('div','sh',FACTIONS[loc.fac]||loc.fac));
+    const fc=el('div','cd');
+    const rep=S.rep[loc.fac]||0;
+    const repLabel=rep>=50?'Idolized':rep>=30?'Liked':rep>=10?'Accepted':rep>=0?'Neutral':rep>=-20?'Shunned':'Vilified';
+    fc.innerHTML=`<div style="font-size:11px">Standing: <b style="color:${rep>=0?'var(--green)':'var(--red)'}">[ ${repLabel} ] ${rep>=0?'+':''}${rep}</b></div>`;
+    tab.appendChild(fc);
+  }
+}
+
+// ============================================================
+// SCAVENGE SYSTEM (Tap mechanic from Elder to King)
+// ============================================================
+function doScavenge(){
+  if(combat)return;
+  S.scavengeCount++;
+  advanceTime(1);
+  const loc=LOCS[S.loc];
+  const r=R();
+
+  if(r<.20*loc.dg){
+    // Combat encounter
+    const surs=loc.sur||[];
+    const area=surs.length?rndA(surs):null;
+    const enPool=area?area.en:['gecko','radroach'];
+    const validPool=enPool.filter(e=>ENEMIES[e]);
+    if(validPool.length){
+      const cnt=rnd(1,Math.min(2,validPool.length));
+      const enemies=[];for(let i=0;i<cnt;i++)enemies.push(mkEnemy(rndA(validPool)));
+      startCombat(enemies);
+      return;
+    }
+  }
+  if(r<.45){
+    // Find caps
+    const g=rnd(2,8+S.level*2);S.caps+=g;S.capsEarned+=g;
+    log('Found '+g+' caps scavenging.','e');
+    notify('💰 +'+g+' caps');
+  } else if(r<.70){
+    // Find item
+    const surs=loc.sur||[];
+    const area=surs.length?rndA(surs):null;
+    const ltPool=area?area.lt:['herbs','scrap'];
+    const fi=rndA(ltPool);const it=ITEMS[fi];
+    if(it){S.inv.push(fi);log('Found '+it.n+'.','e');notify(it.e+' Found '+it.n)}
+  } else if(r<.82){
+    // NPC encounter
+    const npc=mkNPC();
+    if(!S.relationships.find(r2=>r2.name===npc.name)){
+      S.relationships.push({name:npc.name,rel:'stranger',aff:0,male:npc.male,age:npc.age,loc:S.loc,met:S.days});
+    }
+    openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
+    return;
+  } else {
+    // Flavor text
+    const scenes=["The wind carries the smell of dust and decay.","You hear gunshots in the distance.","A tumbleweed rolls past.","The Pip-Boy crackles with static.","You spot tracks in the sand — something big.",
+    "An old billboard reads: 'NEVADA: Silver State'","Brahmin bones bleach in the sun.","The heat is oppressive."];
+    log(rndA(scenes),'n');
+    notify(rndA(scenes));
+  }
+  chkLU();upAll();
+}
+
+// ============================================================
+// EXPLORATION
+// ============================================================
+function explore(idx){
+  const loc=LOCS[S.loc];const area=loc?.sur?.[idx];if(!area)return;
+  const o=$('TO');o.classList.add('A');
+  $('TB').style.width='0%';$('TC').innerHTML='';$('TN').style.display='none';
+  $('TS').textContent=area.e;
+  $('TT').innerHTML=`<b>${area.n}</b><br><span style="font-size:11px;color:var(--muted)">${area.d}</span>`;
+  setTimeout(()=>runExpedition(area,0),500);
+}
+function runExpedition(area,step){
+  const maxSteps=rnd(2,4);
+  if(step>=maxSteps){
+    $('TS').textContent=area.e;
+    $('TT').innerHTML=`Finished scouting <b>${area.n}</b>.`;
+    const cd=$('TC');cd.innerHTML='';
+    const cb=el('button','bt go','🔍 Keep exploring');cb.style.textAlign='center';
+    cb.onclick=()=>{cd.innerHTML='';$('TN').style.display='none';runExpedition(area,0)};cd.appendChild(cb);
+    const rb=el('button','bt','🔙 Return to '+LOCS[S.loc]?.n);rb.style.textAlign='center';
+    rb.onclick=()=>{$('TO').classList.remove('A');upAll()};cd.appendChild(rb);
+    $('TN').style.display='none';return;
+  }
+  advanceTime(1);
+  $('TB').style.width=Math.round(((step+1)/maxSteps)*100)+'%';
+  const r=R();
+  if(r<.45){
+    const cnt=rnd(1,Math.min(2,area.en.length));
+    const enemies=[];for(let i=0;i<cnt;i++){const eid=rndA(area.en);if(ENEMIES[eid])enemies.push(mkEnemy(eid))}
+    if(!enemies.length){$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1);return}
+    $('TS').textContent='⚔';
+    $('TT').innerHTML=`<b>Hostiles!</b> ${enemies.map(e=>e.name).join(' & ')}!`;
+    const cd=$('TC');cd.innerHTML='';
+    const fb=el('button','bt go','⚔ Fight!');fb.style.textAlign='center';
+    fb.onclick=()=>{startCombat(enemies);combat._expArea=area;combat._expStep=step+1};cd.appendChild(fb);
+    const fl=el('button','bt dn','🏃 Retreat');fl.style.textAlign='center';
+    fl.onclick=()=>{log('Retreated from '+area.n+'.','e');$('TO').classList.remove('A');upAll()};cd.appendChild(fl);
+    $('TN').style.display='none';
+  } else if(r<.65){
+    const li=rndA(area.lt);const it=ITEMS[li];
+    if(it){S.inv.push(li);log('Found '+it.n+' in '+area.n+'.','e');save();
+    $('TS').textContent='✨';$('TT').innerHTML=`Found: <b style="color:var(--green)">${it.e} ${it.n}</b>`;
+    $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1)}
+  } else {
+    const scenes=["Tracks in the dirt — recent.","The wind shifts. Something watches.","Shell casings litter the ground.","A faded sign: DANGER - MINES","An old campfire, still warm."];
+    $('TS').textContent=rndA(['🏜','💀','🪨','🌵']);
+    $('TT').innerHTML=rndA(scenes);
+    $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1);
+  }
+}
+function travelCont(){
+  $('TN').onclick=null;
+  if(tQ.length) nextTEv();
+  else finTravel();
+}
+
+// ============================================================
+// ENEMY FACTORY
+// ============================================================
+function mkEnemy(id){
+  const e=ENEMIES[id];if(!e)return{name:"Gecko",hp:20,maxHp:20,a:4,d:0,xp:8,e:"🦎",loot:[]};
+  const lvlBonus=Math.max(0,S.level-3);
+  return{name:e.n,hp:e.hp+lvlBonus*3,maxHp:e.hp+lvlBonus*3,a:e.a+Math.floor(lvlBonus*.5),d:e.d+Math.floor(lvlBonus*.3),xp:e.xp,e:e.e,loot:clone(e.loot),id};
+}
+
+// ============================================================
+// COMBAT SYSTEM
+// ============================================================
+function startCombat(enemies){
+  combat={enemies,turn:0,log:[]};
+  renderCombat();
+}
+function renderCombat(){
+  if(!combat)return;
+  const o=$('CO');o.style.display='flex';
+  const p=$('CP');if(!p){
+    const cp=el('div','','');cp.id='CP';o.appendChild(cp);
+  }
+  const panel=$('CP');
+  const e=combat.enemies[0];if(!e)return;
+  const alive=combat.enemies.filter(en=>en.hp>0);
+  const hp=hpPct(S.hp,S.maxHp);
+
+  let enemyHtml=alive.map((en,i)=>`<div class="combat-panel" style="margin:2px 0;padding:6px">
+  <div style="display:flex;align-items:center;gap:8px">
+  <div style="font-size:28px">${en.e}</div>
+  <div style="flex:1"><div style="font-weight:bold;font-size:12px;color:var(--red)">${en.name}</div>
+  <div class="hb"><div class="hf cr" style="width:${hpPct(en.hp,en.maxHp)}%"></div></div>
+  <div style="font-size:9px;color:var(--muted)">HP ${en.hp}/${en.maxHp} · ATK ${en.a} · DEF ${en.d}</div></div></div></div>`).join('');
+
+  panel.innerHTML=`<div style="text-align:center;font-size:10px;color:var(--amber);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">⚔ COMBAT ⚔</div>
+  ${enemyHtml}
+  <div style="margin:6px 0;padding:6px;background:#0a1a0a;border-radius:4px;border:1px solid #1a3a1a">
+  <div style="display:flex;justify-content:space-between;font-size:11px"><span>❤ ${S.hp}/${S.maxHp}</span><span>⚡ AP ${S.ap}</span></div>
+  <div class="hb"><div class="hf g" style="width:${hp}%"></div></div>
+  <div style="font-size:10px;color:var(--muted);margin-top:4px">${(()=>{const w=getEquippedWeapon();if(!w)return 'Weapon: Unarmed';if(!w.ammo)return `Weapon: ${w.e} ${w.n}`;const ammoId=w.ammo;const ammo=ITEMS[ammoId];const ammoCount=countItem(ammoId);return `Weapon: ${w.e} ${w.n} · ${ammo?ammo.e+' '+ammo.n:''} ×${ammoCount}`})()}</div></div>
+  <div class="combat-bar">
+  <button class="bt go" onclick="combatAction('attack')">⚔ Attack</button>
+  <button class="bt pip" onclick="combatAction('vats')">🎯 V.A.T.S.</button></div>
+  <div class="combat-bar">
+  <button class="bt" onclick="combatAction('heal')">💉 Heal</button>
+  <button class="bt dn" onclick="combatAction('flee')">🏃 Flee</button></div>
+  <div style="max-height:100px;overflow-y:auto;margin-top:6px;padding:4px;background:#0a0a04;border-radius:4px;font-size:10px;color:var(--muted)">${combat.log.slice(-8).map(l=>'<div>'+l+'</div>').join('')}</div>`;
+}
+function combatAction(act){
+  if(!combat)return;
+  const alive=combat.enemies.filter(en=>en.hp>0);
+  if(!alive.length){endCombat(true);return}
+  const target=alive[0];
+
+  switch(act){
+    case 'attack':{
+      const attack=getCombatAttackProfile(true);
+      const dmg=Math.max(1,attack.atk-Math.floor(target.d*.5)+rnd(-2,3));
+      target.hp=Math.max(0,target.hp-dmg);
+      if(attack.gun&&attack.hadAmmo){
+        combat.log.push(`You fire ${attack.weapon.n} and deal ${dmg} damage to ${target.name}.`);
+      }else if(attack.gun&&!attack.hadAmmo){
+        combat.log.push(`Out of ${attack.ammoName}! You swing ${attack.weapon.n} and deal ${dmg} damage to ${target.name}.`);
+        notify('Out of '+attack.ammoName+'! Weak melee attack only.');
+      }else{
+        combat.log.push(`You deal ${dmg} damage to ${target.name}.`);
+      }
+      S.ap=Math.max(0,S.ap-8);
+      if(target.hp<=0){
+        combat.log.push(`${target.name} is killed!`);
+        log('Killed '+target.name+'.','c');
+        S.kills[target.id||'unknown']=(S.kills[target.id||'unknown']||0)+1;
+        S.killCount++;
+      }
+      break;
+    }
+    case 'vats':{
+      if(S.ap<20){notify('Not enough AP!');return}
+      const attack=getCombatAttackProfile(true);
+      if(attack.gun&&!attack.hadAmmo){
+        notify('No '+attack.ammoName+' loaded.');
+        combat.log.push(`V.A.T.S. failed — no ${attack.ammoName}.`);
+        renderCombat();
+        return;
+      }
+      S.ap-=20;
+      const crit=R()<(.15+S.special[6]*.02);
+      const mult=crit?2.5:1.8;
+      const dmg=Math.max(1,Math.round((attack.atk-Math.floor(target.d*.3))*mult)+rnd(0,5));
+      target.hp=Math.max(0,target.hp-dmg);
+      if(attack.gun)combat.log.push(`V.A.T.S.! ${crit?'CRITICAL! ':''}${dmg} damage to ${target.name} with ${attack.weapon.n}!`);
+      else combat.log.push(`V.A.T.S.! ${crit?'CRITICAL! ':''}${dmg} damage to ${target.name}!`);
+      if(target.hp<=0){
+        combat.log.push(`${target.name} eliminated!`);
+        log('Killed '+target.name+' (V.A.T.S.).','c');
+        S.kills[target.id||'unknown']=(S.kills[target.id||'unknown']||0)+1;
+        S.killCount++;
+      }
+      break;
+    }
+    case 'heal':{
+      const si=S.inv.indexOf('stimpak');
+      const ssi=si===-1?S.inv.indexOf('super_stimpak'):-1;
+      const idx=si!==-1?si:ssi;
+      if(idx===-1){notify('No healing items!');return}
+      const item=ITEMS[S.inv[idx]];
+      S.hp=Math.min(S.maxHp,S.hp+(item.hp||30));
+      combat.log.push(`Used ${item.n}. +${item.hp||30} HP.`);
+      S.inv.splice(idx,1);
+      break;
+    }
+    case 'flee':{
+      const flee=R()<(.3+S.spd*.05+(S.special?S.special[5]*.03:0));
+      if(flee){combat.log.push('You escaped!');log('Fled from combat.','c');endCombat(false);return}
+      else{combat.log.push('Failed to escape!');}
+      break;
+    }
+  }
+
+  const survivors=combat.enemies.filter(en=>en.hp>0);
+  if(!survivors.length){endCombat(true);return}
+
+  survivors.forEach(en=>{
+    const eDmg=Math.max(1,en.a-Math.floor(defPow()*.4)+rnd(-2,2));
+    S.hp=Math.max(0,S.hp-eDmg);
+    combat.log.push(`${en.name} deals ${eDmg} damage to you.`);
+  });
+
+  if(S.hp<=0){combat.log.push('You are critically wounded!');endCombat(false,true);return}
+  combat.turn++;
+  renderCombat();
+}
+function endCombat(won,died){
+  if(!combat)return;
+  const expArea=combat._expArea;
+  const expStep=combat._expStep;
+  const postT=combat.postT;
+  $('CO').style.display='none';
+  window._resumeArea=expArea||null;
+  window._resumeStep=expStep||0;
+
+  if(died){
+    S.hp=Math.floor(S.maxHp*.3);S.caps=Math.max(0,S.caps-rnd(10,30));
+    combat=null;save();
+    if(postT){
+      showResult('Knocked Out','💀',['You wake up later, stripped of some caps.','Lost some caps.'],'Continue','resumeTravelAfterCombat()');
+    }else{
+      showResult('Knocked Out','💀',['You wake up later, stripped of some caps.','Lost some caps.'],'Continue','upAll()');
+    }
+    return;
+  }
+  if(!won){
+    combat=null;save();
+    if(postT){showResult('Escaped Combat','🏃',['You got away and kept moving.'],'Continue','resumeTravelAfterCombat()');}
+    else if(expArea){showResult('Retreated','🏃',['You escaped the fight.'],'Continue','resumeExpeditionAfterCombat()');}
+    else{upAll();}
+    return;
+  }
+
+  let totalXp=0,totalCaps=0;const lootFound=[];
+  combat.enemies.forEach(en=>{
+    totalXp+=en.xp;
+    const c=rnd(3,8+S.level*2);totalCaps+=c;
+    if(en.loot&&en.loot.length){
+      const li=rndA(en.loot);
+      if(ITEMS[li]){lootFound.push(li);S.inv.push(li)}
+    }
+  });
+  S.xp+=totalXp;S.caps+=totalCaps;S.capsEarned+=totalCaps;
+
+  const lines=['⭐ +'+totalXp+' XP','💰 +'+totalCaps+' caps'];
+  lootFound.forEach(l=>{const it=ITEMS[l];if(it)lines.push(it.e+' '+it.n)});
+
+  combat=null;
+  chkLU();save();
+
+  if(postT){
+    showResult('Victory!','⚔',lines,'Continue','resumeTravelAfterCombat()');
+  } else if(expArea){
+    showResult('Victory!','⚔',lines,'Continue','resumeExpeditionAfterCombat()');
+  } else {
+    showResult('Victory!','⚔',lines,'Continue','upAll()');
+  }
+}
+
+// ============================================================
+// LEVEL UP
+// ============================================================
+function chkLU(){
+  while(S.xp>=xpNeed(S.level)){
+    S.xp-=xpNeed(S.level);S.level++;
+    S.maxHp=calcMaxHp();S.hp=S.maxHp;
+    S.maxAp=calcMaxAp();S.ap=S.maxAp;
+    S.atk++;if(S.level%2===0)S.def++;if(S.level%3===0)S.spd++;
+    log('Level up! Now level '+S.level+'.','q');
+    notify('⬆ LEVEL '+S.level+'!');
+    // Offer SPECIAL point
+    if(S.level%2===0)S.special[rnd(0,6)]++;
+  }
+}
+
+// ============================================================
+// NPC SYSTEM (BitLife style from GoT + Goodsprings dialogue)
+// ============================================================
+function mkNPC(){
+  const male=R()<.5;
+  const name=(male?rndA(FM):rndA(FF))+' '+rndA(LN);
+  const roles=['Trader','Prospector','Drifter','NCR Trooper','Caravan Guard','Settler','Scavenger','Doctor','Gambler','Bounty Hunter','Mechanic','Farmer'];
+  return{name,male,age:rnd(18,55),role:rndA(roles)};
+}
+function openNPCInteraction(npc,existing){
+  let rel=existing;
+  if(!rel){rel={name:npc.name,rel:'stranger',aff:0,male:npc.male,age:npc.age,loc:S.loc,met:S.days};S.relationships.push(rel)}
+  const aff=rel.aff;
+  const canFlirt=npc.male!==S.isMale&&!S.spouse;
+
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.male?'👨':'👩'}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role} · Age ${npc.age} · ${rel.rel}</div>
+  ${aff?`<div class="hb" style="margin-bottom:8px"><div class="hf g" style="width:${aff}%"></div></div>`:''}
+  <div class="npc-line">"${rndA(["Hey there.","What do you want?","Looking for something?","Watch yourself out there.","Got caps? I got time.","You look like trouble.","Need something?","Stay safe, stranger."])}"</div>`;
+
+  h+=`<button class="bt" onclick="npcAct('chat','${npc.name.replace(/'/g,"\\'")}')">💬 Talk</button>`;
+  h+=`<button class="bt" onclick="npcAct('compliment','${npc.name.replace(/'/g,"\\'")}')">😊 Compliment</button>`;
+  if(canFlirt)h+=`<button class="bt" onclick="npcAct('flirt','${npc.name.replace(/'/g,"\\'")}')">💕 Flirt</button>`;
+  h+=`<button class="bt" onclick="npcAct('drink','${npc.name.replace(/'/g,"\\'")}')">🍺 Share a drink (5 caps)</button>`;
+  h+=`<button class="bt" onclick="npcAct('quest','${npc.name.replace(/'/g,"\\'")}')">📜 Ask for work</button>`;
+  if(aff>=40)h+=`<button class="bt pip" onclick="npcAct('recruit','${npc.name.replace(/'/g,"\\'")}')">🤝 Recruit as companion</button>`;
+  if(aff>=60&&canFlirt)h+=`<button class="bt" onclick="npcAct('propose','${npc.name.replace(/'/g,"\\'")}')">💍 Propose</button>`;
+  h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  openDlg(h);
+}
+function npcAct(action,name){
+  let rel=S.relationships.find(r=>r.name===name);
+  if(!rel){rel={name,rel:'stranger',aff:0,male:R()<.5,age:rnd(20,50),loc:S.loc,met:S.days};S.relationships.push(rel)}
+  let msg='',affChange=0;
+
+  switch(action){
+    case 'chat': affChange=rnd(3,8);msg=rndA(["You swap stories about the wasteland.","You talk about the NCR and Legion.","A pleasant conversation about survival.","You discuss trade routes."]);break;
+    case 'compliment': if(R()<.8){affChange=rnd(5,12);msg=rndA(["They appreciate the kind words.","They smile.","That seemed to land well."])}else{affChange=-3;msg="They seem suspicious of flattery."};break;
+    case 'flirt': if(R()<.5+(S.special?S.special[3]*.04:0)){affChange=rnd(8,18);msg=rndA(["They blush.","They lean closer.","Chemistry in the wasteland."])}else{affChange=-5;msg="Awkward silence."}break;
+    case 'drink': if(S.caps<5){notify("Not enough caps.");return}S.caps-=5;affChange=rnd(5,15);msg="You share drinks. Trust builds.";break;
+    case 'quest':
+      if(R()<.5){
+        const q=mkQuest(name);
+        window._pendingQuest=q;closeDlg();showResult('New Quest!','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');
+        return;
+      }else{msg="They don't have anything right now."};break;
+    case 'recruit':
+      if(S.companions.length>=2){notify("Max 2 companions.");return}
+      if(rel.aff<40){notify("Not friendly enough.");return}
+      S.companions.push({name,hp:40+S.level*5,maxHp:40+S.level*5,atk:5+S.level,def:3+Math.floor(S.level*.5),male:rel.male});
+      rel.rel='companion';msg=name+" joins you!";log(name+' is now your companion.','q');break;
+    case 'propose':
+      if(R()<(rel.aff/100)){
+        S.spouse={name,aff:rel.aff,male:rel.male};rel.rel='spouse';
+        msg=name+" says yes!";log('Married '+name+'!','q');
+      }else{msg="They're not ready.";affChange=-5}break;
+  }
+  rel.aff=Math.max(0,Math.min(100,rel.aff+affChange));
+  if(affChange>0&&rel.rel==='stranger')rel.rel='acquaintance';
+  if(rel.aff>=30&&rel.rel==='acquaintance')rel.rel='friend';
+  if(rel.aff>=60&&rel.rel==='friend')rel.rel='close friend';
+  log(msg,'e');save();
+  closeDlg();
+  if(msg)notify(msg);
+  upAll();
+}
+
+// ============================================================
+// QUEST SYSTEM
+// ============================================================
+function mkQuest(giver){
+  const types=[
+    {n:'Clear the Area',t:'kill',desc:'Eliminate hostiles near {loc}.',kt:rndA(Object.keys(ENEMIES).filter(k=>!ENEMIES[k].boss)),kc:rnd(2,4)},
+    {n:'Supply Run',t:'fetch',desc:'Bring back supplies from the wasteland.',fi:rndA(['stimpak','scrap','duct_tape','ammo_9mm']),fc:rnd(2,3)},
+    {n:'Patrol Duty',t:'explore',desc:'Scout the surroundings for threats.',ec:rnd(3,5)},
+    {n:'Bounty',t:'kill',desc:'Take out a dangerous target.',kt:rndA(['fiend','convict','powder_ganger','legion_recruit']),kc:1},
+  ];
+  const qt=rndA(types);
+  return{id:'q_'+Date.now()+'_'+rnd(0,999),name:qt.n,desc:qt.desc.replace('{loc}',LOCS[S.loc]?.n||'here'),
+  t:qt.t,kt:qt.kt,kc:qt.kc||0,kd:0,fi:qt.fi,fc:qt.fc||0,fd:0,ec:qt.ec||0,ed:0,
+  rg:rnd(20,50)+S.level*10,rx:rnd(15,30)+S.level*5,giver:giver||'Unknown',done:false};
+}
+function accQuest(q){closeDlg();S.quests.push(q);log('Accepted: '+q.name,'q');notify('📜 Quest accepted!');upAll()}
+
+// ============================================================
+// BUILDINGS
+// ============================================================
+function openBld(bId){
+  const b=BLDS[bId];if(!b)return;
+  const npc=mkNPC();
+  const o=$('BO');const bi=$('BI');bi.innerHTML='';
+
+  const hd=el('div','bh');
+  hd.innerHTML=`<div class="bb" onclick="closeBld()">‹</div><div style="flex:1;font-size:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:var(--amber)">${b.e} ${b.n}</div><div style="font-size:11px;color:var(--amber)">💰${S.caps}</div>`;
+  bi.appendChild(hd);
+  bi.appendChild(el('div','ba',rndA(b.am)));
+
+  // NPC
+  const np=el('div','bn');np.style.cursor='pointer';
+  np.innerHTML=`<div style="font-size:28px">${npc.male?'👨':'👩'}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
+  np.onclick=()=>openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
+  bi.appendChild(np);
+
+  const body=el('div','bp');
+
+  // Building-specific content
+  if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
+  else if(bId.includes('store')||bId.includes('supply')||bId.includes('ralph')||bId.includes('armory')||bId.includes('quartermaster')){bldShop(body,bId)}
+  else if(bId.includes('doc')||bId.includes('med')||bId.includes('fort')||bId.includes('jacobstown_doc')){bldMedical(body)}
+  else if(bId.includes('motel')||bId.includes('lodge')||bId.includes('lucky_38')){bldRest(body,bId)}
+  else if(bId.includes('casino')||bId.includes('gomorrah')||bId.includes('ultra')||bId.includes('tops')){bldCasino(body,bId)}
+  else if(bId.includes('hq')||bId.includes('tent')||bId.includes('office')){bldFaction(body,bId)}
+  else if(bId.includes('arena')){bldArena(body)}
+  else if(bId.includes('gas')||bId.includes('lab')){bldWorkshop(body)}
+  else{bldGeneric(body,bId)}
+
+  bi.appendChild(body);o.classList.add('A');
+}
+function closeBld(){$('BO').classList.remove('A');upAll()}
+
+function bldBar(body,bId){
+  body.appendChild(el('div','bs2','Services'));
+  const rb=el('button','bt','🍺 Have a drink (5 caps) — +10 HP');
+  rb.onclick=()=>{if(S.caps<5){notify("Not enough caps.");return}S.caps-=5;S.hp=Math.min(S.maxHp,S.hp+10);advanceTime(2);log('Had a drink.','e');closeBld();showResult('Relaxed','🍺',['❤ +10 HP','⏰ 2 hours passed'],'Continue','upAll()')};
+  body.appendChild(rb);
+
+  body.appendChild(el('div','bs2','Rumors'));
+  const rumor=el('button','bt','🗣 Ask around (3 caps)');
+  rumor.onclick=()=>{if(S.caps<3){notify("Not enough.");return}S.caps-=3;
+  const rumors=["NCR's stretched thin at the dam.","Legion's been moving west.","Fiends are getting bolder near McCarran.",
+  "Brotherhood's holed up in Hidden Valley.","The Kings run Freeside. Don't cross them.","Something big at REPCONN. Ghouls everywhere.",
+  "Mr. House hasn't been seen in person... ever.","Benny shot a courier. Heard they survived.","Cazadores near Jacobstown. Nasty."];
+  const r2=rndA(rumors);log('Rumor: '+r2,'e');closeBld();showResult('Rumor','🗣',[r2],'Continue','upAll()')};
+  body.appendChild(rumor);
+
+  // People
+  body.appendChild(el('div','bs2','People'));
+  for(let i=0;i<rnd(2,3);i++){
+    const mn=mkNPC();const ex=S.relationships.find(r2=>r2.name===mn.name);
+    const nc=el('div','bn');nc.style.cursor='pointer';
+    nc.innerHTML=`<div style="font-size:22px">${mn.male?'👨':'👩'}</div><div style="flex:1"><div style="font-weight:bold;font-size:11px">${mn.name}</div><div style="font-size:9px;color:var(--muted)">${mn.role}${ex?' · '+ex.rel:''}</div></div><div style="color:var(--muted)">›</div>`;
+    nc.onclick=(function(n,e){return function(){openNPCInteraction(n,e)}})(mn,ex);
+    body.appendChild(nc);
+  }
+}
+function bldShop(body,bId){
+  body.appendChild(el('div','bs2','Buy'));
+  const shopItems=getShopInventory(bId);
+  shopItems.forEach(si=>{
+    const it=ITEMS[si.id];if(!it)return;
+    const price=Math.round(it.p*(1-((S.special?S.special[3]:5)*.02)));
+    const sb=el('button','bt',`${it.e} ${it.n} — ${price} caps`);
+    sb.onclick=()=>{if(S.caps<price){notify("Not enough caps.");return}S.caps-=price;S.inv.push(si.id);log('Bought '+it.n+'.','n');openBld(bId)};
+    body.appendChild(sb);
+  });
+
+  body.appendChild(el('div','bs2','Sell'));
+  if(S.inv.length){
+    const seen={};
+    S.inv.forEach((iid,idx)=>{
+      if(seen[iid])return;seen[iid]=true;
+      const it=ITEMS[iid];if(!it)return;
+      const cnt=S.inv.filter(x=>x===iid).length;
+      const price=Math.max(1,Math.floor(it.p*.5));
+      const sellBtn=el('button','bt',`${it.e} ${it.n}${cnt>1?' ('+cnt+')':''} — ${price} caps`);
+      sellBtn.onclick=()=>{const i=S.inv.indexOf(iid);if(i!==-1){S.inv.splice(i,1);S.caps+=price;log('Sold '+it.n+'.','n');openBld(bId)}};
+      body.appendChild(sellBtn);
+    });
+  }else{body.appendChild(el('div','','<div style="font-size:11px;color:var(--muted)">Nothing to sell.</div>'))}
+}
+function getShopInventory(bId){
+  const general=[{id:'stimpak'},{id:'purified_water'},{id:'sunset_sars'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'duct_tape'},{id:'bobby_pin'}];
+  const guns=[{id:'pistol_9mm'},{id:'pistol_10mm'},{id:'revolver_357'},{id:'varmint_rifle'},{id:'service_rifle'},{id:'caravan_shotgun'},{id:'ammo_556'},{id:'ammo_308'},{id:'ammo_shells'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'combat_knife'}];
+  const medical=[{id:'stimpak'},{id:'super_stimpak'},{id:'antivenom'},{id:'purified_water'},{id:'med_x'}];
+  const legion=[{id:'machete'},{id:'healing_powder'},{id:'healing_powder'},{id:'antivenom'}];
+  const bos=[{id:'laser_pistol'},{id:'laser_rifle'},{id:'energy_cell'},{id:'energy_cell'},{id:'stimpak'},{id:'combat_helmet'},{id:'sensor_module'}];
+  const khans=[{id:'pistol_9mm'},{id:'revolver_357'},{id:'ammo_9mm'},{id:'ammo_357'},{id:'ammo_shells'},{id:'caravan_shotgun'},{id:'jet'},{id:'psycho'},{id:'stimpak'},{id:'combat_knife'}];
+  if(bId.includes('khan'))return khans;
+  if(bId.includes('armory')||bId.includes('bos'))return bos;
+  if(bId.includes('legion'))return legion;
+  if(bId.includes('med')||bId.includes('doc')||bId.includes('fort'))return medical;
+  if(bId.includes('supply')||bId.includes('ralph'))return guns;
+  return general;
+}
+function bldMedical(body){
+  body.appendChild(el('div','bs2','Medical'));
+  const cost=30-Math.floor((S.special?S.special[3]:5)*2);
+  const healBtn=el('button','bt go',`💉 Full heal — ${cost} caps`);
+  healBtn.onclick=()=>{if(S.caps<cost){notify("Not enough caps.");return}S.caps-=cost;S.hp=S.maxHp;S.ap=S.maxAp;log('Fully healed.','e');closeBld();showResult('Healed','💉',['❤ Full HP restored','⚡ AP restored'],'Continue','upAll()')};
+  body.appendChild(healBtn);
+
+  // Buy medical supplies
+  body.appendChild(el('div','bs2','Supplies'));
+  [{id:'stimpak'},{id:'super_stimpak'},{id:'antivenom'},{id:'med_x'}].forEach(si=>{
+    const it=ITEMS[si.id];if(!it)return;
+    const sb=el('button','bt',`${it.e} ${it.n} — ${it.p} caps`);
+    sb.onclick=()=>{if(S.caps<it.p){notify("Not enough.");return}S.caps-=it.p;S.inv.push(si.id);notify('Bought '+it.n)};
+    body.appendChild(sb);
+  });
+}
+function bldRest(body,bId){
+  body.appendChild(el('div','bs2','Rest'));
+  const ownsProp=S.properties.find(p=>p.loc===S.loc);
+  const cost=ownsProp?0:25;
+  const rb=el('button','bt go',`🛏 Rest (8 hours) — ${cost?cost+' caps':'FREE'}`);
+  rb.onclick=()=>{if(cost&&S.caps<cost){notify("Not enough.");return}S.caps-=cost;S.hp=S.maxHp;S.ap=S.maxAp;S.days++;S.hours=8;
+  payDaily();log('Rested. New day.','e');closeBld();showResult('Rested','🛏',['❤ Full HP/AP','📅 Day '+S.days],'Continue','upAll()')};
+  body.appendChild(rb);
+
+  const nb=el('button','bt',`🛏 Nap (4 hours) — ${Math.floor(cost/2)?Math.floor(cost/2)+' caps':'FREE'}`);
+  nb.onclick=()=>{const c=Math.floor(cost/2);if(c&&S.caps<c){notify("Not enough.");return}S.caps-=c;
+  S.hp=Math.min(S.maxHp,S.hp+Math.floor(S.maxHp*.5));S.ap=S.maxAp;advanceTime(4);
+  log('Took a nap.','e');closeBld();showResult('Napped','😴',['❤ +50% HP','⚡ AP restored'],'Continue','upAll()')};
+  body.appendChild(nb);
+}
+function bldCasino(body,bId){
+  body.appendChild(el('div','bs2','Gambling'));
+  [10,25,50,100].forEach(bet=>{
+    const gb=el('button','bt',`🎰 Bet ${bet} caps`);
+    gb.onclick=()=>{if(S.caps<bet){notify("Not enough.");return}
+    const luck=S.special?S.special[6]:5;
+    const win=R()<(.35+luck*.03);
+    if(win){const w=Math.floor(bet*(1.5+luck*.1));S.caps+=w-bet;log('Won '+w+' caps gambling!','e');closeBld();showResult('Winner!','🎰',['💰 +'+w+' caps','Lady Luck smiles.'],'Continue','upAll()')}
+    else{S.caps-=bet;log('Lost '+bet+' caps gambling.','e');closeBld();showResult('Bust','💸',['💰 -'+bet+' caps','The house always wins... usually.'],'Continue','upAll()')}};
+    body.appendChild(gb);
+  });
+
+  body.appendChild(el('div','bs2','Services'));
+  const drinkBtn=el('button','bt','🍸 Drink (5 caps) — +5 HP');
+  drinkBtn.onclick=()=>{if(S.caps<5){notify("Not enough.");return}S.caps-=5;S.hp=Math.min(S.maxHp,S.hp+5);log('Had a drink.','e');openBld(bId)};
+  body.appendChild(drinkBtn);
+}
+function bldFaction(body,bId){
+  body.appendChild(el('div','bs2','Faction'));
+  const fac=bId.includes('ncr')||bId.includes('mccarran')?'NCR'
+    :bId.includes('legion')||bId.includes('caesar')?'Legion'
+    :bId.includes('bos')?'BOS'
+    :bId.includes('khan')?'Khans'
+    :'House';
+  const rep=S.rep[fac]||0;
+  body.appendChild(el('div','cd',`<div style="font-size:11px">Your standing with <b style="color:var(--amber)">${FACTIONS[fac]||fac}</b>: <b style="color:${rep>=0?'var(--green)':'var(--red)'}"> ${rep>=0?'+':''}${rep}</b></div>`));
+
+  const qBtn=el('button','bt pip','📜 Ask for assignment');
+  qBtn.onclick=()=>{
+    if(rep<0){notify("They don't trust you.");return}
+    const q=mkQuest(FACTIONS[fac]);q.fac=fac;q.rg+=15;q.rx+=10;q.name=FACTIONS[fac]+': '+q.name;
+    window._pendingQuest=q;closeBld();showResult('Faction Quest','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP · +5 ${fac} rep`],'Accept','acceptPendingQuest()');
+  };
+  body.appendChild(qBtn);
+}
+function bldArena(body){
+  body.appendChild(el('div','bs2','Legion Arena'));
+  body.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted);font-style:italic">Fight for glory and caps in Caesar\'s arena.</div>'));
+  const fb=el('button','bt dn','⚔ Enter the arena');
+  fb.onclick=()=>{closeBld();const e=mkEnemy(rndA(['legion_recruit','convict','fiend','great_khan']));startCombat([e])};
+  body.appendChild(fb);
+}
+function bldWorkshop(body){
+  body.appendChild(el('div','bs2','Workshop'));
+  const repairBtn=el('button','bt','🔧 Repair gear (10 caps + scrap)');
+  repairBtn.onclick=()=>{if(S.caps<10){notify("Not enough caps.");return}
+  const si=S.inv.indexOf('scrap');if(si===-1){notify("Need Scrap Metal.");return}
+  S.caps-=10;S.inv.splice(si,1);S.atk+=1;log('Repaired and improved gear. +1 ATK.','e');closeBld();showResult('Repaired','🔧',['⚔ +1 ATK','Used Scrap Metal'],'Continue','upAll()')};
+  body.appendChild(repairBtn);
+
+  const craftBtn=el('button','bt','💊 Craft Stimpak (2 herbs + duct tape)');
+  craftBtn.onclick=()=>{const h1=S.inv.indexOf('herbs');if(h1===-1){notify("Need herbs.");return}
+  const h2=S.inv.indexOf('herbs',h1+1);if(h2===-1){notify("Need 2 herbs.");return}
+  const dt=S.inv.indexOf('duct_tape');if(dt===-1){notify("Need Duct Tape.");return}
+  S.inv.splice(Math.max(h1,h2,dt),1);S.inv.splice(Math.min(h1,h2,dt),1);
+  const dtI=S.inv.indexOf('duct_tape');if(dtI!==-1)S.inv.splice(dtI,1);
+  S.inv.push('stimpak');log('Crafted a Stimpak.','e');notify('💉 Crafted Stimpak!');closeBld();upAll()};
+  body.appendChild(craftBtn);
+}
+function bldGeneric(body,bId){
+  body.appendChild(el('div','bs2','Look Around'));
+  const searchBtn=el('button','bt','🔍 Search the area');
+  searchBtn.onclick=()=>{
+    if(R()<.4){const finds=['scrap','bobby_pin','pre_war_money','herbs','sunset_sars'];const fi=rndA(finds);const it=ITEMS[fi];if(it){S.inv.push(fi);log('Found '+it.n+'.','e');notify(it.e+' Found '+it.n)}}
+    else{notify('Nothing useful.')}
+    closeBld();upAll();
+  };
+  body.appendChild(searchBtn);
+}
+
+// ============================================================
+// PROPERTY SYSTEM
+// ============================================================
+function openPropertyMenu(){
+  const o=$('BO');o.classList.add('A');const bi=$('BI');bi.innerHTML='';
+  const hd=el('div','bh');
+  hd.innerHTML=`<div class="bb" onclick="closeBld()">‹</div><div style="flex:1;font-size:14px;font-weight:bold;color:var(--amber)">🏠 PROPERTY</div><div style="font-size:11px;color:var(--amber)">💰${S.caps}</div>`;
+  bi.appendChild(hd);
+  const body=el('div','bp');
+
+  if(S.properties.length){
+    body.appendChild(el('div','bs2','Owned'));
+    S.properties.forEach(p=>{
+      body.appendChild(el('div','cd',`<div style="font-weight:bold;font-size:12px">${p.name}</div><div style="font-size:10px;color:var(--muted)">${LOCS[p.loc]?.n||p.loc} · +${p.income} caps/day</div>`));
+    });
+  }
+
+  body.appendChild(el('div','bs2','Available'));
+  const props=[
+    {name:'Abandoned Shack',cost:200,income:3,loc:S.loc,desc:'Basic shelter. Free rest.'},
+    {name:'Safehouse',cost:800,income:8,loc:S.loc,desc:'Secure. Storage. Free rest.'},
+    {name:'Workshop',cost:2000,income:15,loc:S.loc,desc:'Crafting bench. Good income.'},
+    {name:'Trading Post',cost:5000,income:35,loc:S.loc,desc:'Caps flow in daily.'},
+    {name:'Fortified Compound',cost:15000,income:80,loc:S.loc,levies:20,desc:'Defensible. Recruit soldiers.'},
+  ];
+  props.forEach(p=>{
+    const owned=S.properties.find(op=>op.name===p.name&&op.loc===p.loc);
+    if(owned)return;
+    const pc=el('div','cd');
+    pc.innerHTML=`<div style="font-weight:bold;font-size:12px">${p.name} — ${p.cost} caps</div><div style="font-size:10px;color:var(--muted)">${p.desc} · +${p.income} caps/day</div>`;
+    if(S.caps>=p.cost){
+      const bb=el('button','bt go','Buy');
+      bb.onclick=()=>{S.caps-=p.cost;S.properties.push({...p});log('Bought '+p.name+'!','q');closeBld();showResult('Purchased!','🏠',[p.name,'📍 '+LOCS[S.loc]?.n,'+'+p.income+' caps/day'],'Continue','upAll()')};
+      pc.appendChild(bb);
+    }
+    body.appendChild(pc);
+  });
+  bi.appendChild(body);
+}
+
+// ============================================================
+// CHARACTER TAB
+// ============================================================
+function upChar(){
+  const tab=$('char-tab');if(!S)return;tab.innerHTML='';
+
+  // Profile
+  const prof=el('div','cd');
+  prof.innerHTML=`<div style="display:flex;align-items:center;gap:10px">
+  <div style="font-size:36px">${S.isMale?'👨':'👩'}</div>
+  <div style="flex:1"><div style="font-size:15px;font-weight:bold;color:var(--amber)">${S.name}</div>
+  <div style="font-size:10px;color:var(--muted)">Level ${S.level} ${S.class} · Age ${S.age} · Day ${S.days}</div>
+  <div style="font-size:10px;color:var(--muted)">Karma: <span style="color:${S.karma>0?'var(--green)':S.karma<0?'var(--red)':'var(--muted)'}">${S.karma>0?'Good':S.karma<0?'Evil':'Neutral'} (${S.karma})</span></div></div></div>`;
+  tab.appendChild(prof);
+
+  // HP/AP/XP bars
+  const bars=el('div','cd');
+  bars.innerHTML=`<div style="font-size:10px;margin-bottom:2px">❤ HP ${S.hp}/${S.maxHp}</div>
+  <div class="hb"><div class="hf hp" style="width:${hpPct(S.hp,S.maxHp)}%"></div></div>
+  <div style="font-size:10px;margin:4px 0 2px">⚡ AP ${S.ap}/${S.maxAp}</div>
+  <div class="hb"><div class="hf ap" style="width:${hpPct(S.ap,S.maxAp)}%"></div></div>
+  <div style="font-size:10px;margin:4px 0 2px">⭐ XP ${S.xp}/${xpNeed(S.level)}</div>
+  <div class="hb"><div class="hf xp" style="width:${hpPct(S.xp,xpNeed(S.level))}%"></div></div>`;
+  tab.appendChild(bars);
+
+  // SPECIAL
+  tab.appendChild(el('div','sh','S.P.E.C.I.A.L.'));
+  const sp=el('div','cd');
+  let spHtml='';
+  S.special.forEach((v,i)=>{
+    spHtml+=`<div class="sp-bar"><div class="sp-label">${SPECIAL_LABELS[i]}</div>
+    <div style="font-size:10px;color:var(--muted);width:70px">${SPECIAL_NAMES[i]}</div>
+    <div class="sp-fill-bg"><div class="sp-fill" style="width:${v*10}%"></div></div>
+    <div class="sp-val">${v}</div></div>`;
+  });
+  sp.innerHTML=spHtml;
+  tab.appendChild(sp);
+
+  // Combat stats
+  tab.appendChild(el('div','sh','Combat'));
+  tab.appendChild(el('div','cd',`<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px">
+  <div>⚔ ATK: <b style="color:var(--green)">${atkPow()}</b></div>
+  <div>🛡 DEF: <b style="color:var(--green)">${defPow()}</b></div>
+  <div>💨 SPD: <b>${S.spd}</b></div>
+  <div>💰 Caps: <b>${S.caps}</b></div>
+  <div>🗡 Kills: <b>${S.killCount||0}</b></div>
+  <div>📜 Quests: <b>${S.questsComplete||0}</b></div></div>`));
+
+  // Companions
+  if(S.companions.length){
+    tab.appendChild(el('div','sh','Companions'));
+    S.companions.forEach(c=>{
+      tab.appendChild(el('div','cd',`<div style="display:flex;align-items:center;gap:8px">
+      <div style="font-size:24px">${c.male?'👨':'👩'}</div>
+      <div style="flex:1"><div style="font-weight:bold;font-size:12px">${c.name}</div>
+      <div class="hb"><div class="hf g" style="width:${hpPct(c.hp,c.maxHp)}%"></div></div>
+      <div style="font-size:9px;color:var(--muted)">HP ${c.hp}/${c.maxHp} · ATK ${c.atk} · DEF ${c.def}</div></div></div>`));
+    });
+  }
+
+  // Family
+  if(S.spouse||S.children.length){
+    tab.appendChild(el('div','sh','Family'));
+    if(S.spouse)tab.appendChild(el('div','cd',`💍 Spouse: <b>${S.spouse.name}</b>`));
+    S.children.forEach(c=>{tab.appendChild(el('div','cd',`👶 ${c.name} — Age ${c.age||0}`))});
+  }
+
+  // Quests
+  const active=S.quests.filter(q=>!q.done);
+  if(active.length){
+    tab.appendChild(el('div','sh','Active Quests'));
+    active.forEach(q=>{
+      const prog=q.t==='kill'?`${q.kd||0}/${q.kc}`:q.t==='fetch'?`${q.fd||0}/${q.fc}`:q.t==='explore'?`${q.ed||0}/${q.ec}`:'';
+      tab.appendChild(el('div','qc',`<div style="font-weight:bold;font-size:12px">📜 ${q.name}</div>
+      <div style="font-size:10px;color:var(--muted)">${q.desc}</div>
+      <div style="font-size:10px;color:var(--green);margin-top:2px">Progress: ${prog} · 💰 ${q.rg} · ⭐ ${q.rx}</div>`));
+    });
+  }
+
+  // Relationships
+  if(S.relationships.length){
+    tab.appendChild(el('div','sh','Relationships'));
+    S.relationships.slice(0,8).forEach(r=>{
+      const rc=el('div','inv-card');rc.style.cursor='pointer';
+      rc.innerHTML=`<div class="inv-row"><div>${r.male?'👨':'👩'} ${r.name}</div><div style="font-size:10px;color:var(--muted)">${r.rel} · ❤${r.aff}</div></div>`;
+      rc.onclick=()=>openNPCInteraction({name:r.name,male:r.male,age:r.age,role:r.rel},r);
+      tab.appendChild(rc);
+    });
+  }
+}
+
+// ============================================================
+// INVENTORY TAB
+// ============================================================
+function upInv(){
+  const tab=$('inv-tab');if(!S)return;tab.innerHTML='';
+
+  // Equipped
+  tab.appendChild(el('div','sh','Equipped'));
+  const gear=el('div','cd');
+  const w=S.gear.w?ITEMS[S.gear.w]:null;
+  const b2=S.gear.body?ITEMS[S.gear.body]:null;
+  const h=S.gear.head?ITEMS[S.gear.head]:null;
+  gear.innerHTML=`<div style="font-size:11px">
+  <div>🔫 Weapon: <b>${w?w.e+' '+w.n:'— None —'}</b>${w?' (ATK +'+w.a+')':''}</div>
+  ${w&&w.ammo?`<div>🔸 Ammo: <b>${ITEMS[w.ammo]?.n||'Ammo'} ×${countItem(w.ammo)}</b> <span style="color:var(--muted)">(uses 1 per attack)</span></div>`:''}
+  <div>🧥 Body: <b>${b2?b2.e+' '+b2.n:'— None —'}</b>${b2?' (DEF +'+b2.d+')':''}</div>
+  <div>🪖 Head: <b>${h?h.e+' '+h.n:'— None —'}</b>${h?' (DEF +'+h.d+')':''}</div></div>`;
+  tab.appendChild(gear);
+
+  // Inventory
+  tab.appendChild(el('div','sh',`Inventory (${S.inv.length} items)`));
+  if(!S.inv.length){tab.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">Empty.</div>'));return}
+
+  const counts={};S.inv.forEach(id=>{counts[id]=(counts[id]||0)+1});
+  Object.entries(counts).forEach(([id,cnt])=>{
+    const it=ITEMS[id];if(!it)return;
+    const ic=el('div','inv-card');
+    let actions='';
+    if(it.t==='w')actions=`<button class="bt sm go" onclick="equipItem('${id}','w')">Equip</button>`;
+    if(it.t==='a'&&it.slot==='body')actions=`<button class="bt sm go" onclick="equipItem('${id}','body')">Equip</button>`;
+    if(it.t==='a'&&it.slot==='head')actions=`<button class="bt sm go" onclick="equipItem('${id}','head')">Equip</button>`;
+    if(it.t==='c')actions=`<button class="bt sm pip" onclick="useItem('${id}')">Use</button>`;
+    actions+=`<button class="bt sm dn" onclick="dropItem('${id}')">Drop</button>`;
+
+    ic.innerHTML=`<div class="inv-row"><div style="flex:1"><span style="font-size:13px">${it.e}</span> <b>${it.n}</b>${cnt>1?' ×'+cnt:''}</div><div style="font-size:10px;color:var(--muted)">${it.p}c</div></div>
+    <div style="font-size:10px;color:var(--muted);margin:2px 0">${it.desc||''} ${it.a?'ATK +'+it.a:''}${it.d?'DEF +'+it.d:''}${it.hp?'HP +'+it.hp:''}${it.ammo?' · Uses '+(ITEMS[it.ammo]?.n||'ammo'):''}${it.t==='ammo'?' · Ammunition':''}</div>
+    <div>${actions}</div>`;
+    tab.appendChild(ic);
+  });
+}
+function equipItem(id,slot){
+  const idx=S.inv.indexOf(id);if(idx===-1)return;
+  if(S.gear[slot])S.inv.push(S.gear[slot]);
+  S.gear[slot]=id;S.inv.splice(idx,1);
+  log('Equipped '+ITEMS[id]?.n+'.','n');notify('Equipped '+ITEMS[id]?.n);upInv();save();
+}
+function useItem(id){
+  const idx=S.inv.indexOf(id);if(idx===-1)return;
+  const it=ITEMS[id];if(!it)return;
+  if(it.hp){S.hp=Math.min(S.maxHp,S.hp+it.hp);log('Used '+it.n+'. +'+it.hp+' HP.','e');notify('❤ +'+it.hp+' HP')}
+  if(it.buff){if(it.buff.ap)S.ap=Math.min(S.maxAp,S.ap+it.buff.ap)}
+  S.inv.splice(idx,1);upInv();upSB();save();
+}
+function dropItem(id){
+  const idx=S.inv.indexOf(id);if(idx===-1)return;
+  S.inv.splice(idx,1);log('Dropped '+ITEMS[id]?.n+'.','n');upInv();save();
+}
+
+// ============================================================
+// TRAVEL TAB
+// ============================================================
+function upRoads(){
+  const tab=$('roads-tab');if(!S)return;tab.innerHTML='';
+  tab.appendChild(el('div','sh','Travel from '+LOCS[S.loc]?.n));
+  const roads=ROADS[S.loc]||{};
+  if(!Object.keys(roads).length){tab.appendChild(el('div','cd','No known routes.'));return}
+  Object.entries(roads).forEach(([dest,days])=>{
+    const loc=LOCS[dest];if(!loc)return;
+    const dc=el('div','bc');
+    dc.innerHTML=`<div style="font-size:28px">${loc.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:13px">${loc.n}</div><div style="font-size:10px;color:var(--muted)">${loc.r} · ${days} day${days>1?'s':''} · ${'☠'.repeat(loc.dg)}</div><div style="font-size:10px;color:var(--muted);font-style:italic">${loc.d.substring(0,50)}${loc.d.length>50?'...':''}</div></div><div style="color:var(--muted)">›</div>`;
+    dc.onclick=()=>beginTravel(dest,days);
+    tab.appendChild(dc);
+  });
+}
+function beginTravel(dest,days){
+  if(combat)return;tDest=dest;
+  tQ=genTravelEv(days,S.loc,dest);
+  $('TO').classList.add('A');$('TB').style.width='0%';$('TC').innerHTML='';$('TN').style.display='none';
+  nextTEv();
+}
+function genTravelEv(days,from,to){
+  const evs=[];const total=days*2+rnd(1,3);
+  for(let i=0;i<total;i++){
+    const r=R();
+    if(r<.3){
+      const dloc=LOCS[to];
+      const enPool=dloc?.sur?.length?rndA(dloc.sur).en:['gecko','bloatfly'];
+      const validPool=enPool.filter(e=>ENEMIES[e]);
+      if(validPool.length){
+        const cnt=rnd(1,2);const enemies=[];
+        for(let j=0;j<cnt;j++)enemies.push(mkEnemy(rndA(validPool)));
+        evs.push({tp:'combat',e:'⚔',tx:'Hostiles on the road!',enemies,_i:i,_t:total});
+      }
+    }else if(r<.5){
+      const finds=['stimpak','sunset_sars','ammo_9mm','ammo_10mm','ammo_357','ammo_556','ammo_shells','energy_cell','herbs','scrap','pre_war_money'];
+      const fi=rndA(finds);const it=ITEMS[fi];
+      evs.push({tp:'loot',e:'✨',tx:`You spot something: <b style="color:var(--green)">${it?.e} ${it?.n}</b>`,fn:()=>{if(fi&&ITEMS[fi])S.inv.push(fi);log('Found '+it?.n+' on the road.','e')},_i:i,_t:total});
+    }else{
+      const scenes=["The road stretches endlessly.","Heat waves shimmer off the asphalt.","You pass a rusted pre-war car.","A brahmin caravan passes going the other way.","Dust devils spin across the highway.","Radio signals fade in and out."];
+      evs.push({tp:'scene',e:rndA(['🏜','🌵','☀','🛣']),tx:rndA(scenes),_i:i,_t:total});
+    }
+  }
+  return evs;
+}
+function nextTEv(){
+  if(!tQ.length){finTravel();return}
+  const ev=tQ.shift();
+  $('TB').style.width=Math.round(((ev._i+1)/ev._t)*100)+'%';
+  $('TS').textContent=ev.e;$('TT').innerHTML=ev.tx;$('TC').innerHTML='';$('TN').style.display='none';
+  if(ev.tp==='combat'){
+    const cd=$('TC');
+    const fb=el('button','bt go','⚔ Fight!');fb.style.textAlign='center';
+    fb.onclick=()=>{startCombat(ev.enemies);combat.postT=tDest};cd.appendChild(fb);
+    const fl=el('button','bt dn','🏃 Try to run');fl.style.textAlign='center';
+    fl.onclick=()=>{if(R()<.5){log('Evaded enemies.','e');$('TN').style.display='block';$('TN').onclick=()=>travelCont()}
+    else{startCombat(ev.enemies);combat.postT=tDest}};cd.appendChild(fl);
+    return;
+  }
+  if(ev.fn)ev.fn();
+  $('TN').style.display='block';$('TN').onclick=()=>travelCont();
+}
+function finTravel(){
+  if(tDest){
+    S.loc=tDest;S.days++;S.hours=8;
+    payDaily();
+    log('Arrived at '+LOCS[S.loc]?.n+'.','q');
+  }
+  tDest=null;tQ=[];
+  upSB();
+  refreshActiveTab();
+  save();
+  $('TO').classList.remove('A');
+}
+
+// ============================================================
+// LOG TAB
+// ============================================================
+function upLog(){
+  const tab=$('log-tab');if(!S)return;tab.innerHTML='';
+  tab.appendChild(el('div','sh','Chronicle'));
+  if(!S.log||!S.log.length){tab.appendChild(el('div','cd','<span style="color:var(--muted)">No entries.</span>'));return}
+  S.log.forEach((dg,di)=>{
+    const group=el('div','log-group');
+    const header=el('div','log-header');
+    header.innerHTML=`<span style="color:var(--amber)">Day ${dg.day}</span><span style="font-size:10px;color:var(--muted)">${dg.entries.length} events</span>`;
+    const entries=el('div','log-entries'+(di===0?' open':''));
+    dg.entries.forEach(e=>{
+      const le=el('div','log-entry '+(e.type==='c'?'combat-log':e.type==='e'?'event-log':e.type==='q'?'quest-log':''));
+      le.innerHTML=e.text;entries.appendChild(le);
+    });
+    header.onclick=()=>entries.classList.toggle('open');
+    group.appendChild(header);group.appendChild(entries);tab.appendChild(group);
+  });
+
+  // Game controls
+  tab.appendChild(el('div','sh','System'));
+  const ng=el('button','bt dn','🔄 New Game');ng.style.textAlign='center';
+  ng.onclick=()=>confirmNewGame();
+  tab.appendChild(ng);
+}
+
+// ============================================================
+// TIME & ECONOMY
+// ============================================================
+function advanceTime(hours){
+  S.hours=(S.hours||8)+hours;
+  while(S.hours>=24){S.hours-=24;S.days++;payDaily();dailyEvent()}
+  // Quest progress
+  S.quests.forEach(q=>{
+    if(q.done)return;
+    if(q.t==='kill'&&q.kt){q.kd=S.kills[q.kt]||0;if(q.kd>=q.kc)completeQuest(q)}
+    if(q.t==='explore'){q.ed=(q.ed||0);if(q.ed>=q.ec)completeQuest(q)}
+  });
+  // AP regen
+  S.ap=Math.min(S.maxAp,S.ap+Math.floor(hours*3));
+}
+function payDaily(){
+  // Property income
+  S.properties.forEach(p=>{S.caps+=(p.income||0);S.capsEarned+=(p.income||0)});
+  // Age
+  if(S.days%90===0){
+    S.age++;
+    if(S.spouse&&R()<.2&&S.children.length<4){
+      const cm=R()<.5;const cn=(cm?rndA(FM):rndA(FF))+' '+S.name.split(' ').pop();
+      S.children.push({name:cn,male:cm,born:S.days,age:0});
+      log('A child is born! '+cn,'e');notify('👶 '+cn+' is born!');
+    }
+    S.children.forEach(c=>{c.age=Math.floor((S.days-c.born)/90)});
+  }
+  worldTick();
+}
+function completeQuest(q){
+  if(q.done)return;q.done=true;
+  S.xp+=q.rx;S.caps+=q.rg;S.questsComplete++;
+  if(q.fac)S.rep[q.fac]=(S.rep[q.fac]||0)+5;
+  log('Quest complete: '+q.name+' (+'+q.rg+' caps, +'+q.rx+' XP)','q');
+  notify('📜 Quest Complete!');chkLU();
+}
+function dailyEvent(){
+  if(R()<.3){
+    const events=[
+      ()=>{const g=rnd(5,15);S.caps+=g;log('Found '+g+' caps in an old cache.','e')},
+      ()=>{log('Radio New Vegas: "'+rndA(["This is Mr. New Vegas, and I love you.","The NCR reports increased Legion activity.","Travelers beware: Deathclaws near Quarry Junction.","The Strip is open for business, baby."])+'".','e')},
+      ()=>{if(S.companions.length){const c=rndA(S.companions);log(c.name+': "'+rndA(["Stay sharp.","I've got a bad feeling.","We should keep moving.","Watch the ridgeline."])+'"','e')}},
+    ];
+    rndA(events)();
+  }
+}
+function worldTick(){
+  if(!S.worldEvents)S.worldEvents=[];
+  if(S.days-S.lastWorldTick<5)return;
+  S.lastWorldTick=S.days;
+  if(R()<.5&&S.worldEvents.length<3){
+    const templates=[
+      {title:'NCR patrols increase near {loc}',type:'military',duration:10},
+      {title:'Legion raids reported near {loc}',type:'raid',duration:8},
+      {title:'Caravan route to {loc} reopened',type:'trade',duration:12},
+      {title:'Fiend attacks intensify near {loc}',type:'raid',duration:7},
+      {title:'Water supply issues at {loc}',type:'crisis',duration:6},
+    ];
+    const t=rndA(templates);const locKey=rndA(Object.keys(LOCS));
+    const title=t.title.replace('{loc}',LOCS[locKey]?.n||'somewhere');
+    S.worldEvents.push({...t,title,started:S.days,loc:locKey});
+    log('📰 '+title,'e');
+  }
+  S.worldEvents=S.worldEvents.filter(ev=>S.days-ev.started<ev.duration);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+(function init(){
+  if(load()){upAll()}else{newGame()}
+})();
+</script>
+</body>
+</html>
