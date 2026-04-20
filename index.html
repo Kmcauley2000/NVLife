@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-<link rel="icon" type="image/png" href="./apple-touch-icon.png">
 <meta name="theme-color" content="#1a1a0e">
 <title>Fallout: New Vegas RPG</title>
 <style>
@@ -196,6 +194,28 @@ function closeResult(){$('RP').classList.remove('show');$('RBG').classList.remov
 function openDlg(h){$('DB').innerHTML=h;$('DO').classList.add('A')}
 function closeDlg(){$('DO').classList.remove('A')}
 
+function getBonusLootPool(locId,area){
+  const loc=LOCS[locId];
+  const pool=['wonderglue','wrench','scrap_electronics','camera','silverware'];
+  if(!loc)return pool.filter(id=>ITEMS[id]);
+  if(loc.fac==='NCR'||loc.t==='base'||loc.t==='facility'||locId==='HeliosOne'){
+    pool.push('fission_battery','conductor','scrap_electronics','wrench');
+  }
+  if(loc.fac==='Legion'){
+    pool.push('legion_coin','silverware','gold_necklace');
+  }
+  if(loc.fac==='Khans'){
+    pool.push('cigarette_pack','cigarette_carton','pre_war_money');
+  }
+  if(['town','city','district','trading_post','settlement'].includes(loc.t)){
+    pool.push('cigarette_pack','camera','silver_watch','gold_necklace');
+  }
+  if(area&&/(house|hotel|motel|hall|lodge|office|barracks|cottages|station|school|casino|bar|store)/i.test(area.n)){
+    pool.push('camera','pre_war_money','silver_watch');
+  }
+  return pool.filter(id=>ITEMS[id]);
+}
+
 function resumeExpeditionAfterCombat(){
   if(!window._resumeArea)return upAll();
   $('TO').classList.add('A');
@@ -231,7 +251,7 @@ function resetTransientState(){
   if($('TN')){$('TN').style.display='none';$('TN').onclick=null;}
 }
 function startFreshGame(){
-  localStorage.removeItem('fnv_rpg');
+  try{localStorage.removeItem(SAVE_KEY);localStorage.removeItem(SAVE_BACKUP_KEY)}catch(e){}
   S=null;
   resetTransientState();
   if(typeof switchTab==='function')switchTab('world');
@@ -253,44 +273,44 @@ function confirmNewGame(){
 const LOCS={
 Goodsprings:{n:"Goodsprings",r:"Mojave South",d:"A quiet frontier town. Clean water, honest people.",e:"🏘",t:"town",
   b:["saloon","general_store","gas_station","doc_house"],dg:1,fac:"NCR",
-  sur:[{n:"Goodsprings Cemetery",e:"⚰",d:"Where they left you for dead.",en:["gecko","bloatfly"],lt:["ammo_9mm","stimpak","sunset_sars"]},
-  {n:"Goodsprings Source",e:"💧",d:"Fresh water. Geckos lurk nearby.",en:["gecko","gecko","mantis"],lt:["purified_water","gecko_hide","herbs"]},
-  {n:"Abandoned Schoolhouse",e:"🏚",d:"Giant mantises nest inside.",en:["mantis","mantis","radroach"],lt:["scrap","duct_tape","ammo_9mm","bobby_pin"]}]},
+  sur:[{n:"Goodsprings Cemetery",e:"⚰",d:"Where they left you for dead.",en:["gecko","bloatfly","bark_scorpion"],lt:["ammo_9mm","stimpak","sunset_sars"]},
+  {n:"Goodsprings Source",e:"💧",d:"Fresh water. Geckos lurk nearby.",en:["gecko","gecko","bark_scorpion","mantis"],lt:["purified_water","gecko_hide","herbs"]},
+  {n:"Abandoned Schoolhouse",e:"🏚",d:"Giant mantises nest inside.",en:["mantis","mantis","radroach","giant_rat"],lt:["scrap","duct_tape","ammo_9mm","bobby_pin"]}]},
 Primm:{n:"Primm",r:"Mojave South",d:"A border town overrun by convicts.",e:"🎰",t:"town",
   b:["vikki_vance","mojave_express","sheriff_office","bison_steve"],dg:2,fac:"NCR",
-  sur:[{n:"Highway 93",e:"🛣",d:"Convicts patrol the road.",en:["convict","convict","convict"],lt:["pistol_10mm","revolver_357","leather_armor","stimpak","ammo_10mm","ammo_357"]},
-  {n:"NCRCF Perimeter",e:"🏗",d:"The prison is close. Dangerous.",en:["powder_ganger","powder_ganger","convict"],lt:["dynamite","powder_charge","ammo_9mm"]}]},
+  sur:[{n:"Highway 93",e:"🛣",d:"Convicts patrol the road.",en:["convict","convict","jackal_raider","jackal_raider"],lt:["pistol_10mm","revolver_357","leather_armor","stimpak","ammo_10mm","ammo_357"]},
+  {n:"NCRCF Perimeter",e:"🏗",d:"The prison is close. Dangerous.",en:["powder_ganger","powder_ganger","convict","jackal_raider"],lt:["dynamite","powder_charge","ammo_9mm"]}]},
 Nipton:{n:"Nipton",r:"Mojave South",d:"A town destroyed by the Legion as an example.",e:"🔥",t:"ruins",
   b:["nipton_hall"],dg:3,fac:"Legion",
-  sur:[{n:"Nipton Road",e:"🛤",d:"Legion patrols and radscorpions.",en:["legion_recruit","radscorpion"],lt:["machete","healing_powder","legion_coin","revolver_357","ammo_357"]},
-  {n:"Burned Houses",e:"🏚",d:"Ash and ruin. Scavengeable.",en:["radroach","gecko"],lt:["pre_war_money","scrap","duct_tape"]}]},
+  sur:[{n:"Nipton Road",e:"🛤",d:"Legion patrols and radscorpions.",en:["legion_recruit","radscorpion","jackal_raider"],lt:["machete","healing_powder","legion_coin","revolver_357","ammo_357"]},
+  {n:"Burned Houses",e:"🏚",d:"Ash and ruin. Scavengeable.",en:["radroach","giant_rat","gecko"],lt:["pre_war_money","scrap","duct_tape"]}]},
 Novac:{n:"Novac",r:"Mojave Central",d:"A motel town with a giant dinosaur.",e:"🦖",t:"town",
-  b:["dino_bite","motel","mcbride_house"],dg:2,fac:"NCR",
+  b:["dino_bite","motel","mcbride_house","ranger_bungalow","no_bark_shack"],dg:2,fac:"NCR",
   sur:[{n:"REPCONN Test Site",e:"☢",d:"Ghouls and nightkin. Extremely dangerous.",en:["feral_ghoul","feral_ghoul","nightkin"],lt:["energy_cell","laser_rifle","stealth_boy","stimpak","sensor_module"]},
-  {n:"Highway Patrol",e:"🛣",d:"Cazadores and Legion scouts.",en:["cazador","legion_recruit"],lt:["antivenom","machete","stimpak"]}]},
+  {n:"Highway Patrol",e:"🛣",d:"Cazadores and Legion scouts.",en:["cazador","legion_recruit","jackal_raider"],lt:["antivenom","machete","stimpak"]}]},
 BoulderCity:{n:"Boulder City",r:"Mojave Central",d:"NCR memorial site. Tense standoff with Khans.",e:"🏛",t:"town",
   b:["boulder_bar","ncr_memorial"],dg:2,fac:"NCR",
-  sur:[{n:"Boulder City Ruins",e:"🧱",d:"Rubble and tension.",en:["great_khan","great_khan"],lt:["ammo_9mm","stimpak","jet"]}]},
+  sur:[{n:"Boulder City Ruins",e:"🧱",d:"Rubble and tension.",en:["great_khan","great_khan","jackal_raider"],lt:["ammo_9mm","stimpak","jet"]}]},
 FreesideN:{n:"Freeside",r:"New Vegas",d:"The slums outside the Strip. Kings territory.",e:"👑",t:"district",
-  b:["atomic_wrangler","kings_hq","mick_ralph","old_mormon_fort"],dg:2,fac:"None",
-  sur:[{n:"Freeside Streets",e:"🏚",d:"Thugs and desperate people.",en:["freeside_thug","freeside_thug"],lt:["switchblade","jet","stimpak","nuka_cola"]},
+  b:["atomic_wrangler","kings_hq","mick_ralph","old_mormon_fort","silver_rush","cerulean_robotics"],dg:2,fac:"None",
+  sur:[{n:"Freeside Streets",e:"🏚",d:"Thugs and desperate people.",en:["freeside_thug","freeside_thug","giant_rat","giant_rat"],lt:["switchblade","jet","stimpak","nuka_cola"]},
   {n:"East Gate",e:"🚪",d:"The entrance to the Strip... if you can afford it.",en:[],lt:[]}]},
 TheStrip:{n:"The Strip",r:"New Vegas",d:"The jewel of the Mojave. Mr. House's domain.",e:"🎰",t:"city",
   b:["lucky_38","gomorrah","ultra_luxe","tops_casino"],dg:1,fac:"House",
   sur:[{n:"Strip Streets",e:"🌃",d:"Bright lights and securitrons.",en:[],lt:["pre_war_money","fancy_lad","nuka_cola"]}]},
 CampMcCarran:{n:"Camp McCarran",r:"New Vegas",d:"NCR's main base of operations in the Mojave.",e:"🏕",t:"base",
   b:["mccarran_supply","mccarran_med","mccarran_hq"],dg:1,fac:"NCR",
-  sur:[{n:"Fiend Territory",e:"☠",d:"Psycho-addled raiders everywhere.",en:["fiend","fiend","fiend"],lt:["jet","psycho","ammo_556","combat_knife"]}]},
+  sur:[{n:"Fiend Territory",e:"☠",d:"Psycho-addled raiders everywhere.",en:["fiend","fiend","fiend","centaur"],lt:["jet","psycho","ammo_556","combat_knife"]}]},
 HiddenValley:{n:"Hidden Valley",r:"Mojave Central",d:"Brotherhood of Steel bunker, hidden underground.",e:"⚙",t:"bunker",
   b:["bos_armory","bos_lab"],dg:1,fac:"BOS",
-  sur:[{n:"Valley Patrols",e:"🏜",d:"Scorpions in the sand.",en:["radscorpion","radscorpion"],lt:["sensor_module","energy_cell","scrap"]}]},
+  sur:[{n:"Valley Patrols",e:"🏜",d:"Scorpions in the sand.",en:["bark_scorpion","radscorpion","radscorpion"],lt:["sensor_module","energy_cell","scrap"]}]},
 Jacobstown:{n:"Jacobstown",r:"Mojave North",d:"A refuge for super mutants trying to live peacefully.",e:"🏔",t:"settlement",
   b:["jacobstown_lodge","jacobstown_doc"],dg:2,fac:"None",
   sur:[{n:"Mountain Trails",e:"⛰",d:"Cazadores and nightstalkers.",en:["cazador","nightstalker","nightstalker"],lt:["antivenom","stimpak","bighorner_meat"]}]},
 RedRockCanyon:{n:"Red Rock Canyon",r:"West Mojave",d:"Home of the Great Khans. Harsh, hidden, and dangerous.",e:"🏜",t:"camp",
   b:["khan_bar","khan_supply","khan_hq"],dg:2,fac:"Khans",
-  sur:[{n:"Canyon Pass",e:"🪨",d:"Narrow trails watched by Khan lookouts.",en:["great_khan","great_khan","cazador"],lt:["ammo_9mm","jet","stimpak","scrap"]},
-  {n:"Drug Lab Caves",e:"🧪",d:"Chem fumes, hidden caches, and trouble.",en:["great_khan","fiend"],lt:["jet","psycho","stimpak","pre_war_money"]}]},
+  sur:[{n:"Canyon Pass",e:"🪨",d:"Narrow trails watched by Khan lookouts.",en:["great_khan","great_khan","cazador","bark_scorpion"],lt:["ammo_9mm","jet","stimpak","scrap"]},
+  {n:"Drug Lab Caves",e:"🧪",d:"Chem fumes, hidden caches, and trouble.",en:["great_khan","fiend","centaur"],lt:["jet","psycho","stimpak","pre_war_money"]}]},
 NelsonCamp:{n:"Nelson",r:"Mojave South",d:"A town captured by Caesar's Legion.",e:"⚔",t:"camp",
   b:["legion_tent"],dg:3,fac:"Legion",
   sur:[{n:"Nelson Approach",e:"🏜",d:"Legion territory. Very dangerous.",en:["legion_veteran","legion_recruit","legion_recruit"],lt:["machete","thermic_lance","healing_powder","legion_coin"]}]},
@@ -299,50 +319,70 @@ TheFort:{n:"The Fort",r:"East Mojave",d:"Caesar's main camp. The heart of the Le
   sur:[{n:"Fortification Hill",e:"⛰",d:"Heavily guarded.",en:["legion_centurion","legion_veteran"],lt:["super_stimpak","thermic_lance","legion_coin","power_fist"]}]},
 CampSearchlight:{n:"Camp Searchlight",r:"East Mojave",d:"A ruined NCR town choked with radiation, ash, and restless dead.",e:"☢",t:"ruins",
   b:["searchlight_bar","searchlight_supply","searchlight_med"],dg:3,fac:"NCR",
-  sur:[{n:"Searchlight Fire Station",e:"🚒",d:"Collapsed NCR gear, scorched walls, and glowing dust.",en:["feral_ghoul","feral_ghoul","radscorpion"],lt:["stimpak","ammo_556","scrap","ncr_armor"]},
-  {n:"Church Basement",e:"⛪",d:"A dark shelter full of old supplies and lingering danger.",en:["feral_ghoul","feral_ghoul","nightkin"],lt:["med_x","super_stimpak","pre_war_money","energy_cell"]}]},
+  sur:[{n:"Searchlight Fire Station",e:"🚒",d:"Collapsed NCR gear, scorched walls, and glowing dust.",en:["feral_ghoul","feral_ghoul","feral_ghoul_trooper","radscorpion"],lt:["stimpak","ammo_556","scrap","ncr_armor"]},
+  {n:"Church Basement",e:"⛪",d:"A dark shelter full of old supplies and lingering danger.",en:["feral_ghoul","feral_ghoul","feral_ghoul_trooper","glowing_one"],lt:["med_x","super_stimpak","pre_war_money","energy_cell"]}]},
 CottonwoodCove:{n:"Cottonwood Cove",r:"East Mojave",d:"A Legion-controlled river port hidden below the cliffs.",e:"🚤",t:"camp",
   b:["cove_bar","cove_supply","cove_tent"],dg:3,fac:"Legion",
   sur:[{n:"Slave Pens",e:"⛓",d:"Crude cages, watchfires, and brutal Legion discipline.",en:["legion_recruit","legion_recruit","legion_veteran"],lt:["healing_powder","legion_coin","machete","stimpak"]},
-  {n:"Riverside Cliffs",e:"🪨",d:"Steep rocks above the Colorado, watched by scouts.",en:["legion_scout","legion_scout","cazador"],lt:["ammo_357","pre_war_money","healing_powder","antivenom"]}]},
+  {n:"Riverside Cliffs",e:"🪨",d:"Steep rocks above the Colorado, watched by scouts.",en:["legion_scout","legion_scout","lakelurk","cazador"],lt:["ammo_357","pre_war_money","healing_powder","antivenom"]}]},
 Sloan:{n:"Sloan",r:"West Mojave",d:"A quarry settlement on edge, with deathclaws stalking the worksites.",e:"⛏",t:"settlement",
   b:["sloan_bar","sloan_supply","sloan_office"],dg:3,fac:"NCR",
-  sur:[{n:"Quarry Entrance",e:"🪨",d:"Heavy machinery, scattered supplies, and signs of recent attacks.",en:["deathclaw","radscorpion"],lt:["ammo_556","scrap","stimpak","combat_armor"]},
-  {n:"Worker Barracks",e:"🛏",d:"Miners' bunks, old lockers, and emergency caches.",en:["gecko","radroach","mantis"],lt:["sunset_sars","duct_tape","stimpak","ammo_9mm"]}]},
+  sur:[{n:"Quarry Entrance",e:"🪨",d:"Heavy machinery, scattered supplies, and signs of recent attacks.",en:["deathclaw","young_deathclaw","radscorpion"],lt:["ammo_556","scrap","stimpak","combat_armor"]},
+  {n:"Worker Barracks",e:"🛏",d:"Miners' bunks, old lockers, and emergency caches.",en:["gecko","radroach","mantis","bark_scorpion"],lt:["sunset_sars","duct_tape","stimpak","ammo_9mm"]}]},
 MojaveOutpost:{n:"Mojave Outpost",r:"Mojave South",d:"A dusty NCR checkpoint guarding the long highway south.",e:"🚧",t:"outpost",
   b:["outpost_bar","outpost_supply","outpost_office"],dg:1,fac:"NCR",
-  sur:[{n:"Highway Checkpoint",e:"🛣",d:"Sandbags, roadblocks, and patrols watching the southern road.",en:["convict","gecko"],lt:["ammo_556","stimpak","sunset_sars","scrap"]},
-  {n:"Rocky Pass",e:"🪨",d:"A windswept cut through the hills where ambushers sometimes wait.",en:["convict","powder_ganger","gecko"],lt:["ammo_9mm","duct_tape","pre_war_money","varmint_rifle"]}]},
+  sur:[{n:"Highway Checkpoint",e:"🛣",d:"Sandbags, roadblocks, and patrols watching the southern road.",en:["convict","jackal_raider","gecko","bark_scorpion"],lt:["ammo_556","stimpak","sunset_sars","scrap"]},
+  {n:"Rocky Pass",e:"🪨",d:"A windswept cut through the hills where ambushers sometimes wait.",en:["viper_gunslinger","jackal_raider","powder_ganger","gecko"],lt:["ammo_9mm","duct_tape","pre_war_money","varmint_rifle"]}]},
 Westside:{n:"Westside",r:"New Vegas",d:"A rough independent neighborhood surviving just beyond the city lights.",e:"🏚",t:"district",
   b:["westside_bar","westside_supply","westside_lodge"],dg:2,fac:"None",
-  sur:[{n:"Westside Streets",e:"🛣",d:"Narrow lanes, locals keeping watch, and trouble after dark.",en:["freeside_thug","freeside_thug","fiend"],lt:["switchblade","stimpak","nuka_cola","pre_war_money"]},
-  {n:"Community Gardens",e:"🌿",d:"A rare patch of green fenced off from scavengers and raiders.",en:["gecko","mantis","radroach"],lt:["herbs","purified_water","duct_tape","fancy_lad"]}]},
+  sur:[{n:"Westside Streets",e:"🛣",d:"Narrow lanes, locals keeping watch, and trouble after dark.",en:["freeside_thug","freeside_thug","giant_rat","fiend"],lt:["switchblade","stimpak","nuka_cola","pre_war_money"]},
+  {n:"Community Gardens",e:"🌿",d:"A rare patch of green fenced off from scavengers and raiders.",en:["giant_rat","gecko","mantis","radroach"],lt:["herbs","purified_water","duct_tape","fancy_lad"]}]},
 NellisAFB:{n:"Nellis AFB",r:"East Mojave",d:"A fortified air base ringed with artillery and old world wreckage.",e:"✈",t:"base",
   b:["nellis_bar","nellis_supply","nellis_med"],dg:3,fac:"None",
-  sur:[{n:"Runway Wreckage",e:"🛩",d:"Twisted aircraft parts and unexploded ordnance litter the ground.",en:["mantis","radscorpion","cazador"],lt:["scrap","sensor_module","energy_cell","ammo_556"]},
-  {n:"Array Station",e:"📡",d:"A communications site full of salvage and dangerous pests.",en:["radscorpion","nightstalker","mantis"],lt:["sensor_module","stimpak","pre_war_money","energy_cell"]}]},
+  sur:[{n:"Runway Wreckage",e:"🛩",d:"Twisted aircraft parts and unexploded ordnance litter the ground.",en:["giant_ant","radscorpion","cazador"],lt:["scrap","sensor_module","energy_cell","ammo_556"]},
+  {n:"Array Station",e:"📡",d:"A communications site full of salvage and dangerous pests.",en:["giant_ant","radscorpion","nightstalker","mantis"],lt:["sensor_module","stimpak","pre_war_money","energy_cell"]}]},
+CampGolf:{n:"Camp Golf",r:"Lake Mead",d:"An NCR training camp built around a ruined lakeside resort on Lake Mead.",e:"⛳",t:"base",
+  b:["golf_resort","golf_barracks","golf_command","golf_clinic"],dg:2,fac:"NCR",
+  sur:[{n:"Driving Range",e:"🏌️",d:"Battered targets, dried fairway grass, and NCR recruits drilling under the sun.",en:["giant_ant","gecko","mantis","radscorpion"],lt:["ammo_556","stimpak","scrap","sunset_sars"]},
+  {n:"Lakeside Cottages",e:"🏚",d:"Old resort cottages near the water, half-collapsed and still worth searching.",en:["lakelurk","gecko","cazador"],lt:["pre_war_money","purified_water","doctor_bag","ammo_9mm"]},
+  {n:"Practice Bunkers",e:"🪖",d:"Sand bunkers and firing positions where the NCR tries to turn recruits into soldiers.",en:["giant_ant","radscorpion","mantis"],lt:["ammo_556","ncr_armor","duct_tape","stimpak"]}]},
+BitterSprings:{n:"Bitter Springs",r:"Lake Mead",d:"An NCR refugee camp clinging to the hills above a bitter old massacre site.",e:"🏕",t:"camp",
+  b:["bitter_refugee","bitter_command","bitter_mess","bitter_clinic"],dg:2,fac:"NCR",
+  sur:[{n:"Refugee Ridge",e:"⛰",d:"Old campfires, hidden stashes, and steep trails watched by NCR lookouts.",en:["nightstalker","gecko","radscorpion","giant_ant"],lt:["pre_war_money","doctor_bag","sunset_sars","ammo_9mm"]},
+  {n:"Cazador Pass",e:"🐝",d:"A rough trail beyond the camp where hunters and patrols keep running into poison and trouble.",en:["cazador","cazador","nightstalker"],lt:["antivenom","stimpak","ammo_556","purified_water"]},
+  {n:"Spring Overlook",e:"🪖",d:"A dry overlook above the valley where NCR scouts track movement toward the lake.",en:["legion_scout","cazador","nightstalker","lakelurk"],lt:["ammo_556","ncr_armor","scrap","stimpak"]}]},
+NCRCF:{n:"NCR Correctional Facility",r:"Mojave South",d:"A prison work camp turned Powder Ganger stronghold behind blasted walls and watchtowers.",e:"🏢",t:"prison",
+  b:["ncrcf_visitor","ncrcf_admin","ncrcf_block_a","ncrcf_block_b"],dg:3,fac:"PowderGangers",
+  sur:[{n:"Front Gate Road",e:"🚧",d:"A rail work road leading up to the prison where Powder Gangers shake down anyone careless enough to get close.",en:["powder_ganger","powder_ganger","convict","jackal_raider"],lt:["dynamite","ammo_9mm","pre_war_money","scrap"]},
+  {n:"Prison Yard",e:"⛓",d:"The outer yard is littered with scrap, old rails, and fresh signs of violent discipline.",en:["powder_ganger","powder_ganger","powder_ganger"],lt:["ammo_9mm","dynamite","powder_charge","stimpak"]},
+  {n:"Collapsed Rail Camp",e:"🛤",d:"Half-finished rail lines and abandoned work camps still surround the prison grounds.",en:["convict","powder_ganger","bark_scorpion","gecko"],lt:["varmint_rifle","duct_tape","scrap","ammo_556"]}]},
+HeliosOne:{n:"HELIOS One",r:"Mojave Central",d:"A half-repaired solar plant under NCR guard, full of mirrors, terminals, and old world power.",e:"☀️",t:"facility",
+  b:["helios_main","helios_tower","helios_east","helios_west"],dg:2,fac:"NCR",
+  sur:[{n:"Solar Array Yard",e:"🪞",d:"Rows of broken mirrors and maintenance paths spread out around the tower, shimmering with heat and old danger.",en:["giant_ant","mantis","radscorpion"],lt:["energy_cell","scrap","sensor_module","stimpak"]},
+  {n:"El Dorado Service Road",e:"🛣",d:"A sun-blasted service road used by NCR patrols, scavengers, and anything desperate enough to raid a power plant.",en:["fiend","convict","viper_gunslinger","jackal_raider"],lt:["ammo_556","pre_war_money","duct_tape","purified_water"]},
+  {n:"Maintenance Tunnels",e:"🔧",d:"Dark utility tunnels beneath the plant where spare parts, dead wires, and restless pests pile up.",en:["radroach","radroach","feral_ghoul","giant_rat"],lt:["energy_cell","sensor_module","med_x","scrap"]}]},
 CampForlornHope:{n:"Camp Forlorn Hope",r:"East Mojave",d:"A battered NCR camp holding the line under constant pressure.",e:"⛺",t:"camp",
   b:["forlorn_bar","forlorn_supply","forlorn_med"],dg:3,fac:"NCR",
-  sur:[{n:"Forward Trenches",e:"🪖",d:"Exposed defenses, spent casings, and constant sniper fear.",en:["legion_scout","legion_recruit","super_mutant"],lt:["ammo_556","stimpak","doctor_bag","ncr_armor"]},
-  {n:"Dry Shoreline",e:"🏜",d:"Broken crates and river silt where raiders and scouts move quietly.",en:["glowing_one","radscorpion","legion_scout"],lt:["cowboy_repeater","ammo_357","pre_war_money","med_x"]}]},
+  sur:[{n:"Forward Trenches",e:"🪖",d:"Exposed defenses, spent casings, and constant sniper fear.",en:["legion_scout","legion_recruit","legion_veteran"],lt:["ammo_556","stimpak","doctor_bag","ncr_armor"]},
+  {n:"Dry Shoreline",e:"🏜",d:"Broken crates and river silt where raiders and scouts move quietly.",en:["lakelurk","glowing_one","radscorpion","legion_scout"],lt:["cowboy_repeater","ammo_357","pre_war_money","med_x"]}]},
 TradingPost188:{n:"188 Trading Post",r:"Mojave Central",d:"A busy overpass market where caravans, mercs, and drifters cross paths.",e:"🛣",t:"trading_post",
   b:["post188_bar","post188_supply","post188_office"],dg:2,fac:"None",
-  sur:[{n:"Overpass Market",e:"🧰",d:"Stalls, scrap piles, and impatient guards watching every hand.",en:["freeside_thug","convict","super_mutant"],lt:["cowboy_repeater","ammo_357","doctor_bag","pre_war_money"]},
-  {n:"Dry Wash",e:"🏜",d:"A shallow gully used by smugglers, scavengers, and anything hungry.",en:["glowing_one","gecko","mantis"],lt:["duct_tape","scrap","stimpak","ammo_9mm"]}]},
+  sur:[{n:"Overpass Market",e:"🧰",d:"Stalls, scrap piles, and impatient guards watching every hand.",en:["freeside_thug","convict","jackal_raider","viper_gunslinger"],lt:["cowboy_repeater","ammo_357","doctor_bag","pre_war_money"]},
+  {n:"Dry Wash",e:"🏜",d:"A shallow gully used by smugglers, scavengers, and anything hungry.",en:["giant_ant","gecko","mantis","bark_scorpion"],lt:["duct_tape","scrap","stimpak","ammo_9mm"]}]},
 HooverDam:{n:"Hoover Dam",r:"East Mojave",d:"The prize everyone's fighting for.",e:"🏗",t:"dam",
   b:["dam_offices","dam_power"],dg:2,fac:"NCR",
-  sur:[{n:"Dam Exterior",e:"🌊",d:"NCR patrols. Legion scouts across the river.",en:["legion_scout","legion_scout"],lt:["ammo_556","stimpak","ncr_armor"]}]}
+  sur:[{n:"Dam Exterior",e:"🌊",d:"NCR patrols. Legion scouts across the river.",en:["legion_scout","legion_scout","lakelurk"],lt:["ammo_556","stimpak","ncr_armor"]}]}
 };
 
 const ROADS={
-Goodsprings:{Primm:1,FreesideN:4,Sloan:2,MojaveOutpost:2},
-Primm:{Goodsprings:1,Nipton:2,Novac:2,CampMcCarran:3,MojaveOutpost:1},
+Goodsprings:{Primm:1,FreesideN:4,Sloan:2,MojaveOutpost:2,NCRCF:2},
+Primm:{Goodsprings:1,Nipton:2,Novac:2,CampMcCarran:3,MojaveOutpost:1,NCRCF:1},
 Nipton:{Primm:2,NelsonCamp:2,Novac:3,CampSearchlight:2},
-Novac:{Primm:2,Nipton:3,BoulderCity:2,HiddenValley:2,NelsonCamp:2,CampForlornHope:2},
-BoulderCity:{Novac:2,FreesideN:1,HooverDam:1,NellisAFB:2,TradingPost188:1},
+Novac:{Primm:2,Nipton:3,BoulderCity:2,HiddenValley:2,NelsonCamp:2,CampForlornHope:2,HeliosOne:1},
+BoulderCity:{Novac:2,FreesideN:1,HooverDam:1,NellisAFB:2,TradingPost188:1,CampGolf:1,BitterSprings:2,HeliosOne:1},
 FreesideN:{Goodsprings:4,BoulderCity:1,TheStrip:1,CampMcCarran:1,RedRockCanyon:2,Westside:1},
 TheStrip:{FreesideN:1,CampMcCarran:1},
-CampMcCarran:{FreesideN:1,TheStrip:1,Primm:3,HiddenValley:2,Westside:1,TradingPost188:1},
+CampMcCarran:{FreesideN:1,TheStrip:1,Primm:3,HiddenValley:2,Westside:1,TradingPost188:1,CampGolf:2,HeliosOne:2},
 HiddenValley:{CampMcCarran:2,Novac:2,Jacobstown:3},
 Jacobstown:{HiddenValley:3,FreesideN:3,RedRockCanyon:2,Sloan:3},
 RedRockCanyon:{FreesideN:2,Jacobstown:2,Sloan:2},
@@ -351,12 +391,16 @@ TheFort:{NelsonCamp:3,HooverDam:2,CottonwoodCove:2},
 CampSearchlight:{Nipton:2,NelsonCamp:1,HooverDam:2},
 CottonwoodCove:{NelsonCamp:1,TheFort:2},
 Sloan:{Goodsprings:2,RedRockCanyon:2,Jacobstown:3},
-MojaveOutpost:{Goodsprings:2,Primm:1},
+MojaveOutpost:{Goodsprings:2,Primm:1,NCRCF:1},
 Westside:{FreesideN:1,CampMcCarran:1},
-NellisAFB:{BoulderCity:2,HooverDam:2},
-CampForlornHope:{Novac:2,NelsonCamp:1,HooverDam:1},
-TradingPost188:{BoulderCity:1,CampMcCarran:1,HooverDam:1},
-HooverDam:{BoulderCity:1,TheFort:2,CampSearchlight:2,NellisAFB:2,CampForlornHope:1,TradingPost188:1}
+NellisAFB:{BoulderCity:2,HooverDam:2,CampGolf:2,BitterSprings:1},
+CampForlornHope:{Novac:2,NelsonCamp:1,HooverDam:1,CampGolf:2},
+TradingPost188:{BoulderCity:1,CampMcCarran:1,HooverDam:1,HeliosOne:1},
+CampGolf:{BoulderCity:1,CampMcCarran:2,NellisAFB:2,HooverDam:1,CampForlornHope:2,BitterSprings:1},
+BitterSprings:{BoulderCity:2,CampGolf:1,NellisAFB:1,HooverDam:2},
+NCRCF:{Primm:1,Goodsprings:2,MojaveOutpost:1},
+HeliosOne:{Novac:1,BoulderCity:1,TradingPost188:1,CampMcCarran:2},
+HooverDam:{BoulderCity:1,TheFort:2,CampSearchlight:2,NellisAFB:2,CampForlornHope:1,TradingPost188:1,CampGolf:1,BitterSprings:2}
 };
 
 // ============================================================
@@ -418,6 +462,7 @@ ammo_shells:{n:"Shotgun Shells",t:"ammo",e:"🔸",p:4,w:0.2,stack:1},
 energy_cell:{n:"Energy Cells",t:"ammo",e:"⚡",p:5,w:0.1,stack:1},
 doctor_bag:{n:"Doctor's Bag",t:"c",e:"🩹",hp:55,p:85,w:1},
 cowboy_repeater:{n:"Cowboy Repeater",t:"w",e:"🔫",a:19,p:190,w:5.8,ammo:"ammo_357"},
+pickaxe:{n:"Pickaxe",t:"w",e:"⛏",a:11,p:55,w:6},
 // Materials
 scrap:{n:"Scrap Metal",t:"m",e:"⚙",p:12,w:1},
 duct_tape:{n:"Duct Tape",t:"m",e:"🔧",p:10,w:0.5},
@@ -428,6 +473,26 @@ powder_charge:{n:"Powder Charge",t:"m",e:"💣",p:20,w:1},
 dynamite:{n:"Dynamite",t:"m",e:"🧨",p:30,w:1},
 gecko_hide:{n:"Gecko Hide",t:"m",e:"🦎",p:18,w:1.5},
 legion_coin:{n:"Legion Denarius",t:"m",e:"🪙",p:20,w:0.1},
+dirty_water:{n:"Dirty Water",t:"c",e:"💧",hp:3,p:4,w:0.5},
+cram:{n:"Cram",t:"c",e:"🥫",hp:12,p:14,w:0.6},
+iguana_bits:{n:"Iguana Bits",t:"c",e:"🥩",hp:14,p:16,w:0.5},
+tire_iron:{n:"Tire Iron",t:"w",e:"🔧",a:8,p:18,w:4},
+single_shotgun:{n:"Single Shotgun",t:"w",e:"🔫",a:18,p:130,w:5.2,ammo:"ammo_shells"},
+trail_carbine:{n:"Trail Carbine",t:"w",e:"🔫",a:22,p:240,w:6.2,ammo:"ammo_357"},
+smg_9mm:{n:"9mm SMG",t:"w",e:"🔫",a:16,p:210,w:4.5,ammo:"ammo_9mm",rare:1},
+reinforced_leather_armor:{n:"Reinforced Leather Armor",t:"a",e:"🧥",d:8,p:85,w:9,slot:"body"},
+metal_helmet:{n:"Metal Helmet",t:"a",e:"🪖",d:6,p:70,w:5,slot:"head"},
+wonderglue:{n:"Wonderglue",t:"m",e:"🧴",p:14,w:0.4,desc:"Useful junk for repairs."},
+wrench:{n:"Wrench",t:"m",e:"🔧",p:12,w:1.2,desc:"Heavy tool with trade value."},
+scrap_electronics:{n:"Scrap Electronics",t:"m",e:"📻",p:22,w:1,desc:"Salvageable circuitry and parts."},
+fission_battery:{n:"Fission Battery",t:"m",e:"🔋",p:35,w:2,desc:"Valuable old world power cell."},
+camera:{n:"Camera",t:"m",e:"📷",p:28,w:1,desc:"A pre-war camera in workable condition."},
+cigarette_pack:{n:"Cigarette Pack",t:"m",e:"🚬",p:8,w:0.1,desc:"A common barter item."},
+cigarette_carton:{n:"Cigarette Carton",t:"m",e:"📦",p:26,w:0.5,desc:"A valuable sealed carton."},
+silverware:{n:"Silverware",t:"m",e:"🍴",p:16,w:0.6,desc:"Useful to sell for quick caps."},
+silver_watch:{n:"Silver Pocket Watch",t:"m",e:"⌚",p:40,w:0.3,desc:"A valuable pre-war keepsake."},
+gold_necklace:{n:"Gold Necklace",t:"m",e:"📿",p:65,w:0.2,desc:"High-value jewelry."},
+conductor:{n:"Conductors",t:"m",e:"🧲",p:18,w:0.5,desc:"Electronic salvage with decent value."},
 };
 
 // ============================================================
@@ -455,6 +520,15 @@ great_khan:{n:"Great Khan",hp:45,a:13,d:6,xp:18,e:"🏹",loot:["ammo_9mm","ammo_
 securitron:{n:"Securitron",hp:80,a:22,d:14,xp:40,e:"🤖",loot:["energy_cell","sensor_module","scrap"]},
 super_mutant:{n:"Super Mutant",hp:95,a:24,d:11,xp:45,e:"💪",loot:["ammo_556","scrap","stimpak","cowboy_repeater"]},
 glowing_one:{n:"Glowing One",hp:65,a:17,d:5,xp:30,e:"☢️",loot:["doctor_bag","med_x","pre_war_money","stimpak"]},
+bark_scorpion:{n:"Bark Scorpion",hp:24,a:6,d:1,xp:9,e:"🦂",loot:["antivenom","herbs"]},
+giant_rat:{n:"Giant Rat",hp:18,a:5,d:0,xp:7,e:"🐀",loot:["dirty_water","cram"]},
+giant_ant:{n:"Giant Ant",hp:26,a:7,d:1,xp:10,e:"🐜",loot:["herbs","scrap"]},
+jackal_raider:{n:"Jackal Gang Member",hp:28,a:9,d:2,xp:12,e:"🔫",loot:["ammo_9mm","switchblade","single_shotgun","cigarette_pack"]},
+viper_gunslinger:{n:"Viper Gunslinger",hp:34,a:12,d:4,xp:16,e:"🐍",loot:["ammo_357","varmint_rifle","leather_armor","cigarette_carton"]},
+centaur:{n:"Centaur",hp:70,a:16,d:6,xp:28,e:"🧟",loot:["med_x","dirty_water","scrap"]},
+feral_ghoul_trooper:{n:"Feral Ghoul Trooper",hp:50,a:14,d:4,xp:22,e:"☢️",loot:["stimpak","ammo_556","pre_war_money","ncr_armor"]},
+young_deathclaw:{n:"Young Deathclaw",hp:120,a:28,d:10,xp:55,e:"🦖",loot:["stimpak","combat_armor"]},
+lakelurk:{n:"Lakelurk",hp:85,a:22,d:10,xp:38,e:"🦀",loot:["purified_water","stimpak","pre_war_money"]},
 deathclaw:{n:"Deathclaw",hp:200,a:40,d:18,xp:100,e:"🦖",loot:["super_stimpak","super_stimpak","combat_armor"],boss:1},
 };
 
@@ -472,12 +546,16 @@ nipton_hall:{n:"Nipton Town Hall",e:"🏛",am:["Burned. The lottery happened her
 dino_bite:{n:"Dino Bite Gift Shop",e:"🦕",am:["Cliff Briscoe arranges toys.","Dino souvenirs everywhere."]},
 motel:{n:"Novac Motel",e:"🏨",am:["Rooms available. 100 caps a night.","Someone watches from the dinosaur."]},
 mcbride_house:{n:"McBride's Brahmin Ranch",e:"🐄",am:["Brahmin low in the pen.","McBride looks worried."]},
+ranger_bungalow:{n:"Ranger Andy's Bungalow",e:"🪖",am:["An old ranger keeps his gear in careful order.","The place is humble, but everything has a purpose."]},
+no_bark_shack:{n:"No-bark's Shack",e:"🛖",am:["The shack is packed with junk, bottles, and wild theories.","Somewhere in here, No-bark swears there's proof of everything."]},
 boulder_bar:{n:"Boulder City Bar",e:"🍺",am:["NCR soldiers drink quietly.","Tension in the air."]},
 ncr_memorial:{n:"NCR Memorial",e:"🏛",am:["Names of the fallen at the dam.","Flowers left by visitors."]},
 atomic_wrangler:{n:"Atomic Wrangler",e:"🎲",am:["The Garret twins run a tight ship.","Gamblers lose their caps."]},
 kings_hq:{n:"The King's School of Impersonation",e:"👑",am:["The King sits in his throne.","Rex pants by the door."]},
 mick_ralph:{n:"Mick & Ralph's",e:"🏪",am:["If they don't have it, you don't need it.","Under the counter deals available."]},
 old_mormon_fort:{n:"Old Mormon Fort",e:"🏥",am:["The Followers of the Apocalypse help the sick.","Julie Farkas organizes supplies."]},
+silver_rush:{n:"Silver Rush",e:"⚡",am:["Energy weapons glow in locked displays while guards watch every hand.","The Van Graffs make Freeside commerce feel like a threat."]},
+cerulean_robotics:{n:"Cerulean Robotics",e:"🤖",am:["A battered robotics storefront lit by failing bulbs.","Old parts, broken terminals, and scavenged machines fill the room."]},
 lucky_38:{n:"Lucky 38",e:"🏰",am:["Mr. House's tower. Securitrons everywhere.","The presidential suite awaits."]},
 gomorrah:{n:"Gomorrah",e:"🎰",am:["The Omertas run this joint.","Smoke and noise."]},
 ultra_luxe:{n:"Ultra-Luxe",e:"🥂",am:["The White Glove Society. Very exclusive.","Fine dining of a... special kind."]},
@@ -514,6 +592,22 @@ westside_lodge:{n:"Westside Rooms",e:"🏨",am:["Cheap beds, thin walls, and a l
 nellis_bar:{n:"Boomer Mess Hall",e:"🍺",am:["Military trays, loud stories, and old bomber pride fill the hall.","Someone is always talking about artillery or history."]},
 nellis_supply:{n:"Boomer Supply Hangar",e:"📦",am:["Ammo tins, tools, and salvaged aircraft parts are stacked high.","Even the spare parts feel dangerous here."]},
 nellis_med:{n:"Boomer Aid Station",e:"🏥",am:["Field dressings and spare chems are ready for the next accident.","The smell of antiseptic barely covers the fuel in the air."]},
+golf_resort:{n:"Camp Golf Clubhouse",e:"🏨",am:["The ruined resort still serves as Camp Golf's mess and social center.","NCR troopers eat beneath faded pre-war luxury.","Chief Hanlon occasionally drifts through, looking like he belongs somewhere quieter."]},
+golf_barracks:{n:"Misfits Barracks",e:"🛏",am:["The barracks are all footlockers, bunks, and simmering frustration.","The Misfits bicker between drills and long watches.","Somebody has tried to make the place feel like a real squad room."]},
+golf_command:{n:"Camp Golf Command Tent",e:"🪖",am:["Maps of Hoover Dam and Lake Mead cover every table.","Orders, training notes, and ranger reports are pinned to the canvas walls.","Sergeant McCredie keeps the place running even when the recruits make that difficult."]},
+golf_clinic:{n:"Camp Golf Aid Station",e:"🏥",am:["Bandages, medkits, and triage notes are stacked everywhere.","Dr. Kemp treats sprains, bullet wounds, and heat exhaustion without much patience.","The clinic feels overworked but dependable."]},
+bitter_refugee:{n:"Refugee Tents",e:"⛺",am:["Canvas shelters crowd the hillside under NCR guard.","Families keep what little they have packed close at hand.","The camp feels safe for the moment, but never comfortable."]},
+bitter_command:{n:"Bitter Springs Command Tent",e:"🪖",am:["Patrol maps, refugee rolls, and threat reports cover every surface.","NCR officers balance relief work against the constant need for security.","Nobody in this tent looks fully rested."]},
+bitter_mess:{n:"Mess Hall",e:"🍲",am:["Ration tins, stew pots, and tired conversations fill the hall.","Troopers and refugees eat under the same patched roof when supplies allow.","Every meal here feels earned."]},
+bitter_clinic:{n:"Aid Station",e:"🏥",am:["Stimpaks, bandages, and field cots line the canvas walls.","The medics are used to bites, burns, and refugee exhaustion.","The whole station smells like antiseptic and dust."]},
+ncrcf_visitor:{n:"Visitors Center",e:"🏤",am:["A ruined reception desk and looted waiting area still hint at the prison this used to be.","Powder Gangers lean on the counters like they own the place, because they do.","Carter runs trade from the front while Dawes watches the approach."]},
+ncrcf_admin:{n:"Administration Building",e:"🏢",am:["The old administration offices are now Eddie's nerve center.","Defaced NCR signs and prison records cover the walls.","Powder Ganger guards patrol the halls while Eddie gives orders upstairs."]},
+ncrcf_block_a:{n:"Cell Block A",e:"🚪",am:["Rows of steel doors and stripped bunks stretch into the dark.","Some cells are empty, some are occupied, and none of them feel safe.","Old NCR discipline has been replaced by Powder Ganger hierarchy."]},
+ncrcf_block_b:{n:"Cell Block B",e:"🛏",am:["The second block is half barracks, half clinic, and fully miserable.","Bandages, lockups, and scavenged gear are stacked between cells.","Even the medics look like prisoners here."]},
+helios_main:{n:"HELIOS One Main Plant",e:"☀️",am:["The main plant hums at a miserable fraction of its intended output.","NCR guards watch the halls while Fantastic talks like he personally invented electricity.","Every console here feels one good engineer away from working properly."]},
+helios_tower:{n:"HELIOS One Tower",e:"🗼",am:["The control tower rises over the mirror yard like a promise the Mojave never quite kept.","Old world systems blink behind cracked glass and dust-caked panels.","From up here, the whole solar field looks like a machine waiting to wake up."]},
+helios_east:{n:"East Reflector Control",e:"🪞",am:["A cramped reflector control shack surrounded by scorched metal and drifting dust.","The terminal still has power, but some of the field controls only respond when they feel like it.","A patient NCR guard tries to make this place sound less dangerous than it is."]},
+helios_west:{n:"West Reflector Control",e:"🪞",am:["The western control shack is more trap than office, with hazards left behind from the plant's rougher days.","A cracked terminal watches over old mirrors and dangerous wiring.","It smells like hot metal, dust, and a bad idea waiting to happen."]},
 forlorn_bar:{n:"Forlorn Hope Mess",e:"🍺",am:["Exhausted NCR troopers eat in tense silence.","Every table carries stories of raids, losses, and stubborn survival."]},
 forlorn_supply:{n:"Forlorn Hope Quartermaster",e:"📦",am:["Bandages, rifle parts, and ration tins are stacked with military precision.","Nothing here feels plentiful, only necessary."]},
 forlorn_med:{n:"Forlorn Hope Aid Tent",e:"🏥",am:["Wounded troopers rest behind thin canvas walls.","The medics work fast because they have to."]},
@@ -525,7 +619,7 @@ dam_power:{n:"Dam Power Plant",e:"⚡",am:["Turbines hum. The Mojave's lifeline.
 };
 
 // Factions
-const FACTIONS={NCR:"New California Republic",Legion:"Caesar's Legion",House:"Mr. House",BOS:"Brotherhood of Steel",Followers:"Followers of the Apocalypse",Kings:"The Kings",Khans:"Great Khans"};
+const FACTIONS={NCR:"New California Republic",Legion:"Caesar\'s Legion",House:"Mr. House",BOS:"Brotherhood of Steel",Followers:"Followers of the Apocalypse",Kings:"The Kings",Khans:"Great Khans",Boomers:"Nellis Boomers",PowderGangers:"Powder Gangers"};
 
 const PRIMM_NPCS={
   johnson_nash:{name:"Johnson Nash",male:true,age:63,role:"Mojave Express agent",icon:"👴",line:"Package couriers, not package thieves. That's how Primm used to work."},
@@ -534,6 +628,69 @@ const PRIMM_NPCS={
   ede:{name:"ED-E",male:true,age:5,role:"Damaged eyebot",icon:"🤖",line:"The eyebot crackles with static and plays a short burst of old-world audio."},
   deputy_beagle:{name:"Deputy Beagle",male:true,age:39,role:"Primm deputy",icon:"👮",line:"I am a deputy, you know. This town is in a terrible state."},
   lieutenant_hayes:{name:"Lieutenant Hayes",male:true,age:34,role:"NCR officer",icon:"🪖",line:"We can hold the roads, but Primm still needs real law and order."}
+};
+
+const NOVAC_NPCS={
+  cliff_briscoe:{name:"Cliff Briscoe",male:true,age:49,role:"Dino Bite merchant",icon:"🦕",line:"If you want guns, toys, or a motel room, talk straight and pay in caps."},
+  manny_vargas:{name:"Manny Vargas",male:true,age:35,role:"Former NCR sniper",icon:"🎯",line:"I keep watch from the dinosaur. Somebody in Novac has to."},
+  craig_boone:{name:"Craig Boone",male:true,age:31,role:"1st Recon sniper",icon:"🎖",line:"I watch the road. I shoot what needs shooting."},
+  no_bark:{name:"No-bark Noonan",male:true,age:62,role:"Town eccentric",icon:"🛖",line:"They say all kindsa things go bump in the night. I say most of it bumps back."},
+  jeannie_may:{name:"Jeannie May Crawford",male:false,age:56,role:"Motel owner",icon:"🧾",line:"Welcome to Novac. We work hard here, and we expect folks to pull their weight."},
+  daisy_whitman:{name:"Daisy Whitman",male:false,age:72,role:"Retired pilot",icon:"🛩",line:"I've flown through worse than this little Mojave dust bowl."},
+  ada_straus:{name:"Doctor Ada Straus",male:false,age:47,role:"Town doctor",icon:"⚕️",line:"Sit still and let me look at you before you bleed on my floor."},
+  bruce_isaac:{name:"Bruce Isaac",male:true,age:42,role:"Nervous drifter",icon:"🎤",line:"I'm just trying to keep my head down. That plan hasn't been going great."},
+  ranger_andy:{name:"Ranger Andy",male:true,age:58,role:"Retired NCR Ranger",icon:"🪖",line:"Leg's not what it used to be, but the rest of me still remembers the drill."},
+  alice_mcbride:{name:"Alice McBride",male:false,age:43,role:"Brahmin rancher",icon:"🐄",line:"The ranch keeps Novac fed when the roads don't."},
+  dusty_mcbride:{name:"Dusty McBride",male:true,age:19,role:"Ranch hand",icon:"🐂",line:"Brahmin don't watch themselves. Somebody has to work around here."}
+};
+
+const FREESIDE_NPCS={
+  james_garret:{name:"James Garret",male:true,age:39,role:"Atomic Wrangler owner",icon:"🎲",line:"Caps talk louder than pride in Freeside. Keep business simple and we get along fine."},
+  francine_garret:{name:"Francine Garret",male:false,age:37,role:"Atomic Wrangler co-owner",icon:"🍸",line:"The Wrangler survives because we know what people want before they ask."},
+  old_ben:{name:"Old Ben",male:true,age:58,role:"Local fixer",icon:"🧓",line:"In Freeside, survival usually comes down to knowing when to talk and when to keep walking."},
+  orris:{name:"Orris",male:true,age:34,role:"Street escort",icon:"🗡",line:"You need somebody to walk you through Freeside, I'm available for the right price."},
+  the_king:{name:"The King",male:true,age:32,role:"Leader of the Kings",icon:"👑",line:"You don't mess with my people, and we'll get along just fine."},
+  pacer:{name:"Pacer",male:true,age:29,role:"King's enforcer",icon:"🧥",line:"If you're here to start something, save me the trouble and say so now."},
+  rex:{name:"Rex",male:true,age:12,role:"Cyberdog",icon:"🐕",line:"Rex watches every movement in the room, loyal and dangerous all at once."},
+  mick:{name:"Mick",male:true,age:44,role:"Weapons merchant",icon:"🔫",line:"If I've got it, I'll sell it. If I don't, you probably don't need it."},
+  ralph:{name:"Ralph",male:true,age:41,role:"Trader and fixer",icon:"🧰",line:"The good stock stays under the counter for customers who know how to ask."},
+  julie_farkas:{name:"Julie Farkas",male:false,age:33,role:"Follower doctor",icon:"⚕️",line:"People in Freeside need food, medicine, and a little dignity. Preferably in that order."},
+  major_kieran:{name:"Major Kieran",male:true,age:46,role:"Follower administrator",icon:"📘",line:"The fort keeps running because somebody has to make order out of chaos."},
+  loyal:{name:"Loyal",male:true,age:67,role:"Old mechanic",icon:"🔧",line:"Most robots are simpler than people, and that's saying something."}
+};
+
+
+const CAMP_GOLF_NPCS={
+  chief_hanlon:{name:"Chief Hanlon",male:true,age:61,role:"Chief of the NCR Rangers",icon:"🪖",line:"Wars are won or lost long before the shooting starts. Most people only notice the noise."},
+  sergeant_mccredie:{name:"Sergeant McCredie",male:true,age:41,role:"Camp Golf drill sergeant",icon:"📋",line:"I've got one squad of problem children and a war that won't wait for them to grow up."},
+  private_ohanrahan:{name:"Private O'Hanrahan",male:true,age:22,role:"NCR trooper, the Misfits",icon:"😟",line:"I can shoot fine. It's the dying part I'm not exactly looking forward to."},
+  private_razz:{name:"Private Razz",male:true,age:24,role:"NCR trooper, the Misfits",icon:"🎯",line:"Point me at a target and I'll hit it. Point me at authority and we'll probably have words."},
+  private_mags:{name:"Private Mags",male:false,age:23,role:"NCR trooper, the Misfits",icon:"🪖",line:"If this squad held itself together for five minutes, I'd call that progress."},
+  private_poindexter:{name:"Private Poindexter",male:true,age:21,role:"NCR trooper, the Misfits",icon:"📚",line:"Tactics aren't the issue. Applying them while everyone ignores me is the issue."},
+  doctor_kemp:{name:"Dr. Kemp",male:true,age:46,role:"Camp Golf doctor",icon:"⚕️",line:"Try not to come back with a fresh hole in you before I've finished with the last one."}
+};
+
+const BITTER_SPRINGS_NPCS={
+  captain_gilles:{name:"Captain Gilles",male:false,age:44,role:"Bitter Springs commander",icon:"🪖",line:"Keeping people alive out here means balancing mercy, discipline, and never enough supplies."},
+  major_dhatri:{name:"Major Dhatri",male:true,age:48,role:"NCR hunter and field officer",icon:"🎯",line:"The hills around Bitter Springs don't forgive mistakes. Neither do cazadores."},
+  oscar_velasco:{name:"Oscar Velasco",male:true,age:57,role:"Refugee elder",icon:"⛺",line:"We've lost enough already. Anyone who still helps is remembered here."},
+  bitter_root:{name:"Bitter-Root",male:true,age:24,role:"NCR trooper",icon:"🪖",line:"You either make peace with ugly history out here or it follows you into every conversation."},
+  lieutenant_markland:{name:"Lieutenant Markland",male:true,age:36,role:"NCR camp officer",icon:"📋",line:"Relief work still needs order. Without it, the whole camp starts slipping apart."}
+};
+
+const NCRCF_NPCS={
+  eddie:{name:"Eddie",male:true,age:39,role:"Powder Ganger leader",icon:"💥",line:"The NCR built a prison. We turned it into a business."},
+  dawes:{name:"Dawes",male:true,age:34,role:"Gate guard",icon:"🚧",line:"Nobody walks into the NCRCF for free unless I say so."},
+  carter:{name:"Carter",male:true,age:41,role:"Powder Ganger trader",icon:"💰",line:"If it explodes, shoots, or patches holes, I can probably sell it."},
+  meyers:{name:"Meyers",male:true,age:55,role:"Former sheriff and prisoner",icon:"⭐",line:"A jail teaches you who belongs behind bars and who just ended up there."},
+  hannigan:{name:"Hannigan",male:true,age:46,role:"Prison medic",icon:"⚕️",line:"Around here I patch up idiots faster than they can make new holes in themselves."}
+};
+
+const HELIOS_NPCS={
+  lt_haggerty:{name:"Lieutenant Haggerty",male:false,age:36,role:"NCR officer",icon:"🪖",line:"I need this plant secure and producing power, not excuses."},
+  fantastic:{name:"Fantastic",male:true,age:31,role:"NCR technician",icon:"😎",line:"They asked if I had a degree. I told them I had a theoretical degree in physics."},
+  ignacio_rivas:{name:"Ignacio Rivas",male:true,age:48,role:"Followers scientist",icon:"⚕️",line:"Power is only useful when it serves people instead of vanity."},
+  private_renolds:{name:"Private Renolds",male:true,age:24,role:"NCR guard",icon:"🔭",line:"Out here you watch the mirrors, the road, and the sky, in that order."}
 };
 
 // Names
@@ -551,21 +708,52 @@ const BACKGROUNDS=[
 {id:'ex_legion',n:'Ex-Legionary',d:'Branded a traitor. Caesar wants your head.',gold:20,atk:8,def:6,spd:4,items:['machete','healing_powder','legion_coin','leather_armor'],loc:'Nipton',class:'legion',karma:-10},
 {id:'follower',n:'Follower of the Apocalypse',d:'Knowledge is the best weapon.',gold:60,atk:3,def:2,spd:4,items:['stimpak','stimpak','purified_water','herbs','herbs'],loc:'FreesideN',class:'doctor',karma:10},
 {id:'bos_exile',n:'Brotherhood Exile',d:'Cast out for asking questions.',gold:35,atk:6,def:7,spd:3,items:['laser_pistol','energy_cell','energy_cell','energy_cell','energy_cell','energy_cell','combat_helmet'],loc:'HiddenValley',class:'knight',karma:5},
+{id:'caravan_guard',n:'Caravan Guard',d:'You kept brahmin and merchants alive for a living.',gold:70,atk:6,def:4,spd:4,items:['caravan_shotgun','ammo_shells','ammo_shells','ammo_shells','leather_armor','stimpak'],loc:'TradingPost188',class:'guard',karma:2},
+{id:'khan_runner',n:'Great Khan Runner',d:'Fast hands, fast caps, and faster exits.',gold:45,atk:5,def:3,spd:7,items:['revolver_357','ammo_357','ammo_357','ammo_357','jet','stimpak'],loc:'RedRockCanyon',class:'runner',karma:-2},
+{id:'boomer_mechanic',n:'Boomer Mechanic',d:'You grew up around artillery, scrap, and old world machines.',gold:55,atk:4,def:4,spd:5,items:['varmint_rifle','ammo_556','ammo_556','scrap','sensor_module','stimpak'],loc:'NellisAFB',class:'mechanic',karma:1},
+{id:'freeside_scrapper',n:'Freeside Scrapper',d:'You learned to survive by reading danger before it found you.',gold:35,atk:5,def:3,spd:6,items:['switchblade','jet','pre_war_money','duct_tape','stimpak'],loc:'FreesideN',class:'scrapper',karma:-1},
+{id:'prospector',n:'Prospector',d:'You spent years chasing rumors, salvage, and buried luck.',gold:50,atk:4,def:4,spd:5,items:['pickaxe','scrap','scrap','bobby_pin','stimpak','sunset_sars'],loc:'Sloan',class:'prospector',karma:0},
+{id:'ncr_medic',n:'NCR Field Medic',d:'You patched up soldiers under fire and kept moving.',gold:65,atk:3,def:4,spd:4,items:['doctor_bag','stimpak','stimpak','med_x','purified_water'],loc:'CampMcCarran',class:'medic',karma:8},
+{id:'wasteland_hunter',n:'Wasteland Hunter',d:'You track dangerous things and make a living off what is left behind.',gold:40,atk:6,def:4,spd:6,items:['cowboy_repeater','ammo_357','ammo_357','gecko_steak','antivenom'],loc:'Jacobstown',class:'hunter',karma:3},
+{id:'strip_operative',n:'Strip Operative',d:'You know how to blend in, read rooms, and leave richer than you arrived.',gold:95,atk:4,def:2,spd:5,items:['maria','ammo_9mm','ammo_9mm','fancy_lad','pre_war_money'],loc:'TheStrip',class:'operative',karma:-3},
+{id:'ncr_trooper',n:'NCR Trooper',d:'An active NCR trooper posted to the Mojave frontier.',gold:60,atk:6,def:6,spd:4,items:['service_rifle','ammo_556','ammo_556','ammo_556','ammo_556','ncr_armor','stimpak'],loc:'CampMcCarran',class:'trooper',karma:4,fac:'NCR'},
+{id:'ncr_ranger_recruit',n:'NCR Ranger Recruit',d:'You earned a place on NCR patrols and learned to survive the long roads.',gold:55,atk:6,def:4,spd:6,items:['cowboy_repeater','ammo_357','ammo_357','ammo_357','stimpak','doctor_bag'],loc:'MojaveOutpost',class:'ranger',karma:6,fac:'NCR'},
+{id:'legion_recruit_start',n:'Legion Recruit',d:'You serve Caesar now, and weakness is punished quickly.',gold:25,atk:7,def:5,spd:5,items:['machete','healing_powder','healing_powder','legion_coin','legion_coin','leather_armor'],loc:'NelsonCamp',class:'legionary',karma:-8,fac:'Legion'},
+{id:'legion_scout_start',n:'Legion Scout',d:'You move ahead of the main force, watching roads and waiting to strike.',gold:30,atk:6,def:4,spd:7,items:['revolver_357','ammo_357','ammo_357','healing_powder','legion_coin'],loc:'CottonwoodCove',class:'scout',karma:-6,fac:'Legion'},
+{id:'great_khan_warrior',n:'Great Khan Warrior',d:'You ride with the Khans and earn your place through nerve and violence.',gold:40,atk:7,def:4,spd:6,items:['revolver_357','ammo_357','ammo_357','jet','machete','stimpak'],loc:'RedRockCanyon',class:'khan',karma:-4,fac:'Khans'},
+{id:'brotherhood_scribe',n:'Brotherhood Scribe',d:'You serve the Brotherhood by recovering, studying, and protecting old world tech.',gold:45,atk:4,def:4,spd:4,items:['laser_pistol','energy_cell','energy_cell','energy_cell','sensor_module','stimpak'],loc:'HiddenValley',class:'scribe',karma:4,fac:'BOS'},
+{id:'brotherhood_knight',n:'Brotherhood Knight',d:'You stand guard over the bunker and the dangerous knowledge within.',gold:50,atk:7,def:7,spd:3,items:['laser_rifle','energy_cell','energy_cell','energy_cell','combat_helmet','metal_armor'],loc:'HiddenValley',class:'knight',karma:2,fac:'BOS'},
+{id:'kings_member',n:'Kings Member',d:'You run with the Kings and protect your own in Freeside.',gold:35,atk:5,def:3,spd:6,items:['pistol_9mm','ammo_9mm','ammo_9mm','ammo_9mm','switchblade','stimpak'],loc:'FreesideN',class:'king',karma:3,fac:'Kings'},
+{id:'boomer_gunner',n:'Boomer Gunner',d:'You grew up under artillery fire and learned to hit back harder.',gold:50,atk:6,def:5,spd:4,items:['varmint_rifle','ammo_556','ammo_556','ammo_556','scrap','stimpak'],loc:'NellisAFB',class:'gunner',karma:1,fac:'Boomers'},
+{id:'follower_doctor',n:'Follower Doctor',d:'You are an active Follower healer trying to keep the Mojave alive one patient at a time.',gold:55,atk:3,def:3,spd:4,items:['doctor_bag','stimpak','stimpak','purified_water','med_x','herbs'],loc:'FreesideN',class:'doctor',karma:10,fac:'Followers'},
+{id:'chairman_runner',n:'Chairman Runner',d:'You work the Tops floor, pass quiet messages, and know which smiles are fake.',gold:85,atk:4,def:2,spd:6,items:['pistol_9mm','ammo_9mm','ammo_9mm','pre_war_money','fancy_lad'],loc:'TheStrip',class:'chairman',karma:-1,fac:'House'},
 ];
 
 const SPECIAL_LABELS=['S','P','E','C','I','A','L'];
 const SPECIAL_NAMES=['Strength','Perception','Endurance','Charisma','Intelligence','Agility','Luck'];
+const START_PRESETS=[
+{id:'balanced',n:'Balanced',d:'Steady all-round start.',special:[5,5,5,5,5,5,5]},
+{id:'gunslinger',n:'Gunslinger',d:'High agility and luck for fast shots.',special:[4,6,4,4,5,8,7]},
+{id:'bruiser',n:'Bruiser',d:'Built to hit hard and soak damage.',special:[8,4,8,3,4,4,4]},
+{id:'scout',n:'Scout',d:'Good perception and agility for travel and danger.',special:[4,8,5,4,5,7,4]},
+{id:'silver_tongue',n:'Silver Tongue',d:'Better charm and brains than brawn.',special:[3,5,4,8,7,5,4]},
+{id:'survivor',n:'Survivor',d:'Tough, practical, and hard to put down.',special:[6,5,8,3,5,6,3]},
+];
+
 
 // ============================================================
 // STATE
 // ============================================================
 let S=null,combat=null,tQ=[],tDest=null;
+const SAVE_KEY='fnv_rpg';
+const SAVE_BACKUP_KEY='fnv_rpg_backup';
+let _saveTimer=null,_autoSaveTimer=null,_lastSaveStamp=0;
 
 const BASE={name:"Courier",hp:80,maxHp:80,ap:60,maxAp:60,xp:0,level:1,caps:30,
 special:[5,5,5,5,5,5,5],perks:[],
 atk:5,def:3,spd:4,loc:"Goodsprings",
 gear:{w:null,body:null,head:null},inv:[],quests:[],
-rep:{NCR:0,Legion:0,House:0,BOS:0,Followers:0,Kings:0,Khans:0},
+rep:{NCR:0,Legion:0,House:0,BOS:0,Followers:0,Kings:0,Khans:0,PowderGangers:0},
 kills:{},days:1,hours:8,log:[],karma:0,
 bg:null,class:'courier',
 // Social
@@ -578,10 +766,49 @@ fame:0,bounty:0,
 // Progression
 scavengeCount:0,capsEarned:0,killCount:0,questsComplete:0,
 settlements:[],army:{soldiers:0,quality:1,morale:50,max:0},
+flags:{},
 };
 
-function save(){try{localStorage.setItem('fnv_rpg',JSON.stringify(S))}catch(e){}}
-function load(){const d=localStorage.getItem('fnv_rpg');if(d){try{S=JSON.parse(d);migrate();return true}catch(e){}}return false}
+function serializeSave(){return JSON.stringify(S)}
+function save(force=false){
+  if(!S)return false;
+  const now=Date.now();
+  if(!force&&now-_lastSaveStamp<150)return true;
+  try{
+    const raw=serializeSave();
+    localStorage.setItem(SAVE_KEY,raw);
+    localStorage.setItem(SAVE_BACKUP_KEY,raw);
+    _lastSaveStamp=now;
+    return true;
+  }catch(e){return false}
+}
+function queueSave(delay=180){
+  if(!S)return;
+  clearTimeout(_saveTimer);
+  _saveTimer=setTimeout(()=>save(true),delay);
+}
+function startAutoSaveLoop(){
+  clearInterval(_autoSaveTimer);
+  _autoSaveTimer=setInterval(()=>save(true),15000);
+}
+function bindAutoSave(){
+  const hardSave=()=>save(true);
+  ['pagehide','beforeunload','blur'].forEach(ev=>window.addEventListener(ev,hardSave,{capture:true}));
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')hardSave()},{capture:true});
+  document.addEventListener('freeze',hardSave,{capture:true});
+}
+function load(){
+  const candidates=[localStorage.getItem(SAVE_KEY),localStorage.getItem(SAVE_BACKUP_KEY)];
+  for(const raw of candidates){
+    if(!raw)continue;
+    try{
+      S=JSON.parse(raw);
+      migrate();
+      return true;
+    }catch(e){}
+  }
+  return false;
+}
 function migrate(){
   if(!S.special)S.special=[5,5,5,5,5,5,5];
   if(!S.companions)S.companions=[];
@@ -596,59 +823,185 @@ function migrate(){
   if(!S.children)S.children=[];
   if(S.bounty===undefined)S.bounty=0;
   if(!S.perks)S.perks=[];
+  if(!S.flags)S.flags={};
+  if(!S.gear)S.gear={w:null,body:null,head:null};
+  if(S.age===undefined)S.age=25;
+  if(S.isMale===undefined)S.isMale=true;
 }
 
-function newGame(){
-  S=clone(BASE);
-  const bg=rndA(BACKGROUNDS);
-  window._bgI=BACKGROUNDS.indexOf(bg);
-  const autoMale=R()<.5;
-  const autoName=(autoMale?rndA(FM):rndA(FF))+' '+rndA(LN);
-  window._autoName=autoName;window._autoMale=autoMale;
+function randomFullName(male){
+  return (male?rndA(FM):rndA(FF))+' '+rndA(LN);
+}
+function initCustomState(bgIndex){
+  const male=R()<.5;
+  window._custom={
+    name:randomFullName(male),
+    male,
+    bgI:bgIndex,
+    presetI:0,
+    age:25
+  };
+}
+function getCurrentCustomBg(){
+  const i=window._custom?.bgI||0;
+  return BACKGROUNDS[Math.max(0,Math.min(BACKGROUNDS.length-1,i))];
+}
+function getCurrentSpecialPreset(){
+  const i=window._custom?.presetI||0;
+  return START_PRESETS[Math.max(0,Math.min(START_PRESETS.length-1,i))];
+}
+function renderStartPreview(){
+  const bg=getCurrentCustomBg();
+  const preset=getCurrentSpecialPreset();
+  const gender=window._custom?.male?'👨':'👩';
+  const shortName=(window._custom?.name||'Wanderer').split(' ')[0];
   openDlg(`<div style="text-align:center">
-  <div style="font-size:48px;margin-bottom:6px">${autoMale?'👨':'👩'}</div>
-  <div style="font-size:16px;font-weight:bold;margin-bottom:4px;color:var(--amber)">${autoName}</div>
+  <div style="font-size:48px;margin-bottom:6px">${gender}</div>
+  <div style="font-size:16px;font-weight:bold;margin-bottom:4px;color:var(--amber)">${window._custom?.name||'Wanderer'}</div>
   <div style="font-size:12px;color:var(--green);margin-bottom:4px">${bg.n}</div>
   <div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:10px">${bg.d}</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;font-size:10px;margin-bottom:10px">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;font-size:10px;margin-bottom:8px">
   <div style="background:var(--panel2);padding:4px;border-radius:3px">⚔ ATK ${bg.atk}</div>
   <div style="background:var(--panel2);padding:4px;border-radius:3px">🛡 DEF ${bg.def}</div>
   <div style="background:var(--panel2);padding:4px;border-radius:3px">💨 SPD ${bg.spd}</div>
   <div style="background:var(--panel2);padding:4px;border-radius:3px">💰 ${bg.gold} caps</div>
   <div style="background:var(--panel2);padding:4px;border-radius:3px">📍 ${LOCS[bg.loc]?.n}</div>
   <div style="background:var(--panel2);padding:4px;border-radius:3px">⚖ Karma ${bg.karma}</div>
+  ${bg.fac?`<div style="grid-column:1/-1;background:var(--panel2);padding:4px;border-radius:3px">🏴 Faction ${FACTIONS[bg.fac]||bg.fac}</div>`:''}
   </div>
-  <button class="bt go" style="text-align:center" onclick="quickStart(window._autoName,window._autoMale)">Begin as ${autoName.split(' ')[0]}</button>
-  <button class="bt" style="text-align:center" onclick="closeDlg();newGame()">🔄 Reroll</button>
-  <button class="bt" style="text-align:center" onclick="closeDlg();customChar()">✏ Customize</button>
+  <div style="background:var(--panel2);padding:7px;border-radius:5px;margin-bottom:10px;font-size:10px">
+    <div style="color:var(--amber);margin-bottom:4px">SPECIAL PRESET — ${preset.n}</div>
+    <div style="color:var(--muted);margin-bottom:6px">${preset.d}</div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">
+      ${SPECIAL_LABELS.map((label,idx)=>`<div style='background:#1a1a10;padding:4px 2px;border-radius:3px'><div style='color:var(--amber2)'>${label}</div><div>${preset.special[idx]}</div></div>`).join('')}
+    </div>
+  </div>
+  <button class="bt go" style="text-align:center" onclick="quickStart()">Begin as ${shortName}</button>
+  <button class="bt" style="text-align:center" onclick="rerollStart()">🔄 Reroll Start</button>
+  <button class="bt" style="text-align:center" onclick="customChar()">✏ Customize</button>
   </div>`);
 }
-function quickStart(name,male){
-  const bg=BACKGROUNDS[window._bgI];
-  S.name=name;S.isMale=male;S.atk=bg.atk;S.def=bg.def;S.spd=bg.spd;
+function rerollStart(){
+  initCustomState(rnd(0,BACKGROUNDS.length-1));
+  window._custom.presetI=rnd(0,START_PRESETS.length-1);
+  renderStartPreview();
+}
+function newGame(){
+  S=clone(BASE);
+  initCustomState(rnd(0,BACKGROUNDS.length-1));
+  window._custom.presetI=rnd(0,START_PRESETS.length-1);
+  renderStartPreview();
+}
+function quickStart(){
+  const bg=getCurrentCustomBg();
+  const preset=getCurrentSpecialPreset();
+  const cfg=window._custom||{};
+  S.name=(cfg.name||randomFullName(cfg.male!==false)).trim();
+  S.isMale=cfg.male!==false;
+  S.age=Math.max(16,Math.min(70,parseInt(cfg.age,10)||25));
+  S.special=clone(preset.special);
+  S.atk=bg.atk;S.def=bg.def;S.spd=bg.spd;
   S.caps=bg.gold;S.bg=bg.id;S.class=bg.class;S.karma=bg.karma||0;
-  S.loc=bg.loc;S.inv=clone(bg.items);S.maxHp=calcMaxHp();S.hp=S.maxHp;
+  S.loc=bg.loc;S.inv=clone(bg.items);
+  if(bg.fac&&S.rep&&S.rep[bg.fac]!==undefined)S.rep[bg.fac]=Math.max(S.rep[bg.fac],12);
+  if(bg.fac==='Boomers')setFlag('ally_boomers_start',true);
+  S.maxHp=calcMaxHp();S.hp=S.maxHp;
   S.maxAp=calcMaxAp();S.ap=S.maxAp;
   closeDlg();
   log(S.name+' — '+bg.n+'.','q');
   log(bg.d,'e');
-  upAll();save();
+  log('SPECIAL preset: '+preset.n+'.','e');
+  upAll();save(true);
+}
+function changeCustomBg(delta){
+  if(!window._custom)initCustomState(0);
+  window._custom.bgI=(window._custom.bgI+delta+BACKGROUNDS.length)%BACKGROUNDS.length;
+  renderCustomChar();
+}
+function changePreset(delta){
+  if(!window._custom)initCustomState(0);
+  window._custom.presetI=(window._custom.presetI+delta+START_PRESETS.length)%START_PRESETS.length;
+  renderCustomChar();
+}
+function setCustomGender(male){
+  if(!window._custom)initCustomState(0);
+  window._custom.male=!!male;
+  if(!window._custom.name||window._custom.name.trim()==='')window._custom.name=randomFullName(!!male);
+  renderCustomChar();
+}
+function rerollCustomName(){
+  if(!window._custom)initCustomState(0);
+  window._custom.name=randomFullName(window._custom.male!==false);
+  renderCustomChar();
+}
+function updateCustomName(v){
+  if(!window._custom)initCustomState(0);
+  window._custom.name=v;
+}
+function updateCustomAge(v){
+  if(!window._custom)initCustomState(0);
+  window._custom.age=v;
 }
 function customChar(){
-  const bg=BACKGROUNDS[window._bgI];
-  openDlg(`<h3 style="text-align:center;color:var(--amber)">${bg.n}</h3>
-  <p style="font-size:11px;font-style:italic;color:var(--muted);margin-bottom:8px;text-align:center">${bg.d}</p>
-  <input id="ni" type="text" placeholder="Your name..." style="width:100%;padding:7px;font-family:'Courier New',monospace;font-size:13px;border:1px solid #3a3828;border-radius:4px;background:var(--panel2);color:var(--text);margin-bottom:6px">
-  <div style="display:flex;gap:6px;margin-bottom:8px">
-  <button class="bt" onclick="window._autoMale=true;this.style.borderColor='var(--amber)';this.nextElementSibling.style.borderColor='#3a3828'" style="flex:1;text-align:center;border:2px solid var(--amber)">♂ Male</button>
-  <button class="bt" onclick="window._autoMale=false;this.style.borderColor='var(--amber)';this.previousElementSibling.style.borderColor='#3a3828'" style="flex:1;text-align:center;border:2px solid #3a3828">♀ Female</button>
+  if(!window._custom)initCustomState(0);
+  renderCustomChar();
+}
+function renderCustomChar(){
+  const bg=getCurrentCustomBg();
+  const preset=getCurrentSpecialPreset();
+  const c=window._custom;
+  openDlg(`<h3 style="text-align:center;color:var(--amber)">Custom Start</h3>
+  <p style="font-size:11px;font-style:italic;color:var(--muted);margin-bottom:8px;text-align:center">Choose your background, identity, and SPECIAL preset.</p>
+  <input id="ni" type="text" value="${(c.name||'').replace(/"/g,'&quot;')}" placeholder="Your name..." oninput="updateCustomName(this.value)" style="width:100%;padding:7px;font-family:'Courier New',monospace;font-size:13px;border:1px solid #3a3828;border-radius:4px;background:var(--panel2);color:var(--text);margin-bottom:6px">
+  <div style="display:flex;gap:6px;margin-bottom:6px">
+    <button class="bt" onclick="setCustomGender(true)" style="flex:1;text-align:center;border:2px solid ${c.male?'var(--amber)':'#3a3828'}">♂ Male</button>
+    <button class="bt" onclick="setCustomGender(false)" style="flex:1;text-align:center;border:2px solid ${!c.male?'var(--amber)':'#3a3828'}">♀ Female</button>
   </div>
-  <button class="bt go" style="text-align:center" onclick="finishCustom()">Start Game</button>`);
+  <div style="display:flex;gap:6px;margin-bottom:8px">
+    <button class="bt sm" style="flex:1;text-align:center" onclick="rerollCustomName()">🎲 Reroll Name</button>
+    <div style="flex:1;background:var(--panel2);border:1px solid #3a3828;border-radius:4px;padding:6px 8px;font-size:11px;text-align:center">Age <input id="agei" type="number" min="16" max="70" value="${c.age||25}" oninput="updateCustomAge(this.value)" style="width:46px;margin-left:4px;background:#1a1a10;color:var(--text);border:1px solid #3a3828;border-radius:3px;padding:2px 4px;font-family:'Courier New',monospace"></div>
+  </div>
+  <div style="background:var(--panel2);padding:8px;border-radius:5px;margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:6px">
+      <button class="bt sm" onclick="changeCustomBg(-1)">◀</button>
+      <div style="flex:1;text-align:center">
+        <div style="color:var(--green);font-size:12px">${bg.n}</div>
+        <div style="font-size:10px;color:var(--muted)">${bg.d}</div>
+      </div>
+      <button class="bt sm" onclick="changeCustomBg(1)">▶</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;font-size:10px;margin-top:6px">
+      <div style="background:#1a1a10;padding:4px;border-radius:3px">⚔ ATK ${bg.atk}</div>
+      <div style="background:#1a1a10;padding:4px;border-radius:3px">🛡 DEF ${bg.def}</div>
+      <div style="background:#1a1a10;padding:4px;border-radius:3px">💨 SPD ${bg.spd}</div>
+      <div style="background:#1a1a10;padding:4px;border-radius:3px">💰 ${bg.gold}</div>
+      <div style="background:#1a1a10;padding:4px;border-radius:3px">📍 ${LOCS[bg.loc]?.n}</div>
+      <div style="background:#1a1a10;padding:4px;border-radius:3px">⚖ ${bg.karma}</div>
+      ${bg.fac?`<div style='grid-column:1/-1;background:#1a1a10;padding:4px;border-radius:3px'>🏴 ${FACTIONS[bg.fac]||bg.fac}</div>`:''}
+    </div>
+  </div>
+  <div style="background:var(--panel2);padding:8px;border-radius:5px;margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:6px">
+      <button class="bt sm" onclick="changePreset(-1)">◀</button>
+      <div style="flex:1;text-align:center">
+        <div style="color:var(--amber);font-size:12px">${preset.n}</div>
+        <div style="font-size:10px;color:var(--muted)">${preset.d}</div>
+      </div>
+      <button class="bt sm" onclick="changePreset(1)">▶</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px;font-size:10px">
+      ${SPECIAL_LABELS.map((label,idx)=>`<div style='background:#1a1a10;padding:4px 2px;border-radius:3px;text-align:center'><div style='color:var(--amber2)'>${label}</div><div>${preset.special[idx]}</div></div>`).join('')}
+    </div>
+  </div>
+  <button class="bt go" style="text-align:center" onclick="finishCustom()">Start Game</button>
+  <button class="bt" style="text-align:center" onclick="renderStartPreview()">Back</button>`);
 }
 function finishCustom(){
-  const bg=BACKGROUNDS[window._bgI];
-  const name=$('ni')?.value?.trim()||(rndA(FM)+' '+rndA(LN));
-  quickStart(name,window._autoMale!==false);
+  const name=$('ni')?.value?.trim();
+  if(name)window._custom.name=name;
+  const age=$('agei')?.value;
+  if(age)window._custom.age=age;
+  quickStart();
 }
 
 // ============================================================
@@ -682,6 +1035,8 @@ function getCombatAttackProfile(consumeAmmo){
   }
   return{atk:Math.max(1,a+Math.max(1,Math.floor((w.a||0)*0.2))),weapon:w,ammoId,ammoName,hadAmmo:false,gun:true,usedAmmo:false};
 }
+function hasFlag(k){return !!(S&&S.flags&&S.flags[k])}
+function setFlag(k,v=true){if(!S.flags)S.flags={};S.flags[k]=v;save()}
 
 // ============================================================
 // LOGGING
@@ -716,7 +1071,7 @@ function refreshActiveTab(){
   if($('roads-tab').classList.contains('A'))upRoads();
   if($('log-tab').classList.contains('A'))upLog();
 }
-function upAll(){upSB();refreshActiveTab();save()}
+function upAll(){upSB();refreshActiveTab();save();queueSave(220)}
 
 function upSB(){
   const sb=$('SB');if(!S)return;
@@ -828,7 +1183,8 @@ function doScavenge(){
     const surs=loc.sur||[];
     const area=surs.length?rndA(surs):null;
     const ltPool=area?area.lt:['herbs','scrap'];
-    const fi=rndA(ltPool);const it=ITEMS[fi];
+    const bonusPool=getBonusLootPool(S.loc,area);
+    const fi=rndA(ltPool.concat(bonusPool));const it=ITEMS[fi];
     if(it){S.inv.push(fi);log('Found '+it.n+'.','e');notify(it.e+' Found '+it.n)}
   } else if(r<.82){
     // NPC encounter
@@ -1197,13 +1553,19 @@ function openBld(bId){
   const npc=mkNPC();
   const o=$('BO');const bi=$('BI');bi.innerHTML='';
   const isPrimmSpecial=['vikki_vance','mojave_express','sheriff_office','bison_steve'].includes(bId);
+  const isNovacSpecial=['dino_bite','motel','mcbride_house','ranger_bungalow','no_bark_shack'].includes(bId);
+  const isFreesideSpecial=['atomic_wrangler','kings_hq','mick_ralph','old_mormon_fort','silver_rush','cerulean_robotics'].includes(bId);
+  const isCampGolfSpecial=['golf_resort','golf_barracks','golf_command','golf_clinic'].includes(bId);
+  const isBitterSpringsSpecial=['bitter_refugee','bitter_command','bitter_mess','bitter_clinic'].includes(bId);
+  const isNcrcFSpecial=['ncrcf_visitor','ncrcf_admin','ncrcf_block_a','ncrcf_block_b'].includes(bId);
+  const isHeliosSpecial=['helios_main','helios_tower','helios_east','helios_west'].includes(bId);
 
   const hd=el('div','bh');
   hd.innerHTML=`<div class="bb" onclick="closeBld()">‹</div><div style="flex:1;font-size:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:var(--amber)">${b.e} ${b.n}</div><div style="font-size:11px;color:var(--amber)">💰${S.caps}</div>`;
   bi.appendChild(hd);
   bi.appendChild(el('div','ba',rndA(b.am)));
 
-  if(!isPrimmSpecial){
+  if(!isPrimmSpecial&&!isNovacSpecial&&!isFreesideSpecial&&!isCampGolfSpecial&&!isBitterSpringsSpecial&&!isNcrcFSpecial&&!isHeliosSpecial){
     const np=el('div','bn');np.style.cursor='pointer';
     np.innerHTML=`<div style="font-size:28px">${npc.male?'👨':'👩'}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
     np.onclick=()=>openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
@@ -1216,6 +1578,33 @@ function openBld(bId){
   else if(bId==='mojave_express'){bldPrimmExpress(body)}
   else if(bId==='sheriff_office'){bldPrimmSheriff(body)}
   else if(bId==='bison_steve'){bldPrimmBison(body)}
+  else if(bId==='dino_bite'){bldNovacDino(body)}
+  else if(bId==='motel'){bldNovacMotel(body)}
+  else if(bId==='mcbride_house'){bldNovacMcBride(body)}
+  else if(bId==='ranger_bungalow'){bldNovacRanger(body)}
+  else if(bId==='no_bark_shack'){bldNovacNoBark(body)}
+  else if(bId==='atomic_wrangler'){bldFreesideWrangler(body)}
+  else if(bId==='kings_hq'){bldFreesideKings(body)}
+  else if(bId==='mick_ralph'){bldFreesideMickRalph(body)}
+  else if(bId==='old_mormon_fort'){bldFreesideFort(body)}
+  else if(bId==='silver_rush'){bldFreesideSilverRush(body)}
+  else if(bId==='cerulean_robotics'){bldFreesideCerulean(body)}
+  else if(bId==='golf_resort'){bldCampGolfResort(body)}
+  else if(bId==='golf_barracks'){bldCampGolfBarracks(body)}
+  else if(bId==='golf_command'){bldCampGolfCommand(body)}
+  else if(bId==='golf_clinic'){bldCampGolfClinic(body)}
+  else if(bId==='bitter_refugee'){bldBitterSpringsRefugee(body)}
+  else if(bId==='bitter_command'){bldBitterSpringsCommand(body)}
+  else if(bId==='bitter_mess'){bldBitterSpringsMess(body)}
+  else if(bId==='bitter_clinic'){bldBitterSpringsClinic(body)}
+  else if(bId==='ncrcf_visitor'){bldNcrcfVisitor(body)}
+  else if(bId==='ncrcf_admin'){bldNcrcfAdmin(body)}
+  else if(bId==='ncrcf_block_a'){bldNcrcfBlockA(body)}
+  else if(bId==='ncrcf_block_b'){bldNcrcfBlockB(body)}
+  else if(bId==='helios_main'){bldHeliosMain(body)}
+  else if(bId==='helios_tower'){bldHeliosTower(body)}
+  else if(bId==='helios_east'){bldHeliosEast(body)}
+  else if(bId==='helios_west'){bldHeliosWest(body)}
   else if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
   else if(bId.includes('store')||bId.includes('supply')||bId.includes('ralph')||bId.includes('armory')||bId.includes('quartermaster')){bldShop(body,bId)}
   else if(bId.includes('doc')||bId.includes('med')||bId.includes('fort')||bId.includes('jacobstown_doc')){bldMedical(body)}
@@ -1278,6 +1667,636 @@ function openPrimmNPC(id){
   h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
   openDlg(h);
 }
+function novacNamedNpcRel(id){return S.relationships.find(r=>r.name===NOVAC_NPCS[id].name)}
+function addNovacNpcCard(body,id){
+  const npc=NOVAC_NPCS[id];if(!npc)return;
+  const ex=novacNamedNpcRel(id);
+  const nc=el('div','bn');nc.style.cursor='pointer';
+  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.onclick=()=>openNovacNPC(id);
+  body.appendChild(nc);
+}
+function openNovacNPC(id){
+  const npc=NOVAC_NPCS[id];if(!npc)return;
+  const rel=novacNamedNpcRel(id);
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
+  <div class="npc-line">"${npc.line}"</div>`;
+  if(id==='cliff_briscoe'){
+    h+=`<button class="bt" onclick="closeDlg();openBld('dino_bite')">🦕 Browse Cliff's stock</button>`;
+    h+=`<button class="bt" onclick="closeDlg();showResult('Cliff Briscoe','🔫',['Cliff points out that his best gun stays locked up unless the buyer has caps.','He says Novac survives because travelers always need ammo, rooms, and souvenirs.'],'Continue','upAll()')">🔫 Ask about his best gear</button>`;
+  }else if(id==='manny_vargas'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Manny Vargas','🎯',['Manny says REPCONN is still crawling with trouble and the road south never stays quiet for long.','He respects anyone willing to do the dangerous jobs nobody else wants.'],'Continue','upAll()')">🎯 Ask about local threats</button>`;
+    h+=`<button class="bt pip" onclick="queueNovacQuest('manny_vargas','Novac Watch',15,10)">📜 Ask for lookout work</button>`;
+  }else if(id==='craig_boone'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Boone','🔭',['Boone keeps his answers short. He watches the highway and remembers every caravan that passes.','You get the impression he trusts scopes more than people.'],'Continue','upAll()')">🔭 Ask about the road</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(NOVAC_NPCS['craig_boone'],S.relationships.find(r=>r.name===NOVAC_NPCS['craig_boone'].name))">💬 Talk</button>`;
+  }else if(id==='no_bark'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('No-bark Noonan','🛸',[rndA(['No-bark warns you that invisible chupacabras are watching the road to the north.','No-bark whispers that the cows know more than the NCR ever will.','No-bark insists the town is built on top of secrets and bad decisions.'])],'Continue','upAll()')">🛸 Hear a theory</button>`;
+  }else if(id==='jeannie_may'){
+    h+=`<button class="bt go" onclick="closeDlg();openBld('motel')">🛏 Rent a room</button>`;
+    h+=`<button class="bt" onclick="closeDlg();showResult('Jeannie May Crawford','🏨',['Jeannie proudly talks about Novac as if grit alone could keep the whole Mojave standing.','She reminds you to pay before expecting any comfort.'],'Continue','upAll()')">🏨 Ask about Novac</button>`;
+  }else if(id==='daisy_whitman'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Daisy Whitman','🛩',['Daisy tells a story about flying old birds over battlefields where the sky itself seemed on fire.','She misses the cockpit more than she admits.'],'Continue','upAll()')">🛩 Hear a flying story</button>`;
+    h+=`<button class="bt go" onclick="if(S.caps<7){notify('Not enough caps.');return}S.caps-=7;S.hp=Math.min(S.maxHp,S.hp+15);S.ap=Math.min(S.maxAp,S.ap+10);advanceTime(1);log('Daisy Whitman serves you a proper warm meal.','e');closeDlg();showResult('Home Cooking','🍲',['❤ +15 HP','⚡ +10 AP','⏰ 1 hour passed'],'Continue','upAll()')">🍲 Share chow with Daisy (7 caps)</button>`;
+  }else if(id==='ada_straus'){
+    h+=`<button class="bt go" onclick="closeDlg();openBld('motel')">⚕️ Get treatment</button>`;
+  }else if(id==='bruce_isaac'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Bruce Isaac','🎤',['Bruce looks like a man who keeps expecting trouble to walk through the door.','He pays for silence with nervous jokes and half-finished songs.'],'Continue','upAll()')">🎤 Ask what he is hiding</button>`;
+  }else if(id==='ranger_andy'){
+    h+=`<button class="bt go" onclick="advanceTime(2);S.xp+=12;S.ap=Math.min(S.maxAp,S.ap+10);log('Ranger Andy drills you on movement and awareness.','e');closeDlg();showResult('Ranger Lesson','🪖',['⭐ +12 XP','⚡ +10 AP','⏰ 2 hours passed'],'Continue','chkLU();upAll()')">🪖 Take a ranger lesson</button>`;
+    h+=`<button class="bt" onclick="closeDlg();showResult('Ranger Andy','📘',['Andy explains that surviving the Mojave is about discipline, not bravado.','He still thinks like a ranger even if his leg won't fully cooperate.'],'Continue','upAll()')">📘 Ask for field advice</button>`;
+  }else if(id==='alice_mcbride'){
+    h+=`<button class="bt go" onclick="advanceTime(2);const pay=rnd(8,18);S.caps+=pay;log('You help Alice McBride with ranch work.','e');closeDlg();showResult('Ranch Work','🐄',['💰 +'+pay+' caps','⏰ 2 hours passed'],'Continue','upAll()')">🐄 Help with the ranch</button>`;
+  }else if(id==='dusty_mcbride'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Dusty McBride','🐂',['Dusty complains about chores, predators, and anybody who thinks brahmin look after themselves.','He still clearly cares about keeping the ranch alive.'],'Continue','upAll()')">🐂 Talk ranch life</button>`;
+  }
+  h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  openDlg(h);
+}
+function queueNovacQuest(id,prefix,capBonus=10,xpBonus=5){
+  const npc=NOVAC_NPCS[id];if(!npc)return;
+  const q=mkQuest(npc.name);q.rg+=capBonus;q.rx+=xpBonus;q.name=prefix+': '+q.name;
+  window._pendingQuest=q;closeDlg();showResult('New Quest!','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');
+}
+function bldNovacDino(body){
+  body.appendChild(el('div','bs2','Gift Shop & Watch Post'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The Dino Bite sells souvenirs, ammo, and the sort of guns a traveler in Novac quickly learns to appreciate.</div>`));
+  body.appendChild(el('div','bs2','Buy'));
+  buildBuyButtons(body,['sunset_sars','nuka_cola','stimpak','ammo_9mm','ammo_357','ammo_556','cowboy_repeater','varmint_rifle'], 'dino_bite');
+  const lookoutBtn=el('button','bt','🔭 Climb to the dinosaur mouth');
+  lookoutBtn.onclick=()=>{advanceTime(1);const seen=rndA(['A caravan crawling up the highway.','Dust plumes from something dangerous moving near the road.','Nothing but sun-bleached emptiness and old wrecks.']);log('You take watch from Dinky the T-Rex.','e');closeBld();showResult('Dinky Watch','🦖',[seen,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(lookoutBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  ['cliff_briscoe','manny_vargas','craig_boone','no_bark'].forEach(id=>addNovacNpcCard(body,id));
+}
+function bldNovacMotel(body){
+  body.appendChild(el('div','bs2','Front Desk'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Between the front desk, rooms, and dinosaur overlook, the motel is the heart of Novac. Travelers sleep here, heal here, gossip here, and sometimes hide here.</div>`));
+  const roomCost=S.properties.find(p=>p.loc===S.loc)?0:20;
+  const roomBtn=el('button','bt go',`🛏 Rent a room (8 hours) — ${roomCost?roomCost+' caps':'FREE'}`);
+  roomBtn.onclick=()=>{if(roomCost&&S.caps<roomCost){notify('Not enough caps.');return}S.caps-=roomCost;S.hp=S.maxHp;S.ap=S.maxAp;S.days++;S.hours=8;payDaily();log('You rent a room at the Dino Dee-lite Motel.','e');closeBld();showResult('Rested in Novac','🛏',['❤ Full HP/AP','📅 Day '+S.days],'Continue','upAll()')};
+  body.appendChild(roomBtn);
+  const clinicCost=28-Math.floor((S.special?S.special[3]:5)*2);
+  const clinicBtn=el('button','bt',`⚕️ Doctor Straus treatment — ${clinicCost} caps`);
+  clinicBtn.onclick=()=>{if(S.caps<clinicCost){notify('Not enough caps.');return}S.caps-=clinicCost;S.hp=S.maxHp;S.ap=S.maxAp;advanceTime(1);log('Doctor Ada Straus patches you up in Novac.','e');closeBld();showResult('Treated','⚕️',['❤ Full HP restored','⚡ AP restored','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(clinicBtn);
+  const safeBtn=el('button','bt','🗄 Search the office safe');
+  safeBtn.onclick=()=>{advanceTime(1);if(hasFlag('novac_office_safe')){closeBld();showResult('Already Opened','🗄',['The office safe has already been cleaned out.'],'Continue','upAll()');return}setFlag('novac_office_safe');const caps=rnd(18,35);S.caps+=caps;const pick=rndA(['pre_war_money','sunset_sars']);S.inv.push(pick);log('You crack open a safe at the Novac office.','e');closeBld();showResult('Office Safe','🗄',[`💰 +${caps} caps`,`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(safeBtn);
+  body.appendChild(el('div','bs2','Residents'));
+  ['jeannie_may','daisy_whitman','ada_straus','bruce_isaac','manny_vargas','craig_boone'].forEach(id=>addNovacNpcCard(body,id));
+}
+function bldNovacMcBride(body){
+  body.appendChild(el('div','bs2','Brahmin Ranch'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The McBrides keep their brahmin close and their rifles closer. It is one of the few places in Novac that still feels like honest frontier work.</div>`));
+  const workBtn=el('button','bt go','🐄 Help feed and fence the brahmin');
+  workBtn.onclick=()=>{advanceTime(2);const pay=rnd(10,22);S.caps+=pay;const bonus=rndA(['gecko_steak','bighorner_meat','purified_water']);S.inv.push(bonus);log('You put in hard ranch work for the McBrides.','e');closeBld();showResult('Ranch Shift','🐄',[`💰 +${pay} caps`,`${ITEMS[bonus].e} ${ITEMS[bonus].n}`,'⏰ 2 hours passed'],'Continue','upAll()')};
+  body.appendChild(workBtn);
+  const mealBtn=el('button','bt','🥩 Buy fresh food (6 caps)');
+  mealBtn.onclick=()=>{if(S.caps<6){notify('Not enough caps.');return}S.caps-=6;const food=rndA(['gecko_steak','bighorner_meat']);S.inv.push(food);log('Bought fresh food from the McBrides.','e');openBld('mcbride_house')};
+  body.appendChild(mealBtn);
+  body.appendChild(el('div','bs2','Residents'));
+  ['alice_mcbride','dusty_mcbride'].forEach(id=>addNovacNpcCard(body,id));
+}
+function bldNovacRanger(body){
+  body.appendChild(el('div','bs2','Ranger Advice'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Andy cannot patrol like he used to, but the bungalow still feels like a place where fieldcraft matters more than talk.</div>`));
+  const trainBtn=el('button','bt go','🪖 Train with Ranger Andy');
+  trainBtn.onclick=()=>{advanceTime(2);S.xp+=12;S.ap=Math.min(S.maxAp,S.ap+10);log('You train with Ranger Andy.','e');closeBld();showResult('Field Lesson','🪖',['⭐ +12 XP','⚡ +10 AP','⏰ 2 hours passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(trainBtn);
+  const cacheBtn=el('button','bt','📦 Check the old ranger stash');
+  cacheBtn.onclick=()=>{advanceTime(1);const pick=rndA(['ammo_556','ammo_357','stimpak','doctor_bag']);S.inv.push(pick);log('You recover old ranger supplies.','e');closeBld();showResult('Ranger Stash','📦',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(cacheBtn);
+  body.appendChild(el('div','bs2','Resident'));
+  addNovacNpcCard(body,'ranger_andy');
+}
+function bldNovacNoBark(body){
+  body.appendChild(el('div','bs2','Conspiracy Corner'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The shack is full of nonsense, scrap, and just enough useful junk to make you wonder whether No-bark occasionally stumbles into the truth.</div>`));
+  const hearBtn=el('button','bt','🛸 Hear No-bark out');
+  hearBtn.onclick=()=>{advanceTime(1);const rumor=rndA(['Invisible critters stalking caravans.','Spies in motel walls.','Mutants hiding where rockets used to sleep.']);log('No-bark shares another impossible story.','e');closeBld();showResult('No-bark Theory','🛸',[rumor,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(hearBtn);
+  const rummageBtn=el('button','bt','🔎 Rummage through the shack');
+  rummageBtn.onclick=()=>{advanceTime(1);const pick=rndA(['bobby_pin','scrap','pre_war_money','sunset_sars']);S.inv.push(pick);log('You rummage through No-bark\'s shack and find '+ITEMS[pick].n+'.','e');closeBld();showResult('Odd Find','🔎',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(rummageBtn);
+  body.appendChild(el('div','bs2','Resident'));
+  addNovacNpcCard(body,'no_bark');
+}
+
+
+function campGolfNamedNpcRel(id){return S.relationships.find(r=>r.name===CAMP_GOLF_NPCS[id].name)}
+function addCampGolfNpcCard(body,id){
+  const npc=CAMP_GOLF_NPCS[id];if(!npc)return;
+  const ex=campGolfNamedNpcRel(id);
+  const nc=el('div','bn');nc.style.cursor='pointer';
+  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.onclick=()=>openCampGolfNPC(id);
+  body.appendChild(nc);
+}
+function queueCampGolfQuest(id,prefix,capBonus=16,xpBonus=10){
+  const npc=CAMP_GOLF_NPCS[id];if(!npc)return;
+  const q=mkQuest(npc.name);q.rg+=capBonus;q.rx+=xpBonus;q.name=prefix+': '+q.name;
+  window._pendingQuest=q;closeDlg();showResult('New Quest!','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');
+}
+function openCampGolfNPC(id){
+  const npc=CAMP_GOLF_NPCS[id];if(!npc)return;
+  const rel=campGolfNamedNpcRel(id);
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
+  <div class="npc-line">"${npc.line}"</div>`;
+  if(id==='chief_hanlon'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Chief Hanlon','🪖',['Hanlon speaks about the war around Hoover Dam like a man who has already seen too much of it.','He sizes up whether you are the kind of courier who notices the bigger picture.'],'Continue','upAll()')">🪖 Ask about the war</button>`;
+    h+=`<button class="bt pip" onclick="queueCampGolfQuest('chief_hanlon','Ranger Detail',22,14)">📜 Ask for ranger work</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(CAMP_GOLF_NPCS['chief_hanlon'],S.relationships.find(r=>r.name===CAMP_GOLF_NPCS['chief_hanlon'].name))">💬 Talk</button>`;
+  }else if(id==='sergeant_mccredie'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Sergeant McCredie','📋',['McCredie says Camp Golf was meant to turn recruits into soldiers, but the Misfits make that harder than the Legion ever could.','He still refuses to give up on them.'],'Continue','upAll()')">📋 Ask about the Misfits</button>`;
+    h+=`<button class="bt pip" onclick="queueCampGolfQuest('sergeant_mccredie','Camp Golf Patrol',18,12)">📜 Volunteer for patrol duty</button>`;
+  }else if(id==='private_ohanrahan'){
+    h+=`<button class="bt" onclick="closeDlg();showResult("Private O'Hanrahan",'😟',["O'Hanrahan admits fear comes easier than courage, especially when the camp keeps talking about the Dam.",'He appreciates anyone who does not laugh about it.'],'Continue','upAll()')">😟 Talk morale</button>`;
+    h+=`<button class="bt go" onclick="advanceTime(1);S.karma+=1;S.ap=Math.min(S.maxAp,S.ap+6);log('You spend time steadying O\'Hanrahan before drill.','q');closeDlg();showResult('Steady Nerves','🤝',['⚖ Karma +1','⚡ +6 AP','⏰ 1 hour passed'],'Continue','upAll()')">🤝 Help settle his nerves</button>`;
+  }else if(id==='private_razz'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Private Razz','🎯',['Razz talks like every order annoys him, but he clearly knows his way around a rifle.','He respects accuracy more than rank.'],'Continue','upAll()')">🎯 Talk marksmanship</button>`;
+    h+=`<button class="bt go" onclick="advanceTime(2);S.xp+=10;S.ap=Math.min(S.maxAp,S.ap+8);log('Razz drills you on quick target acquisition.','e');closeDlg();showResult('Range Time','🎯',['⭐ +10 XP','⚡ +8 AP','⏰ 2 hours passed'],'Continue','chkLU();upAll()')">🎯 Train on the range</button>`;
+  }else if(id==='private_mags'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Private Mags','🪖',['Mags sounds like the only Misfit who still believes the squad can become something useful.','She is tired of carrying everyone else\'s bad habits.'],'Continue','upAll()')">🪖 Ask about the squad</button>`;
+    h+=`<button class="bt pip" onclick="queueCampGolfQuest('private_mags','Misfit Duty',16,10)">📜 Offer to help the squad</button>`;
+  }else if(id==='private_poindexter'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Private Poindexter','📚',['Poindexter can describe the perfect plan in detail. The problem, according to him, is convincing anyone else to follow it.'],'Continue','upAll()')">📚 Ask for a plan</button>`;
+    h+=`<button class="bt go" onclick="advanceTime(1);S.xp+=8;log('Poindexter walks you through NCR battle drills and field theory.','e');closeDlg();showResult('Field Notes','📚',['⭐ +8 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')">📚 Sit through a tactics lesson</button>`;
+  }else if(id==='doctor_kemp'){
+    h+=`<button class="bt go" onclick="closeDlg();openBld('golf_clinic')">⚕️ Get treatment</button>`;
+    h+=`<button class="bt" onclick="closeDlg();showResult('Dr. Kemp','⚕️',['Kemp says Camp Golf sees more stress injuries, heat exhaustion, and recruit panic than anybody at headquarters wants to admit.'],'Continue','upAll()')">⚕️ Ask about the camp</button>`;
+  }
+  h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  openDlg(h);
+}
+function bldCampGolfResort(body){
+  body.appendChild(el('div','bs2','Clubhouse & Mess'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Camp Golf's old clubhouse now serves as a mess hall, briefing point, and rare place where NCR troops can forget for five minutes that Hoover Dam is waiting.</div>`));
+  body.appendChild(el('div','bs2','Supplies'));
+  buildBuyButtons(body,['sunset_sars','purified_water','stimpak','ammo_556','ammo_9mm','doctor_bag'],'golf_resort');
+  const mealBtn=el('button','bt go','🍲 NCR chow and coffee (7 caps)');
+  mealBtn.onclick=()=>{if(S.caps<7){notify('Not enough caps.');return}S.caps-=7;S.hp=Math.min(S.maxHp,S.hp+16);S.ap=Math.min(S.maxAp,S.ap+12);advanceTime(1);log('You get a hot meal in the Camp Golf clubhouse.','e');closeBld();showResult('Mess Hall','🍲',['❤ +16 HP','⚡ +12 AP','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(mealBtn);
+  const noticeBtn=el('button','bt','📋 Read the assignment board');
+  noticeBtn.onclick=()=>{closeBld();showResult('Assignment Board','📋',['The board is full of NCR drill schedules, casualty notes, and reminders that Camp Golf is supposed to produce real soldiers before the next push at the Dam.'],'Continue','upAll()')};
+  body.appendChild(noticeBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  ['chief_hanlon','sergeant_mccredie'].forEach(id=>addCampGolfNpcCard(body,id));
+}
+function bldCampGolfBarracks(body){
+  body.appendChild(el('div','bs2','Barracks'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The Misfits sleep, argue, and train here. Every bunk feels like it belongs to someone who joined the NCR for a different reason.</div>`));
+  const drillBtn=el('button','bt go','🪖 Join the training circuit');
+  drillBtn.onclick=()=>{advanceTime(2);S.xp+=12;S.ap=Math.min(S.maxAp,S.ap+10);log('You run the Camp Golf training circuit with the Misfits.','e');closeBld();showResult('Camp Drill','🪖',['⭐ +12 XP','⚡ +10 AP','⏰ 2 hours passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(drillBtn);
+  const restBtn=el('button','bt','😴 Crash on an empty bunk (4 hours)');
+  restBtn.onclick=()=>{advanceTime(4);S.hp=Math.min(S.maxHp,S.hp+Math.floor(S.maxHp*.45));S.ap=S.maxAp;log('You grab a rough rest in the Camp Golf barracks.','e');closeBld();showResult('Barracks Rest','😴',['❤ +45% HP','⚡ AP restored','⏰ 4 hours passed'],'Continue','upAll()')};
+  body.appendChild(restBtn);
+  const lockerBtn=el('button','bt',hasFlag('camp_golf_locker')?'🗄 Misfit footlocker already searched':'🗄 Search an unsecured footlocker');
+  lockerBtn.onclick=()=>{advanceTime(1);if(hasFlag('camp_golf_locker')){closeBld();showResult('Nothing Left','🗄',['The loose footlocker has already been cleaned out.'],'Continue','upAll()');return}setFlag('camp_golf_locker');const pick=rndA(['ammo_556','ammo_9mm','stimpak','ncr_armor']);S.inv.push(pick);log('You search a footlocker in the Camp Golf barracks.','e');closeBld();showResult('Footlocker','🗄',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(lockerBtn);
+  body.appendChild(el('div','bs2','The Misfits'));
+  ['private_ohanrahan','private_razz','private_mags','private_poindexter'].forEach(id=>addCampGolfNpcCard(body,id));
+}
+function bldCampGolfCommand(body){
+  body.appendChild(el('div','bs2','Command'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Maps of Lake Mead, Boulder City, and Hoover Dam cover the tables. Camp Golf may be a training camp, but every order here points toward the front.</div>`));
+  const briefBtn=el('button','bt go','🗺 Sit through an NCR briefing');
+  briefBtn.onclick=()=>{advanceTime(2);S.xp+=10;log('You sit through a tactical briefing at Camp Golf.','e');closeBld();showResult('Field Briefing','🗺',['⭐ +10 XP','You leave knowing the roads around the Dam a little better.','⏰ 2 hours passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(briefBtn);
+  const patrolBtn=el('button','bt pip','📜 Ask for patrol duty');
+  patrolBtn.onclick=()=>{closeBld();queueCampGolfQuest('sergeant_mccredie','Camp Golf Patrol',18,12)};
+  body.appendChild(patrolBtn);
+  const mapsBtn=el('button','bt','📌 Study Hoover Dam maps');
+  mapsBtn.onclick=()=>{closeBld();showResult('War Maps','📌',['Marked routes connect Camp Golf to Boulder City, Hoover Dam, and the eastern shore.','Every pencil line on the map makes the NCR-Legion war feel closer.'],'Continue','upAll()')};
+  body.appendChild(mapsBtn);
+  body.appendChild(el('div','bs2','Command Staff'));
+  ['chief_hanlon','sergeant_mccredie'].forEach(id=>addCampGolfNpcCard(body,id));
+}
+function bldCampGolfClinic(body){
+  body.appendChild(el('div','bs2','Aid Station'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Dr. Kemp keeps Camp Golf on its feet with bandages, painkillers, and the grim expectation that more recruits will be back tomorrow.</div>`));
+  const cost=26-Math.floor((S.special?S.special[3]:5)*2);
+  const healBtn=el('button','bt go',`💉 Full treatment — ${cost} caps`);
+  healBtn.onclick=()=>{if(S.caps<cost){notify('Not enough caps.');return}S.caps-=cost;S.hp=S.maxHp;S.ap=S.maxAp;advanceTime(1);log('Dr. Kemp patches you up at Camp Golf.','e');closeBld();showResult('Patched Up','💉',['❤ Full HP restored','⚡ AP restored','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(healBtn);
+  body.appendChild(el('div','bs2','Medical Stock'));
+  buildBuyButtons(body,['stimpak','doctor_bag','med_x','purified_water','antivenom'],'golf_clinic');
+  const assistBtn=el('button','bt','🩹 Help sort medical crates');
+  assistBtn.onclick=()=>{advanceTime(1);const pick=rndA(['stimpak','purified_water','doctor_bag']);S.inv.push(pick);S.xp+=6;log('You help Dr. Kemp sort Camp Golf medical supplies.','q');closeBld();showResult('Aid Station Duty','🩹',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⭐ +6 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(assistBtn);
+  body.appendChild(el('div','bs2','Resident'));
+  addCampGolfNpcCard(body,'doctor_kemp');
+}
+
+function bitterSpringsNamedNpcRel(id){return S.relationships.find(r=>r.name===BITTER_SPRINGS_NPCS[id].name)}
+function addBitterSpringsNpcCard(body,id){
+  const npc=BITTER_SPRINGS_NPCS[id];if(!npc)return;
+  const ex=bitterSpringsNamedNpcRel(id);
+  const nc=el('div','bn');nc.style.cursor='pointer';
+  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.onclick=()=>openBitterSpringsNPC(id);
+  body.appendChild(nc);
+}
+function queueBitterSpringsQuest(id,prefix,capBonus=16,xpBonus=10){
+  const npc=BITTER_SPRINGS_NPCS[id];if(!npc)return;
+  const q=mkQuest(npc.name);q.rg+=capBonus;q.rx+=xpBonus;q.name=prefix+': '+q.name;
+  window._pendingQuest=q;closeDlg();showResult('New Quest!','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');
+}
+function openBitterSpringsNPC(id){
+  const npc=BITTER_SPRINGS_NPCS[id];if(!npc)return;
+  const rel=bitterSpringsNamedNpcRel(id);
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
+  <div class="npc-line">"${npc.line}"</div>`;
+
+  if(id==='captain_gilles'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Captain Gilles','🪖',['Gilles says Bitter Springs survives on patrol discipline, ration control, and the hope that tomorrow stays quieter than yesterday.','Every new mouth to feed makes supply lines matter more.'],'Continue','upAll()')">🪖 Ask about the camp</button>`;
+    h+=`<button class="bt pip" onclick="queueBitterSpringsQuest('captain_gilles','Relief Detail',20,12)">📜 Volunteer for relief duty</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(BITTER_SPRINGS_NPCS['captain_gilles'],S.relationships.find(r=>r.name===BITTER_SPRINGS_NPCS['captain_gilles'].name))">💬 Talk</button>`;
+  }else if(id==='major_dhatri'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Major Dhatri','🎯',['Dhatri keeps his focus on the hills around Bitter Springs, especially anything with poison, claws, or a habit of slipping into camp at dusk.'],'Continue','upAll()')">🎯 Ask about local threats</button>`;
+    h+=`<button class="bt pip" onclick="queueBitterSpringsQuest('major_dhatri','Hunter Patrol',22,14)">📜 Offer to join a hunt</button>`;
+    h+=`<button class="bt go" onclick="advanceTime(2);S.xp+=12;log('Major Dhatri runs you through Bitter Springs fieldcraft and target discipline.','e');closeDlg();showResult('Fieldcraft','🎯',['⭐ +12 XP','⏰ 2 hours passed'],'Continue','chkLU();upAll()')">🎯 Train with Dhatri</button>`;
+  }else if(id==='oscar_velasco'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Oscar Velasco','⛺',['Oscar speaks quietly about the people Bitter Springs is still trying to protect.','He judges the NCR less by speeches than by whether the children here eat.'],'Continue','upAll()')">⛺ Ask about the refugees</button>`;
+    h+=`<button class="bt go" onclick="advanceTime(1);S.karma+=2;S.xp+=6;log('You help Oscar Velasco hand out food and water in the camp.','q');closeDlg();showResult('Refugee Duty','🤝',['⚖ Karma +2','⭐ +6 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')">🤝 Help with distribution</button>`;
+  }else if(id==='bitter_root'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Bitter-Root','🪖',['Bitter-Root talks like somebody who learned to survive by cutting out anything soft before the Mojave could do it for him.'],'Continue','upAll()')">🪖 Ask about service</button>`;
+    h+=`<button class="bt go" onclick="advanceTime(1);S.xp+=8;S.hp=Math.min(S.maxHp,S.hp+10);log('You trade hard lessons and rough sparring with Bitter-Root.','e');closeDlg();showResult('Rough Spar','🥊',['⭐ +8 XP','❤ +10 HP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')">🥊 Spar with Bitter-Root</button>`;
+  }else if(id==='lieutenant_markland'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Lieutenant Markland','📋',['Markland says Bitter Springs only works when every order, ration, and guard shift gets tracked instead of guessed.'],'Continue','upAll()')">📋 Ask about camp duties</button>`;
+    h+=`<button class="bt pip" onclick="queueBitterSpringsQuest('lieutenant_markland','Camp Logistics',18,10)">📜 Offer to handle logistics</button>`;
+  }
+  h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  openDlg(h);
+}
+function bldBitterSpringsRefugee(body){
+  body.appendChild(el('div','bs2','Refugee Camp'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Canvas tents cling to the hillside while NCR troopers try to keep order, safety, and dignity alive with too few hands and too little food.</div>`));
+  const helpBtn=el('button','bt go','🤝 Help distribute supplies');
+  helpBtn.onclick=()=>{advanceTime(1);S.karma+=2;S.xp+=8;log('You help hand out supplies among the Bitter Springs refugees.','q');closeBld();showResult('Camp Relief','🤝',['⚖ Karma +2','⭐ +8 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(helpBtn);
+  const donateBtn=el('button','bt','💧 Donate water or 10 caps');
+  donateBtn.onclick=()=>{const wi=S.inv.indexOf('purified_water');if(wi!==-1){S.inv.splice(wi,1);S.karma+=2;log('You donate Purified Water at Bitter Springs.','q');closeBld();showResult('Donation','💧',['Donated: Purified Water','⚖ Karma +2'],'Continue','upAll()');return}if(S.caps<10){notify('Need Purified Water or 10 caps.');return}S.caps-=10;S.karma+=1;log('You donate caps to the Bitter Springs camp.','q');closeBld();showResult('Donation','💰',['💰 -10 caps','⚖ Karma +1'],'Continue','upAll()')};
+  body.appendChild(donateBtn);
+  const cacheBtn=el('button','bt',hasFlag('bitter_refugee_cache')?'🧺 Relief cache already checked':'🧺 Check the spare relief cache');
+  cacheBtn.onclick=()=>{advanceTime(1);if(hasFlag('bitter_refugee_cache')){closeBld();showResult('Nothing Left','🧺',['The spare relief cache has already been picked over.'],'Continue','upAll()');return}setFlag('bitter_refugee_cache');const pick=rndA(['purified_water','sunset_sars','doctor_bag','fancy_lad']);S.inv.push(pick);log('You help sort an old relief cache at Bitter Springs.','e');closeBld();showResult('Relief Cache','🧺',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(cacheBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  ['oscar_velasco','captain_gilles'].forEach(id=>addBitterSpringsNpcCard(body,id));
+}
+function bldBitterSpringsCommand(body){
+  body.appendChild(el('div','bs2','Command'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The command tent is split between refugee ledgers, patrol routes, and NCR reports about anything dangerous moving through the hills around Bitter Springs.</div>`));
+  const patrolBtn=el('button','bt pip','📜 Ask for perimeter duty');
+  patrolBtn.onclick=()=>{closeBld();queueBitterSpringsQuest('captain_gilles','Perimeter Watch',20,12)};
+  body.appendChild(patrolBtn);
+  const huntBtn=el('button','bt pip','📜 Ask about hunter work');
+  huntBtn.onclick=()=>{closeBld();queueBitterSpringsQuest('major_dhatri','Cazador Hunt',22,14)};
+  body.appendChild(huntBtn);
+  const mapsBtn=el('button','bt','🗺 Study the camp maps');
+  mapsBtn.onclick=()=>{advanceTime(1);S.xp+=8;log('You study patrol maps covering Bitter Springs, Nellis, and the Lake Mead approaches.','e');closeBld();showResult('Camp Maps','🗺',['⭐ +8 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(mapsBtn);
+  body.appendChild(el('div','bs2','Command Staff'));
+  ['captain_gilles','major_dhatri','lieutenant_markland'].forEach(id=>addBitterSpringsNpcCard(body,id));
+}
+function bldBitterSpringsMess(body){
+  body.appendChild(el('div','bs2','Mess Hall'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The mess serves troopers, workers, and refugees in whatever order the day allows. The stew is thin, but it is hot.</div>`));
+  body.appendChild(el('div','bs2','Supplies'));
+  buildBuyButtons(body,['sunset_sars','purified_water','stimpak','ammo_556','ammo_9mm','fancy_lad'],'bitter_mess');
+  const mealBtn=el('button','bt go','🍲 Refugee stew and NCR coffee (7 caps)');
+  mealBtn.onclick=()=>{if(S.caps<7){notify('Not enough caps.');return}S.caps-=7;S.hp=Math.min(S.maxHp,S.hp+15);S.ap=Math.min(S.maxAp,S.ap+10);advanceTime(1);log('You eat a hot meal in the Bitter Springs mess hall.','e');closeBld();showResult('Mess Hall','🍲',['❤ +15 HP','⚡ +10 AP','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(mealBtn);
+  const crateBtn=el('button','bt',hasFlag('bitter_mess_crate')?'📦 Ration crate already searched':'📦 Check an unsecured ration crate');
+  crateBtn.onclick=()=>{advanceTime(1);if(hasFlag('bitter_mess_crate')){closeBld();showResult('Nothing Left','📦',['The unsecured ration crate is empty now.'],'Continue','upAll()');return}setFlag('bitter_mess_crate');const pick=rndA(['ammo_556','sunset_sars','fancy_lad','stimpak']);S.inv.push(pick);log('You search an unsecured ration crate in the Bitter Springs mess hall.','e');closeBld();showResult('Ration Crate','📦',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(crateBtn);
+  body.appendChild(el('div','bs2','Resident'));
+  addBitterSpringsNpcCard(body,'bitter_root');
+}
+function bldBitterSpringsClinic(body){
+  body.appendChild(el('div','bs2','Aid Station'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The medics here treat refugee exhaustion, poison, gunshot wounds, and anything else the hills around Bitter Springs throw back into camp.</div>`));
+  const cost=24-Math.floor((S.special?S.special[3]:5)*2);
+  const healBtn=el('button','bt go',`💉 Full treatment — ${cost} caps`);
+  healBtn.onclick=()=>{if(S.caps<cost){notify('Not enough caps.');return}S.caps-=cost;S.hp=S.maxHp;S.ap=S.maxAp;advanceTime(1);log('You get patched up at the Bitter Springs aid station.','e');closeBld();showResult('Patched Up','💉',['❤ Full HP restored','⚡ AP restored','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(healBtn);
+  body.appendChild(el('div','bs2','Medical Stock'));
+  buildBuyButtons(body,['stimpak','doctor_bag','med_x','antivenom','purified_water'],'bitter_clinic');
+  const assistBtn=el('button','bt','🩹 Assist the medics');
+  assistBtn.onclick=()=>{advanceTime(1);const pick=rndA(['stimpak','antivenom','doctor_bag']);S.inv.push(pick);S.xp+=7;S.karma+=1;log('You assist the medics at Bitter Springs.','q');closeBld();showResult('Aid Station Duty','🩹',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⭐ +7 XP','⚖ Karma +1','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(assistBtn);
+  const cotBtn=el('button','bt','😴 Rest on an empty cot (3 hours)');
+  cotBtn.onclick=()=>{advanceTime(3);S.hp=Math.min(S.maxHp,S.hp+Math.floor(S.maxHp*.35));S.ap=S.maxAp;log('You get a short rest at the Bitter Springs aid station.','e');closeBld();showResult('Camp Rest','😴',['❤ +35% HP','⚡ AP restored','⏰ 3 hours passed'],'Continue','upAll()')};
+  body.appendChild(cotBtn);
+}
+
+function ncrcfNamedNpcRel(id){return S.relationships.find(r=>r.name===NCRCF_NPCS[id].name)}
+function addNcrcfNpcCard(body,id){
+  const npc=NCRCF_NPCS[id];if(!npc)return;
+  const ex=ncrcfNamedNpcRel(id);
+  const nc=el('div','bn');nc.style.cursor='pointer';
+  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.onclick=()=>openNcrcfNPC(id);
+  body.appendChild(nc);
+}
+function queueNcrcfQuest(id,prefix,capBonus=16,xpBonus=10){
+  const npc=NCRCF_NPCS[id];if(!npc)return;
+  const q=mkQuest(npc.name);q.rg+=capBonus;q.rx+=xpBonus;q.name=prefix+': '+q.name;q.fac='PowderGangers';
+  window._pendingQuest=q;closeDlg();showResult('New Quest!','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');
+}
+function openNcrcfNPC(id){
+  const npc=NCRCF_NPCS[id];if(!npc)return;
+  const rel=ncrcfNamedNpcRel(id);
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
+  <div class="npc-line">"${npc.line}"</div>`;
+  if(id==='eddie'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Eddie','💥',['Eddie explains that the NCR built the place, but the Powder Gangers are the ones actually making use of it now.','He talks like the prison is just another racket with better walls.'],'Continue','upAll()')">💥 Ask about the takeover</button>`;
+    h+=`<button class="bt pip" onclick="queueNcrcfQuest('eddie','Powder Ganger Job',22,14)">📜 Ask for prison work</button>`;
+    h+=`<button class="bt go" onclick="closeDlg();openBld('ncrcf_admin')">🏢 Go to Eddie's office</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(NCRCF_NPCS['eddie'],S.relationships.find(r=>r.name===NCRCF_NPCS['eddie'].name))">💬 Talk</button>`;
+  }else if(id==='dawes'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Dawes','🚧',['Dawes boasts that the Powder Gangers learned very quickly how useful prison explosives become when pointed at caravans instead of rail lines.'],'Continue','upAll()')">🚧 Ask about the gate</button>`;
+    h+=`<button class="bt pip" onclick="queueNcrcfQuest('dawes','Gate Detail',16,10)">📜 Offer gate duty</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(NCRCF_NPCS['dawes'],S.relationships.find(r=>r.name===NCRCF_NPCS['dawes'].name))">💬 Talk</button>`;
+  }else if(id==='carter'){
+    h+=`<button class="bt go" onclick="closeDlg();openBld('ncrcf_visitor')">💰 Browse Carter's stock</button>`;
+    h+=`<button class="bt" onclick="closeDlg();showResult('Carter','💰',['Carter says prison life taught him one rule: somebody always needs something, and the smart man charges caps before asking why.'],'Continue','upAll()')">💰 Ask about trading here</button>`;
+  }else if(id==='meyers'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Meyers','⭐',['Meyers talks like an old lawman who has seen too many towns let the wrong men wear badges.','He still thinks Primm deserves a sheriff, just not a fool.'],'Continue','upAll()')">⭐ Ask about Primm</button>`;
+    h+=`<button class="bt go" onclick="advanceTime(1);S.xp+=9;S.hp=Math.min(S.maxHp,S.hp+8);log('Meyers drills you on keeping your nerve when the room turns ugly.','e');closeDlg();showResult('Hard Lesson','⭐',['⭐ +9 XP','❤ +8 HP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')">⭐ Learn from Meyers</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(NCRCF_NPCS['meyers'],S.relationships.find(r=>r.name===NCRCF_NPCS['meyers'].name))">💬 Talk</button>`;
+  }else if(id==='hannigan'){
+    h+=`<button class="bt go" onclick="closeDlg();openBld('ncrcf_block_b')">⚕️ Get patched up</button>`;
+    h+=`<button class="bt" onclick="closeDlg();showResult('Hannigan','⚕️',['Hannigan complains that prison medicine mostly means deciding who is worth the last clean bandage.'],'Continue','upAll()')">⚕️ Ask about the clinic</button>`;
+  }
+  h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  openDlg(h);
+}
+function bldNcrcfVisitor(body){
+  body.appendChild(el('div','bs2','Visitors Center'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The front desk has become a shakedown point and trading post. Dawes watches the road while Carter turns stolen goods, ammo, and explosives into steady caps.</div>`));
+  body.appendChild(el('div','bs2',"Carter's Stock"));
+  buildBuyButtons(body,['dynamite','powder_charge','ammo_9mm','ammo_357','stimpak','jet','pistol_9mm'],'ncrcf_visitor');
+  const tollBtn=el('button','bt','🚧 Pay Dawes for a "safe" pass (8 caps)');
+  tollBtn.onclick=()=>{if(S.caps<8){notify('Not enough caps.');return}S.caps-=8;S.rep.PowderGangers=(S.rep.PowderGangers||0)+1;log('Dawes pockets your caps and promises the guards will leave you alone for a while.','n');closeBld();showResult('Gate Deal','🚧',['💰 -8 caps','🏴 Powder Gangers reputation +1'],'Continue','upAll()')};
+  body.appendChild(tollBtn);
+  const deskBtn=el('button','bt',hasFlag('ncrcf_front_desk')?'🗄 Front desk already checked':'🗄 Search the smashed front desk');
+  deskBtn.onclick=()=>{advanceTime(1);if(hasFlag('ncrcf_front_desk')){closeBld();showResult('Nothing Left','🗄',['The smashed front desk has already been picked clean.'],'Continue','upAll()');return}setFlag('ncrcf_front_desk');const caps=rnd(10,24);const pick=rndA(['pre_war_money','ammo_9mm','powder_charge']);S.caps+=caps;S.inv.push(pick);log('You search the ruined visitors desk at NCRCF.','e');closeBld();showResult('Front Desk','🗄',[`💰 +${caps} caps`,`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(deskBtn);
+  body.appendChild(el('div','bs2','Notable Powder Gangers'));
+  ['dawes','carter'].forEach(id=>addNcrcfNpcCard(body,id));
+}
+function bldNcrcfAdmin(body){
+  body.appendChild(el('div','bs2','Administration'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The old NCR offices have been stripped, defaced, and repurposed into Eddie's headquarters. Every hallway feels one bad decision away from gunfire.</div>`));
+  const jobBtn=el('button','bt pip','📜 Ask Eddie for paid work');
+  jobBtn.onclick=()=>{closeBld();queueNcrcfQuest('eddie','I Fought the Law',24,14)};
+  body.appendChild(jobBtn);
+  const terminalBtn=el('button','bt','💻 Search the warden terminal room');
+  terminalBtn.onclick=()=>{advanceTime(1);S.xp+=9;log('You sift through damaged prison records and Powder Ganger notes in the old administration offices.','e');closeBld();showResult('Warden Records','💻',['⭐ +9 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(terminalBtn);
+  const safeBtn=el('button','bt',hasFlag('ncrcf_admin_safe')?'🗄 Office strongbox already looted':'🗄 Crack the office strongbox');
+  safeBtn.onclick=()=>{advanceTime(1);if(hasFlag('ncrcf_admin_safe')){closeBld();showResult('Nothing Left','🗄',['The office strongbox is empty now.'],'Continue','upAll()');return}setFlag('ncrcf_admin_safe');const pick=rndA(['dynamite','stimpak','ammo_357','pre_war_money']);S.inv.push(pick);S.caps+=rnd(18,34);log('You crack open a strongbox in the NCRCF administration building.','e');closeBld();showResult('Strongbox','🗄',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'💰 Extra caps found','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(safeBtn);
+  body.appendChild(el('div','bs2','Upstairs'));
+  addNcrcfNpcCard(body,'eddie');
+}
+function bldNcrcfBlockA(body){
+  body.appendChild(el('div','bs2','Cell Block A'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Some cells still hold prisoners, others hold loot, and a few hold grudges that outlived the NCR guards who used to run the place.</div>`));
+  const rumorBtn=el('button','bt','🗣 Listen for prison rumors');
+  rumorBtn.onclick=()=>{advanceTime(1);S.xp+=7;log('You trade rumors with inmates in Cell Block A and come away with a better feel for the prison pecking order.','e');closeBld();showResult('Prison Rumors','🗣',['⭐ +7 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(rumorBtn);
+  const searchBtn=el('button','bt',hasFlag('ncrcf_block_a_cell')?'🚪 Empty cell already searched':'🚪 Search an unlocked cell');
+  searchBtn.onclick=()=>{advanceTime(1);if(hasFlag('ncrcf_block_a_cell')){closeBld();showResult('Nothing Left','🚪',['The unlocked cell has already been searched.'],'Continue','upAll()');return}setFlag('ncrcf_block_a_cell');const pick=rndA(['switchblade','stimpak','pre_war_money','ammo_9mm']);S.inv.push(pick);log('You search an unlocked cell in NCRCF Block A.','e');closeBld();showResult('Cell Search','🚪',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(searchBtn);
+  body.appendChild(el('div','bs2','Prisoner'));
+  addNcrcfNpcCard(body,'meyers');
+}
+function bldNcrcfBlockB(body){
+  body.appendChild(el('div','bs2','Cell Block B'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">This block doubles as a rough clinic and overflow lockup. Clean water, painkillers, and patience are all in short supply.</div>`));
+  const cost=22-Math.floor((S.special?S.special[3]:5)*2);
+  const healBtn=el('button','bt go',`💉 Patch up with Hannigan — ${cost} caps`);
+  healBtn.onclick=()=>{if(S.caps<cost){notify('Not enough caps.');return}S.caps-=cost;S.hp=Math.min(S.maxHp,S.hp+Math.floor(S.maxHp*.65));S.ap=S.maxAp;advanceTime(1);log('Hannigan patches you up in NCRCF Block B.','e');closeBld();showResult('Prison Clinic','💉',['❤ +65% HP','⚡ AP restored','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(healBtn);
+  body.appendChild(el('div','bs2','Medical Stock'));
+  buildBuyButtons(body,['stimpak','med_x','doctor_bag','purified_water'],'ncrcf_block_b');
+  const lockerBtn=el('button','bt',hasFlag('ncrcf_block_b_locker')?'🧰 Medic locker already checked':'🧰 Check the medic locker');
+  lockerBtn.onclick=()=>{advanceTime(1);if(hasFlag('ncrcf_block_b_locker')){closeBld();showResult('Nothing Left','🧰',['The medic locker is empty now.'],'Continue','upAll()');return}setFlag('ncrcf_block_b_locker');const pick=rndA(['stimpak','med_x','doctor_bag','purified_water']);S.inv.push(pick);log('You search a medic locker in NCRCF Block B.','e');closeBld();showResult('Medic Locker','🧰',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(lockerBtn);
+  body.appendChild(el('div','bs2','Resident'));
+  addNcrcfNpcCard(body,'hannigan');
+}
+
+function heliosNamedNpcRel(id){return S.relationships.find(r=>r.name===HELIOS_NPCS[id].name)}
+function addHeliosNpcCard(body,id){
+  const npc=HELIOS_NPCS[id];if(!npc)return;
+  const ex=heliosNamedNpcRel(id);
+  const nc=el('div','bn');nc.style.cursor='pointer';
+  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.onclick=()=>openHeliosNPC(id);
+  body.appendChild(nc);
+}
+function queueHeliosQuest(id,prefix,capBonus=18,xpBonus=12){
+  const npc=HELIOS_NPCS[id];if(!npc)return;
+  const q=mkQuest(npc.name);q.rg+=capBonus;q.rx+=xpBonus;q.name=prefix+': '+q.name;
+  window._pendingQuest=q;closeDlg();showResult('New Quest!','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');
+}
+function openHeliosNPC(id){
+  const npc=HELIOS_NPCS[id];if(!npc)return;
+  const rel=heliosNamedNpcRel(id);
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
+  <div class="npc-line">"${npc.line}"</div>`;
+  if(id==='lt_haggerty'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Lieutenant Haggerty','🪖',['Haggerty wants HELIOS One secured, the NCR supplied, and every civilian kept out of the way unless they can be useful.'],'Continue','upAll()')">🪖 Ask about the NCR mission</button>`;
+    h+=`<button class="bt pip" onclick="queueHeliosQuest('lt_haggerty','That Lucky Old Sun',22,14)">📜 Offer NCR field support</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(HELIOS_NPCS['lt_haggerty'],S.relationships.find(r=>r.name===HELIOS_NPCS['lt_haggerty'].name))">💬 Talk</button>`;
+  }else if(id==='fantastic'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Fantastic','😎',['Fantastic explains that the plant is practically under control, provided nobody asks the sort of questions that lead to real measurements.'],'Continue','upAll()')">😎 Hear Fantastic explain science</button>`;
+    h+=`<button class="bt go" onclick="advanceTime(1);S.xp+=10;log('Fantastic makes you help with a pointless calibration that somehow still teaches you a little about the plant.','e');closeDlg();showResult('Theoretical Physics','😎',['⭐ +10 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')">📊 Help with calibration</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(HELIOS_NPCS['fantastic'],S.relationships.find(r=>r.name===HELIOS_NPCS['fantastic'].name))">💬 Talk</button>`;
+  }else if(id==='ignacio_rivas'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Ignacio Rivas','⚕️',['Ignacio says old world power should be used carefully, and only for the benefit of people who actually need it.'],'Continue','upAll()')">⚕️ Ask about the plant</button>`;
+    h+=`<button class="bt pip" onclick="queueHeliosQuest('ignacio_rivas','Followers Consultation',20,13)">📜 Offer quiet help</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(HELIOS_NPCS['ignacio_rivas'],S.relationships.find(r=>r.name===HELIOS_NPCS['ignacio_rivas'].name))">💬 Talk</button>`;
+  }else if(id==='private_renolds'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Private Renolds','🔭',['Renolds talks about long shifts, hot metal, and the importance of spotting movement around the reflector field before it gets close.'],'Continue','upAll()')">🔭 Ask about guard duty</button>`;
+    h+=`<button class="bt pip" onclick="queueHeliosQuest('private_renolds','Reflector Watch',16,10)">📜 Volunteer for watch duty</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(HELIOS_NPCS['private_renolds'],S.relationships.find(r=>r.name===HELIOS_NPCS['private_renolds'].name))">💬 Talk</button>`;
+  }
+  h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  openDlg(h);
+}
+function bldHeliosMain(body){
+  body.appendChild(el('div','bs2','Main Plant'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The NCR holds the entrance and the control rooms, but the whole place still feels more like a half-understood machine than a real military asset.</div>`));
+  const reportBtn=el('button','bt pip','📜 Offer field support to Haggerty');
+  reportBtn.onclick=()=>{closeBld();queueHeliosQuest('lt_haggerty','Plant Security',22,14)};
+  body.appendChild(reportBtn);
+  const rationBtn=el('button','bt go','🥤 Grab an NCR field ration (7 caps) — +12 HP, +8 AP');
+  rationBtn.onclick=()=>{if(S.caps<7){notify('Not enough caps.');return}S.caps-=7;S.hp=Math.min(S.maxHp,S.hp+12);S.ap=Math.min(S.maxAp,S.ap+8);advanceTime(1);log('You eat a quick NCR ration at HELIOS One.','e');closeBld();showResult('Field Ration','🥤',['❤ +12 HP','⚡ +8 AP','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(rationBtn);
+  const lockerBtn=el('button','bt',hasFlag('helios_main_locker')?'🧰 Supply locker already checked':'🧰 Check the NCR supply locker');
+  lockerBtn.onclick=()=>{advanceTime(1);if(hasFlag('helios_main_locker')){closeBld();showResult('Nothing Left','🧰',['The NCR locker has already been emptied.'],'Continue','upAll()');return}setFlag('helios_main_locker');const pick=rndA(['ammo_556','stimpak','energy_cell','purified_water']);S.inv.push(pick);log('You search a supply locker inside HELIOS One.','e');closeBld();showResult('Supply Locker','🧰',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(lockerBtn);
+  body.appendChild(el('div','bs2','Personnel'));
+  ['lt_haggerty','fantastic','ignacio_rivas'].forEach(id=>addHeliosNpcCard(body,id));
+}
+function bldHeliosTower(body){
+  body.appendChild(el('div','bs2','Tower Control'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The tower overlooks the mirror field and still carries enough working hardware to make every decision here feel dangerous.</div>`));
+  const scanBtn=el('button','bt go','📡 Run a systems scan');
+  scanBtn.onclick=()=>{advanceTime(1);S.xp+=12;S.rep.NCR=(S.rep.NCR||0)+1;log('You help stabilize HELIOS One diagnostics from the tower controls.','e');closeBld();showResult('Systems Scan','📡',['⭐ +12 XP','🏛 NCR reputation +1','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(scanBtn);
+  const outputBtn=el('button','bt','⚡ Rebalance auxiliary output');
+  outputBtn.onclick=()=>{advanceTime(1);S.ap=S.maxAp;S.xp+=8;log('You rebalance an auxiliary output channel and the tower briefly hums louder around you.','e');closeBld();showResult('Auxiliary Output','⚡',['⚡ AP fully restored','⭐ +8 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(outputBtn);
+  const cacheBtn=el('button','bt',hasFlag('helios_tower_cache')?'🗄 Tower cache already taken':'🗄 Search the tower cache');
+  cacheBtn.onclick=()=>{advanceTime(1);if(hasFlag('helios_tower_cache')){closeBld();showResult('Nothing Left','🗄',['The tower cache is empty now.'],'Continue','upAll()');return}setFlag('helios_tower_cache');const pick=rndA(['energy_cell','sensor_module','med_x','pre_war_money']);S.inv.push(pick);log('You recover useful salvage from a forgotten tower cache at HELIOS One.','e');closeBld();showResult('Tower Cache','🗄',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(cacheBtn);
+  body.appendChild(el('div','bs2','Control Staff'));
+  ['fantastic','ignacio_rivas'].forEach(id=>addHeliosNpcCard(body,id));
+}
+function bldHeliosEast(body){
+  body.appendChild(el('div','bs2','East Reflector Control'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The eastern shack still works better than it looks. NCR guards watch the road while the terminal stubbornly pretends it is not decades overdue for replacement.</div>`));
+  const tuneBtn=el('button','bt go','🪞 Tune reflector alignment');
+  tuneBtn.onclick=()=>{advanceTime(1);S.xp+=10;S.rep.NCR=(S.rep.NCR||0)+1;log('You help tune HELIOS One’s eastern reflector controls.','e');closeBld();showResult('Reflector Alignment','🪞',['⭐ +10 XP','🏛 NCR reputation +1','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(tuneBtn);
+  const stockBtn=el('button','bt','📦 Browse guard supplies');
+  stockBtn.onclick=()=>{closeBld();openBld('helios_main')};
+  body.appendChild(stockBtn);
+  const panelBtn=el('button','bt',hasFlag('helios_east_panel')?'🔋 Broken panel already stripped':'🔋 Strip a broken panel for parts');
+  panelBtn.onclick=()=>{advanceTime(1);if(hasFlag('helios_east_panel')){closeBld();showResult('Nothing Left','🔋',['The broken panel has already been stripped for anything useful.'],'Continue','upAll()');return}setFlag('helios_east_panel');const pick=rndA(['energy_cell','scrap','sensor_module']);S.inv.push(pick);log('You strip spare components from a damaged reflector panel.','e');closeBld();showResult('Broken Panel','🔋',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(panelBtn);
+  body.appendChild(el('div','bs2','On Duty'));
+  addHeliosNpcCard(body,'private_renolds');
+}
+function bldHeliosWest(body){
+  body.appendChild(el('div','bs2','West Reflector Control'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The western shack feels abandoned in all the wrong ways. Old traps, dirty wiring, and half-working controls make every step here worth thinking about.</div>`));
+  const trapBtn=el('button','bt go','🧨 Clear the trap path');
+  trapBtn.onclick=()=>{advanceTime(1);S.xp+=11;S.rep.NCR=(S.rep.NCR||0)+1;log('You carefully clear the worst of the hazards around HELIOS One’s western reflector controls.','e');closeBld();showResult('Trap Path Cleared','🧨',['⭐ +11 XP','🏛 NCR reputation +1','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(trapBtn);
+  const rerouteBtn=el('button','bt','⚡ Reroute local power');
+  rerouteBtn.onclick=()=>{advanceTime(1);S.ap=S.maxAp;S.hp=Math.min(S.maxHp,S.hp+10);log('You reroute power through the western control shack and catch your breath while the systems stabilize.','e');closeBld();showResult('Power Rerouted','⚡',['⚡ AP fully restored','❤ +10 HP','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(rerouteBtn);
+  const stashBtn=el('button','bt',hasFlag('helios_west_stash')?'🗄 Hidden stash already found':'🗄 Search the hidden maintenance stash');
+  stashBtn.onclick=()=>{advanceTime(1);if(hasFlag('helios_west_stash')){closeBld();showResult('Nothing Left','🗄',['The hidden maintenance stash is empty now.'],'Continue','upAll()');return}setFlag('helios_west_stash');const pick=rndA(['ammo_556','energy_cell','stimpak','sensor_module']);S.inv.push(pick);log('You uncover a maintenance stash in the western reflector shack at HELIOS One.','e');closeBld();showResult('Maintenance Stash','🗄',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(stashBtn);
+  body.appendChild(el('div','bs2','Nearby Staff'));
+  ['lt_haggerty','private_renolds'].forEach(id=>addHeliosNpcCard(body,id));
+}
+
+function freesideNamedNpcRel(id){return S.relationships.find(r=>r.name===FREESIDE_NPCS[id].name)}
+function addFreesideNpcCard(body,id){
+  const npc=FREESIDE_NPCS[id];if(!npc)return;
+  const ex=freesideNamedNpcRel(id);
+  const nc=el('div','bn');nc.style.cursor='pointer';
+  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.onclick=()=>openFreesideNPC(id);
+  body.appendChild(nc);
+}
+function queueFreesideQuest(id,prefix,capBonus=12,xpBonus=8){
+  const npc=FREESIDE_NPCS[id];if(!npc)return;
+  const q=mkQuest(npc.name);q.rg+=capBonus;q.rx+=xpBonus;q.name=prefix+': '+q.name;
+  window._pendingQuest=q;closeDlg();showResult('New Quest!','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');
+}
+function openFreesideNPC(id){
+  const npc=FREESIDE_NPCS[id];if(!npc)return;
+  const rel=freesideNamedNpcRel(id);
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
+  <div class="npc-line">"${npc.line}"</div>`;
+  if(id==='james_garret'){
+    h+=`<button class="bt go" onclick="closeDlg();openBld('atomic_wrangler')">🎲 Use the Wrangler floor</button>`;
+    h+=`<button class="bt pip" onclick="queueFreesideQuest('james_garret','Wrangler Work',18,10)">📜 Ask for paid work</button>`;
+  }else if(id==='francine_garret'){
+    h+=`<button class="bt go" onclick="if(S.caps<7){notify('Not enough caps.');return}S.caps-=7;S.hp=Math.min(S.maxHp,S.hp+12);S.ap=Math.min(S.maxAp,S.ap+10);advanceTime(1);log('Francine serves you a stiff Freeside drink.','e');closeDlg();showResult('Atomic Wrangler','🍸',['❤ +12 HP','⚡ +10 AP','⏰ 1 hour passed'],'Continue','upAll()')">🍸 Buy a stiff drink (7 caps)</button>`;
+  }else if(id==='old_ben'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Old Ben','🧓',['Old Ben explains that Freeside runs on hustle, reputation, and knowing which corners not to turn.','He has seen enough of New Vegas to know every smile hides a price.'],'Continue','upAll()')">🧓 Ask about Freeside</button>`;
+    h+=`<button class="bt pip" onclick="queueFreesideQuest('old_ben','Freeside Errand',14,8)">📜 Ask for a local errand</button>`;
+  }else if(id==='orris'){
+    h+=`<button class="bt go" onclick="if(S.caps<10){notify('Not enough caps.');return}S.caps-=10;advanceTime(1);const safe=R()<0.7;if(safe){S.xp+=8;log('Orris walks you safely through a rough stretch of Freeside.','e');closeDlg();showResult('Street Escort','🗡',['⭐ +8 XP','No one dares try you while Orris is nearby.','⏰ 1 hour passed'],'Continue','chkLU();upAll()')}else{closeDlg();startCombat([mkEnemy('freeside_thug'),mkEnemy('freeside_thug')])}">🗡 Hire Orris (10 caps)</button>`;
+  }else if(id==='the_king'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('The King','👑',['The King says Freeside belongs to the people holding it together, not the rich lights over the gate.','He watches strangers carefully, but respects nerve.'],'Continue','upAll()')">👑 Ask about Freeside</button>`;
+    h+=`<button class="bt pip" onclick="queueFreesideQuest('the_king','Kings Favor',20,12)">📜 Ask for Kings work</button>`;
+  }else if(id==='pacer'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Pacer','🧥',['Pacer makes it clear that the Kings do not appreciate troublemakers or tourists pretending to own the place.'],'Continue','upAll()')">🧥 Size him up</button>`;
+  }else if(id==='rex'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Rex','🐕',['Rex sniffs your hand, circles once, and settles back down without taking his eyes off the room.','Even at rest, he feels like a weapon with a heartbeat.'],'Continue','upAll()')">🐕 Spend a minute with Rex</button>`;
+  }else if(id==='mick'){
+    h+=`<button class="bt go" onclick="closeDlg();openBld('mick_ralph')">🔫 Browse the front stock</button>`;
+  }else if(id==='ralph'){
+    h+=`<button class="bt" onclick="if(S.caps<60){notify('Need 60 caps.');return}S.caps-=60;const pick=rndA(['maria','combat_armor','doctor_bag','super_stimpak']);S.inv.push(pick);log('Ralph sells you something from under the counter.','e');closeDlg();showResult('Under the Counter','🧰',[ITEMS[pick].e+' '+ITEMS[pick].n,'Ralph never asks where you heard about the hidden stock.'],'Continue','upAll()')">🧰 Ask about under-counter stock (60 caps)</button>`;
+  }else if(id==='julie_farkas'){
+    h+=`<button class="bt go" onclick="closeDlg();openBld('old_mormon_fort')">⚕️ Get medical help</button>`;
+    h+=`<button class="bt pip" onclick="queueFreesideQuest('julie_farkas','Followers Aid',16,12)">📜 Volunteer for aid work</button>`;
+  }else if(id==='major_kieran'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Major Kieran','📘',['Kieran explains that keeping the Old Mormon Fort running is mostly logistics, patience, and surviving one shortage after another.'],'Continue','upAll()')">📘 Ask about the Followers</button>`;
+  }else if(id==='loyal'){
+    h+=`<button class="bt go" onclick="advanceTime(1);const pick=rndA(['scrap','sensor_module','energy_cell']);S.inv.push(pick);log('Loyal helps you salvage usable robot parts.','e');closeDlg();showResult('Robot Parts','🤖',[ITEMS[pick].e+' '+ITEMS[pick].n,'⏰ 1 hour passed'],'Continue','upAll()')">🤖 Talk tech with Loyal</button>`;
+  }
+  h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  openDlg(h);
+}
+function bldFreesideWrangler(body){
+  body.appendChild(el('div','bs2','Casino Floor'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The Atomic Wrangler is one of the few places in Freeside where trouble, liquor, work, and opportunity all share the same room.</div>`));
+  [10,25,50].forEach(bet=>{const gb=el('button','bt',`🎲 Play the tables — ${bet} caps`);gb.onclick=()=>{if(S.caps<bet){notify('Not enough caps.');return}const luck=S.special?S.special[6]:5;const win=R()<(.36+luck*.03);if(win){const w=Math.floor(bet*(1.6+luck*.08));S.caps+=w-bet;log('You win at the Atomic Wrangler.','e');closeBld();showResult('Atomic Wrangler','🎲',[`💰 +${w} caps`,'The Wrangler pays out.'],'Continue','upAll()')}else{S.caps-=bet;log('You lose caps at the Atomic Wrangler.','e');closeBld();showResult('Atomic Wrangler','💸',[`💰 -${bet} caps`,'The house keeps your money.'],'Continue','upAll()')}};body.appendChild(gb)});
+  const workBtn=el('button','bt pip','📜 Ask for Wrangler work'); workBtn.onclick=()=>{closeBld();queueFreesideQuest('james_garret','Wrangler Shift',18,10)}; body.appendChild(workBtn);
+  const drinkBtn=el('button','bt go','🍸 Buy a drink (6 caps)'); drinkBtn.onclick=()=>{if(S.caps<6){notify('Not enough caps.');return}S.caps-=6;S.hp=Math.min(S.maxHp,S.hp+10);S.ap=Math.min(S.maxAp,S.ap+8);advanceTime(1);log('You relax with a drink at the Atomic Wrangler.','e');closeBld();showResult('Atomic Wrangler','🍸',['❤ +10 HP','⚡ +8 AP','⏰ 1 hour passed'],'Continue','upAll()')}; body.appendChild(drinkBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  ['james_garret','francine_garret','old_ben','orris'].forEach(id=>addFreesideNpcCard(body,id));
+}
+function bldFreesideKings(body){
+  body.appendChild(el('div','bs2','Kings HQ'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The school is all swagger, territory, and loyalty. Every chair, record, and wall hanging says the Kings were here first.</div>`));
+  const favorBtn=el('button','bt pip','👑 Ask for a Kings favor'); favorBtn.onclick=()=>{closeBld();queueFreesideQuest('the_king','Kings Business',20,12)}; body.appendChild(favorBtn);
+  const trainBtn=el('button','bt go','🕶 Street lesson with the Kings'); trainBtn.onclick=()=>{advanceTime(2);S.xp+=10;S.ap=Math.min(S.maxAp,S.ap+10);log('You pick up hard-earned Freeside survival tips from the Kings.','e');closeBld();showResult('Street Lesson','🕶',['⭐ +10 XP','⚡ +10 AP','⏰ 2 hours passed'],'Continue','chkLU();upAll()')}; body.appendChild(trainBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  ['the_king','pacer','rex'].forEach(id=>addFreesideNpcCard(body,id));
+}
+function bldFreesideMickRalph(body){
+  body.appendChild(el('div','bs2','Front Stock'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Mick & Ralph's is equal parts storefront and whisper network. The best gear is never the first thing you see.</div>`));
+  buildBuyButtons(body,['ammo_9mm','ammo_10mm','ammo_357','ammo_556','stimpak','doctor_bag','pistol_9mm','pistol_10mm','revolver_357','cowboy_repeater','varmint_rifle'],'mick_ralph');
+  const hiddenBtn=el('button','bt','🧰 Ask about special stock'); hiddenBtn.onclick=()=>{if(S.caps<60){notify('Need 60 caps.');return}S.caps-=60;const pick=rndA(['maria','combat_armor','super_stimpak','laser_pistol']);S.inv.push(pick);log('Ralph quietly sells you hidden stock from Mick & Ralph\'s.','e');closeBld();showResult('Special Stock','🧰',[ITEMS[pick].e+' '+ITEMS[pick].n,'Ralph slides it across without making a scene.'],'Continue','upAll()')}; body.appendChild(hiddenBtn);
+  body.appendChild(el('div','bs2','Owners'));
+  ['mick','ralph'].forEach(id=>addFreesideNpcCard(body,id));
+}
+function bldFreesideFort(body){
+  body.appendChild(el('div','bs2','Followers Clinic'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The Old Mormon Fort keeps Freeside alive on medicine, donated food, and stubborn refusal to let people rot.</div>`));
+  const healCost=18-Math.floor((S.special?S.special[3]:5));
+  const healBtn=el('button','bt go',`⚕️ Clinic treatment — ${healCost} caps`); healBtn.onclick=()=>{if(S.caps<healCost){notify('Not enough caps.');return}S.caps-=healCost;S.hp=S.maxHp;S.ap=S.maxAp;advanceTime(1);log('The Followers patch you up at the Old Mormon Fort.','e');closeBld();showResult('Followers Clinic','⚕️',['❤ Full HP restored','⚡ AP restored','⏰ 1 hour passed'],'Continue','upAll()')}; body.appendChild(healBtn);
+  const donateBtn=el('button','bt','🥫 Donate 10 caps to relief'); donateBtn.onclick=()=>{if(S.caps<10){notify('Not enough caps.');return}S.caps-=10;S.karma+=2;log('You donate to the Followers relief effort.','q');closeBld();showResult('Donation','🥫',['⚖ Karma +2','The fort puts your caps toward medicine and food.'],'Continue','upAll()')}; body.appendChild(donateBtn);
+  const workBtn=el('button','bt pip','📦 Volunteer at the fort'); workBtn.onclick=()=>{advanceTime(2);S.xp+=10;const pick=rndA(['stimpak','purified_water','doctor_bag']);S.inv.push(pick);log('You help distribute aid at the Old Mormon Fort.','q');closeBld();showResult('Aid Shift','📦',['⭐ +10 XP',ITEMS[pick].e+' '+ITEMS[pick].n,'⏰ 2 hours passed'],'Continue','chkLU();upAll()')}; body.appendChild(workBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  ['julie_farkas','major_kieran'].forEach(id=>addFreesideNpcCard(body,id));
+}
+function bldFreesideSilverRush(body){
+  body.appendChild(el('div','bs2','Energy Arms'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The Silver Rush is all polished menace. Even browsing here feels like asking permission to breathe.</div>`));
+  buildBuyButtons(body,['energy_cell','energy_cell','laser_pistol','laser_rifle','plasma_rifle','combat_armor'],'silver_rush');
+  const securityBtn=el('button','bt','⚡ Browse the guarded floor'); securityBtn.onclick=()=>{advanceTime(1);if(R()<0.25){closeBld();startCombat([mkEnemy('freeside_thug')]);return}log('You make it through the Silver Rush showroom without incident.','e');closeBld();showResult('Silver Rush','⚡',['You leave with all your teeth and all your caps intact.','⏰ 1 hour passed'],'Continue','upAll()')}; body.appendChild(securityBtn);
+}
+function bldFreesideCerulean(body){
+  body.appendChild(el('div','bs2','Robot Parts'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Cerulean Robotics is a half-dead workshop where broken machines still somehow promise useful salvage.</div>`));
+  const salvageBtn=el('button','bt go','🤖 Salvage old robot parts'); salvageBtn.onclick=()=>{advanceTime(1);const pick=rndA(['scrap','sensor_module','energy_cell','doctor_bag']);S.inv.push(pick);log('You salvage workable parts from Cerulean Robotics.','e');closeBld();showResult('Cerulean Robotics','🤖',[ITEMS[pick].e+' '+ITEMS[pick].n,'⏰ 1 hour passed'],'Continue','upAll()')}; body.appendChild(salvageBtn);
+  const tinkerBtn=el('button','bt','🔧 Tinker at the bench'); tinkerBtn.onclick=()=>{const si=S.inv.indexOf('scrap');if(si===-1){notify('Need Scrap Metal.');return}S.inv.splice(si,1);advanceTime(1);S.ap=Math.min(S.maxAp,S.ap+12);log('You tune up your gear on an old robotics bench.','e');closeBld();showResult('Workbench','🔧',['Consumed: Scrap Metal','⚡ +12 AP','⏰ 1 hour passed'],'Continue','upAll()')}; body.appendChild(tinkerBtn);
+  body.appendChild(el('div','bs2','Resident'));
+  addFreesideNpcCard(body,'loyal');
+}
+
 function buildBuyButtons(body,items,bId){
   items.forEach(id=>{
     const it=ITEMS[id];if(!it)return;
@@ -1328,14 +2347,20 @@ function bldPrimmSheriff(body){
   addNamedNpcCard(body,'lieutenant_hayes');
 }
 function bldPrimmBison(body){
-  body.appendChild(el('div','bs2','Derelict Hotel'));
-  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The Bison Steve is wrecked, but old luggage, broken furniture, and abandoned rooms still make it worth checking.</div>`));
-  const searchBtn=el('button','bt','🔎 Search the front desk');
-  searchBtn.onclick=()=>{advanceTime(1);const finds=['pre_war_money','stimpak','sunset_sars','ammo_9mm'];const pick=rndA(finds);S.inv.push(pick);log('You search the Bison Steve and find '+ITEMS[pick].n+'.','e');closeBld();showResult('Found Supplies','🔎',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
-  body.appendChild(searchBtn);
-  const roomBtn=el('button','bt','🛏 Search the upstairs rooms');
-  roomBtn.onclick=()=>{advanceTime(1);const caps=rnd(6,18);S.caps+=caps;log('You search the upstairs rooms and find '+caps+' caps.','e');closeBld();showResult('Hidden Stash','💰',['You turn over a mattress and pocket '+caps+' caps.','⏰ 1 hour passed'],'Continue','upAll()')};
-  body.appendChild(roomBtn);
+  body.appendChild(el('div','bs2','Bison Steve Hotel'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The Bison Steve now feels like a proper little dungeon: smashed lobby, looted casino floor, blocked hallways, and a deputy still trying to save face inside the wreck.</div>`));
+  const lobbyBtn=el('button','bt','🛎 Sweep the lobby');
+  lobbyBtn.onclick=()=>{advanceTime(1);const pick=rndA(['pre_war_money','sunset_sars','stimpak','ammo_9mm']);S.inv.push(pick);log('You comb through the Bison Steve lobby and recover '+ITEMS[pick].n+'.','e');closeBld();showResult('Lobby Search','🛎',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(lobbyBtn);
+  const casinoBtn=el('button','bt','🎰 Search the casino floor');
+  casinoBtn.onclick=()=>{advanceTime(1);if(R()<0.35){closeBld();startCombat([mkEnemy('convict'),mkEnemy('convict')]);return}const caps=rnd(10,24);S.caps+=caps;log('You pry open a busted machine and recover '+caps+' caps in the Bison Steve.','e');closeBld();showResult('Casino Floor','🎰',[`💰 +${caps} caps`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(casinoBtn);
+  const roomsBtn=el('button','bt','🛏 Clear the guest rooms');
+  roomsBtn.onclick=()=>{advanceTime(1);const pick=rndA(['ammo_9mm','stimpak','doctor_bag','pre_war_money']);S.inv.push(pick);log('You search the guest rooms and salvage '+ITEMS[pick].n+'.','e');closeBld();showResult('Guest Rooms','🛏',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(roomsBtn);
+  const rescueBtn=el('button','bt go',hasFlag('bison_beagle_rescued')?'🔓 Deputy Beagle is already free':'🔓 Force open the storage room');
+  rescueBtn.onclick=()=>{advanceTime(1);if(hasFlag('bison_beagle_rescued')){closeBld();showResult('Already Done','🔓',['Deputy Beagle already got out of the storage room.'],'Continue','upAll()');return}setFlag('bison_beagle_rescued');S.caps+=20;S.xp+=15;log('You free Deputy Beagle from the Bison Steve storage room.','q');closeBld();showResult('Deputy Rescued','👮',['Deputy Beagle stumbles out, trying to act dignified.','💰 +20 caps','⭐ +15 XP'],'Continue','chkLU();upAll()')};
+  body.appendChild(rescueBtn);
   body.appendChild(el('div','bs2','Notable People'));
   addNamedNpcCard(body,'deputy_beagle');
 }
@@ -1391,12 +2416,12 @@ function bldShop(body,bId){
   }else{body.appendChild(el('div','','<div style="font-size:11px;color:var(--muted)">Nothing to sell.</div>'))}
 }
 function getShopInventory(bId){
-  const general=[{id:'stimpak'},{id:'purified_water'},{id:'sunset_sars'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'duct_tape'},{id:'bobby_pin'}];
-  const guns=[{id:'pistol_9mm'},{id:'pistol_10mm'},{id:'revolver_357'},{id:'cowboy_repeater'},{id:'varmint_rifle'},{id:'service_rifle'},{id:'caravan_shotgun'},{id:'ammo_556'},{id:'ammo_308'},{id:'ammo_shells'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'combat_knife'}];
-  const medical=[{id:'stimpak'},{id:'super_stimpak'},{id:'doctor_bag'},{id:'antivenom'},{id:'purified_water'},{id:'med_x'}];
-  const legion=[{id:'machete'},{id:'healing_powder'},{id:'healing_powder'},{id:'antivenom'}];
-  const bos=[{id:'laser_pistol'},{id:'laser_rifle'},{id:'energy_cell'},{id:'energy_cell'},{id:'stimpak'},{id:'combat_helmet'},{id:'sensor_module'}];
-  const khans=[{id:'pistol_9mm'},{id:'revolver_357'},{id:'ammo_9mm'},{id:'ammo_357'},{id:'ammo_shells'},{id:'caravan_shotgun'},{id:'jet'},{id:'psycho'},{id:'stimpak'},{id:'combat_knife'}];
+  const general=[{id:'stimpak'},{id:'purified_water'},{id:'dirty_water'},{id:'sunset_sars'},{id:'cram'},{id:'iguana_bits'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'duct_tape'},{id:'bobby_pin'},{id:'wonderglue'},{id:'wrench'},{id:'camera'},{id:'cigarette_pack'}];
+  const guns=[{id:'pistol_9mm'},{id:'pistol_10mm'},{id:'revolver_357'},{id:'cowboy_repeater'},{id:'trail_carbine'},{id:'smg_9mm'},{id:'varmint_rifle'},{id:'service_rifle'},{id:'single_shotgun'},{id:'caravan_shotgun'},{id:'ammo_556'},{id:'ammo_308'},{id:'ammo_shells'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'combat_knife'},{id:'tire_iron'},{id:'reinforced_leather_armor'},{id:'metal_helmet'}];
+  const medical=[{id:'stimpak'},{id:'super_stimpak'},{id:'doctor_bag'},{id:'antivenom'},{id:'purified_water'},{id:'dirty_water'},{id:'med_x'}];
+  const legion=[{id:'machete'},{id:'tire_iron'},{id:'healing_powder'},{id:'healing_powder'},{id:'antivenom'},{id:'silverware'},{id:'legion_coin'}];
+  const bos=[{id:'laser_pistol'},{id:'laser_rifle'},{id:'energy_cell'},{id:'energy_cell'},{id:'stimpak'},{id:'combat_helmet'},{id:'metal_helmet'},{id:'sensor_module'},{id:'fission_battery'},{id:'conductor'},{id:'scrap_electronics'}];
+  const khans=[{id:'pistol_9mm'},{id:'revolver_357'},{id:'trail_carbine'},{id:'smg_9mm'},{id:'ammo_9mm'},{id:'ammo_357'},{id:'ammo_shells'},{id:'single_shotgun'},{id:'caravan_shotgun'},{id:'jet'},{id:'psycho'},{id:'stimpak'},{id:'combat_knife'},{id:'cigarette_carton'}];
   if(bId.includes('khan'))return khans;
   if(bId.includes('armory')||bId.includes('bos'))return bos;
   if(bId.includes('legion'))return legion;
@@ -1730,7 +2755,7 @@ function genTravelEv(days,from,to){
         evs.push({tp:'combat',e:'⚔',tx:'Hostiles on the road!',enemies,_i:i,_t:total});
       }
     }else if(r<.5){
-      const finds=['stimpak','sunset_sars','ammo_9mm','ammo_10mm','ammo_357','ammo_556','ammo_shells','energy_cell','herbs','scrap','pre_war_money'];
+      const finds=['stimpak','sunset_sars','dirty_water','cram','iguana_bits','ammo_9mm','ammo_10mm','ammo_357','ammo_556','ammo_shells','energy_cell','herbs','scrap','pre_war_money','wonderglue','wrench','scrap_electronics','camera','cigarette_pack','cigarette_carton','silverware','silver_watch','gold_necklace','conductor'];
       const fi=rndA(finds);const it=ITEMS[fi];
       evs.push({tp:'loot',e:'✨',tx:`You spot something: <b style="color:var(--green)">${it?.e} ${it?.n}</b>`,fn:()=>{if(fi&&ITEMS[fi])S.inv.push(fi);log('Found '+it?.n+' on the road.','e')},_i:i,_t:total});
     }else{
@@ -1868,6 +2893,8 @@ function worldTick(){
 // INIT
 // ============================================================
 (function init(){
+  bindAutoSave();
+  startAutoSaveLoop();
   if(load()){upAll()}else{newGame()}
 })();
 </script>
