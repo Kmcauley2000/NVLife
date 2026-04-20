@@ -373,6 +373,11 @@ TradingPost188:{n:"188 Trading Post",r:"Mojave Central",d:"A busy overpass marke
   b:["post188_bar","post188_supply","post188_office"],dg:2,fac:"None",
   sur:[{n:"Overpass Market",e:"🧰",d:"Stalls, scrap piles, and impatient guards watching every hand.",en:["freeside_thug","convict","jackal_raider","viper_gunslinger"],lt:["cowboy_repeater","ammo_357","doctor_bag","pre_war_money"]},
   {n:"Dry Wash",e:"🏜",d:"A shallow gully used by smugglers, scavengers, and anything hungry.",en:["giant_ant","gecko","mantis","bark_scorpion"],lt:["duct_tape","scrap","stimpak","ammo_9mm"]}]},
+CinderGulch:{n:"Cinder Gulch",r:"Mojave North",d:"A scavenger settlement dug into a blasted ravine, holding off constant super mutant raids.",e:"🏚",t:"settlement",
+  b:["gulch_command","gulch_clinic","gulch_garage"],dg:3,fac:"None",
+  sur:[{n:"Burned Approach",e:"🔥",d:"Charred rock and wrecked barricades where super mutants keep probing the settlement defenses.",en:["super_mutant","super_mutant","nightkin"],lt:["ammo_556","stimpak","scrap","super_stimpak"]},
+  {n:"Cracked Overlook",e:"⛰",d:"A ridge above the gulch littered with spent casings, broken sandbags, and mutant tracks.",en:["super_mutant","super_mutant","super_mutant"],lt:["ammo_556","cowboy_repeater","scrap","doctor_bag"]},
+  {n:"Ruined Pump Station",e:"⚙",d:"An old utility station the settlers are trying to reclaim before the mutants wreck it for good.",en:["super_mutant","nightkin","centaur"],lt:["sensor_module","stimpak","energy_cell","fission_battery"]}]},
 HooverDam:{n:"Hoover Dam",r:"East Mojave",d:"The prize everyone's fighting for.",e:"🏗",t:"dam",
   b:["dam_offices","dam_power"],dg:2,fac:"NCR",
   sur:[{n:"Dam Exterior",e:"🌊",d:"NCR patrols. Legion scouts across the river.",en:["legion_scout","legion_scout","lakelurk"],lt:["ammo_556","stimpak","ncr_armor"]}]}
@@ -387,14 +392,14 @@ BoulderCity:{Novac:2,FreesideN:1,HooverDam:1,NellisAFB:2,TradingPost188:1,CampGo
 FreesideN:{Goodsprings:4,BoulderCity:1,TheStrip:1,CampMcCarran:1,RedRockCanyon:2,Westside:1},
 TheStrip:{FreesideN:1,CampMcCarran:1},
 CampMcCarran:{FreesideN:1,TheStrip:1,Primm:3,HiddenValley:2,Westside:1,TradingPost188:1,CampGolf:2,HeliosOne:2},
-HiddenValley:{CampMcCarran:2,Novac:2,Jacobstown:3},
-Jacobstown:{HiddenValley:3,FreesideN:3,RedRockCanyon:2,Sloan:3},
-RedRockCanyon:{FreesideN:2,Jacobstown:2,Sloan:2},
+HiddenValley:{CampMcCarran:2,Novac:2,Jacobstown:3,CinderGulch:3},
+Jacobstown:{HiddenValley:3,FreesideN:3,RedRockCanyon:2,Sloan:3,CinderGulch:2},
+RedRockCanyon:{FreesideN:2,Jacobstown:2,Sloan:2,CinderGulch:3},
+Sloan:{Goodsprings:2,RedRockCanyon:2,Jacobstown:3,CinderGulch:2},
 NelsonCamp:{Nipton:2,Novac:2,TheFort:3,CampSearchlight:1,CottonwoodCove:1,CampForlornHope:1},
 TheFort:{NelsonCamp:3,HooverDam:2,CottonwoodCove:2},
 CampSearchlight:{Nipton:2,NelsonCamp:1,HooverDam:2},
 CottonwoodCove:{NelsonCamp:1,TheFort:2},
-Sloan:{Goodsprings:2,RedRockCanyon:2,Jacobstown:3},
 MojaveOutpost:{Goodsprings:2,Primm:1,NCRCF:1},
 Westside:{FreesideN:1,CampMcCarran:1},
 NellisAFB:{BoulderCity:2,HooverDam:2,CampGolf:2,BitterSprings:1},
@@ -404,6 +409,7 @@ CampGolf:{BoulderCity:1,CampMcCarran:2,NellisAFB:2,HooverDam:1,CampForlornHope:2
 BitterSprings:{BoulderCity:2,CampGolf:1,NellisAFB:1,HooverDam:2},
 NCRCF:{Primm:1,Goodsprings:2,MojaveOutpost:1},
 HeliosOne:{Novac:1,BoulderCity:1,TradingPost188:1,CampMcCarran:2},
+CinderGulch:{Jacobstown:2,HiddenValley:3,RedRockCanyon:3,Sloan:2},
 HooverDam:{BoulderCity:1,TheFort:2,CampSearchlight:2,NellisAFB:2,CampForlornHope:1,TradingPost188:1,CampGolf:1,BitterSprings:2}
 };
 
@@ -509,12 +515,16 @@ const ICONS={
     GECKO:"🦎",BLOATFLY:"🪰",MANTIS:"🦗",RADROACH:"🪳",
     RADSCORPION:'<img src="NVImages/RadscorpionIcon.png" alt="Radscorpion">',
     BARK_SCORPION:'<img src="NVImages/BarkscorpionIcon.png" alt="Bark Scorpion">',
-    CAZADOR:"🐝",NIGHTSTALKER:"🐍",NIGHTKIN:"👹",
+    CAZADOR:"🐝",NIGHTSTALKER:"🐍",
+    NIGHTKIN:'<img src="NVImages/NightkinIcon.png">',
     GHOUL:"🧟",CONVICT:"👤",POWDER_GANGER:"💥",FREESIDE_THUG:"🔪",FIEND:"☠",LEGION:"⚔",LEGION_ELITE:"🦅",
-    LEGION_SCOUT:"👁",KHAN:"🏹",ROBOT:"🤖",SUPER_MUTANT:"💪",GLOWING_ONE:"☢️",
+    LEGION_SCOUT:"👁",KHAN:"🏹",ROBOT:"🤖",
+    SUPER_MUTANT:'<img src="NVImages/SupermutantIcon.png">',
+    GLOWING_ONE:"☢️",
     RAT:'<img src="NVImages/GiantratIcon.png">',
     ANT:"🐜",VIPER:"🐍",
-    LAKELURK:"🦀",DEATHCLAW:"🦖"
+    LAKELURK:"🦀",
+    DEATHCLAW: '<img src="NVImages/DeathclawIcon.png">'
   },
   NPC:{
     MALE:"👨",FEMALE:"👩",CIVILIAN:"👤",MERCHANT:"💰",COOK:"🍲",ROBOT:"🤖",LAW:"👮",
@@ -605,6 +615,9 @@ bos_armory:{n:"Brotherhood Armory",e:"⚙",am:["Power armor and energy weapons."
 bos_lab:{n:"Brotherhood Lab",e:"🔬",am:["Pre-war tech under study.","Scribes work around the clock."]},
 jacobstown_lodge:{n:"Jacobstown Lodge",e:"🏠",am:["Marcus keeps the peace.","Super mutants play chess."]},
 jacobstown_doc:{n:"Jacobstown Doctor",e:"🏥",am:["Dr. Henry researches nightkin madness.","Medical supplies available."]},
+gulch_command:{n:"Watch Captain's Shack",e:"🛖",am:["Spotting scopes, sand tables, and spent shell casings cover every surface.","Captain Harlan Voss studies fresh super mutant tracks on a marked ravine map."]},
+gulch_clinic:{n:"Patchwork Clinic",e:"🏥",am:["Repaired stretchers, scavenged medicine, and blood-stained bandages fill the room.","Mira Cade keeps the wounded alive while the settlement braces for the next raid."]},
+gulch_garage:{n:"Scrap Garage",e:"🔧",am:["Half-built barricades, stripped motors, and salvage crates are stacked wall to wall.","Lena Rourke runs repairs here while scouts drag in anything useful from the ravine."]},
 khan_bar:{n:"Khan Bar",e:"🍺",am:["Chem talk and hard stares fill the room.","A battered radio hums in the corner."]},
 khan_supply:{n:"Khan Supply",e:"📦",am:["Ammo crates, chems, and rough trade deals.","The Great Khans always have something to sell."]},
 khan_hq:{n:"Khan Longhouse",e:"🏕",am:["Plans for raids and survival are argued over here.","The Great Khans watch strangers carefully."]},
@@ -652,6 +665,9 @@ forlorn_med:{n:"Forlorn Hope Aid Tent",e:"🏥",am:["Wounded troopers rest behin
 post188_bar:{n:"188 Caravan Stop",e:"🍺",am:["Caravan guards and traders argue over prices and rumors.","The overpass shakes whenever a heavy rig crawls by above."]},
 post188_supply:{n:"188 Supply Kiosk",e:"📦",am:["A compact stall selling ammo, junk, and anything useful on the road.","Merchants here always seem to know more than they say."]},
 post188_office:{n:"188 Broker's Office",e:"🏢",am:["Trade ledgers, route notes, and escort contracts cover the desk.","If money moves through the Mojave, someone here has heard about it."]},
+gulch_command:{n:"Watch Captain's Shack",e:"🪖",am:["Maps, spent brass, and emergency plans cover every flat surface.","The settlement's defenders mark every mutant sighting they can confirm."]},
+gulch_clinic:{n:"Patchwork Clinic",e:"🏥",am:["Bandages, salvaged medicine, and blood-stained cots crowd the room.","The clinic runs on stubbornness, chems, and whatever can still be sterilized."]},
+gulch_garage:{n:"Scrap Garage",e:"🔧",am:["Half-fixed turrets, stripped rifles, and toolboxes fill the workshop.","Every useful piece of scrap in Cinder Gulch eventually ends up here."]},
 dam_offices:{n:"Dam Offices",e:"🏢",am:["NCR administration.","Power management systems."]},
 dam_power:{n:"Dam Power Plant",e:"⚡",am:["Turbines hum. The Mojave's lifeline.","Engineers maintain the generators."]},
 };
@@ -729,6 +745,13 @@ const HELIOS_NPCS={
   fantastic:{name:"Fantastic",male:true,age:31,role:"NCR technician",icon:ICONS.NPC.NCR,line:"They asked if I had a degree. I told them I had a theoretical degree in physics."},
   ignacio_rivas:{name:"Ignacio Rivas",male:true,age:48,role:"Followers scientist",icon:ICONS.NPC.FOLLOWERS,line:"Power is only useful when it serves people instead of vanity."},
   private_renolds:{name:"Private Renolds",male:true,age:24,role:"NCR guard",icon:ICONS.NPC.NCR_SCOUT,line:"Out here you watch the mirrors, the road, and the sky, in that order."}
+};
+
+const CINDER_GULCH_NPCS={
+  harlan_voss:{name:"Harlan Voss",male:true,age:49,role:"Settlement watch captain",icon:ICONS.NPC.NCR_RANGER,line:"Those mutants hit our walls every few days. We either push back or we get buried here."},
+  mira_cade:{name:"Dr. Mira Cade",male:false,age:38,role:"Field doctor",icon:ICONS.NPC.DOCTOR,line:"I can keep patching people up, but I'd prefer fewer holes arriving at my door."},
+  lena_rourke:{name:"Lena Rourke",male:false,age:29,role:"Scrap mechanic",icon:ICONS.NPC.MECHANIC,line:"Give me metal, wire, and an hour, and I can turn panic into something that shoots back."},
+  tom_quill:{name:"Tom Quill",male:true,age:33,role:"Wall scout",icon:ICONS.NPC.NCR_SCOUT,line:"Every ridge out there has mutant tracks. Some of them are fresh enough to make me nervous."}
 };
 
 // Names
@@ -1636,8 +1659,9 @@ function npcAct(action,name){
 // QUEST SYSTEM
 // ============================================================
 function mkQuest(giver){
+  const localKillPool=S.loc==='CinderGulch'?['super_mutant','super_mutant','nightkin']:Object.keys(ENEMIES).filter(k=>!ENEMIES[k].boss);
   const types=[
-    {n:'Clear the Area',t:'kill',desc:'Eliminate hostiles near {loc}.',kt:rndA(Object.keys(ENEMIES).filter(k=>!ENEMIES[k].boss)),kc:rnd(2,4)},
+    {n:'Clear the Area',t:'kill',desc:'Eliminate hostiles near {loc}.',kt:rndA(localKillPool),kc:rnd(2,4)},
     {n:'Supply Run',t:'fetch',desc:'Bring back supplies from the wasteland.',fi:rndA(['stimpak','scrap','duct_tape','ammo_9mm']),fc:rnd(2,3)},
     {n:'Patrol Duty',t:'explore',desc:'Scout the surroundings for threats.',ec:rnd(3,5)},
     {n:'Bounty',t:'kill',desc:'Take out a dangerous target.',kt:rndA(['fiend','convict','powder_ganger','legion_recruit']),kc:1},
@@ -1663,13 +1687,14 @@ function openBld(bId){
   const isBitterSpringsSpecial=['bitter_refugee','bitter_command','bitter_mess','bitter_clinic'].includes(bId);
   const isNcrcFSpecial=['ncrcf_visitor','ncrcf_admin','ncrcf_block_a','ncrcf_block_b'].includes(bId);
   const isHeliosSpecial=['helios_main','helios_tower','helios_east','helios_west'].includes(bId);
+  const isCinderGulchSpecial=['gulch_command','gulch_clinic','gulch_garage'].includes(bId);
 
   const hd=el('div','bh');
   hd.innerHTML=`<div class="bb" onclick="closeBld()">‹</div><div style="flex:1;font-size:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:var(--amber)">${b.e} ${b.n}</div><div style="font-size:11px;color:var(--amber)">💰${S.caps}</div>`;
   bi.appendChild(hd);
   bi.appendChild(el('div','ba',rndA(b.am)));
 
-  if(!isPrimmSpecial&&!isNovacSpecial&&!isFreesideSpecial&&!isCampGolfSpecial&&!isBitterSpringsSpecial&&!isNcrcFSpecial&&!isHeliosSpecial){
+  if(!isPrimmSpecial&&!isNovacSpecial&&!isFreesideSpecial&&!isCampGolfSpecial&&!isBitterSpringsSpecial&&!isNcrcFSpecial&&!isHeliosSpecial&&!isCinderGulchSpecial){
     const np=el('div','bn');np.style.cursor='pointer';
     np.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
     np.onclick=()=>openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
@@ -1709,6 +1734,9 @@ function openBld(bId){
   else if(bId==='helios_tower'){bldHeliosTower(body)}
   else if(bId==='helios_east'){bldHeliosEast(body)}
   else if(bId==='helios_west'){bldHeliosWest(body)}
+  else if(bId==='gulch_command'){bldCinderGulchCommand(body)}
+  else if(bId==='gulch_clinic'){bldCinderGulchClinic(body)}
+  else if(bId==='gulch_garage'){bldCinderGulchGarage(body)}
   else if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
   else if(bId.includes('store')||bId.includes('supply')||bId.includes('ralph')||bId.includes('armory')||bId.includes('quartermaster')){bldShop(body,bId)}
   else if(bId.includes('doc')||bId.includes('med')||bId.includes('fort')||bId.includes('jacobstown_doc')){bldMedical(body)}
@@ -2297,6 +2325,89 @@ function bldHeliosWest(body){
   body.appendChild(stashBtn);
   body.appendChild(el('div','bs2','Nearby Staff'));
   ['lt_haggerty','private_renolds'].forEach(id=>addHeliosNpcCard(body,id));
+}
+
+function cinderGulchNamedNpcRel(id){return S.relationships.find(r=>r.name===CINDER_GULCH_NPCS[id].name)}
+function addCinderGulchNpcCard(body,id){
+  const npc=CINDER_GULCH_NPCS[id];if(!npc)return;
+  const ex=cinderGulchNamedNpcRel(id);
+  const nc=el('div','bn');nc.style.cursor='pointer';
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.onclick=()=>openCinderGulchNPC(id);
+  body.appendChild(nc);
+}
+function queueCinderGulchQuest(id,prefix,capBonus=20,xpBonus=14){
+  const npc=CINDER_GULCH_NPCS[id];if(!npc)return;
+  const q=mkQuest(npc.name);
+  q.t='kill';q.kt='super_mutant';q.kc=rnd(2,4);q.kd=S.kills?.super_mutant||0;
+  q.desc='Kill '+q.kc+' super mutants threatening Cinder Gulch.';
+  q.rg+=capBonus;q.rx+=xpBonus;q.name=prefix+': Mutant Pressure';
+  window._pendingQuest=q;closeDlg();showResult('New Quest!','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');
+}
+function openCinderGulchNPC(id){
+  const npc=CINDER_GULCH_NPCS[id];if(!npc)return;
+  const rel=cinderGulchNamedNpcRel(id);
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
+  <div class="npc-line">"${npc.line}"</div>`;
+  if(id==='harlan_voss'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Harlan Voss','🪖',['Voss says Cinder Gulch was built by scavengers and caravan guards who got tired of losing ground.','Now the settlement survives by holding the walls and hitting back before the mutants gather in force.'],'Continue','upAll()')">🪖 Ask about the settlement</button>`;
+    h+=`<button class="bt pip" onclick="queueCinderGulchQuest('harlan_voss','Wall Defense',24,16)">📜 Volunteer for wall defense</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(CINDER_GULCH_NPCS['harlan_voss'],S.relationships.find(r=>r.name===CINDER_GULCH_NPCS['harlan_voss'].name))">💬 Talk</button>`;
+  }else if(id==='mira_cade'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Dr. Mira Cade','🏥',['Mira treats everyone who makes it back through the gate, but she is blunt about the cost.','Every mutant you drop outside the walls means one less body on her clinic floor.'],'Continue','upAll()')">🏥 Ask about the wounded</button>`;
+    h+=`<button class="bt pip" onclick="queueCinderGulchQuest('mira_cade','Medical Relief',20,14)">📜 Hunt mutants for the clinic</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(CINDER_GULCH_NPCS['mira_cade'],S.relationships.find(r=>r.name===CINDER_GULCH_NPCS['mira_cade'].name))">💬 Talk</button>`;
+  }else if(id==='lena_rourke'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Lena Rourke','🔧',['Lena keeps the settlement guns, walls, and generators working with little more than scavenged junk and bad language.'],'Continue','upAll()')">🔧 Ask about the defenses</button>`;
+    h+=`<button class="bt pip" onclick="queueCinderGulchQuest('lena_rourke','Scrap Line',22,15)">📜 Clear mutants off the salvage routes</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(CINDER_GULCH_NPCS['lena_rourke'],S.relationships.find(r=>r.name===CINDER_GULCH_NPCS['lena_rourke'].name))">💬 Talk</button>`;
+  }else if(id==='tom_quill'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Tom Quill','🔭',['Tom marks every mutant movement he sees from the ridge and swears the next big push is coming soon.'],'Continue','upAll()')">🔭 Ask about the ridges</button>`;
+    h+=`<button class="bt pip" onclick="queueCinderGulchQuest('tom_quill','Scout Sweep',18,12)">📜 Sweep the approaches</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(CINDER_GULCH_NPCS['tom_quill'],S.relationships.find(r=>r.name===CINDER_GULCH_NPCS['tom_quill'].name))">💬 Talk</button>`;
+  }
+  h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  openDlg(h);
+}
+function bldCinderGulchCommand(body){
+  body.appendChild(el('div','bs2','Command Shack'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The settlement command post is little more than steel sheets and determination, but every patrol, ration, and firing lane is tracked from here.</div>`));
+  const defendBtn=el('button','bt pip','📜 Take a mutant defense job');
+  defendBtn.onclick=()=>{closeBld();queueCinderGulchQuest('harlan_voss','Wall Defense',24,16)};
+  body.appendChild(defendBtn);
+  const mapBtn=el('button','bt','🗺 Study the perimeter map');
+  mapBtn.onclick=()=>{advanceTime(1);S.xp+=10;log('You study Cinder Gulch firing lanes and known mutant approaches.','e');closeBld();showResult('Perimeter Map','🗺',['⭐ +10 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(mapBtn);
+  body.appendChild(el('div','bs2','Settlement Leaders'));
+  ['harlan_voss','tom_quill'].forEach(id=>addCinderGulchNpcCard(body,id));
+}
+function bldCinderGulchClinic(body){
+  body.appendChild(el('div','bs2','Patchwork Clinic'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Patients, salvaged medicine, and bloody dressings fill the clinic. Every recovered crate and every dead mutant matters here.</div>`));
+  const healBtn=el('button','bt go','💉 Field treatment (12 caps) — fully restore HP');
+  healBtn.onclick=()=>{if(S.caps<12){notify('Not enough caps.');return}S.caps-=12;S.hp=S.maxHp;advanceTime(1);log('Dr. Mira Cade patches you up in Cinder Gulch.','e');closeBld();showResult('Field Treatment','💉',['❤ HP fully restored','⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(healBtn);
+  const dutyBtn=el('button','bt pip','📜 Offer to thin out the mutant pressure');
+  dutyBtn.onclick=()=>{closeBld();queueCinderGulchQuest('mira_cade','Medical Relief',20,14)};
+  body.appendChild(dutyBtn);
+  body.appendChild(el('div','bs2','Clinic Staff'));
+  addCinderGulchNpcCard(body,'mira_cade');
+}
+function bldCinderGulchGarage(body){
+  body.appendChild(el('div','bs2','Scrap Garage'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">This garage keeps the settlement armed. Turret parts, salvaged rifles, and steel plates are stacked in every corner.</div>`));
+  const cacheBtn=el('button','bt',hasFlag('gulch_garage_cache')?'🧰 Salvage crate already opened':'🧰 Open the salvage crate');
+  cacheBtn.onclick=()=>{advanceTime(1);if(hasFlag('gulch_garage_cache')){closeBld();showResult('Nothing Left','🧰',['The salvage crate has already been emptied.'],'Continue','upAll()');return}setFlag('gulch_garage_cache');const pick=rndA(['ammo_556','scrap','sensor_module','stimpak']);S.inv.push(pick);log('You recover useful supplies from a garage crate in Cinder Gulch.','e');closeBld();showResult('Salvage Crate','🧰',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(cacheBtn);
+  const turretBtn=el('button','bt go','🔧 Help recalibrate a turret');
+  turretBtn.onclick=()=>{advanceTime(1);S.xp+=12;log('You help Lena Rourke get one of the settlement turrets firing straight again.','e');closeBld();showResult('Turret Recalibrated','🔧',['⭐ +12 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(turretBtn);
+  const routeBtn=el('button','bt pip','📜 Clear the salvage routes');
+  routeBtn.onclick=()=>{closeBld();queueCinderGulchQuest('lena_rourke','Scrap Line',22,15)};
+  body.appendChild(routeBtn);
+  body.appendChild(el('div','bs2','Workshop Crew'));
+  ['lena_rourke','tom_quill'].forEach(id=>addCinderGulchNpcCard(body,id));
 }
 
 function freesideNamedNpcRel(id){return S.relationships.find(r=>r.name===FREESIDE_NPCS[id].name)}
