@@ -513,7 +513,7 @@ const ICONS={
     MALE:"👨",FEMALE:"👩",CIVILIAN:"👤",MERCHANT:"💰",COOK:"🍲",ROBOT:"🤖",LAW:"👮",NCR:"🪖",NCR_RANGER:"🎯",
     NCR_COMMAND:"📋",NCR_MEDIC:"⚕️",NCR_SCOUT:"🔭",FOLLOWERS:"⚕️",KINGS:"👑",WRANGLER:"🎲",CYBERDOG:"🐕",
     POWDER_GANGER:"💥",POWDER_TRADER:"💰",PRISONER:"⭐",BOOMERS:"🛩",RANCHER:"🐄",DOCTOR:"⚕️",MECHANIC:"🔧",
-    BOS:'<img src="NVLife/NVImages/BOS Icon.png" alt="Brotherhood">',BOS_SCRIBE:"🔬",TOWN:"🏘",ENTERTAINER:"🎤",DINO:"🦕",PILOT:"🛩",MOTEL:"🧾"
+    BOS:"⚙️",BOS_SCRIBE:"🔬",TOWN:"🏘",ENTERTAINER:"🎤",DINO:"🦕",PILOT:"🛩",MOTEL:"🧾"
   }
 };
 function renderIcon(icon,size=28){
@@ -1536,13 +1536,13 @@ function mkNPC(ctx={}){
   const male=R()<.5;
   const name=(male?rndA(FM):rndA(FF))+' '+rndA(LN);
   const role=rndA(getNpcRolePool(ctx));
-  const npc={name,male,age:rnd(18,55),role,loc:ctx.loc||S.loc};
+  const npc={name,male,age:rnd(18,55),role,loc:ctx.loc||S.loc,fac:ctx.fac||((LOCS[ctx.loc||S.loc]||{}).fac)||''};
   npc.icon=inferNpcIcon(npc,ctx);
   return npc;
 }
 function openNPCInteraction(npc,existing){
   let rel=existing;
-  if(!rel){rel={name:npc.name,rel:'stranger',aff:0,male:npc.male,age:npc.age,loc:S.loc,met:S.days};S.relationships.push(rel)}
+  if(!rel){rel={name:npc.name,rel:'stranger',aff:0,male:npc.male,age:npc.age,role:npc.role,loc:npc.loc||S.loc,fac:npc.fac,icon:inferNpcIcon(npc),met:S.days};S.relationships.push(rel)}
   const aff=rel.aff;
   const canFlirt=npc.male!==S.isMale&&!S.spouse;
 
@@ -1563,7 +1563,7 @@ function openNPCInteraction(npc,existing){
 }
 function npcAct(action,name){
   let rel=S.relationships.find(r=>r.name===name);
-  if(!rel){rel={name,rel:'stranger',aff:0,male:R()<.5,age:rnd(20,50),loc:S.loc,met:S.days};S.relationships.push(rel)}
+  if(!rel){rel={name,rel:'stranger',aff:0,male:R()<.5,age:rnd(20,50),role:'Wastelander',loc:S.loc,icon:null,met:S.days};S.relationships.push(rel)}
   let msg='',affChange=0;
 
   switch(action){
@@ -1580,7 +1580,7 @@ function npcAct(action,name){
     case 'recruit':
       if(S.companions.length>=2){notify("Max 2 companions.");return}
       if(rel.aff<40){notify("Not friendly enough.");return}
-      S.companions.push({name,hp:40+S.level*5,maxHp:40+S.level*5,atk:5+S.level,def:3+Math.floor(S.level*.5),male:rel.male});
+      S.companions.push({name,hp:40+S.level*5,maxHp:40+S.level*5,atk:5+S.level,def:3+Math.floor(S.level*.5),male:rel.male,role:rel.role||'Companion',loc:rel.loc||S.loc,fac:rel.fac,icon:rel.icon||inferNpcIcon(rel,{loc:rel.loc||S.loc})});
       rel.rel='companion';msg=name+" joins you!";log(name+' is now your companion.','q');break;
     case 'propose':
       if(R()<(rel.aff/100)){
@@ -2455,7 +2455,7 @@ function bldBar(body,bId){
   for(let i=0;i<rnd(2,3);i++){
     const mn=mkNPC({loc:S.loc,bId});const ex=S.relationships.find(r2=>r2.name===mn.name);
     const nc=el('div','bn');nc.style.cursor='pointer';
-    nc.innerHTML=`<div style="font-size:22px">${mn.male?'👨':'👩'}</div><div style="flex:1"><div style="font-weight:bold;font-size:11px">${mn.name}</div><div style="font-size:9px;color:var(--muted)">${mn.role}${ex?' · '+ex.rel:''}</div></div><div style="color:var(--muted)">›</div>`;
+    nc.innerHTML=`<div style="font-size:22px">${renderIcon(inferNpcIcon(mn,{loc:S.loc,bId}),22)}</div><div style="flex:1"><div style="font-weight:bold;font-size:11px">${mn.name}</div><div style="font-size:9px;color:var(--muted)">${mn.role}${ex?' · '+ex.rel:''}</div></div><div style="color:var(--muted)">›</div>`;
     nc.onclick=(function(n,e){return function(){openNPCInteraction(n,e)}})(mn,ex);
     body.appendChild(nc);
   }
@@ -2693,7 +2693,7 @@ function upChar(){
     tab.appendChild(el('div','sh','Companions'));
     S.companions.forEach(c=>{
       tab.appendChild(el('div','cd',`<div style="display:flex;align-items:center;gap:8px">
-      <div style="font-size:24px">${c.male?'👨':'👩'}</div>
+      <div style="font-size:24px">${renderIcon(c.icon||inferNpcIcon(c,{loc:c.loc||S.loc}),24)}</div>
       <div style="flex:1"><div style="font-weight:bold;font-size:12px">${c.name}</div>
       <div class="hb"><div class="hf g" style="width:${hpPct(c.hp,c.maxHp)}%"></div></div>
       <div style="font-size:9px;color:var(--muted)">HP ${c.hp}/${c.maxHp} · ATK ${c.atk} · DEF ${c.def}</div></div></div>`));
@@ -2724,8 +2724,8 @@ function upChar(){
     tab.appendChild(el('div','sh','Relationships'));
     S.relationships.slice(0,8).forEach(r=>{
       const rc=el('div','inv-card');rc.style.cursor='pointer';
-      rc.innerHTML=`<div class="inv-row"><div>${r.male?'👨':'👩'} ${r.name}</div><div style="font-size:10px;color:var(--muted)">${r.rel} · ❤${r.aff}</div></div>`;
-      rc.onclick=()=>openNPCInteraction({name:r.name,male:r.male,age:r.age,role:r.rel},r);
+      rc.innerHTML=`<div class="inv-row"><div>${renderIcon(r.icon||inferNpcIcon(r,{loc:r.loc||S.loc}),18)} ${r.name}</div><div style="font-size:10px;color:var(--muted)">${r.rel} · ❤${r.aff}</div></div>`;
+      rc.onclick=()=>openNPCInteraction({name:r.name,male:r.male,age:r.age,role:r.role||r.rel,loc:r.loc||S.loc,fac:r.fac,icon:r.icon},r);
       tab.appendChild(rc);
     });
   }
