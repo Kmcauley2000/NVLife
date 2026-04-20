@@ -6,8 +6,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1a1a0e">
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-<link rel="icon" type="image/png" href="./apple-touch-icon.png">
 <title>Fallout: New Vegas RPG</title>
 <style>
 :root{--bg:#1a1a0e;--panel:#242418;--panel2:#1e1e14;--amber:#f0c850;--amber2:#c9a230;--green:#4aff4a;--green2:#2ecc2e;--red:#ff4444;--blue:#4488cc;--text:#e8e4d0;--muted:#9a9680;--line:#3a3828;--pip:#14cc64;--hp-red:#cc3333;--ap-blue:#3388cc;--xp-gold:#ccaa33;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
@@ -1216,7 +1214,7 @@ function doScavenge(){
     if(it){S.inv.push(fi);log('Found '+it.n+'.','e');notify(it.e+' Found '+it.n)}
   } else if(r<.82){
     // NPC encounter
-    const npc=mkNPC();
+    const npc=mkNPC({loc:S.loc});
     if(!S.relationships.find(r2=>r2.name===npc.name)){
       S.relationships.push({name:npc.name,rel:'stranger',aff:0,male:npc.male,age:npc.age,loc:S.loc,met:S.days});
     }
@@ -1492,11 +1490,55 @@ function chkLU(){
 // ============================================================
 // NPC SYSTEM (BitLife style from GoT + Goodsprings dialogue)
 // ============================================================
-function mkNPC(){
+function getNpcRolePool(ctx={}){
+  const locId=ctx.loc||S.loc||'';
+  const bId=(ctx.bId||'').toLowerCase();
+  const fac=((ctx.fac||((LOCS[locId]||{}).fac)||'')+'').toLowerCase();
+
+  if(fac==='bos'||bId.includes('bos')||locId==='HiddenValley')return['Brotherhood Knight','Brotherhood Paladin','Brotherhood Scribe','Brotherhood Initiate','Brotherhood Guard','Brotherhood Technician'];
+  if(fac==='ncr'||['CampMcCarran','CampGolf','BitterSprings','HeliosOne','HooverDam','MojaveOutpost','CampForlornHope'].includes(locId)||/(mccarran|golf|bitter|helios|outpost|dam|forlorn)/.test(bId))return['NCR Trooper','NCR Ranger','NCR Scout','NCR Officer','NCR Medic','NCR Engineer'];
+  if(fac==='powdergangers'||locId==='NCRCF'||bId.includes('ncrcf'))return['Powder Ganger','Powder Ganger Trader','Prisoner','Powder Ganger Guard','Escaped Convict'];
+  if(fac==='legion'||locId==='TheFort'||locId==='NelsonCamp'||locId==='CottonwoodCove'||/(legion|caesar|cove)/.test(bId))return['Legion Recruit','Legion Veteran','Legion Scout','Legion Handler','Legion Priest'];
+  if(fac==='boomers'||locId==='NellisAFB'||bId.includes('nellis'))return['Boomer Guard','Boomer Mechanic','Boomer Pilot','Boomer Loader','Boomer Doctor'];
+  if(fac==='kings'||locId==='FreesideN'||/(king|wrangler|mick|mormon|silver_rush|cerulean)/.test(bId))return['Merchant','Drifter','King Member','Mechanic','Doctor','Guard'];
+  return['Trader','Prospector','Drifter','NCR Trooper','Caravan Guard','Settler','Scavenger','Doctor','Gambler','Bounty Hunter','Mechanic','Farmer'];
+}
+function inferNpcIcon(npc,ctx={}){
+  const locId=ctx.loc||npc.loc||S.loc||'';
+  const bId=(ctx.bId||'').toLowerCase();
+  const role=((npc.role||'')+'').toLowerCase();
+  const fac=((npc.fac||ctx.fac||((LOCS[locId]||{}).fac)||'')+'').toLowerCase();
+
+  if(npc.icon)return npc.icon;
+  if(fac==='bos'||bId.includes('bos')||locId==='HiddenValley'||role.includes('brotherhood'))return(role.includes('scribe')||role.includes('technician')||role.includes('scientist'))?ICONS.NPC.BOS_SCRIBE:ICONS.NPC.BOS;
+  if(fac==='ncr'||role.includes('ncr')||['CampMcCarran','CampGolf','BitterSprings','HeliosOne','HooverDam','MojaveOutpost','CampForlornHope'].includes(locId)||/(mccarran|golf|bitter|helios|outpost|dam|forlorn)/.test(bId)){
+    if(role.includes('ranger'))return ICONS.NPC.NCR_RANGER;
+    if(role.includes('medic')||role.includes('doctor'))return ICONS.NPC.NCR_MEDIC;
+    if(role.includes('officer')||role.includes('sergeant')||role.includes('lieutenant')||role.includes('captain')||role.includes('major')||role.includes('chief')||role.includes('command'))return ICONS.NPC.NCR_COMMAND;
+    if(role.includes('scout'))return ICONS.NPC.NCR_SCOUT;
+    return ICONS.NPC.NCR;
+  }
+  if(fac==='followers'||role.includes('follower'))return ICONS.NPC.FOLLOWERS;
+  if(fac==='powdergangers'||locId==='NCRCF'||bId.includes('ncrcf')||role.includes('powder ganger'))return role.includes('trader')?ICONS.NPC.POWDER_TRADER:(role.includes('prisoner')||role.includes('convict')?ICONS.NPC.PRISONER:ICONS.NPC.POWDER_GANGER);
+  if(fac==='kings'||role.includes('king'))return ICONS.NPC.KINGS;
+  if(fac==='boomers'||locId==='NellisAFB'||bId.includes('nellis')||role.includes('boomer'))return role.includes('doctor')?ICONS.NPC.DOCTOR:(role.includes('mechanic')?ICONS.NPC.MECHANIC:ICONS.NPC.BOOMERS);
+  if(role.includes('merchant')||role.includes('trader'))return ICONS.NPC.MERCHANT;
+  if(role.includes('cook'))return ICONS.NPC.COOK;
+  if(role.includes('robot'))return ICONS.NPC.ROBOT;
+  if(role.includes('law')||role.includes('deputy')||role.includes('guard'))return ICONS.NPC.LAW;
+  if(role.includes('doctor'))return ICONS.NPC.DOCTOR;
+  if(role.includes('mechanic')||role.includes('engineer')||role.includes('technician'))return ICONS.NPC.MECHANIC;
+  if(role.includes('ranch'))return ICONS.NPC.RANCHER;
+  if(role.includes('entertainer'))return ICONS.NPC.ENTERTAINER;
+  return npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE;
+}
+function mkNPC(ctx={}){
   const male=R()<.5;
   const name=(male?rndA(FM):rndA(FF))+' '+rndA(LN);
-  const roles=['Trader','Prospector','Drifter','NCR Trooper','Caravan Guard','Settler','Scavenger','Doctor','Gambler','Bounty Hunter','Mechanic','Farmer'];
-  return{name,male,age:rnd(18,55),role:rndA(roles)};
+  const role=rndA(getNpcRolePool(ctx));
+  const npc={name,male,age:rnd(18,55),role,loc:ctx.loc||S.loc};
+  npc.icon=inferNpcIcon(npc,ctx);
+  return npc;
 }
 function openNPCInteraction(npc,existing){
   let rel=existing;
@@ -1504,7 +1546,7 @@ function openNPCInteraction(npc,existing){
   const aff=rel.aff;
   const canFlirt=npc.male!==S.isMale&&!S.spouse;
 
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.male?'👨':'👩'}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role} · Age ${npc.age} · ${rel.rel}</div>
   ${aff?`<div class="hb" style="margin-bottom:8px"><div class="hf g" style="width:${aff}%"></div></div>`:''}
   <div class="npc-line">"${rndA(["Hey there.","What do you want?","Looking for something?","Watch yourself out there.","Got caps? I got time.","You look like trouble.","Need something?","Stay safe, stranger."])}"</div>`;
@@ -1578,7 +1620,7 @@ function accQuest(q){closeDlg();S.quests.push(q);log('Accepted: '+q.name,'q');no
 // ============================================================
 function openBld(bId){
   const b=BLDS[bId];if(!b)return;
-  const npc=mkNPC();
+  const npc=mkNPC({loc:S.loc,bId});
   const o=$('BO');const bi=$('BI');bi.innerHTML='';
   const isPrimmSpecial=['vikki_vance','mojave_express','sheriff_office','bison_steve'].includes(bId);
   const isNovacSpecial=['dino_bite','motel','mcbride_house','ranger_bungalow','no_bark_shack'].includes(bId);
@@ -1595,7 +1637,7 @@ function openBld(bId){
 
   if(!isPrimmSpecial&&!isNovacSpecial&&!isFreesideSpecial&&!isCampGolfSpecial&&!isBitterSpringsSpecial&&!isNcrcFSpecial&&!isHeliosSpecial){
     const np=el('div','bn');np.style.cursor='pointer';
-    np.innerHTML=`<div style="font-size:28px">${npc.male?'👨':'👩'}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
+    np.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
     np.onclick=()=>openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
     bi.appendChild(np);
   }
@@ -2411,7 +2453,7 @@ function bldBar(body,bId){
   // People
   body.appendChild(el('div','bs2','People'));
   for(let i=0;i<rnd(2,3);i++){
-    const mn=mkNPC();const ex=S.relationships.find(r2=>r2.name===mn.name);
+    const mn=mkNPC({loc:S.loc,bId});const ex=S.relationships.find(r2=>r2.name===mn.name);
     const nc=el('div','bn');nc.style.cursor='pointer';
     nc.innerHTML=`<div style="font-size:22px">${mn.male?'👨':'👩'}</div><div style="flex:1"><div style="font-weight:bold;font-size:11px">${mn.name}</div><div style="font-size:9px;color:var(--muted)">${mn.role}${ex?' · '+ex.rel:''}</div></div><div style="color:var(--muted)">›</div>`;
     nc.onclick=(function(n,e){return function(){openNPCInteraction(n,e)}})(mn,ex);
