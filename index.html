@@ -135,6 +135,8 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 /* Combat */
 .combat-panel{background:#1a0a0a;border:1px solid #3a1818;border-radius:6px;padding:10px;margin:4px 0}
 .enemy-portrait{text-align:center;font-size:48px;margin:8px 0}
+.icon-wrap{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;line-height:1;flex:0 0 auto}
+.icon-wrap img,.icon-wrap svg{width:100%;height:100%;object-fit:contain;display:block}
 .combat-bar{display:flex;gap:4px;margin:4px 0;flex-wrap:wrap}
 .combat-bar .bt{flex:1;min-width:80px;text-align:center}
 </style>
@@ -497,41 +499,65 @@ gold_necklace:{n:"Gold Necklace",t:"m",e:"📿",p:65,w:0.2,desc:"High-value jewe
 conductor:{n:"Conductors",t:"m",e:"🧲",p:18,w:0.5,desc:"Electronic salvage with decent value."},
 };
 
+// Central icon registry for enemies and NPCs.
+// You can later replace any value here with an <img> tag instead of editing every definition.
+// Example:
+// ICONS.NPC.BOS = '<img src="img/npc_bos.png" alt="Brotherhood">';
+// ICONS.ENEMY.FIEND = '<img src="img/enemy_fiend.png" alt="Fiend">';
+const ICONS={
+  ENEMY:{
+    GECKO:"🦎",BLOATFLY:"🪰",MANTIS:"🦗",RADROACH:"🪳",SCORPION:"🦂",CAZADOR:"🐝",NIGHTSTALKER:"🐍",NIGHTKIN:"👹",
+    GHOUL:"🧟",CONVICT:"👤",POWDER_GANGER:"💥",FREESIDE_THUG:"🔪",FIEND:"☠",LEGION:"⚔",LEGION_ELITE:"🦅",
+    LEGION_SCOUT:"👁",KHAN:"🏹",ROBOT:"🤖",SUPER_MUTANT:"💪",GLOWING_ONE:"☢️",RAT:"🐀",ANT:"🐜",VIPER:"🐍",
+    LAKELURK:"🦀",DEATHCLAW:"🦖"
+  },
+  NPC:{
+    MALE:"👨",FEMALE:"👩",CIVILIAN:"👤",MERCHANT:"💰",COOK:"🍲",ROBOT:"🤖",LAW:"👮",NCR:"🪖",NCR_RANGER:"🎯",
+    NCR_COMMAND:"📋",NCR_MEDIC:"⚕️",NCR_SCOUT:"🔭",FOLLOWERS:"⚕️",KINGS:"👑",WRANGLER:"🎲",CYBERDOG:"🐕",
+    POWDER_GANGER:"💥",POWDER_TRADER:"💰",PRISONER:"⭐",BOOMERS:"🛩",RANCHER:"🐄",DOCTOR:"⚕️",MECHANIC:"🔧",
+    BOS:"⚙️",BOS_SCRIBE:"🔬",TOWN:"🏘",ENTERTAINER:"🎤",DINO:"🦕",PILOT:"🛩",MOTEL:"🧾"
+  }
+};
+function renderIcon(icon,size=28){
+  return `<span class="icon-wrap" style="width:${size}px;height:${size}px;font-size:${size}px">${icon||''}</span>`;
+}
+
+
 // ============================================================
 // DATA - ENEMIES
 // ============================================================
 const ENEMIES={
-gecko:{n:"Gecko",hp:20,a:4,d:0,xp:8,e:"🦎",loot:["gecko_hide","gecko_steak"]},
-bloatfly:{n:"Bloatfly",hp:15,a:3,d:0,xp:5,e:"🪰",loot:["herbs"]},
-mantis:{n:"Giant Mantis",hp:25,a:6,d:1,xp:10,e:"🦗",loot:["scrap"]},
-radroach:{n:"Radroach",hp:10,a:2,d:0,xp:3,e:"🪳",loot:["herbs"]},
-radscorpion:{n:"Radscorpion",hp:60,a:15,d:5,xp:25,e:"🦂",loot:["antivenom","stimpak"]},
-cazador:{n:"Cazador",hp:45,a:18,d:3,xp:30,e:"🐝",loot:["antivenom","stimpak"]},
-nightstalker:{n:"Night Stalker",hp:40,a:12,d:4,xp:20,e:"🐍",loot:["stimpak","herbs"]},
-nightkin:{n:"Nightkin",hp:100,a:25,d:12,xp:60,e:"👹",loot:["stealth_boy","super_stimpak"]},
-feral_ghoul:{n:"Feral Ghoul",hp:35,a:10,d:2,xp:15,e:"🧟",loot:["stimpak","pre_war_money"]},
-convict:{n:"Escaped Convict",hp:30,a:8,d:3,xp:12,e:"👤",loot:["ammo_9mm","switchblade","sunset_sars"]},
-powder_ganger:{n:"Powder Ganger",hp:35,a:10,d:4,xp:15,e:"💥",loot:["dynamite","ammo_9mm","stimpak"]},
-freeside_thug:{n:"Freeside Thug",hp:30,a:7,d:3,xp:10,e:"🔪",loot:["switchblade","jet","pre_war_money"]},
-fiend:{n:"Fiend",hp:40,a:14,d:5,xp:20,e:"☠",loot:["jet","psycho","ammo_9mm","ammo_10mm","combat_knife","pistol_10mm"]},
-legion_recruit:{n:"Legion Recruit",hp:40,a:12,d:6,xp:18,e:"⚔",loot:["machete","healing_powder","legion_coin"]},
-legion_veteran:{n:"Legion Veteran",hp:70,a:20,d:10,xp:35,e:"⚔",loot:["thermic_lance","super_stimpak","legion_coin"]},
-legion_centurion:{n:"Legion Centurion",hp:120,a:28,d:15,xp:60,e:"🦅",loot:["thermic_lance","super_stimpak","power_fist","legion_coin"]},
-legion_scout:{n:"Legion Scout",hp:35,a:11,d:5,xp:15,e:"👁",loot:["machete","healing_powder","legion_coin"]},
-great_khan:{n:"Great Khan",hp:45,a:13,d:6,xp:18,e:"🏹",loot:["ammo_9mm","ammo_357","jet","stimpak","revolver_357"]},
-securitron:{n:"Securitron",hp:80,a:22,d:14,xp:40,e:"🤖",loot:["energy_cell","sensor_module","scrap"]},
-super_mutant:{n:"Super Mutant",hp:95,a:24,d:11,xp:45,e:"💪",loot:["ammo_556","scrap","stimpak","cowboy_repeater"]},
-glowing_one:{n:"Glowing One",hp:65,a:17,d:5,xp:30,e:"☢️",loot:["doctor_bag","med_x","pre_war_money","stimpak"]},
-bark_scorpion:{n:"Bark Scorpion",hp:24,a:6,d:1,xp:9,e:"🦂",loot:["antivenom","herbs"]},
-giant_rat:{n:"Giant Rat",hp:18,a:5,d:0,xp:7,e:"🐀",loot:["dirty_water","cram"]},
-giant_ant:{n:"Giant Ant",hp:26,a:7,d:1,xp:10,e:"🐜",loot:["herbs","scrap"]},
-jackal_raider:{n:"Jackal Gang Member",hp:28,a:9,d:2,xp:12,e:"🔫",loot:["ammo_9mm","switchblade","single_shotgun","cigarette_pack"]},
-viper_gunslinger:{n:"Viper Gunslinger",hp:34,a:12,d:4,xp:16,e:"🐍",loot:["ammo_357","varmint_rifle","leather_armor","cigarette_carton"]},
-centaur:{n:"Centaur",hp:70,a:16,d:6,xp:28,e:"🧟",loot:["med_x","dirty_water","scrap"]},
-feral_ghoul_trooper:{n:"Feral Ghoul Trooper",hp:50,a:14,d:4,xp:22,e:"☢️",loot:["stimpak","ammo_556","pre_war_money","ncr_armor"]},
-young_deathclaw:{n:"Young Deathclaw",hp:120,a:28,d:10,xp:55,e:"🦖",loot:["stimpak","combat_armor"]},
-lakelurk:{n:"Lakelurk",hp:85,a:22,d:10,xp:38,e:"🦀",loot:["purified_water","stimpak","pre_war_money"]},
-deathclaw:{n:"Deathclaw",hp:200,a:40,d:18,xp:100,e:"🦖",loot:["super_stimpak","super_stimpak","combat_armor"],boss:1},
+gecko:{n:"Gecko",hp:20,a:4,d:0,xp:8,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_steak"]},
+bloatfly:{n:"Bloatfly",hp:15,a:3,d:0,xp:5,e:ICONS.ENEMY.BLOATFLY,loot:["herbs"]},
+mantis:{n:"Giant Mantis",hp:25,a:6,d:1,xp:10,e:ICONS.ENEMY.MANTIS,loot:["scrap"]},
+radroach:{n:"Radroach",hp:10,a:2,d:0,xp:3,e:ICONS.ENEMY.RADROACH,loot:["herbs"]},
+radscorpion:{n:"Radscorpion",hp:60,a:15,d:5,xp:25,e:ICONS.ENEMY.SCORPION,loot:["antivenom","stimpak"]},
+cazador:{n:"Cazador",hp:45,a:18,d:3,xp:30,e:ICONS.ENEMY.CAZADOR,loot:["antivenom","stimpak"]},
+nightstalker:{n:"Night Stalker",hp:40,a:12,d:4,xp:20,e:ICONS.ENEMY.NIGHTSTALKER,loot:["stimpak","herbs"]},
+nightkin:{n:"Nightkin",hp:100,a:25,d:12,xp:60,e:ICONS.ENEMY.NIGHTKIN,loot:["stealth_boy","super_stimpak"]},
+feral_ghoul:{n:"Feral Ghoul",hp:35,a:10,d:2,xp:15,e:ICONS.ENEMY.GHOUL,loot:["stimpak","pre_war_money"]},
+convict:{n:"Escaped Convict",hp:30,a:8,d:3,xp:12,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","switchblade","sunset_sars"]},
+powder_ganger:{n:"Powder Ganger",hp:35,a:10,d:4,xp:15,e:ICONS.ENEMY.POWDER_GANGER,loot:["dynamite","ammo_9mm","stimpak"]},
+freeside_thug:{n:"Freeside Thug",hp:30,a:7,d:3,xp:10,e:ICONS.ENEMY.FREESIDE_THUG,loot:["switchblade","jet","pre_war_money"]},
+fiend:{n:"Fiend",hp:40,a:14,d:5,xp:20,e:ICONS.ENEMY.FIEND,loot:["jet","psycho","ammo_9mm","ammo_10mm","combat_knife","pistol_10mm"]},
+legion_recruit:{n:"Legion Recruit",hp:40,a:12,d:6,xp:18,e:ICONS.ENEMY.LEGION,loot:["machete","healing_powder","legion_coin"]},
+legion_veteran:{n:"Legion Veteran",hp:70,a:20,d:10,xp:35,e:ICONS.ENEMY.LEGION,loot:["thermic_lance","super_stimpak","legion_coin"]},
+legion_centurion:{n:"Legion Centurion",hp:120,a:28,d:15,xp:60,e:ICONS.ENEMY.LEGION_ELITE,loot:["thermic_lance","super_stimpak","power_fist","legion_coin"]},
+legion_scout:{n:"Legion Scout",hp:35,a:11,d:5,xp:15,e:ICONS.ENEMY.LEGION_SCOUT,loot:["machete","healing_powder","legion_coin"]},
+great_khan:{n:"Great Khan",hp:45,a:13,d:6,xp:18,e:ICONS.ENEMY.KHAN,loot:["ammo_9mm","ammo_357","jet","stimpak","revolver_357"]},
+securitron:{n:"Securitron",hp:80,a:22,d:14,xp:40,e:ICONS.ENEMY.ROBOT,loot:["energy_cell","sensor_module","scrap"]},
+super_mutant:{n:"Super Mutant",hp:95,a:24,d:11,xp:45,e:ICONS.ENEMY.SUPER_MUTANT,loot:["ammo_556","scrap","stimpak","cowboy_repeater"]},
+glowing_one:{n:"Glowing One",hp:65,a:17,d:5,xp:30,e:ICONS.ENEMY.GLOWING_ONE,loot:["doctor_bag","med_x","pre_war_money","stimpak"]},
+bark_scorpion:{n:"Bark Scorpion",hp:24,a:6,d:1,xp:9,e:ICONS.ENEMY.SCORPION,loot:["antivenom","herbs"]},
+giant_rat:{n:"Giant Rat",hp:18,a:5,d:0,xp:7,e:ICONS.ENEMY.RAT,loot:["dirty_water","cram"]},
+giant_ant:{n:"Giant Ant",hp:26,a:7,d:1,xp:10,e:ICONS.ENEMY.ANT,loot:["herbs","scrap"]},
+jackal_raider:{n:"Jackal Gang Member",hp:28,a:9,d:2,xp:12,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","switchblade","single_shotgun","cigarette_pack"]},
+viper_gunslinger:{n:"Viper Gunslinger",hp:34,a:12,d:4,xp:16,e:ICONS.ENEMY.VIPER,loot:["ammo_357","varmint_rifle","leather_armor","cigarette_carton"]},
+centaur:{n:"Centaur",hp:70,a:16,d:6,xp:28,e:ICONS.ENEMY.GHOUL,loot:["med_x","dirty_water","scrap"]},
+feral_ghoul_trooper:{n:"Feral Ghoul Trooper",hp:50,a:14,d:4,xp:22,e:ICONS.ENEMY.GLOWING_ONE,loot:["stimpak","ammo_556","pre_war_money","ncr_armor"]},
+young_deathclaw:{n:"Young Deathclaw",hp:120,a:28,d:10,xp:55,e:ICONS.ENEMY.DEATHCLAW,loot:["stimpak","combat_armor"]},
+lakelurk:{n:"Lakelurk",hp:85,a:22,d:10,xp:38,e:ICONS.ENEMY.LAKELURK,loot:["purified_water","stimpak","pre_war_money"]},
+deathclaw:{n:"Deathclaw",hp:200,a:40,d:18,xp:100,e:ICONS.ENEMY.DEATHCLAW,loot:["super_stimpak","super_stimpak","combat_armor"],boss:1},
 };
 
 // Buildings
@@ -624,75 +650,75 @@ dam_power:{n:"Dam Power Plant",e:"⚡",am:["Turbines hum. The Mojave's lifeline.
 const FACTIONS={NCR:"New California Republic",Legion:"Caesar\'s Legion",House:"Mr. House",BOS:"Brotherhood of Steel",Followers:"Followers of the Apocalypse",Kings:"The Kings",Khans:"Great Khans",Boomers:"Nellis Boomers",PowderGangers:"Powder Gangers"};
 
 const PRIMM_NPCS={
-  johnson_nash:{name:"Johnson Nash",male:true,age:63,role:"Mojave Express agent",icon:"👴",line:"Package couriers, not package thieves. That's how Primm used to work."},
-  ruby_nash:{name:"Ruby Nash",male:false,age:61,role:"Casino cook",icon:"👵",line:"If you've got caps, I've got something warm and edible."},
-  primm_slim:{name:"Primm Slim",male:true,age:25,role:"Deputy robot greeter",icon:"🤖",line:"Howdy, pardner! Welcome to the Vikki and Vance Casino and Museum!"},
-  ede:{name:"ED-E",male:true,age:5,role:"Damaged eyebot",icon:"🤖",line:"The eyebot crackles with static and plays a short burst of old-world audio."},
-  deputy_beagle:{name:"Deputy Beagle",male:true,age:39,role:"Primm deputy",icon:"👮",line:"I am a deputy, you know. This town is in a terrible state."},
-  lieutenant_hayes:{name:"Lieutenant Hayes",male:true,age:34,role:"NCR officer",icon:"🪖",line:"We can hold the roads, but Primm still needs real law and order."}
+  johnson_nash:{name:"Johnson Nash",male:true,age:63,role:"Mojave Express agent",icon:ICONS.NPC.MERCHANT,line:"Package couriers, not package thieves. That's how Primm used to work."},
+  ruby_nash:{name:"Ruby Nash",male:false,age:61,role:"Casino cook",icon:ICONS.NPC.COOK,line:"If you've got caps, I've got something warm and edible."},
+  primm_slim:{name:"Primm Slim",male:true,age:25,role:"Deputy robot greeter",icon:ICONS.NPC.ROBOT,line:"Howdy, pardner! Welcome to the Vikki and Vance Casino and Museum!"},
+  ede:{name:"ED-E",male:true,age:5,role:"Damaged eyebot",icon:ICONS.NPC.ROBOT,line:"The eyebot crackles with static and plays a short burst of old-world audio."},
+  deputy_beagle:{name:"Deputy Beagle",male:true,age:39,role:"Primm deputy",icon:ICONS.NPC.LAW,line:"I am a deputy, you know. This town is in a terrible state."},
+  lieutenant_hayes:{name:"Lieutenant Hayes",male:true,age:34,role:"NCR officer",icon:ICONS.NPC.NCR,line:"We can hold the roads, but Primm still needs real law and order."}
 };
 
 const NOVAC_NPCS={
-  cliff_briscoe:{name:"Cliff Briscoe",male:true,age:49,role:"Dino Bite merchant",icon:"🦕",line:"If you want guns, toys, or a motel room, talk straight and pay in caps."},
-  manny_vargas:{name:"Manny Vargas",male:true,age:35,role:"Former NCR sniper",icon:"🎯",line:"I keep watch from the dinosaur. Somebody in Novac has to."},
-  craig_boone:{name:"Craig Boone",male:true,age:31,role:"1st Recon sniper",icon:"🎖",line:"I watch the road. I shoot what needs shooting."},
-  no_bark:{name:"No-bark Noonan",male:true,age:62,role:"Town eccentric",icon:"🛖",line:"They say all kindsa things go bump in the night. I say most of it bumps back."},
-  jeannie_may:{name:"Jeannie May Crawford",male:false,age:56,role:"Motel owner",icon:"🧾",line:"Welcome to Novac. We work hard here, and we expect folks to pull their weight."},
-  daisy_whitman:{name:"Daisy Whitman",male:false,age:72,role:"Retired pilot",icon:"🛩",line:"I've flown through worse than this little Mojave dust bowl."},
-  ada_straus:{name:"Doctor Ada Straus",male:false,age:47,role:"Town doctor",icon:"⚕️",line:"Sit still and let me look at you before you bleed on my floor."},
-  bruce_isaac:{name:"Bruce Isaac",male:true,age:42,role:"Nervous drifter",icon:"🎤",line:"I'm just trying to keep my head down. That plan hasn't been going great."},
-  ranger_andy:{name:"Ranger Andy",male:true,age:58,role:"Retired NCR Ranger",icon:"🪖",line:"Leg's not what it used to be, but the rest of me still remembers the drill."},
-  alice_mcbride:{name:"Alice McBride",male:false,age:43,role:"Brahmin rancher",icon:"🐄",line:"The ranch keeps Novac fed when the roads don't."},
-  dusty_mcbride:{name:"Dusty McBride",male:true,age:19,role:"Ranch hand",icon:"🐂",line:"Brahmin don't watch themselves. Somebody has to work around here."}
+  cliff_briscoe:{name:"Cliff Briscoe",male:true,age:49,role:"Dino Bite merchant",icon:ICONS.NPC.DINO,line:"If you want guns, toys, or a motel room, talk straight and pay in caps."},
+  manny_vargas:{name:"Manny Vargas",male:true,age:35,role:"Former NCR sniper",icon:ICONS.NPC.NCR_RANGER,line:"I keep watch from the dinosaur. Somebody in Novac has to."},
+  craig_boone:{name:"Craig Boone",male:true,age:31,role:"1st Recon sniper",icon:ICONS.NPC.NCR_RANGER,line:"I watch the road. I shoot what needs shooting."},
+  no_bark:{name:"No-bark Noonan",male:true,age:62,role:"Town eccentric",icon:ICONS.NPC.TOWN,line:"They say all kindsa things go bump in the night. I say most of it bumps back."},
+  jeannie_may:{name:"Jeannie May Crawford",male:false,age:56,role:"Motel owner",icon:ICONS.NPC.MOTEL,line:"Welcome to Novac. We work hard here, and we expect folks to pull their weight."},
+  daisy_whitman:{name:"Daisy Whitman",male:false,age:72,role:"Retired pilot",icon:ICONS.NPC.PILOT,line:"I've flown through worse than this little Mojave dust bowl."},
+  ada_straus:{name:"Doctor Ada Straus",male:false,age:47,role:"Town doctor",icon:ICONS.NPC.DOCTOR,line:"Sit still and let me look at you before you bleed on my floor."},
+  bruce_isaac:{name:"Bruce Isaac",male:true,age:42,role:"Nervous drifter",icon:ICONS.NPC.ENTERTAINER,line:"I'm just trying to keep my head down. That plan hasn't been going great."},
+  ranger_andy:{name:"Ranger Andy",male:true,age:58,role:"Retired NCR Ranger",icon:ICONS.NPC.NCR_RANGER,line:"Leg's not what it used to be, but the rest of me still remembers the drill."},
+  alice_mcbride:{name:"Alice McBride",male:false,age:43,role:"Brahmin rancher",icon:ICONS.NPC.RANCHER,line:"The ranch keeps Novac fed when the roads don't."},
+  dusty_mcbride:{name:"Dusty McBride",male:true,age:19,role:"Ranch hand",icon:ICONS.NPC.RANCHER,line:"Brahmin don't watch themselves. Somebody has to work around here."}
 };
 
 const FREESIDE_NPCS={
-  james_garret:{name:"James Garret",male:true,age:39,role:"Atomic Wrangler owner",icon:"🎲",line:"Caps talk louder than pride in Freeside. Keep business simple and we get along fine."},
-  francine_garret:{name:"Francine Garret",male:false,age:37,role:"Atomic Wrangler co-owner",icon:"🍸",line:"The Wrangler survives because we know what people want before they ask."},
-  old_ben:{name:"Old Ben",male:true,age:58,role:"Local fixer",icon:"🧓",line:"In Freeside, survival usually comes down to knowing when to talk and when to keep walking."},
-  orris:{name:"Orris",male:true,age:34,role:"Street escort",icon:"🗡",line:"You need somebody to walk you through Freeside, I'm available for the right price."},
-  the_king:{name:"The King",male:true,age:32,role:"Leader of the Kings",icon:"👑",line:"You don't mess with my people, and we'll get along just fine."},
-  pacer:{name:"Pacer",male:true,age:29,role:"King's enforcer",icon:"🧥",line:"If you're here to start something, save me the trouble and say so now."},
-  rex:{name:"Rex",male:true,age:12,role:"Cyberdog",icon:"🐕",line:"Rex watches every movement in the room, loyal and dangerous all at once."},
-  mick:{name:"Mick",male:true,age:44,role:"Weapons merchant",icon:"🔫",line:"If I've got it, I'll sell it. If I don't, you probably don't need it."},
-  ralph:{name:"Ralph",male:true,age:41,role:"Trader and fixer",icon:"🧰",line:"The good stock stays under the counter for customers who know how to ask."},
-  julie_farkas:{name:"Julie Farkas",male:false,age:33,role:"Follower doctor",icon:"⚕️",line:"People in Freeside need food, medicine, and a little dignity. Preferably in that order."},
-  major_kieran:{name:"Major Kieran",male:true,age:46,role:"Follower administrator",icon:"📘",line:"The fort keeps running because somebody has to make order out of chaos."},
-  loyal:{name:"Loyal",male:true,age:67,role:"Old mechanic",icon:"🔧",line:"Most robots are simpler than people, and that's saying something."}
+  james_garret:{name:"James Garret",male:true,age:39,role:"Atomic Wrangler owner",icon:ICONS.NPC.WRANGLER,line:"Caps talk louder than pride in Freeside. Keep business simple and we get along fine."},
+  francine_garret:{name:"Francine Garret",male:false,age:37,role:"Atomic Wrangler co-owner",icon:ICONS.NPC.WRANGLER,line:"The Wrangler survives because we know what people want before they ask."},
+  old_ben:{name:"Old Ben",male:true,age:58,role:"Local fixer",icon:ICONS.NPC.CIVILIAN,line:"In Freeside, survival usually comes down to knowing when to talk and when to keep walking."},
+  orris:{name:"Orris",male:true,age:34,role:"Street escort",icon:ICONS.NPC.LAW,line:"You need somebody to walk you through Freeside, I'm available for the right price."},
+  the_king:{name:"The King",male:true,age:32,role:"Leader of the Kings",icon:ICONS.NPC.KINGS,line:"You don't mess with my people, and we'll get along just fine."},
+  pacer:{name:"Pacer",male:true,age:29,role:"King's enforcer",icon:ICONS.NPC.KINGS,line:"If you're here to start something, save me the trouble and say so now."},
+  rex:{name:"Rex",male:true,age:12,role:"Cyberdog",icon:ICONS.NPC.CYBERDOG,line:"Rex watches every movement in the room, loyal and dangerous all at once."},
+  mick:{name:"Mick",male:true,age:44,role:"Weapons merchant",icon:ICONS.NPC.MERCHANT,line:"If I've got it, I'll sell it. If I don't, you probably don't need it."},
+  ralph:{name:"Ralph",male:true,age:41,role:"Trader and fixer",icon:ICONS.NPC.MERCHANT,line:"The good stock stays under the counter for customers who know how to ask."},
+  julie_farkas:{name:"Julie Farkas",male:false,age:33,role:"Follower doctor",icon:ICONS.NPC.FOLLOWERS,line:"People in Freeside need food, medicine, and a little dignity. Preferably in that order."},
+  major_kieran:{name:"Major Kieran",male:true,age:46,role:"Follower administrator",icon:ICONS.NPC.FOLLOWERS,line:"The fort keeps running because somebody has to make order out of chaos."},
+  loyal:{name:"Loyal",male:true,age:67,role:"Old mechanic",icon:ICONS.NPC.MECHANIC,line:"Most robots are simpler than people, and that's saying something."}
 };
 
 
 const CAMP_GOLF_NPCS={
-  chief_hanlon:{name:"Chief Hanlon",male:true,age:61,role:"Chief of the NCR Rangers",icon:"🪖",line:"Wars are won or lost long before the shooting starts. Most people only notice the noise."},
-  sergeant_mccredie:{name:"Sergeant McCredie",male:true,age:41,role:"Camp Golf drill sergeant",icon:"📋",line:"I've got one squad of problem children and a war that won't wait for them to grow up."},
-  private_ohanrahan:{name:"Private O'Hanrahan",male:true,age:22,role:"NCR trooper, the Misfits",icon:"😟",line:"I can shoot fine. It's the dying part I'm not exactly looking forward to."},
-  private_razz:{name:"Private Razz",male:true,age:24,role:"NCR trooper, the Misfits",icon:"🎯",line:"Point me at a target and I'll hit it. Point me at authority and we'll probably have words."},
-  private_mags:{name:"Private Mags",male:false,age:23,role:"NCR trooper, the Misfits",icon:"🪖",line:"If this squad held itself together for five minutes, I'd call that progress."},
-  private_poindexter:{name:"Private Poindexter",male:true,age:21,role:"NCR trooper, the Misfits",icon:"📚",line:"Tactics aren't the issue. Applying them while everyone ignores me is the issue."},
-  doctor_kemp:{name:"Dr. Kemp",male:true,age:46,role:"Camp Golf doctor",icon:"⚕️",line:"Try not to come back with a fresh hole in you before I've finished with the last one."}
+  chief_hanlon:{name:"Chief Hanlon",male:true,age:61,role:"Chief of the NCR Rangers",icon:ICONS.NPC.NCR_RANGER,line:"Wars are won or lost long before the shooting starts. Most people only notice the noise."},
+  sergeant_mccredie:{name:"Sergeant McCredie",male:true,age:41,role:"Camp Golf drill sergeant",icon:ICONS.NPC.NCR_COMMAND,line:"I've got one squad of problem children and a war that won't wait for them to grow up."},
+  private_ohanrahan:{name:"Private O'Hanrahan",male:true,age:22,role:"NCR trooper, the Misfits",icon:ICONS.NPC.NCR,line:"I can shoot fine. It's the dying part I'm not exactly looking forward to."},
+  private_razz:{name:"Private Razz",male:true,age:24,role:"NCR trooper, the Misfits",icon:ICONS.NPC.NCR_RANGER,line:"Point me at a target and I'll hit it. Point me at authority and we'll probably have words."},
+  private_mags:{name:"Private Mags",male:false,age:23,role:"NCR trooper, the Misfits",icon:ICONS.NPC.NCR,line:"If this squad held itself together for five minutes, I'd call that progress."},
+  private_poindexter:{name:"Private Poindexter",male:true,age:21,role:"NCR trooper, the Misfits",icon:ICONS.NPC.NCR_COMMAND,line:"Tactics aren't the issue. Applying them while everyone ignores me is the issue."},
+  doctor_kemp:{name:"Dr. Kemp",male:true,age:46,role:"Camp Golf doctor",icon:ICONS.NPC.NCR_MEDIC,line:"Try not to come back with a fresh hole in you before I've finished with the last one."}
 };
 
 const BITTER_SPRINGS_NPCS={
-  captain_gilles:{name:"Captain Gilles",male:false,age:44,role:"Bitter Springs commander",icon:"🪖",line:"Keeping people alive out here means balancing mercy, discipline, and never enough supplies."},
-  major_dhatri:{name:"Major Dhatri",male:true,age:48,role:"NCR hunter and field officer",icon:"🎯",line:"The hills around Bitter Springs don't forgive mistakes. Neither do cazadores."},
-  oscar_velasco:{name:"Oscar Velasco",male:true,age:57,role:"Refugee elder",icon:"⛺",line:"We've lost enough already. Anyone who still helps is remembered here."},
-  bitter_root:{name:"Bitter-Root",male:true,age:24,role:"NCR trooper",icon:"🪖",line:"You either make peace with ugly history out here or it follows you into every conversation."},
-  lieutenant_markland:{name:"Lieutenant Markland",male:true,age:36,role:"NCR camp officer",icon:"📋",line:"Relief work still needs order. Without it, the whole camp starts slipping apart."}
+  captain_gilles:{name:"Captain Gilles",male:false,age:44,role:"Bitter Springs commander",icon:ICONS.NPC.NCR_COMMAND,line:"Keeping people alive out here means balancing mercy, discipline, and never enough supplies."},
+  major_dhatri:{name:"Major Dhatri",male:true,age:48,role:"NCR hunter and field officer",icon:ICONS.NPC.NCR_RANGER,line:"The hills around Bitter Springs don't forgive mistakes. Neither do cazadores."},
+  oscar_velasco:{name:"Oscar Velasco",male:true,age:57,role:"Refugee elder",icon:ICONS.NPC.CIVILIAN,line:"We've lost enough already. Anyone who still helps is remembered here."},
+  bitter_root:{name:"Bitter-Root",male:true,age:24,role:"NCR trooper",icon:ICONS.NPC.NCR,line:"You either make peace with ugly history out here or it follows you into every conversation."},
+  lieutenant_markland:{name:"Lieutenant Markland",male:true,age:36,role:"NCR camp officer",icon:ICONS.NPC.NCR_COMMAND,line:"Relief work still needs order. Without it, the whole camp starts slipping apart."}
 };
 
 const NCRCF_NPCS={
-  eddie:{name:"Eddie",male:true,age:39,role:"Powder Ganger leader",icon:"💥",line:"The NCR built a prison. We turned it into a business."},
-  dawes:{name:"Dawes",male:true,age:34,role:"Gate guard",icon:"🚧",line:"Nobody walks into the NCRCF for free unless I say so."},
-  carter:{name:"Carter",male:true,age:41,role:"Powder Ganger trader",icon:"💰",line:"If it explodes, shoots, or patches holes, I can probably sell it."},
-  meyers:{name:"Meyers",male:true,age:55,role:"Former sheriff and prisoner",icon:"⭐",line:"A jail teaches you who belongs behind bars and who just ended up there."},
-  hannigan:{name:"Hannigan",male:true,age:46,role:"Prison medic",icon:"⚕️",line:"Around here I patch up idiots faster than they can make new holes in themselves."}
+  eddie:{name:"Eddie",male:true,age:39,role:"Powder Ganger leader",icon:ICONS.NPC.POWDER_GANGER,line:"The NCR built a prison. We turned it into a business."},
+  dawes:{name:"Dawes",male:true,age:34,role:"Gate guard",icon:ICONS.NPC.POWDER_GANGER,line:"Nobody walks into the NCRCF for free unless I say so."},
+  carter:{name:"Carter",male:true,age:41,role:"Powder Ganger trader",icon:ICONS.NPC.POWDER_TRADER,line:"If it explodes, shoots, or patches holes, I can probably sell it."},
+  meyers:{name:"Meyers",male:true,age:55,role:"Former sheriff and prisoner",icon:ICONS.NPC.PRISONER,line:"A jail teaches you who belongs behind bars and who just ended up there."},
+  hannigan:{name:"Hannigan",male:true,age:46,role:"Prison medic",icon:ICONS.NPC.DOCTOR,line:"Around here I patch up idiots faster than they can make new holes in themselves."}
 };
 
 const HELIOS_NPCS={
-  lt_haggerty:{name:"Lieutenant Haggerty",male:false,age:36,role:"NCR officer",icon:"🪖",line:"I need this plant secure and producing power, not excuses."},
-  fantastic:{name:"Fantastic",male:true,age:31,role:"NCR technician",icon:"😎",line:"They asked if I had a degree. I told them I had a theoretical degree in physics."},
-  ignacio_rivas:{name:"Ignacio Rivas",male:true,age:48,role:"Followers scientist",icon:"⚕️",line:"Power is only useful when it serves people instead of vanity."},
-  private_renolds:{name:"Private Renolds",male:true,age:24,role:"NCR guard",icon:"🔭",line:"Out here you watch the mirrors, the road, and the sky, in that order."}
+  lt_haggerty:{name:"Lieutenant Haggerty",male:false,age:36,role:"NCR officer",icon:ICONS.NPC.NCR_COMMAND,line:"I need this plant secure and producing power, not excuses."},
+  fantastic:{name:"Fantastic",male:true,age:31,role:"NCR technician",icon:ICONS.NPC.NCR,line:"They asked if I had a degree. I told them I had a theoretical degree in physics."},
+  ignacio_rivas:{name:"Ignacio Rivas",male:true,age:48,role:"Followers scientist",icon:ICONS.NPC.FOLLOWERS,line:"Power is only useful when it serves people instead of vanity."},
+  private_renolds:{name:"Private Renolds",male:true,age:24,role:"NCR guard",icon:ICONS.NPC.NCR_SCOUT,line:"Out here you watch the mirrors, the road, and the sky, in that order."}
 };
 
 // Names
@@ -1291,7 +1317,7 @@ function renderCombat(){
 
   let enemyHtml=alive.map((en,i)=>`<div class="combat-panel" style="margin:2px 0;padding:6px">
   <div style="display:flex;align-items:center;gap:8px">
-  <div style="font-size:28px">${en.e}</div>
+  <div style="font-size:28px">${renderIcon(en.e,28)}</div>
   <div style="flex:1"><div style="font-weight:bold;font-size:12px;color:var(--red)">${en.name}</div>
   <div class="hb"><div class="hf cr" style="width:${hpPct(en.hp,en.maxHp)}%"></div></div>
   <div style="font-size:9px;color:var(--muted)">HP ${en.hp}/${en.maxHp} · ATK ${en.a} · DEF ${en.d}</div></div></div></div>`).join('');
@@ -1626,7 +1652,7 @@ function addNamedNpcCard(body,id){
   const npc=PRIMM_NPCS[id];if(!npc)return;
   const ex=namedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openPrimmNPC(id);
   body.appendChild(nc);
 }
@@ -1638,7 +1664,7 @@ function queueNamedQuest(id,prefix,capBonus=10,xpBonus=5){
 function openPrimmNPC(id){
   const npc=PRIMM_NPCS[id];if(!npc)return;
   const rel=namedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
 
@@ -1674,14 +1700,14 @@ function addNovacNpcCard(body,id){
   const npc=NOVAC_NPCS[id];if(!npc)return;
   const ex=novacNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openNovacNPC(id);
   body.appendChild(nc);
 }
 function openNovacNPC(id){
   const npc=NOVAC_NPCS[id];if(!npc)return;
   const rel=novacNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='cliff_briscoe'){
@@ -1792,7 +1818,7 @@ function addCampGolfNpcCard(body,id){
   const npc=CAMP_GOLF_NPCS[id];if(!npc)return;
   const ex=campGolfNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openCampGolfNPC(id);
   body.appendChild(nc);
 }
@@ -1804,7 +1830,7 @@ function queueCampGolfQuest(id,prefix,capBonus=16,xpBonus=10){
 function openCampGolfNPC(id){
   const npc=CAMP_GOLF_NPCS[id];if(!npc)return;
   const rel=campGolfNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='chief_hanlon'){
@@ -1898,7 +1924,7 @@ function addBitterSpringsNpcCard(body,id){
   const npc=BITTER_SPRINGS_NPCS[id];if(!npc)return;
   const ex=bitterSpringsNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openBitterSpringsNPC(id);
   body.appendChild(nc);
 }
@@ -1910,7 +1936,7 @@ function queueBitterSpringsQuest(id,prefix,capBonus=16,xpBonus=10){
 function openBitterSpringsNPC(id){
   const npc=BITTER_SPRINGS_NPCS[id];if(!npc)return;
   const rel=bitterSpringsNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
 
@@ -2001,7 +2027,7 @@ function addNcrcfNpcCard(body,id){
   const npc=NCRCF_NPCS[id];if(!npc)return;
   const ex=ncrcfNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openNcrcfNPC(id);
   body.appendChild(nc);
 }
@@ -2013,7 +2039,7 @@ function queueNcrcfQuest(id,prefix,capBonus=16,xpBonus=10){
 function openNcrcfNPC(id){
   const npc=NCRCF_NPCS[id];if(!npc)return;
   const rel=ncrcfNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='eddie'){
@@ -2101,7 +2127,7 @@ function addHeliosNpcCard(body,id){
   const npc=HELIOS_NPCS[id];if(!npc)return;
   const ex=heliosNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openHeliosNPC(id);
   body.appendChild(nc);
 }
@@ -2113,7 +2139,7 @@ function queueHeliosQuest(id,prefix,capBonus=18,xpBonus=12){
 function openHeliosNPC(id){
   const npc=HELIOS_NPCS[id];if(!npc)return;
   const rel=heliosNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='lt_haggerty'){
@@ -2202,7 +2228,7 @@ function addFreesideNpcCard(body,id){
   const npc=FREESIDE_NPCS[id];if(!npc)return;
   const ex=freesideNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openFreesideNPC(id);
   body.appendChild(nc);
 }
@@ -2214,7 +2240,7 @@ function queueFreesideQuest(id,prefix,capBonus=12,xpBonus=8){
 function openFreesideNPC(id){
   const npc=FREESIDE_NPCS[id];if(!npc)return;
   const rel=freesideNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span style="font-size:28px">${npc.icon||(npc.male?'👨':'👩')}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='james_garret'){
