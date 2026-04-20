@@ -786,6 +786,7 @@ kills:{},days:1,hours:8,log:[],karma:0,
 bg:null,class:'courier',
 // Social
 spouse:null,children:[],companions:[],relationships:[],
+buildingNpcs:{},
 properties:[],
 age:25,isMale:true,
 // World
@@ -847,6 +848,7 @@ function migrate(){
   if(!S.ap)S.ap=60;if(!S.maxAp)S.maxAp=60;
   if(!S.worldEvents)S.worldEvents=[];
   if(!S.relationships)S.relationships=[];
+  if(!S.buildingNpcs)S.buildingNpcs={};
   if(!S.spouse)S.spouse=null;
   if(!S.children)S.children=[];
   if(S.bounty===undefined)S.bounty=0;
@@ -1542,6 +1544,26 @@ function mkNPC(ctx={}){
   npc.icon=inferNpcIcon(npc,ctx);
   return npc;
 }
+function getBuildingNpcKey(loc,bId,slot='main'){
+  return `${loc||S.loc}::${bId}::${slot}`;
+}
+function getBuildingNpc(loc,bId,ctx={},slot='main'){
+  if(!S.buildingNpcs)S.buildingNpcs={};
+  const key=getBuildingNpcKey(loc,bId,slot);
+  if(!S.buildingNpcs[key]){
+    S.buildingNpcs[key]=mkNPC(Object.assign({},ctx,{loc:loc||S.loc,bId}));
+  }
+  return S.buildingNpcs[key];
+}
+function getBuildingNpcGroup(loc,bId,countFactory,ctx={},slot='group'){
+  if(!S.buildingNpcs)S.buildingNpcs={};
+  const key=getBuildingNpcKey(loc,bId,slot);
+  if(!Array.isArray(S.buildingNpcs[key])||!S.buildingNpcs[key].length){
+    const count=typeof countFactory==='function'?countFactory():countFactory;
+    S.buildingNpcs[key]=Array.from({length:Math.max(1,count||1)},(_,i)=>mkNPC(Object.assign({},ctx,{loc:loc||S.loc,bId,slot:`${slot}_${i}`})));
+  }
+  return S.buildingNpcs[key];
+}
 function openNPCInteraction(npc,existing){
   let rel=existing;
   if(!rel){rel={name:npc.name,rel:'stranger',aff:0,male:npc.male,age:npc.age,role:npc.role,loc:npc.loc||S.loc,fac:npc.fac,icon:inferNpcIcon(npc),met:S.days};S.relationships.push(rel)}
@@ -1622,7 +1644,7 @@ function accQuest(q){closeDlg();S.quests.push(q);log('Accepted: '+q.name,'q');no
 // ============================================================
 function openBld(bId){
   const b=BLDS[bId];if(!b)return;
-  const npc=mkNPC({loc:S.loc,bId});
+  const npc=getBuildingNpc(S.loc,bId,{loc:S.loc,bId});
   const o=$('BO');const bi=$('BI');bi.innerHTML='';
   const isPrimmSpecial=['vikki_vance','mojave_express','sheriff_office','bison_steve'].includes(bId);
   const isNovacSpecial=['dino_bite','motel','mcbride_house','ranger_bungalow','no_bark_shack'].includes(bId);
@@ -2454,13 +2476,14 @@ function bldBar(body,bId){
 
   // People
   body.appendChild(el('div','bs2','People'));
-  for(let i=0;i<rnd(2,3);i++){
-    const mn=mkNPC({loc:S.loc,bId});const ex=S.relationships.find(r2=>r2.name===mn.name);
+  const people=getBuildingNpcGroup(S.loc,bId,()=>rnd(2,3),{loc:S.loc,bId},'people');
+  people.forEach(mn=>{
+    const ex=S.relationships.find(r2=>r2.name===mn.name);
     const nc=el('div','bn');nc.style.cursor='pointer';
     nc.innerHTML=`<div style="font-size:22px">${renderIcon(inferNpcIcon(mn,{loc:S.loc,bId}),22)}</div><div style="flex:1"><div style="font-weight:bold;font-size:11px">${mn.name}</div><div style="font-size:9px;color:var(--muted)">${mn.role}${ex?' · '+ex.rel:''}</div></div><div style="color:var(--muted)">›</div>`;
     nc.onclick=(function(n,e){return function(){openNPCInteraction(n,e)}})(mn,ex);
     body.appendChild(nc);
-  }
+  });
 }
 function bldShop(body,bId){
   body.appendChild(el('div','bs2','Buy'));
