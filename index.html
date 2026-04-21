@@ -512,16 +512,12 @@ conductor:{n:"Conductors",t:"m",e:"🧲",p:18,w:0.5,desc:"Electronic salvage wit
 // ICONS.ENEMY.FIEND = '<img src="img/enemy_fiend.png" alt="Fiend">';
 const ICONS={
   ENEMY:{
-    GECKO:"🦎",BLOATFLY:"🪰",MANTIS:"🦗",
-    RADROACH:'<img src="NVImages/RadroachIcon.png" alt="Radroach">',
+    GECKO:"🦎",BLOATFLY:"🪰",MANTIS:"🦗",RADROACH:"🪳",
     RADSCORPION:'<img src="NVImages/RadscorpionIcon.png" alt="Radscorpion">',
     BARK_SCORPION:'<img src="NVImages/BarkscorpionIcon.png" alt="Bark Scorpion">',
     CAZADOR:"🐝",NIGHTSTALKER:"🐍",
     NIGHTKIN:'<img src="NVImages/NightkinIcon.png" style="width:150%;height:150%;object-fit:contain;display:block;">',
-    GHOUL:"🧟",CONVICT:"👤",
-    POWDER_GANGER:'<img src="NVImages/PowdergangerIcon.png">',
-    FREESIDE_THUG:"🔪",
-    FIEND:'<img src="NVImages/FiendIcon.png">',
+    GHOUL:"🧟",CONVICT:"👤",POWDER_GANGER:"💥",FREESIDE_THUG:"🔪",FIEND:"☠",
     LEGION:'<img src="NVImages/Legionaryrecruit1.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
     LEGION_ELITE:"🦅",
     LEGION_SCOUT:"👁",KHAN:"🏹",ROBOT:"🤖",
@@ -815,7 +811,12 @@ const START_PRESETS=[
 let S=null,combat=null,tQ=[],tDest=null;
 const SAVE_KEY='fnv_rpg';
 const SAVE_BACKUP_KEY='fnv_rpg_backup';
+const SAVE_MIRROR_KEY='fnv_rpg_mirror';
+const SAVE_DB_NAME='fnv_rpg_db';
+const SAVE_DB_STORE='saves';
+const SAVE_DB_SLOT='primary';
 let _saveTimer=null,_autoSaveTimer=null,_lastSaveStamp=0;
+let _dbPromise=null;
 
 const BASE={name:"Courier",hp:80,maxHp:80,ap:60,maxAp:60,xp:0,level:1,caps:30,
 special:[5,5,5,5,5,5,5],perks:[],
@@ -839,17 +840,68 @@ flags:{},
 };
 
 function serializeSave(){return JSON.stringify(S)}
+function canUseStorage(){
+  try{return typeof localStorage!=='undefined'}catch(e){return false}
+}
+function getSaveDb(){
+  if(_dbPromise)return _dbPromise;
+  _dbPromise=new Promise(resolve=>{
+    if(!window.indexedDB){resolve(null);return}
+    try{
+      const req=indexedDB.open(SAVE_DB_NAME,1);
+      req.onupgradeneeded=()=>{
+        const db=req.result;
+        if(!db.objectStoreNames.contains(SAVE_DB_STORE))db.createObjectStore(SAVE_DB_STORE);
+      };
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>resolve(null);
+    }catch(e){resolve(null)}
+  });
+  return _dbPromise;
+}
+async function saveToIndexedDb(raw){
+  const db=await getSaveDb();
+  if(!db)return false;
+  return await new Promise(resolve=>{
+    try{
+      const tx=db.transaction(SAVE_DB_STORE,'readwrite');
+      tx.objectStore(SAVE_DB_STORE).put({raw,stamp:Date.now()},SAVE_DB_SLOT);
+      tx.oncomplete=()=>resolve(true);
+      tx.onerror=()=>resolve(false);
+      tx.onabort=()=>resolve(false);
+    }catch(e){resolve(false)}
+  });
+}
+async function loadFromIndexedDb(){
+  const db=await getSaveDb();
+  if(!db)return null;
+  return await new Promise(resolve=>{
+    try{
+      const tx=db.transaction(SAVE_DB_STORE,'readonly');
+      const req=tx.objectStore(SAVE_DB_STORE).get(SAVE_DB_SLOT);
+      req.onsuccess=()=>resolve(req.result&&req.result.raw?req.result.raw:null);
+      req.onerror=()=>resolve(null);
+    }catch(e){resolve(null)}
+  });
+}
 function save(force=false){
   if(!S)return false;
   const now=Date.now();
   if(!force&&now-_lastSaveStamp<150)return true;
   try{
     const raw=serializeSave();
-    localStorage.setItem(SAVE_KEY,raw);
-    localStorage.setItem(SAVE_BACKUP_KEY,raw);
+    if(canUseStorage()){
+      localStorage.setItem(SAVE_KEY,raw);
+      localStorage.setItem(SAVE_BACKUP_KEY,raw);
+      localStorage.setItem(SAVE_MIRROR_KEY,raw);
+    }
+    saveToIndexedDb(raw);
     _lastSaveStamp=now;
     return true;
-  }catch(e){return false}
+  }catch(e){
+    try{saveToIndexedDb(serializeSave())}catch(err){}
+    return false
+  }
 }
 function queueSave(delay=180){
   if(!S)return;
@@ -858,16 +910,20 @@ function queueSave(delay=180){
 }
 function startAutoSaveLoop(){
   clearInterval(_autoSaveTimer);
-  _autoSaveTimer=setInterval(()=>save(true),15000);
+  _autoSaveTimer=setInterval(()=>save(true),5000);
 }
 function bindAutoSave(){
   const hardSave=()=>save(true);
-  ['pagehide','beforeunload','blur'].forEach(ev=>window.addEventListener(ev,hardSave,{capture:true}));
+  ['pagehide','beforeunload','blur','focusout'].forEach(ev=>window.addEventListener(ev,hardSave,{capture:true}));
+  window.addEventListener('pageshow',()=>{if(S)save(true)},{capture:true});
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')hardSave()},{capture:true});
   document.addEventListener('freeze',hardSave,{capture:true});
+  document.addEventListener('resume',hardSave,{capture:true});
+  document.addEventListener('pause',hardSave,{capture:true});
 }
 function load(){
-  const candidates=[localStorage.getItem(SAVE_KEY),localStorage.getItem(SAVE_BACKUP_KEY)];
+  const candidates=[];
+  if(canUseStorage())candidates.push(localStorage.getItem(SAVE_KEY),localStorage.getItem(SAVE_BACKUP_KEY),localStorage.getItem(SAVE_MIRROR_KEY));
   for(const raw of candidates){
     if(!raw)continue;
     try{
@@ -878,10 +934,32 @@ function load(){
   }
   return false;
 }
+async function loadAsync(){
+  if(load())return true;
+  const raw=await loadFromIndexedDb();
+  if(!raw)return false;
+  try{
+    S=JSON.parse(raw);
+    migrate();
+    if(canUseStorage()){
+      localStorage.setItem(SAVE_KEY,raw);
+      localStorage.setItem(SAVE_BACKUP_KEY,raw);
+      localStorage.setItem(SAVE_MIRROR_KEY,raw);
+    }
+    return true;
+  }catch(e){return false}
+}
+async function requestPersistentStorage(){
+  try{
+    if(navigator.storage&&navigator.storage.persist)await navigator.storage.persist();
+  }catch(e){}
+}
 function migrate(){
   if(!S.special)S.special=[5,5,5,5,5,5,5];
   if(!S.companions)S.companions=[];
   if(!S.properties)S.properties=[];
+  const legacyProps=new Set(['Abandoned Shack','Safehouse','Workshop','Trading Post','Fortified Compound']);
+  S.properties=S.properties.filter(p=>p&&(!legacyProps.has(p.name)));
   if(!S.settlements)S.settlements=[];
   if(!S.army)S.army={soldiers:0,quality:1,morale:50,max:0};
   if(!S.hours)S.hours=8;
@@ -894,6 +972,7 @@ function migrate(){
   if(S.bounty===undefined)S.bounty=0;
   if(!S.perks)S.perks=[];
   if(!S.flags)S.flags={};
+  if(!S.flags.bountyBoard)S.flags.bountyBoard={};
   if(!S.gear)S.gear={w:null,body:null,head:null};
   if(S.age===undefined)S.age=25;
   if(S.isMale===undefined)S.isMale=true;
@@ -1205,7 +1284,7 @@ function upWorld(){
 
   // Property
   const propBtn=el('div','bc');
-  propBtn.innerHTML=`<div style="font-size:22px">🏠</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Property${S.properties.length?' ('+S.properties.length+')':''}</div><div style="font-size:10px;color:var(--muted)">${S.properties.length?'+'+S.properties.reduce((a,p)=>a+(p.income||0),0)+' caps/day':'Browse safehouse options'}</div></div><div style="color:var(--muted)">›</div>`;
+  propBtn.innerHTML=`<div style="font-size:22px">🏠</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Property${S.properties.length?' ('+S.properties.length+')':''}</div><div style="font-size:10px;color:var(--muted)">${propertyAtLoc(S.loc).length?'Owned here: '+propertyAtLoc(S.loc).map(p=>p.name).join(', '):'Browse local property options'}</div></div><div style="color:var(--muted)">›</div>`;
   propBtn.onclick=()=>openPropertyMenu();
   tab.appendChild(propBtn);
 
@@ -1502,6 +1581,18 @@ function endCombat(won,died){
 
   const lines=['⭐ +'+totalXp+' XP','💰 +'+totalCaps+' caps'];
   lootFound.forEach(l=>{const it=ITEMS[l];if(it)lines.push(it.e+' '+it.n)});
+  if(combat.bountyTarget){
+    const bt=combat.bountyTarget;
+    const bonusCaps=rnd(bt.caps[0],bt.caps[1]);
+    S.caps+=bonusCaps;S.capsEarned+=bonusCaps;
+    S.xp+=bt.xp;
+    lines.push('🎯 Bounty claimed: '+bt.name);
+    lines.push('💰 +'+bonusCaps+' caps bonus');
+    lines.push('⭐ +'+bt.xp+' XP bonus');
+    if(bt.rep){Object.entries(bt.rep).forEach(([fac,val])=>{S.rep[fac]=(S.rep[fac]||0)+val;lines.push('🏴 +'+val+' '+(FACTIONS[fac]||fac)+' standing')})}
+    if(S.flags.bountyBoard)S.flags.bountyBoard.current=null;
+    log('Claimed bounty on '+bt.name+'.','q');
+  }
 
   combat=null;
   chkLU();save();
@@ -1872,7 +1963,7 @@ function bldNovacDino(body){
 function bldNovacMotel(body){
   body.appendChild(el('div','bs2','Front Desk'));
   body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Between the front desk, rooms, and dinosaur overlook, the motel is the heart of Novac. Travelers sleep here, heal here, gossip here, and sometimes hide here.</div>`));
-  const roomCost=S.properties.find(p=>p.loc===S.loc)?0:20;
+  const roomCost=propertyAtLoc(S.loc).length?0:20;
   const roomBtn=el('button','bt go',`🛏 Rent a room (8 hours) — ${roomCost?roomCost+' caps':'FREE'}`);
   roomBtn.onclick=()=>{if(roomCost&&S.caps<roomCost){notify('Not enough caps.');return}S.caps-=roomCost;S.hp=S.maxHp;S.ap=S.maxAp;S.days++;S.hours=8;payDaily();log('You rent a room at the Dino Dee-lite Motel.','e');closeBld();showResult('Rested in Novac','🛏',['❤ Full HP/AP','📅 Day '+S.days],'Continue','upAll()')};
   body.appendChild(roomBtn);
@@ -2753,6 +2844,128 @@ function bldGeneric(body,bId){
   body.appendChild(searchBtn);
 }
 
+const PROPERTY_DEFS=[
+  {id:'goodsprings_shack',name:'Goodsprings Shack',cost:1200,loc:'Goodsprings',desc:'A rough little shack on the edge of town. Free rest, a small stash, and a place to regroup.',actions:['stash']},
+  {id:'goodsprings_house',name:'Goodsprings House',cost:5000,loc:'Goodsprings',desc:'A proper Goodsprings house. Expensive, secure, and useful.',actions:['stash','cache']},
+  {id:'goodsprings_workshop',name:'Goodsprings Workshop',cost:3500,loc:'Goodsprings',desc:'A proper bench and tools. Unlocks property-only crafting and repair actions.',actions:['repair','ammo']},
+  {id:'goodsprings_water_rights',name:'Goodsprings Water Rights Share',cost:2800,loc:'Goodsprings',desc:'A paid share in the spring output. Lets you draw water and gather around the source once per day.',actions:['water_draw','spring_gather']},
+  {id:'primm_bounty_office',name:'Primm Bounty Office',cost:4200,loc:'Primm',desc:'A small law office and holding room in Primm. Take named bounties and open the evidence locker.',actions:['start_bounty','evidence']},
+  {id:'hidden_valley_quarters',name:'Hidden Valley Bunker Quarters',cost:6500,loc:'HiddenValley',desc:'Personal quarters inside Hidden Valley. Brotherhood access only.',requires:{fac:'BOS',rep:40},actions:['energy_ration','med_cache']},
+];
+const PRIMM_BOUNTY_TARGETS=[
+  {id:'eddie_riggs',name:'Eddie Riggs',enemy:'convict',caps:[90,130],xp:22,itemPool:['ammo_9mm','switchblade','dynamite'],rep:{NCR:2},desc:'A twitchy escaped convict shaking down drifters on the highway.'},
+  {id:'mara_doyle',name:'Mara Doyle',enemy:'jackal_raider',caps:[110,150],xp:26,itemPool:['ammo_9mm','single_shotgun','cigarette_pack'],rep:{NCR:2},desc:'A Jackal runner using the old service road as a kill zone.'},
+  {id:'silas_cobb',name:'Silas Cobb',enemy:'powder_ganger',caps:[120,165],xp:28,itemPool:['dynamite','powder_charge','ammo_9mm'],rep:{NCR:3},desc:'A Powder Ganger bomb-thrower hiding near the prison road.'},
+  {id:'reese_vane',name:'Reese Vane',enemy:'viper_gunslinger',caps:[145,190],xp:34,itemPool:['ammo_357','varmint_rifle','cigarette_carton'],rep:{NCR:3},desc:'A Viper marksman picking off couriers and merchants outside Primm.'},
+  {id:'carlito_bone',name:'Carlito Bone',enemy:'freeside_thug',caps:[100,140],xp:24,itemPool:['jet','switchblade','pre_war_money'],rep:{NCR:1},desc:'A low-rent gunman hiding in the wrecks and collecting protection caps.'},
+];
+function propertyOwned(id){return !!S.properties.find(p=>p.id===id)}
+function getPropertyDef(id){return PROPERTY_DEFS.find(p=>p.id===id)||null}
+function propertyAtLoc(loc){return S.properties.filter(p=>p.loc===loc)}
+function canBuyProperty(def){
+  if(!def||propertyOwned(def.id))return false;
+  if(def.requires){
+    const rep=S.rep[def.requires.fac]||0;
+    if(rep<def.requires.rep)return false;
+  }
+  return S.caps>=def.cost;
+}
+function propertyReady(flagKey){return (S.flags[flagKey]||0)!==S.days}
+function markPropertyUsed(flagKey){S.flags[flagKey]=S.days;queueSave()}
+function getCurrentBounty(){
+  const b=S.flags.bountyBoard?.current;
+  if(!b)return null;
+  return PRIMM_BOUNTY_TARGETS.find(t=>t.id===b.id)||null;
+}
+function rollNewBounty(){
+  const board=S.flags.bountyBoard||(S.flags.bountyBoard={});
+  const used=board.lastTarget||null;
+  const pool=PRIMM_BOUNTY_TARGETS.filter(t=>t.id!==used);
+  const pick=clone(rndA(pool.length?pool:PRIMM_BOUNTY_TARGETS));
+  board.current={id:pick.id,day:S.days};
+  board.lastTarget=pick.id;
+  return pick;
+}
+function startPrimmBountyHunt(){
+  if(!propertyOwned('primm_bounty_office')){notify('You do not own the bounty office.');return}
+  const target=getCurrentBounty()||rollNewBounty();
+  advanceTime(2);
+  const en=mkEnemy(target.enemy);
+  en.name=target.name;
+  en.maxHp=Math.round(en.maxHp*1.2)+8;
+  en.hp=en.maxHp;
+  en.a+=3;
+  en.d+=1;
+  en.xp+=target.xp;
+  en.loot=clone(target.itemPool||en.loot||[]);
+  closeBld();
+  combat={enemies:[en],turn:0,log:[`Bounty target spotted: ${target.name}.`,target.desc],bountyTarget:clone(target)};
+  renderCombat();
+}
+function claimEvidenceLocker(){
+  if(!propertyReady('prop_evidence_locker_day')){notify('The evidence locker is empty today.');return}
+  markPropertyUsed('prop_evidence_locker_day');
+  const caps=rnd(20,45);
+  const pick=rndA(['ammo_9mm','pre_war_money','dynamite','cigarette_carton','stimpak']);
+  S.caps+=caps;S.capsEarned+=caps;S.inv.push(pick);
+  log('You claim seized goods from the Primm evidence locker.','e');
+  closeBld();showResult('Evidence Locker','🗄',[`💰 +${caps} caps`,`${ITEMS[pick].e} ${ITEMS[pick].n}`],'Continue','upAll()');
+}
+function drawGoodspringsWater(){
+  if(!propertyReady('prop_water_draw_day')){notify('You already collected your water share today.');return}
+  markPropertyUsed('prop_water_draw_day');
+  const amt=rnd(2,4);
+  for(let i=0;i<amt;i++)S.inv.push('purified_water');
+  log('You collect your Goodsprings water share.','e');
+  closeBld();showResult('Water Share','💧',[`Purified Water ×${amt}`,'Fresh drawn from the Goodsprings source.'],'Continue','upAll()');
+}
+function gatherAtSpring(){
+  if(!propertyReady('prop_spring_gather_day')){notify('You have already gathered at the spring today.');return}
+  markPropertyUsed('prop_spring_gather_day');
+  advanceTime(1);
+  const amtHerbs=rnd(1,3);
+  for(let i=0;i<amtHerbs;i++)S.inv.push('herbs');
+  const bonus=rndA(['purified_water','sunset_sars','gecko_hide']);
+  S.inv.push(bonus);
+  log('You gather around the Goodsprings spring and come back with useful supplies.','e');
+  closeBld();showResult('Spring Gathering','🌿',[`Wasteland Herbs ×${amtHerbs}`,`${ITEMS[bonus].e} ${ITEMS[bonus].n}`,'⏰ 1 hour passed'],'Continue','upAll()');
+}
+function claimPropertyStash(){
+  if(!propertyReady('prop_goodsprings_stash_day')){notify('You already checked your stash today.');return}
+  markPropertyUsed('prop_goodsprings_stash_day');
+  const pick=rndA(['scrap','duct_tape','bobby_pin','pre_war_money','sunset_sars']);
+  const caps=rnd(8,20);
+  S.caps+=caps;S.capsEarned+=caps;S.inv.push(pick);
+  log('You check your Goodsprings stash.','e');
+  closeBld();showResult('Personal Stash','📦',[`💰 +${caps} caps`,`${ITEMS[pick].e} ${ITEMS[pick].n}`],'Continue','upAll()');
+}
+function claimGoodspringsCache(){
+  if(!propertyReady('prop_goodsprings_cache_day')){notify('Your house cache is empty today.');return}
+  markPropertyUsed('prop_goodsprings_cache_day');
+  const water=rnd(1,2), food=rndA(['fancy_lad','cram','purified_water']);
+  for(let i=0;i<water;i++)S.inv.push('purified_water');
+  S.inv.push(food);
+  log('You pull supplies from your Goodsprings house cache.','e');
+  closeBld();showResult('House Cache','🏠',[`Purified Water ×${water}`,`${ITEMS[food].e} ${ITEMS[food].n}`],'Continue','upAll()');
+}
+function claimBosEnergyRation(){
+  if(!propertyReady('prop_bos_energy_day')){notify('No new ration allotment yet.');return}
+  markPropertyUsed('prop_bos_energy_day');
+  const amt=rnd(3,6);
+  for(let i=0;i<amt;i++)S.inv.push('energy_cell');
+  const bonus=rndA(['scrap_electronics','sensor_module','fission_battery']);
+  S.inv.push(bonus);
+  log('You collect a Brotherhood energy ration from your quarters.','e');
+  closeBld();showResult('Brotherhood Energy Ration','⚡',[`Energy Cells ×${amt}`,`${ITEMS[bonus].e} ${ITEMS[bonus].n}`],'Continue','upAll()');
+}
+function claimBosMedCache(){
+  if(!propertyReady('prop_bos_med_day')){notify('The med cache has already been issued today.');return}
+  markPropertyUsed('prop_bos_med_day');
+  const pick=rndA(['stimpak','stimpak','doctor_bag','med_x','super_stimpak']);
+  S.inv.push(pick);
+  log('You draw a medical allotment from Brotherhood stores.','e');
+  closeBld();showResult('Brotherhood Med Cache','⚕️',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'Issued to your bunker quarters.'],'Continue','upAll()');
+}
 // ============================================================
 // PROPERTY SYSTEM
 // ============================================================
@@ -2762,32 +2975,67 @@ function openPropertyMenu(){
   hd.innerHTML=`<div class="bb" onclick="closeBld()">‹</div><div style="flex:1;font-size:14px;font-weight:bold;color:var(--amber)">🏠 PROPERTY</div><div style="font-size:11px;color:var(--amber)">💰${S.caps}</div>`;
   bi.appendChild(hd);
   const body=el('div','bp');
+  const localOwned=propertyAtLoc(S.loc);
+  const allOwned=S.properties||[];
 
-  if(S.properties.length){
-    body.appendChild(el('div','bs2','Owned'));
-    S.properties.forEach(p=>{
-      body.appendChild(el('div','cd',`<div style="font-weight:bold;font-size:12px">${p.name}</div><div style="font-size:10px;color:var(--muted)">${LOCS[p.loc]?.n||p.loc} · +${p.income} caps/day</div>`));
+  if(localOwned.length){
+    body.appendChild(el('div','bs2','Owned Here'));
+    localOwned.forEach(p=>{
+      const card=el('div','cd');
+      card.innerHTML=`<div style="font-weight:bold;font-size:12px">${p.name}</div><div style="font-size:10px;color:var(--muted)">${getPropertyDef(p.id)?.desc||''}</div>`;
+      if(p.id==='goodsprings_shack'||p.id==='goodsprings_house'){
+        const stash=el('button','bt','📦 Check stash');stash.onclick=claimPropertyStash;card.appendChild(stash);
+      }
+      if(p.id==='goodsprings_house'){
+        const cache=el('button','bt','🥫 Pull house cache');cache.onclick=claimGoodspringsCache;card.appendChild(cache);
+      }
+      if(p.id==='goodsprings_workshop'){
+        const repair=el('button','bt','🔧 Repair gear (10 caps + scrap)');
+        repair.onclick=()=>{if(S.caps<10){notify('Not enough caps.');return}const si=S.inv.indexOf('scrap');if(si===-1){notify('Need Scrap Metal.');return}S.caps-=10;S.inv.splice(si,1);S.atk+=1;log('Repaired and improved gear. +1 ATK.','e');closeBld();showResult('Repaired','🔧',['⚔ +1 ATK','Used Scrap Metal'],'Continue','upAll()')};
+        card.appendChild(repair);
+        const ammo=el('button','bt','🔸 Craft 5 rounds (scrap + duct tape)');
+        ammo.onclick=()=>{const si=S.inv.indexOf('scrap');const dt=S.inv.indexOf('duct_tape');if(si===-1||dt===-1){notify('Need Scrap Metal and Duct Tape.');return}S.inv.splice(Math.max(si,dt),1);S.inv.splice(Math.min(si,dt),1);const ammoPick=rndA(['ammo_9mm','ammo_357','ammo_556']);for(let i=0;i<5;i++)S.inv.push(ammoPick);log('Crafted ammunition at your Goodsprings workshop.','e');closeBld();showResult('Ammo Crafted','🔸',[`${ITEMS[ammoPick].n} ×5`],'Continue','upAll()')};
+        card.appendChild(ammo);
+      }
+      if(p.id==='goodsprings_water_rights'){
+        const water=el('button','bt','💧 Collect water share');water.onclick=drawGoodspringsWater;card.appendChild(water);
+        const gather=el('button','bt','🌿 Gather at the spring');gather.onclick=gatherAtSpring;card.appendChild(gather);
+      }
+      if(p.id==='primm_bounty_office'){
+        const board=getCurrentBounty()||rollNewBounty();
+        card.appendChild(el('div','cd',`<div style="font-size:11px"><b>Current target:</b> ${board.name}</div><div style="font-size:10px;color:var(--muted)">${board.desc}</div>`));
+        const hunt=el('button','bt dn','🎯 Hunt bounty target');hunt.onclick=startPrimmBountyHunt;card.appendChild(hunt);
+        const evidence=el('button','bt','🗄 Open evidence locker');evidence.onclick=claimEvidenceLocker;card.appendChild(evidence);
+      }
+      if(p.id==='hidden_valley_quarters'){
+        const energy=el('button','bt','⚡ Collect energy ration');energy.onclick=claimBosEnergyRation;card.appendChild(energy);
+        const meds=el('button','bt','⚕️ Check med cache');meds.onclick=claimBosMedCache;card.appendChild(meds);
+      }
+      body.appendChild(card);
     });
   }
 
-  body.appendChild(el('div','bs2','Available'));
-  const props=[
-    {name:'Abandoned Shack',cost:200,income:3,loc:S.loc,desc:'Basic shelter. Free rest.'},
-    {name:'Safehouse',cost:800,income:8,loc:S.loc,desc:'Secure. Storage. Free rest.'},
-    {name:'Workshop',cost:2000,income:15,loc:S.loc,desc:'Crafting bench. Good income.'},
-    {name:'Trading Post',cost:5000,income:35,loc:S.loc,desc:'Caps flow in daily.'},
-    {name:'Fortified Compound',cost:15000,income:80,loc:S.loc,levies:20,desc:'Defensible. Recruit soldiers.'},
-  ];
-  props.forEach(p=>{
-    const owned=S.properties.find(op=>op.name===p.name&&op.loc===p.loc);
-    if(owned)return;
+  if(allOwned.length){
+    body.appendChild(el('div','bs2','All Owned Properties'));
+    allOwned.forEach(p=>body.appendChild(el('div','cd',`<div style="font-weight:bold;font-size:12px">${p.name}</div><div style="font-size:10px;color:var(--muted)">${LOCS[p.loc]?.n||p.loc}</div>`)));
+  }
+
+  body.appendChild(el('div','bs2','Available Here'));
+  const here=PROPERTY_DEFS.filter(p=>p.loc===S.loc);
+  if(!here.length)body.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">No properties for sale in this location yet.</div>'));
+  here.forEach(p=>{
+    if(propertyOwned(p.id))return;
     const pc=el('div','cd');
-    pc.innerHTML=`<div style="font-weight:bold;font-size:12px">${p.name} — ${p.cost} caps</div><div style="font-size:10px;color:var(--muted)">${p.desc} · +${p.income} caps/day</div>`;
-    if(S.caps>=p.cost){
-      const bb=el('button','bt go','Buy');
-      bb.onclick=()=>{S.caps-=p.cost;S.properties.push({...p});log('Bought '+p.name+'!','q');closeBld();showResult('Purchased!','🏠',[p.name,'📍 '+LOCS[S.loc]?.n,'+'+p.income+' caps/day'],'Continue','upAll()')};
-      pc.appendChild(bb);
+    const req=p.requires?` · Requires ${FACTIONS[p.requires.fac]||p.requires.fac} ${p.requires.rep}+`:'';
+    pc.innerHTML=`<div style="font-weight:bold;font-size:12px">${p.name} — ${p.cost} caps</div><div style="font-size:10px;color:var(--muted)">${p.desc}${req}</div>`;
+    if(p.requires){
+      const rep=S.rep[p.requires.fac]||0;
+      pc.appendChild(el('div','cd',`<div style="font-size:10px">Standing with <b style="color:var(--amber)">${FACTIONS[p.requires.fac]||p.requires.fac}</b>: <b style="color:${rep>=p.requires.rep?'var(--green)':'var(--red)'}">${rep}/${p.requires.rep}</b></div>`));
     }
+    const bb=el('button',canBuyProperty(p)?'bt go':'bt',canBuyProperty(p)?'Buy':'Cannot buy yet');
+    bb.disabled=!canBuyProperty(p);
+    bb.onclick=()=>{if(!canBuyProperty(p))return;S.caps-=p.cost;S.properties.push({id:p.id,name:p.name,loc:p.loc,cost:p.cost});log('Bought '+p.name+'!','q');closeBld();showResult('Purchased!','🏠',[p.name,'📍 '+LOCS[p.loc]?.n,p.requires?`Requirement met: ${FACTIONS[p.requires.fac]} ${p.requires.rep}+`: 'New property unlocked'],'Continue','upAll()')};
+    pc.appendChild(bb);
     body.appendChild(pc);
   });
   bi.appendChild(body);
@@ -3061,8 +3309,6 @@ function advanceTime(hours){
   S.ap=Math.min(S.maxAp,S.ap+Math.floor(hours*3));
 }
 function payDaily(){
-  // Property income
-  S.properties.forEach(p=>{S.caps+=(p.income||0);S.capsEarned+=(p.income||0)});
   // Age
   if(S.days%90===0){
     S.age++;
@@ -3115,10 +3361,11 @@ function worldTick(){
 // ============================================================
 // INIT
 // ============================================================
-(function init(){
+(async function init(){
   bindAutoSave();
   startAutoSaveLoop();
-  if(load()){upAll()}else{newGame()}
+  requestPersistentStorage();
+  if(await loadAsync()){upAll();save(true)}else{newGame()}
 })();
 </script>
 </body>
