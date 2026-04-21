@@ -306,7 +306,7 @@ CampMcCarran:{n:"Camp McCarran",r:"New Vegas",d:"NCR's main base of operations i
   b:["mccarran_supply","mccarran_med","mccarran_hq"],dg:1,fac:"NCR",
   sur:[{n:"Fiend Territory",e:"☠",d:"Psycho-addled raiders everywhere.",en:["fiend","fiend","fiend","centaur"],lt:["jet","psycho","ammo_556","combat_knife"]}]},
 HiddenValley:{n:"Hidden Valley",r:"Mojave Central",d:"Brotherhood of Steel bunker, hidden underground.",e:'<img src="NVImages/HiddenvalleyIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"bunker",
-  b:["bos_armory","bos_lab"],dg:1,fac:"BOS",
+  b:["bos_command","bos_armory","bos_lab"],dg:1,fac:"BOS",
   sur:[{n:"Valley Patrols",e:"🏜",d:"Scorpions in the sand.",en:["bark_scorpion","radscorpion","radscorpion"],lt:["sensor_module","energy_cell","scrap"]}]},
 Jacobstown:{n:"Jacobstown",r:"Mojave North",d:"A refuge for super mutants trying to live peacefully.",e:"🏔",t:"settlement",
   b:["jacobstown_lodge","jacobstown_doc"],dg:2,fac:"None",
@@ -624,8 +624,9 @@ tops_casino:{n:"The Tops",e:"🎤",am:["The Chairmen welcome high rollers.","Ben
 mccarran_supply:{n:"Camp McCarran Supply",e:"📦",am:["Military supplies. Good stock.","NCR prices, NCR quality."]},
 mccarran_med:{n:"Camp McCarran Medic",e:"🏥",am:["Field hospital. Busy.","Wounded soldiers everywhere."]},
 mccarran_hq:{n:"McCarran HQ",e:"🏛",am:["Colonel Hsu manages the operation.","Maps and reports cover every surface."]},
-bos_armory:{n:"Brotherhood Armory",e:"⚙",am:["Power armor and energy weapons.","Locked behind clearance levels."]},
-bos_lab:{n:"Brotherhood Lab",e:"🔬",am:["Pre-war tech under study.","Scribes work around the clock."]},
+bos_command:{n:"Elder's Chamber",e:"🛡",am:["Muted intercom chatter hums through the bunker.","Orders, doctrine, and bunker politics all pass through here."]},
+bos_armory:{n:"Knight Torres Armory",e:"⚙",am:["Power armor plates, laser racks, and locked Brotherhood stock line the walls.","Knight Torres watches the inventory like it belongs to her personally."]},
+bos_lab:{n:"Scribe Level",e:"🔬",am:["Diagnostics terminals blink in the low light while scribes argue over maintenance logs.","Technical work, archives, and quiet disputes fill the level."]},
 jacobstown_lodge:{n:"Jacobstown Lodge",e:"🏠",am:["Marcus keeps the peace.","Super mutants play chess."]},
 jacobstown_doc:{n:"Jacobstown Doctor",e:"🏥",am:["Dr. Henry researches nightkin madness.","Medical supplies available."]},
 gulch_command:{n:"Watch Captain's Shack",e:"🛖",am:["Spotting scopes, sand tables, and spent shell casings cover every surface.","Captain Harlan Voss studies fresh super mutant tracks on a marked ravine map."]},
@@ -766,6 +767,195 @@ const CINDER_GULCH_NPCS={
   lena_rourke:{name:"Lena Rourke",male:false,age:29,role:"Scrap mechanic",icon:ICONS.NPC.MECHANIC,line:"Give me metal, wire, and an hour, and I can turn panic into something that shoots back."},
   tom_quill:{name:"Tom Quill",male:true,age:33,role:"Wall scout",icon:ICONS.NPC.NCR_SCOUT,line:"Every ridge out there has mutant tracks. Some of them are fresh enough to make me nervous."}
 };
+
+const HIDDEN_VALLEY_NPCS={
+  elder_mcnamara:{name:"Elder McNamara",male:true,age:58,role:"Brotherhood Elder",icon:ICONS.NPC.BOS,line:"The Brotherhood survives because it remembers caution when the wasteland rewards recklessness."},
+  head_paladin_hardin:{name:"Head Paladin Hardin",male:true,age:41,role:"Head Paladin",icon:ICONS.NPC.BOS,line:"Steel means nothing if the Brotherhood hides underground while the Mojave tears itself apart."},
+  senior_knight_lorenzo:{name:"Senior Knight Lorenzo",male:true,age:45,role:"Senior Knight",icon:ICONS.NPC.BOS,line:"Keeping the bunker supplied means every patrol, every crate, and every watt of power gets accounted for."},
+  knight_torres:{name:"Knight Torres",male:false,age:36,role:"Armory Knight",icon:ICONS.NPC.BOS,line:"If you want Brotherhood weapons, start by proving you can be trusted around them."},
+  scribe_ibsen:{name:"Scribe Ibsen",male:true,age:33,role:"Brotherhood Scribe",icon:ICONS.NPC.BOS_SCRIBE,line:"Most people call it maintenance right up until the whole bunker loses power."},
+  veronica:{name:"Veronica Santangelo",male:false,age:27,role:"Brotherhood Scribe",icon:ICONS.NPC.BOS_SCRIBE,line:"I love the Brotherhood. I just wish it didn't keep acting like the whole world ended yesterday."},
+};
+
+function hvNpcRel(id){return S.relationships.find(r=>r.name===HIDDEN_VALLEY_NPCS[id].name)}
+function addHiddenValleyNpcCard(body,id){
+  const npc=HIDDEN_VALLEY_NPCS[id];if(!npc)return;
+  const ex=hvNpcRel(id);
+  const nc=el('div','bn');nc.style.cursor='pointer';
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.onclick=()=>openHiddenValleyNPC(id);
+  body.appendChild(nc);
+}
+function hvEnsure(){
+  if(!S.flags)S.flags={};
+  if(!S.flags.hv)S.flags.hv={stage:0,spoke:{},side:null,veronicaCounsel:false};
+  return S.flags.hv;
+}
+function hvFindQuest(id){return (S.quests||[]).find(q=>q.id===id)||null}
+function hvQuestDone(id){const q=hvFindQuest(id);return !!(q&&q.done)}
+function hvQuestActive(id){const q=hvFindQuest(id);return !!(q&&!q.done)}
+function hvAddQuest(q){if(hvFindQuest(q.id))return hvFindQuest(q.id);S.quests.push(q);log('Accepted: '+q.name,'q');notify('📜 Quest accepted!');queueSave();return q}
+function hvSetQuestText(id,text){const q=hvFindQuest(id);if(q)q.progText=text}
+function hvCompleteManualQuest(id,repBonus){
+  const q=hvFindQuest(id);if(!q||q.done)return;
+  q.done=true;
+  S.xp+=(q.rx||0);
+  S.caps+=(q.rg||0);
+  if(repBonus)S.rep.BOS=(S.rep.BOS||0)+repBonus;
+  S.questsComplete=(S.questsComplete||0)+1;
+  log('Quest complete: '+q.name+' (+'+(q.rg||0)+' caps, +'+(q.rx||0)+' XP)','q');
+  notify('📜 Quest Complete!');
+  chkLU();queueSave();
+}
+function hvRefreshState(){
+  const hv=hvEnsure();
+  const q1=hvFindQuest('hvq1');
+  if(q1&&!q1.done){
+    const count=(hv.spoke.hardin?1:0)+(hv.spoke.veronica?1:0);
+    q1.progText=`Talk to Veronica and Hardin (${count}/2).`;
+    if(count>=2){hvCompleteManualQuest('hvq1',10);hv.stage=Math.max(hv.stage,1);}
+  }
+  const q3=hvFindQuest('hvq3');
+  if(q3&&q3.done)hv.stage=Math.max(hv.stage,3);
+  const q5=hvFindQuest('hvq5');
+  if(q5&&!q5.done){
+    if(!hv.side)q5.progText='Choose whether to back McNamara or Hardin.';
+    else if(!hv.veronicaCounsel)q5.progText='Talk to Veronica about the leadership dispute.';
+    else q5.progText='Report back to the leader you chose.';
+  }
+}
+function hvStartQuest1(){
+  hvEnsure();
+  if(hvFindQuest('hvq1'))return;
+  hvAddQuest({id:'hvq1',name:'Eyes Inside the Bunker',desc:'Elder McNamara wants you to understand Hidden Valley before the Brotherhood trusts you. Speak to Head Paladin Hardin and Veronica.',t:'custom',progText:'Talk to Veronica and Hardin (0/2).',rg:140,rx:26,done:false});
+}
+function hvStartQuest2(){
+  const hv=hvEnsure(); if(hv.stage<1||hvFindQuest('hvq2'))return;
+  hvAddQuest({id:'hvq2',name:"Ibsen's Diagnostics",desc:'Bring Scribe Ibsen a Sensor Module and Scrap Electronics so he can stabilize the bunker systems.',t:'custom',progText:'Bring 1 Sensor Module and 1 Scrap Electronics to Scribe Ibsen.',rg:160,rx:28,done:false});
+}
+function hvTurnInQuest2(){
+  const q=hvFindQuest('hvq2');if(!q||q.done)return;
+  const sm=S.inv.indexOf('sensor_module'); const se=S.inv.indexOf('scrap_electronics');
+  if(sm===-1||se===-1){notify('Need a Sensor Module and Scrap Electronics.');return}
+  S.inv.splice(Math.max(sm,se),1);S.inv.splice(Math.min(sm,se),1);
+  S.inv.push('energy_cell');S.inv.push('energy_cell');
+  hvCompleteManualQuest('hvq2',8);
+  hvEnsure().stage=Math.max(hvEnsure().stage,2);
+  closeDlg();showResult('Diagnostics Stabilized','🔬',['Scribe Ibsen gets the bunker diagnostics under control.','⚡ Energy Cells ×2','🏴 Brotherhood standing +8'],'Continue','upAll()');
+}
+function hvStartQuest3(){
+  const hv=hvEnsure(); if(hv.stage<2||hvFindQuest('hvq3'))return;
+  hvAddQuest({id:'hvq3',name:'Valley Sweep',desc:'Senior Knight Lorenzo wants the valley approaches cleared of radscorpions before they become a real threat.',t:'kill',kt:'radscorpion',kc:2,kd:S.kills['radscorpion']||0,rg:190,rx:34,fac:'BOS',repBonus:8,done:false});
+}
+function hvStartQuest4(){
+  const hv=hvEnsure(); if(hv.stage<3||hvFindQuest('hvq4'))return;
+  hvAddQuest({id:'hvq4',name:'Power for the Archives',desc:'Veronica wants a Fission Battery and Conductors to bring a dead archive station back online.',t:'custom',progText:'Bring 1 Fission Battery and 1 Conductors to Veronica.',rg:220,rx:36,done:false});
+}
+function hvTurnInQuest4(){
+  const q=hvFindQuest('hvq4');if(!q||q.done)return;
+  const fb=S.inv.indexOf('fission_battery'); const co=S.inv.indexOf('conductor');
+  if(fb===-1||co===-1){notify('Need a Fission Battery and Conductors.');return}
+  S.inv.splice(Math.max(fb,co),1);S.inv.splice(Math.min(fb,co),1);
+  S.inv.push('laser_pistol');
+  hvCompleteManualQuest('hvq4',8);
+  hvEnsure().stage=Math.max(hvEnsure().stage,4);
+  closeDlg();showResult('Archive Station Restored','📚',['Veronica gets the archive station working again.','⚡ Laser Pistol received','🏴 Brotherhood standing +8'],'Continue','upAll()');
+}
+function hvStartQuest5(){
+  const hv=hvEnsure(); if(hv.stage<4||hvFindQuest('hvq5'))return;
+  hv.side=null;hv.veronicaCounsel=false;
+  hvAddQuest({id:'hvq5',name:'Chain of Command',desc:'The bunker politics are finally impossible to ignore. Decide who to back, hear Veronica out, and report back.',t:'custom',progText:'Choose whether to back McNamara or Hardin.',rg:260,rx:44,done:false});
+}
+function hvChooseSide(side){const hv=hvEnsure(); if(!hvQuestActive('hvq5'))return; hv.side=side; hvRefreshState(); openHiddenValleyNPC(side==='hardin'?'head_paladin_hardin':'elder_mcnamara','root')}
+function hvHearVeronicaCounsel(){const hv=hvEnsure(); if(!hvQuestActive('hvq5')||!hv.side)return; hv.veronicaCounsel=true; hvRefreshState(); closeDlg(); showResult('Veronica Weighs In','💬',[hv.side==='hardin'?'Veronica admits Hardin has the fire to move the Brotherhood, but worries about what that fire burns through.':'Veronica says McNamara keeps people alive, but living behind sealed doors is not the same as living at all.'],'Continue','upAll()')}
+function hvFinishQuest5(){
+  const hv=hvEnsure(); const q=hvFindQuest('hvq5'); if(!q||q.done||!hv.side||!hv.veronicaCounsel)return;
+  hvCompleteManualQuest('hvq5',12); hv.stage=Math.max(hv.stage,5);
+  closeDlg();showResult('Position Chosen','🛡',[hv.side==='hardin'?"You openly back Hardin's harder line inside the bunker.":"You back McNamara's cautious leadership and bunker discipline.",'🏴 Brotherhood standing +12'],'Continue','upAll()');
+}
+function openHiddenValleyNPC(id,topic='root'){
+  hvRefreshState();
+  const npc=HIDDEN_VALLEY_NPCS[id]; if(!npc)return;
+  const rel=hvNpcRel(id);
+  const title=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>`;
+  let h=title;
+  const back=`<button class="bt" onclick="openHiddenValleyNPC('${id}','root')">↩ Back</button><button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  if(topic==='root'){
+    h+=`<div class="npc-line">"${npc.line}"</div>`;
+    if(id==='elder_mcnamara'){
+      h+=`<button class="bt" onclick="openHiddenValleyNPC('elder_mcnamara','elder')">🛡 Ask about bunker leadership</button>`;
+      h+=`<button class="bt" onclick="openHiddenValleyNPC('elder_mcnamara','mission')">📜 Ask what the Brotherhood wants</button>`;
+      if(!hvFindQuest('hvq1'))h+=`<button class="bt pip" onclick="hvStartQuest1();openHiddenValleyNPC('elder_mcnamara','quest1')">📜 Ask how to earn trust</button>`;
+      if(hvQuestActive('hvq1'))h+=`<button class="bt pip" onclick="openHiddenValleyNPC('elder_mcnamara','quest1')">📜 Discuss Eyes Inside the Bunker</button>`;
+      if(hvEnsure().stage>=4&&!hvFindQuest('hvq5'))h+=`<button class="bt pip" onclick="hvStartQuest5();openHiddenValleyNPC('elder_mcnamara','quest5')">📜 Raise the issue of leadership</button>`;
+      if(hvQuestActive('hvq5'))h+=`<button class="bt pip" onclick="openHiddenValleyNPC('elder_mcnamara','quest5')">📜 Discuss Chain of Command</button>`;
+    }else if(id==='head_paladin_hardin'){
+      h+=`<button class="bt" onclick="openHiddenValleyNPC('head_paladin_hardin','hardin')">⚔ Ask why he challenges McNamara</button>`;
+      h+=`<button class="bt" onclick="hvEnsure().spoke.hardin=true;hvRefreshState();openHiddenValleyNPC('head_paladin_hardin','speak')">💬 Ask about patrol duty</button>`;
+      if(hvQuestActive('hvq5'))h+=`<button class="bt pip" onclick="openHiddenValleyNPC('head_paladin_hardin','quest5')">📜 Discuss bunker politics</button>`;
+    }else if(id==='senior_knight_lorenzo'){
+      h+=`<button class="bt" onclick="openHiddenValleyNPC('senior_knight_lorenzo','security')">🪖 Ask about valley security</button>`;
+      h+=`<button class="bt" onclick="openHiddenValleyNPC('senior_knight_lorenzo','supplies')">📦 Ask about patrol supply lines</button>`;
+      if(hvEnsure().stage>=2&&!hvFindQuest('hvq3'))h+=`<button class="bt pip" onclick="hvStartQuest3();closeDlg();notify('Valley Sweep accepted.');upAll()">📜 Volunteer for a valley sweep</button>`;
+      if(hvQuestActive('hvq3'))h+=`<button class="bt pip" onclick="closeDlg();showResult('Valley Sweep','🏜',['Lorenzo wants 2 radscorpions taken off the valley approaches before somebody gets dragged into the sand.'],'Continue','upAll()')">📜 Review Valley Sweep</button>`;
+    }else if(id==='knight_torres'){
+      h+=`<button class="bt" onclick="openHiddenValleyNPC('knight_torres','armory')">⚙ Ask about armory clearance</button>`;
+      h+=`<button class="bt go" onclick="closeDlg();openBld('bos_armory')">⚡ Browse Brotherhood stock</button>`;
+    }else if(id==='scribe_ibsen'){
+      h+=`<button class="bt" onclick="openHiddenValleyNPC('scribe_ibsen','diagnostics')">🔬 Ask what he is working on</button>`;
+      if(hvEnsure().stage>=1&&!hvFindQuest('hvq2'))h+=`<button class="bt pip" onclick="hvStartQuest2();openHiddenValleyNPC('scribe_ibsen','quest2')">📜 Offer technical help</button>`;
+      if(hvQuestActive('hvq2'))h+=`<button class="bt pip" onclick="openHiddenValleyNPC('scribe_ibsen','quest2')">📜 Discuss Ibsen's Diagnostics</button>`;
+    }else if(id==='veronica'){
+      h+=`<button class="bt" onclick="hvEnsure().spoke.veronica=true;hvRefreshState();openHiddenValleyNPC('veronica','veronica')">💬 Ask how she feels about the Brotherhood</button>`;
+      h+=`<button class="bt" onclick="openHiddenValleyNPC('veronica','outside')">🌍 Ask about the outside world</button>`;
+      if(hvEnsure().stage>=3&&!hvFindQuest('hvq4'))h+=`<button class="bt pip" onclick="hvStartQuest4();openHiddenValleyNPC('veronica','quest4')">📜 Ask if she needs a hand</button>`;
+      if(hvQuestActive('hvq4'))h+=`<button class="bt pip" onclick="openHiddenValleyNPC('veronica','quest4')">📜 Discuss Power for the Archives</button>`;
+      if(hvQuestActive('hvq5')&&hvEnsure().side)h+=`<button class="bt pip" onclick="openHiddenValleyNPC('veronica','quest5')">📜 Ask her view on the leadership dispute</button>`;
+    }
+    h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(HIDDEN_VALLEY_NPCS['${id}'],S.relationships.find(r=>r.name===HIDDEN_VALLEY_NPCS['${id}'].name))">😊 General social talk</button>`;
+    h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  } else if(id==='elder_mcnamara'&&topic==='elder'){
+    h+=`<div class="npc-line">"Leadership is not volume, it is discipline. The Brotherhood lasts because it does not panic every time the wasteland changes shape."</div>${back}`;
+  } else if(id==='elder_mcnamara'&&topic==='mission'){
+    h+=`<div class="npc-line">"We preserve dangerous knowledge because the people outside these walls have already proven what happens when they are trusted with too much of it."</div>${back}`;
+  } else if(id==='elder_mcnamara'&&topic==='quest1'){
+    h+=`<div class="npc-line">"If you want the Brotherhood to trust you, then stop treating us like a rumor. Speak to Hardin. Speak to Veronica. Then come back understanding more than you did before."</div>${back}`;
+  } else if(id==='elder_mcnamara'&&topic==='quest5'){
+    if(!hvQuestActive('hvq5')){h+=`<div class="npc-line">"The bunker cannot afford more division than it already carries."</div>${back}`;}
+    else if(!hvEnsure().side){h+=`<div class="npc-line">"If you have an opinion on the bunker's future, speak it plainly."</div><button class="bt pip" onclick="hvChooseSide('mcnamara')">🛡 Back McNamara</button>${back}`;}
+    else if(hvEnsure().side==='mcnamara'&&hvEnsure().veronicaCounsel){h+=`<div class="npc-line">"Then you have chosen caution over noise. That may keep more people alive than they appreciate."</div><button class="bt go" onclick="hvFinishQuest5()">🛡 Confirm your support</button>${back}`;}
+    else{h+=`<div class="npc-line">"Think it through. The Brotherhood has survived too long to gamble on shallow conviction."</div>${back}`;}
+  } else if(id==='head_paladin_hardin'&&topic==='hardin'){
+    h+=`<div class="npc-line">"McNamara keeps the bunker breathing. Fine. But breathing isn't the same as living, and it sure isn't the same as winning."</div>${back}`;
+  } else if(id==='head_paladin_hardin'&&topic==='speak'){
+    h+=`<div class="npc-line">"Patrol duty out here means watching the same hills until something finally tries to kill you from behind one."</div>${back}`;
+  } else if(id==='head_paladin_hardin'&&topic==='quest5'){
+    if(!hvEnsure().side){h+=`<div class="npc-line">"If you're going to stand for something, stand for action. The Mojave won't wait for McNamara to finish being careful."</div><button class="bt pip" onclick="hvChooseSide('hardin')">⚔ Back Hardin</button>${back}`;}
+    else if(hvEnsure().side==='hardin'&&hvEnsure().veronicaCounsel){h+=`<div class="npc-line">"Good. Then maybe this bunker remembers it was built by soldiers, not archivists."</div><button class="bt go" onclick="hvFinishQuest5()">⚔ Confirm your support</button>${back}`;}
+    else{h+=`<div class="npc-line">"Talk all you want. Just don't pretend this bunker can stay buried forever."</div>${back}`;}
+  } else if(id==='senior_knight_lorenzo'&&topic==='security'){
+    h+=`<div class="npc-line">"The valley looks quiet right up until it isn't. Scorpions, raiders, stray patrols — none of them care what the bunker is supposed to be."</div>${back}`;
+  } else if(id==='senior_knight_lorenzo'&&topic==='supplies'){
+    h+=`<div class="npc-line">"Supply lines are simple: if they break, people start counting bullets and medicine instead of plans."</div>${back}`;
+  } else if(id==='knight_torres'&&topic==='armory'){
+    h+=`<div class="npc-line">"You don't get Brotherhood kit because you ask nicely. You get it because somebody here decided you wouldn't disgrace it."</div>${back}`;
+  } else if(id==='scribe_ibsen'&&topic==='diagnostics'){
+    h+=`<div class="npc-line">"I'm keeping the bunker systems from turning one bad cable into a week of people shouting at me in the dark."</div>${back}`;
+  } else if(id==='scribe_ibsen'&&topic==='quest2'){
+    const hasReq=(S.inv.indexOf('sensor_module')!==-1&&S.inv.indexOf('scrap_electronics')!==-1);
+    h+=`<div class="npc-line">"Bring me a Sensor Module and Scrap Electronics and maybe I can stop the diagnostics board from lying to me."</div>${hasReq?'<button class="bt go" onclick="hvTurnInQuest2()">🔧 Hand over the parts</button>':''}${back}`;
+  } else if(id==='veronica'&&topic==='veronica'){
+    h+=`<div class="npc-line">"I love these people. That's what makes it so frustrating watching them confuse survival with shrinking."</div>${back}`;
+  } else if(id==='veronica'&&topic==='outside'){
+    h+=`<div class="npc-line">"The outside world is messy, loud, dangerous, and full of people who might actually be worth helping. Weird, right?"</div>${back}`;
+  } else if(id==='veronica'&&topic==='quest4'){
+    const hasReq=(S.inv.indexOf('fission_battery')!==-1&&S.inv.indexOf('conductor')!==-1);
+    h+=`<div class="npc-line">"I can get an archive station running again if you bring me a Fission Battery and some Conductors. It might even help people remember why knowledge matters."</div>${hasReq?'<button class="bt go" onclick="hvTurnInQuest4()">⚡ Hand over the parts</button>':''}${back}`;
+  } else if(id==='veronica'&&topic==='quest5'){
+    h+=`<div class="npc-line">"McNamara keeps people alive. Hardin wants them to matter again. Pick whichever answer you can live with after the bunker doors shut behind you."</div><button class="bt" onclick="hvHearVeronicaCounsel()">💬 Hear Veronica out</button>${back}`;
+  }
+  openDlg(h);
+}
 
 // Names
 const FM=["Cass","Marcus","Boone","Rex","Arcade","Raul","Craig","Eddie","Victor","Hank","Joe","Mick","Ralph","Jack","Tommy","Dean","Dog","Frank","Mike","Butch","Leo","Wayne","Ricky","Steve","Pete"];
@@ -1796,13 +1986,14 @@ function openBld(bId){
   const isNcrcFSpecial=['ncrcf_visitor','ncrcf_admin','ncrcf_block_a','ncrcf_block_b'].includes(bId);
   const isHeliosSpecial=['helios_main','helios_tower','helios_east','helios_west'].includes(bId);
   const isCinderGulchSpecial=['gulch_command','gulch_clinic','gulch_garage'].includes(bId);
+  const isHiddenValleySpecial=['bos_command','bos_armory','bos_lab'].includes(bId);
 
   const hd=el('div','bh');
   hd.innerHTML=`<div class="bb" onclick="closeBld()">‹</div><div style="flex:1;font-size:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:var(--amber)">${b.e} ${b.n}</div><div style="font-size:11px;color:var(--amber)">💰${S.caps}</div>`;
   bi.appendChild(hd);
   bi.appendChild(el('div','ba',rndA(b.am)));
 
-  if(!isPrimmSpecial&&!isNovacSpecial&&!isFreesideSpecial&&!isCampGolfSpecial&&!isBitterSpringsSpecial&&!isNcrcFSpecial&&!isHeliosSpecial&&!isCinderGulchSpecial){
+  if(!isPrimmSpecial&&!isNovacSpecial&&!isFreesideSpecial&&!isCampGolfSpecial&&!isBitterSpringsSpecial&&!isNcrcFSpecial&&!isHeliosSpecial&&!isCinderGulchSpecial&&!isHiddenValleySpecial){
     const np=el('div','bn');np.style.cursor='pointer';
     np.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
     np.onclick=()=>openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
@@ -1845,6 +2036,9 @@ function openBld(bId){
   else if(bId==='gulch_command'){bldCinderGulchCommand(body)}
   else if(bId==='gulch_clinic'){bldCinderGulchClinic(body)}
   else if(bId==='gulch_garage'){bldCinderGulchGarage(body)}
+  else if(bId==='bos_command'){bldHiddenValleyCommand(body)}
+  else if(bId==='bos_armory'){bldHiddenValleyArmory(body)}
+  else if(bId==='bos_lab'){bldHiddenValleyLab(body)}
   else if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
   else if(bId.includes('store')||bId.includes('supply')||bId.includes('ralph')||bId.includes('armory')||bId.includes('quartermaster')){bldShop(body,bId)}
   else if(bId.includes('doc')||bId.includes('med')||bId.includes('fort')||bId.includes('jacobstown_doc')){bldMedical(body)}
@@ -2976,6 +3170,49 @@ function claimBosMedCache(){
   log('You draw a medical allotment from Brotherhood stores.','e');
   closeBld();showResult('Brotherhood Med Cache','⚕️',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'Issued to your bunker quarters.'],'Continue','upAll()');
 }
+function bldHiddenValleyCommand(body){
+  hvRefreshState();
+  body.appendChild(el('div','bs2','Bunker Command'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Hidden Valley finally feels like a real bunker command center here: sealed doors, doctrine, patrol reports, and quiet arguments about what the Brotherhood should become.</div>`));
+  const briefBtn=el('button','bt go','🛡 Sit in on a Brotherhood briefing');
+  briefBtn.onclick=()=>{advanceTime(1);S.xp+=10;S.rep.BOS=(S.rep.BOS||0)+1;log('You sit through a Brotherhood field briefing in Hidden Valley.','e');closeBld();showResult('Bunker Briefing','🛡',['⭐ +10 XP','🏴 Brotherhood standing +1','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(briefBtn);
+  if(propertyOwned('hidden_valley_quarters')){
+    const restBtn=el('button','bt','🛏 Use your bunker quarters (FREE)');
+    restBtn.onclick=()=>{S.hp=S.maxHp;S.ap=S.maxAp;S.days++;S.hours=8;payDaily();log('You rest safely in your Hidden Valley quarters.','e');closeBld();showResult('Bunker Rest','🛏',['❤ Full HP/AP','📅 Day '+S.days],'Continue','upAll()')};
+    body.appendChild(restBtn);
+  }
+  const archiveBtn=el('button','bt','📋 Review bunker status boards');
+  archiveBtn.onclick=()=>{closeBld();showResult('Status Boards','📋',['Patrol movements, ration counts, and sealed maintenance notices cover the command displays.','The Brotherhood is organized, but not exactly calm.'],'Continue','upAll()')};
+  body.appendChild(archiveBtn);
+  body.appendChild(el('div','bs2','Command Staff'));
+  ['elder_mcnamara','head_paladin_hardin','veronica'].forEach(id=>addHiddenValleyNpcCard(body,id));
+}
+function bldHiddenValleyArmory(body){
+  hvRefreshState();
+  body.appendChild(el('div','bs2','Brotherhood Stock'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Torres runs the armory like every missing energy cell is a personal insult. The stock is good, but Brotherhood patience is not endless.</div>`));
+  buildBuyButtons(body,['energy_cell','energy_cell','laser_pistol','laser_rifle','combat_helmet','metal_armor','stimpak','sensor_module'],'bos_armory');
+  const inspectBtn=el('button','bt','⚙ Inspect surplus gear');
+  inspectBtn.onclick=()=>{advanceTime(1);const pick=rndA(['energy_cell','combat_helmet','scrap_electronics']);S.inv.push(pick);log('You sort through Brotherhood surplus in the armory.','e');closeBld();showResult('Armory Surplus','⚙',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(inspectBtn);
+  body.appendChild(el('div','bs2','Personnel'));
+  ['knight_torres','head_paladin_hardin','senior_knight_lorenzo'].forEach(id=>addHiddenValleyNpcCard(body,id));
+}
+function bldHiddenValleyLab(body){
+  hvRefreshState();
+  body.appendChild(el('div','bs2','Scribe Level'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The lower level is full of diagnostic noise, archive terminals, and people trying to keep old world systems alive without admitting how fragile they are.</div>`));
+  const assistBtn=el('button','bt go','🔬 Assist with bunker maintenance');
+  assistBtn.onclick=()=>{advanceTime(1);S.xp+=9;log('You assist the scribes with routine bunker maintenance in Hidden Valley.','e');closeBld();showResult('Maintenance Shift','🔬',['⭐ +9 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(assistBtn);
+  const archiveBtn=el('button','bt','📚 Search dead archive terminals');
+  archiveBtn.onclick=()=>{advanceTime(1);const pick=rndA(['pre_war_money','sensor_module','scrap_electronics','conductor']);S.inv.push(pick);log('You salvage useful data and hardware from the Hidden Valley archive terminals.','e');closeBld();showResult('Archive Salvage','📚',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(archiveBtn);
+  body.appendChild(el('div','bs2','Notable Scribes'));
+  ['scribe_ibsen','veronica','elder_mcnamara'].forEach(id=>addHiddenValleyNpcCard(body,id));
+}
+
 // ============================================================
 // PROPERTY SYSTEM
 // ============================================================
@@ -3123,7 +3360,7 @@ function upChar(){
   if(active.length){
     tab.appendChild(el('div','sh','Active Quests'));
     active.forEach(q=>{
-      const prog=q.t==='kill'?`${q.kd||0}/${q.kc}`:q.t==='fetch'?`${q.fd||0}/${q.fc}`:q.t==='explore'?`${q.ed||0}/${q.ec}`:'';
+      const prog=q.progText|| (q.t==='kill'?`${q.kd||0}/${q.kc}`:q.t==='fetch'?`${q.fd||0}/${q.fc}`:q.t==='explore'?`${q.ed||0}/${q.ec}`:'');
       tab.appendChild(el('div','qc',`<div style="font-weight:bold;font-size:12px">📜 ${q.name}</div>
       <div style="font-size:10px;color:var(--muted)">${q.desc}</div>
       <div style="font-size:10px;color:var(--green);margin-top:2px">Progress: ${prog} · 💰 ${q.rg} · ⭐ ${q.rx}</div>`));
@@ -3315,6 +3552,7 @@ function advanceTime(hours){
     if(q.t==='kill'&&q.kt){q.kd=S.kills[q.kt]||0;if(q.kd>=q.kc)completeQuest(q)}
     if(q.t==='explore'){q.ed=(q.ed||0);if(q.ed>=q.ec)completeQuest(q)}
   });
+  if(S.flags&&S.flags.hv)hvRefreshState();
   // AP regen
   S.ap=Math.min(S.maxAp,S.ap+Math.floor(hours*3));
 }
@@ -3334,7 +3572,7 @@ function payDaily(){
 function completeQuest(q){
   if(q.done)return;q.done=true;
   S.xp+=q.rx;S.caps+=q.rg;S.questsComplete++;
-  if(q.fac)S.rep[q.fac]=(S.rep[q.fac]||0)+5;
+  if(q.fac)S.rep[q.fac]=(S.rep[q.fac]||0)+(q.repBonus||5);
   log('Quest complete: '+q.name+' (+'+q.rg+' caps, +'+q.rx+' XP)','q');
   notify('📜 Quest Complete!');chkLU();
 }
