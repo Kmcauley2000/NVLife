@@ -306,8 +306,10 @@ CampMcCarran:{n:"Camp McCarran",r:"New Vegas",d:"NCR's main base of operations i
   b:["mccarran_supply","mccarran_med","mccarran_hq"],dg:1,fac:"NCR",
   sur:[{n:"Fiend Territory",e:"☠",d:"Psycho-addled raiders everywhere.",en:["fiend","fiend","fiend","centaur"],lt:["jet","psycho","ammo_556","combat_knife"]}]},
 HiddenValley:{n:"Hidden Valley",r:"Mojave Central",d:"Brotherhood of Steel bunker, hidden underground.",e:'<img src="NVImages/HiddenvalleyIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"bunker",
-  b:["bos_command","bos_armory","bos_lab"],dg:1,fac:"BOS",
-  sur:[{n:"Valley Patrols",e:"🏜",d:"Scorpions in the sand.",en:["bark_scorpion","radscorpion","radscorpion"],lt:["sensor_module","energy_cell","scrap"]}]},
+  b:["bos_command","bos_armory","bos_lab","bos_maintenance"],dg:1,fac:"BOS",
+  sur:[{n:"Valley Patrols",e:"🏜",d:"Scorpions in the sand.",en:["bark_scorpion","radscorpion","radscorpion"],lt:["sensor_module","energy_cell","scrap","laser_focusing_lens"]},
+  {n:"Ventilation Trench",e:"🕳",d:"A sand-choked service trench feeding bunker ventilation. Vermin, ants, and scavengers keep sniffing around it.",en:["bark_scorpion","giant_ant","rogue_scavenger"],lt:["duct_tape","servo_motor","damaged_holotape","ammo_9mm"]},
+  {n:"Listening Post Ruins",e:"📡",d:"A ruined Brotherhood observation point above the valley, now picked over by scavengers and pests.",en:["rogue_scavenger","rogue_scavenger","radscorpion","giant_ant"],lt:["scribe_data_slate","targeting_module","energy_cell","power_armor_parts"]}]},
 Jacobstown:{n:"Jacobstown",r:"Mojave North",d:"A refuge for super mutants trying to live peacefully.",e:"🏔",t:"settlement",
   b:["jacobstown_lodge","jacobstown_doc"],dg:2,fac:"None",
   sur:[{n:"Mountain Trails",e:"⛰",d:"Cazadores and nightstalkers.",en:["cazador","nightstalker","nightstalker"],lt:["antivenom","stimpak","bighorner_meat"]}]},
@@ -503,6 +505,25 @@ silverware:{n:"Silverware",t:"m",e:"🍴",p:16,w:0.6,desc:"Useful to sell for qu
 silver_watch:{n:"Silver Pocket Watch",t:"m",e:"⌚",p:40,w:0.3,desc:"A valuable pre-war keepsake."},
 gold_necklace:{n:"Gold Necklace",t:"m",e:"📿",p:65,w:0.2,desc:"High-value jewelry."},
 conductor:{n:"Conductors",t:"m",e:"🧲",p:18,w:0.5,desc:"Electronic salvage with decent value."},
+laser_focusing_lens:{n:"Laser Focusing Lens",t:"m",e:"🔴",p:34,w:0.2,desc:"A precision lens used in Brotherhood energy weapon servicing."},
+microfusion_regulator:{n:"Microfusion Regulator",t:"m",e:"🔋",p:46,w:0.7,desc:"A compact power-control component prized by Brotherhood scribes."},
+servo_motor:{n:"Servo Motor",t:"m",e:"⚙️",p:30,w:1.2,desc:"Useful for armor joints, lifts, and repair work."},
+damaged_holotape:{n:"Damaged Holotape",t:"m",e:"💾",p:16,w:0.1,desc:"Corrupted field notes, patrol logs, or half-burned technical data."},
+targeting_module:{n:"Targeting Module",t:"m",e:"🎯",p:48,w:0.9,desc:"A broken but valuable aiming module from old world hardware."},
+power_armor_parts:{n:"Power Armor Parts",t:"m",e:"🦾",p:78,w:3.5,desc:"Heavy frame and servo pieces stripped from Brotherhood-grade equipment."},
+knight_toolkit:{n:"Knight Toolkit",t:"m",e:"🧰",p:52,w:2.2,desc:"A Brotherhood field repair kit packed with specialist tools."},
+scribe_data_slate:{n:"Scribe Data Slate",t:"m",e:"📓",p:38,w:0.4,desc:"A rugged slate full of maintenance notes and encrypted technical records."},
+initiate_robes:{n:"Initiate Robes",t:"a",e:"🥋",d:4,p:95,w:4,slot:"body",desc:"Simple Brotherhood initiate robes reinforced for bunker duty."},
+scribe_robes:{n:"Scribe Robes",t:"a",e:"🥼",d:5,p:120,w:4.5,slot:"body",desc:"Specialist robes worn by Brotherhood scribes working below ground."},
+weapon_repair_kit:{n:"Weapon Repair Kit",t:"m",e:"🛠",p:70,w:1.8,desc:"A compact set of oils, springs, and tools used for field weapon maintenance."},
+bos_recon_armor:{n:"Brotherhood Recon Armor",t:"a",e:"🛡",d:12,p:260,w:11,slot:"body",desc:"Light Brotherhood field armor favored by scouts and patrols."},
+bos_recon_helmet:{n:"Brotherhood Recon Helmet",t:"a",e:"🪖",d:5,p:110,w:3,slot:"head",desc:"A reinforced recon helmet with Brotherhood markings."},
+bos_combat_armor:{n:"Brotherhood Combat Armor",t:"a",e:"🛡",d:22,p:520,w:18,slot:"body",rare:1,desc:"Upgraded combat armor issued to trusted Brotherhood personnel."},
+bos_power_armor:{n:"Brotherhood Power Armor",t:"a",e:"🤖",d:34,p:1200,w:32,slot:"body",rare:2,desc:"Heavy Brotherhood power armor reserved for the most trusted allies."},
+plasma_defender:{n:"Plasma Defender",t:"w",e:"⚡",a:24,p:260,w:3.4,ammo:"energy_cell",desc:"A compact Brotherhood-favored plasma sidearm."},
+multiplas_rifle:{n:"Multiplas Rifle",t:"w",e:"⚡",a:42,p:620,w:9.5,ammo:"energy_cell",rare:2,desc:"A dangerous burst plasma rifle kept under Brotherhood lock and key."},
+laser_rcw:{n:"Laser RCW",t:"w",e:"⚡",a:22,p:310,w:4.2,ammo:"energy_cell",rare:1,desc:"A rapid-fire laser weapon pulled from old world stock."},
+bos_holotape:{n:"Brotherhood Holotape",t:"m",e:"💾",p:55,w:0.1,desc:"Encrypted Brotherhood field notes and requisition records."},
 };
 
 // Central icon registry for enemies and NPCs.
@@ -590,6 +611,7 @@ centaur:{n:"Centaur",hp:70,a:16,d:6,xp:28,e:ICONS.ENEMY.GHOUL,loot:["med_x","dir
 feral_ghoul_trooper:{n:"Feral Ghoul Trooper",hp:50,a:14,d:4,xp:22,e:ICONS.ENEMY.GLOWING_ONE,loot:["stimpak","ammo_556","pre_war_money","ncr_armor"]},
 Young_deathclaw:{n:"Young Deathclaw", hp:120,a:28,d:10,xp:55,e:ICONS.ENEMY.YOUNG_DEATHCLAW,loot:["stimpak","combat_armor"]}, 
 lakelurk:{n:"Lakelurk",hp:85,a:22,d:10,xp:38,e:ICONS.ENEMY.LAKELURK,loot:["purified_water","stimpak","pre_war_money"]},
+rogue_scavenger:{n:"Rogue Scavenger",hp:42,a:12,d:4,xp:18,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","duct_tape","damaged_holotape","pre_war_money","targeting_module"]},
 deathclaw:{n:"Deathclaw",hp:200,a:40,d:18,xp:100,e:ICONS.ENEMY.DEATHCLAW,loot:["super_stimpak","super_stimpak","combat_armor"],boss:1},
 };
 
@@ -627,6 +649,7 @@ mccarran_hq:{n:"McCarran HQ",e:"🏛",am:["Colonel Hsu manages the operation.","
 bos_command:{n:"Elder's Chamber",e:"🛡",am:["Muted intercom chatter hums through the bunker.","Orders, doctrine, and bunker politics all pass through here."]},
 bos_armory:{n:"Knight Torres Armory",e:"⚙",am:["Power armor plates, laser racks, and locked Brotherhood stock line the walls.","Knight Torres watches the inventory like it belongs to her personally."]},
 bos_lab:{n:"Scribe Level",e:"🔬",am:["Diagnostics terminals blink in the low light while scribes argue over maintenance logs.","Technical work, archives, and quiet disputes fill the level."]},
+bos_maintenance:{n:"Maintenance Bay",e:"🔧",am:["Service gantries, spare actuators, and stripped armor frames fill the bay.","Knights and scribes keep the bunker alive here with equal parts doctrine and duct tape."]},
 jacobstown_lodge:{n:"Jacobstown Lodge",e:"🏠",am:["Marcus keeps the peace.","Super mutants play chess."]},
 jacobstown_doc:{n:"Jacobstown Doctor",e:"🏥",am:["Dr. Henry researches nightkin madness.","Medical supplies available."]},
 gulch_command:{n:"Watch Captain's Shack",e:"🛖",am:["Spotting scopes, sand tables, and spent shell casings cover every surface.","Captain Harlan Voss studies fresh super mutant tracks on a marked ravine map."]},
@@ -809,6 +832,12 @@ function hvCompleteManualQuest(id,repBonus){
 }
 function hvRefreshState(){
   const hv=hvEnsure();
+  const q0=hvFindQuest('hv_access');
+  if(q0&&!q0.done){
+    const start=q0.ks||{};
+    const cleared=Math.max(0,((S.kills['bark_scorpion']||0)-(start.bark_scorpion||0))+((S.kills['radscorpion']||0)-(start.radscorpion||0)));
+    q0.progText=`Clear Hidden Valley threats (${Math.min(cleared,3)}/3).`;
+  }
   const q1=hvFindQuest('hvq1');
   if(q1&&!q1.done){
     const count=(hv.spoke.hardin?1:0)+(hv.spoke.veronica?1:0);
@@ -823,6 +852,54 @@ function hvRefreshState(){
     else if(!hv.veronicaCounsel)q5.progText='Talk to Veronica about the leadership dispute.';
     else q5.progText='Report back to the leader you chose.';
   }
+}
+function hvHasAccess(){
+  const hv=hvEnsure();
+  if(hv.access)return true;
+  if((S.rep?.BOS||0)>=10){hv.access=true;return true}
+  return false;
+}
+function hvEntryProgress(){
+  const q=hvFindQuest('hv_access');
+  if(!q)return 0;
+  const start=q.ks||{};
+  return Math.max(0,((S.kills['bark_scorpion']||0)-(start.bark_scorpion||0))+((S.kills['radscorpion']||0)-(start.radscorpion||0)));
+}
+function hvStartAccessQuest(){
+  const hv=hvEnsure();
+  if(hvHasAccess())return;
+  if(hvFindQuest('hv_access'))return;
+  hvAddQuest({id:'hv_access',name:'Hidden Valley Clearance',desc:'A Brotherhood guard at the Hidden Valley bunker wants proof you can help instead of causing trouble. Clear 3 hostile creatures from the valley approaches, then return to the bunker intercom.',t:'custom',progText:'Clear Hidden Valley threats (0/3).',rg:120,rx:20,done:false,ks:{bark_scorpion:S.kills['bark_scorpion']||0,radscorpion:S.kills['radscorpion']||0}});
+}
+function hvFinishAccessQuest(){
+  const hv=hvEnsure();
+  const q=hvFindQuest('hv_access');
+  if(!q||q.done)return;
+  const cleared=hvEntryProgress();
+  if(cleared<3){notify('The Brotherhood wants 3 valley threats cleared first.');return}
+  hv.access=true;
+  hvCompleteManualQuest('hv_access',12);
+  closeDlg();
+  showResult('Bunker Access Granted','🛡',['The intercom crackles, then the bunker door unlocks for you.','🏴 Brotherhood standing +12','🔓 Hidden Valley bunker access granted'],'Continue','upAll()');
+}
+function openHiddenValleyEntry(){
+  hvRefreshState();
+  const access=hvHasAccess();
+  const q=hvFindQuest('hv_access');
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>🚪</span><span style="color:var(--amber)">Hidden Valley Bunker Door</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:6px">Brotherhood intercom</div>`;
+  if(access){
+    h+=`<div class="npc-line">A clipped Brotherhood voice answers the intercom. "You're cleared. Door cycling now."</div><button class="bt go" onclick="closeDlg();openBld('bos_command')">🛡 Enter the bunker</button><button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  }else if(!q){
+    h+=`<div class="npc-line">"State your business. Hidden Valley is off limits. If you want us to take you seriously, prove you can keep the valley approaches clear. Bring down 3 of the creatures prowling outside, then report back."</div><button class="bt pip" onclick="hvStartAccessQuest();openHiddenValleyEntry()">📜 Offer to clear the valley</button><button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  }else if(q.done){
+    h+=`<div class="npc-line">"You're cleared. Don't make us regret it."</div><button class="bt go" onclick="closeDlg();openBld('bos_command')">🛡 Enter the bunker</button><button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  }else{
+    const cleared=Math.min(hvEntryProgress(),3);
+    h+=`<div class="npc-line">"We still have movement in the valley. Deal with it, then come back."</div><div class="qc"><div style="font-size:11px;color:var(--amber)">Hidden Valley Clearance</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Progress: ${cleared}/3 valley threats cleared.</div></div>`;
+    if(cleared>=3)h+=`<button class="bt go" onclick="hvFinishAccessQuest()">🛡 Report the valley clear</button>`;
+    h+=`<button class="bt" onclick="closeDlg()">Back off from the door</button>`;
+  }
+  openDlg(h);
 }
 function hvStartQuest1(){
   hvEnsure();
@@ -1474,13 +1551,20 @@ function upWorld(){
 
   // Buildings
   tab.appendChild(el('div','sh','Locations'));
-  (loc.b||[]).forEach(bId=>{
-    const b=BLDS[bId];if(!b)return;
-    const bc2=el('div','bc');
-    bc2.innerHTML=`<div style="font-size:22px">${b.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${b.n}</div></div><div style="color:var(--muted)">›</div>`;
-    bc2.onclick=()=>openBld(bId);
-    tab.appendChild(bc2);
-  });
+  if(S.loc==='HiddenValley'&&!hvHasAccess()){
+    const door=el('div','bc');
+    door.innerHTML=`<div style="font-size:22px">🚪</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Hidden Valley Bunker Door</div><div style="font-size:10px;color:var(--muted)">Use the intercom to earn Brotherhood access.</div></div><div style="color:var(--muted)">›</div>`;
+    door.onclick=()=>openHiddenValleyEntry();
+    tab.appendChild(door);
+  }else{
+    (loc.b||[]).forEach(bId=>{
+      const b=BLDS[bId];if(!b)return;
+      const bc2=el('div','bc');
+      bc2.innerHTML=`<div style="font-size:22px">${b.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${b.n}</div></div><div style="color:var(--muted)">›</div>`;
+      bc2.onclick=()=>openBld(bId);
+      tab.appendChild(bc2);
+    });
+  }
 
   // Property
   const propBtn=el('div','bc');
@@ -1976,6 +2060,10 @@ function accQuest(q){closeDlg();S.quests.push(q);log('Accepted: '+q.name,'q');no
 // ============================================================
 function openBld(bId){
   const b=BLDS[bId];if(!b)return;
+  if(['bos_command','bos_armory','bos_lab','bos_maintenance'].includes(bId)&&S.loc==='HiddenValley'&&!hvHasAccess()){
+    openHiddenValleyEntry();
+    return;
+  }
   const npc=getBuildingNpc(S.loc,bId,{loc:S.loc,bId});
   const o=$('BO');const bi=$('BI');bi.innerHTML='';
   const isPrimmSpecial=['vikki_vance','mojave_express','sheriff_office','bison_steve'].includes(bId);
@@ -1986,7 +2074,7 @@ function openBld(bId){
   const isNcrcFSpecial=['ncrcf_visitor','ncrcf_admin','ncrcf_block_a','ncrcf_block_b'].includes(bId);
   const isHeliosSpecial=['helios_main','helios_tower','helios_east','helios_west'].includes(bId);
   const isCinderGulchSpecial=['gulch_command','gulch_clinic','gulch_garage'].includes(bId);
-  const isHiddenValleySpecial=['bos_command','bos_armory','bos_lab'].includes(bId);
+  const isHiddenValleySpecial=['bos_command','bos_armory','bos_lab','bos_maintenance'].includes(bId);
 
   const hd=el('div','bh');
   hd.innerHTML=`<div class="bb" onclick="closeBld()">‹</div><div style="flex:1;font-size:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:var(--amber)">${b.e} ${b.n}</div><div style="font-size:11px;color:var(--amber)">💰${S.caps}</div>`;
@@ -2039,6 +2127,7 @@ function openBld(bId){
   else if(bId==='bos_command'){bldHiddenValleyCommand(body)}
   else if(bId==='bos_armory'){bldHiddenValleyArmory(body)}
   else if(bId==='bos_lab'){bldHiddenValleyLab(body)}
+  else if(bId==='bos_maintenance'){bldHiddenValleyMaintenance(body)}
   else if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
   else if(bId.includes('store')||bId.includes('supply')||bId.includes('ralph')||bId.includes('armory')||bId.includes('quartermaster')){bldShop(body,bId)}
   else if(bId.includes('doc')||bId.includes('med')||bId.includes('fort')||bId.includes('jacobstown_doc')){bldMedical(body)}
@@ -2938,7 +3027,7 @@ function getShopInventory(bId){
   const guns=[{id:'pistol_9mm'},{id:'pistol_10mm'},{id:'revolver_357'},{id:'cowboy_repeater'},{id:'trail_carbine'},{id:'smg_9mm'},{id:'varmint_rifle'},{id:'service_rifle'},{id:'single_shotgun'},{id:'caravan_shotgun'},{id:'ammo_556'},{id:'ammo_308'},{id:'ammo_shells'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'combat_knife'},{id:'tire_iron'},{id:'reinforced_leather_armor'},{id:'metal_helmet'}];
   const medical=[{id:'stimpak'},{id:'super_stimpak'},{id:'doctor_bag'},{id:'antivenom'},{id:'purified_water'},{id:'dirty_water'},{id:'med_x'}];
   const legion=[{id:'machete'},{id:'tire_iron'},{id:'healing_powder'},{id:'healing_powder'},{id:'antivenom'},{id:'silverware'},{id:'legion_coin'}];
-  const bos=[{id:'laser_pistol'},{id:'laser_rifle'},{id:'energy_cell'},{id:'energy_cell'},{id:'stimpak'},{id:'combat_helmet'},{id:'metal_helmet'},{id:'sensor_module'},{id:'fission_battery'},{id:'conductor'},{id:'scrap_electronics'}];
+  const bos=[{id:'laser_pistol'},{id:'laser_rifle'},{id:'plasma_defender'},{id:'laser_rcw'},{id:'energy_cell'},{id:'energy_cell'},{id:'energy_cell'},{id:'stimpak'},{id:'combat_helmet'},{id:'metal_helmet'},{id:'bos_recon_helmet'},{id:'bos_recon_armor'},{id:'initiate_robes'},{id:'scribe_robes'},{id:'sensor_module'},{id:'fission_battery'},{id:'conductor'},{id:'scrap_electronics'},{id:'laser_focusing_lens'},{id:'microfusion_regulator'},{id:'servo_motor'},{id:'scribe_data_slate'},{id:'knight_toolkit'},{id:'weapon_repair_kit'},{id:'bos_holotape'}];
   const khans=[{id:'pistol_9mm'},{id:'revolver_357'},{id:'trail_carbine'},{id:'smg_9mm'},{id:'ammo_9mm'},{id:'ammo_357'},{id:'ammo_shells'},{id:'single_shotgun'},{id:'caravan_shotgun'},{id:'jet'},{id:'psycho'},{id:'stimpak'},{id:'combat_knife'},{id:'cigarette_carton'}];
   if(bId.includes('khan'))return khans;
   if(bId.includes('armory')||bId.includes('bos'))return bos;
@@ -3055,6 +3144,8 @@ const PROPERTY_DEFS=[
   {id:'goodsprings_water_rights',name:'Goodsprings Water Rights Share',cost:2800,loc:'Goodsprings',desc:'A paid share in the spring output. Lets you draw water and gather around the source once per day.',actions:['water_draw','spring_gather']},
   {id:'primm_bounty_office',name:'Primm Bounty Office',cost:4200,loc:'Primm',desc:'A small law office and holding room in Primm. Take named bounties and open the evidence locker.',actions:['start_bounty','evidence']},
   {id:'hidden_valley_quarters',name:'Hidden Valley Bunker Quarters',cost:6500,loc:'HiddenValley',desc:'Personal quarters inside Hidden Valley. Brotherhood access only.',requires:{fac:'BOS',rep:40},actions:['energy_ration','med_cache']},
+  {id:'hidden_valley_workbench',name:'Hidden Valley Scribe Workbench',cost:4800,loc:'HiddenValley',desc:'A reserved Brotherhood workshop bench for calibrating energy tech and salvaging advanced parts.',requires:{fac:'BOS',rep:25},actions:['energy_tuning','tech_cache']},
+  {id:'hidden_valley_requisition',name:'Hidden Valley Requisition Locker',cost:9200,loc:'HiddenValley',desc:'An armory-backed requisition locker that issues advanced Brotherhood gear to trusted allies.',requires:{fac:'BOS',rep:55},actions:['elite_cache']},
 ];
 const PRIMM_BOUNTY_TARGETS=[
   {id:'eddie_riggs',name:'Eddie Riggs',enemy:'convict',caps:[90,130],xp:22,itemPool:['ammo_9mm','switchblade','dynamite'],rep:{NCR:2},desc:'A twitchy escaped convict shaking down drifters on the highway.'},
@@ -3170,6 +3261,40 @@ function claimBosMedCache(){
   log('You draw a medical allotment from Brotherhood stores.','e');
   closeBld();showResult('Brotherhood Med Cache','⚕️',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'Issued to your bunker quarters.'],'Continue','upAll()');
 }
+function bosRep(){return S.rep?.BOS||0}
+function claimBosTechCache(){
+  if(!propertyReady('prop_bos_tech_day')){notify('The workshop cache has already been checked today.');return}
+  markPropertyUsed('prop_bos_tech_day');
+  const picks=['energy_cell','energy_cell','scrap_electronics','sensor_module','conductor','fission_battery','bos_holotape','laser_focusing_lens','microfusion_regulator','servo_motor','scribe_data_slate','knight_toolkit'];
+  const pick=rndA(picks);
+  const extra=rnd(2,5);
+  for(let i=0;i<extra;i++)S.inv.push('energy_cell');
+  S.inv.push(pick);
+  log('You pull calibrated parts and ammo from the Brotherhood workbench reserve.','e');
+  closeBld();showResult('Tech Cache','🔧',[`Energy Cells ×${extra}`,`${ITEMS[pick].e} ${ITEMS[pick].n}`],'Continue','upAll()');
+}
+function bosTuneEnergyGear(){
+  const tape=S.inv.indexOf('scrap_electronics');
+  const cond=S.inv.indexOf('conductor');
+  if(tape===-1||cond===-1){notify('Need Scrap Electronics and Conductors.');return}
+  const hi=Math.max(tape,cond), lo=Math.min(tape,cond);
+  S.inv.splice(hi,1);S.inv.splice(lo,1);
+  const reward=rndA(['energy_cell','energy_cell','plasma_defender','laser_rcw']);
+  if(reward==='energy_cell'){for(let i=0;i<8;i++)S.inv.push('energy_cell')} else S.inv.push(reward);
+  S.xp+=12;
+  log('You tune Brotherhood energy systems at the scribe workbench.','e');
+  closeBld();showResult('Energy Calibration','⚡',[reward==='energy_cell'?'Energy Cells ×8':`${ITEMS[reward].e} ${ITEMS[reward].n}`,'⭐ +12 XP'],'Continue','chkLU();upAll()');
+}
+function claimBosEliteCache(){
+  if(!propertyReady('prop_bos_elite_day')){notify('The elite requisition locker is empty today.');return}
+  markPropertyUsed('prop_bos_elite_day');
+  const pool=['bos_combat_armor','bos_recon_armor','bos_recon_helmet','multiplas_rifle','plasma_rifle','super_stimpak','bos_holotape','power_armor_parts','weapon_repair_kit','microfusion_regulator'];
+  const pick=rndA(pool);
+  S.inv.push(pick);
+  for(let i=0;i<rnd(5,10);i++)S.inv.push('energy_cell');
+  log('You receive an advanced Brotherhood requisition issue.','e');
+  closeBld();showResult('Elite Requisition','🛡',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'Energy Cells issued alongside it.'],'Continue','upAll()');
+}
 function bldHiddenValleyCommand(body){
   hvRefreshState();
   body.appendChild(el('div','bs2','Bunker Command'));
@@ -3190,27 +3315,68 @@ function bldHiddenValleyCommand(body){
 }
 function bldHiddenValleyArmory(body){
   hvRefreshState();
+  const rep=bosRep();
   body.appendChild(el('div','bs2','Brotherhood Stock'));
-  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Torres runs the armory like every missing energy cell is a personal insult. The stock is good, but Brotherhood patience is not endless.</div>`));
-  buildBuyButtons(body,['energy_cell','energy_cell','laser_pistol','laser_rifle','combat_helmet','metal_armor','stimpak','sensor_module'],'bos_armory');
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Torres runs the armory like every missing energy cell is a personal insult. The stock is good, but Brotherhood patience is not endless.</div><div style="font-size:10px;color:var(--amber);margin-top:6px">Brotherhood standing: ${rep}</div>`));
+  buildBuyButtons(body,['energy_cell','energy_cell','laser_pistol','laser_rifle','combat_helmet','metal_helmet','stimpak','sensor_module','initiate_robes'],'bos_armory');
+  if(rep>=18){
+    body.appendChild(el('div','bs2','Trusted Stock'));
+    buildBuyButtons(body,['plasma_defender','laser_rcw','bos_recon_helmet','bos_recon_armor','fission_battery','conductor','scribe_robes','laser_focusing_lens'],'bos_armory');
+  }else body.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">Trusted stock unlocks at Brotherhood standing 18.</div>'));
+  if(rep>=35){
+    body.appendChild(el('div','bs2','Knight Issue'));
+    buildBuyButtons(body,['plasma_rifle','bos_combat_armor','super_stimpak','energy_cell','energy_cell','weapon_repair_kit','microfusion_regulator'],'bos_armory');
+  }else body.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">Knight issue gear unlocks at Brotherhood standing 35.</div>'));
+  if(rep>=55){
+    body.appendChild(el('div','bs2','Paladin Lockers'));
+    buildBuyButtons(body,['multiplas_rifle','bos_power_armor','power_armor','bos_holotape','power_armor_parts','knight_toolkit'],'bos_armory');
+  }else body.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">Paladin lockers unlock at Brotherhood standing 55.</div>'));
   const inspectBtn=el('button','bt','⚙ Inspect surplus gear');
-  inspectBtn.onclick=()=>{advanceTime(1);const pick=rndA(['energy_cell','combat_helmet','scrap_electronics']);S.inv.push(pick);log('You sort through Brotherhood surplus in the armory.','e');closeBld();showResult('Armory Surplus','⚙',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  inspectBtn.onclick=()=>{advanceTime(1);const pick=rndA(rep>=18?['energy_cell','combat_helmet','scrap_electronics','bos_recon_helmet','bos_holotape']:['energy_cell','combat_helmet','scrap_electronics']);S.inv.push(pick);log('You sort through Brotherhood surplus in the armory.','e');closeBld();showResult('Armory Surplus','⚙',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
   body.appendChild(inspectBtn);
   body.appendChild(el('div','bs2','Personnel'));
   ['knight_torres','head_paladin_hardin','senior_knight_lorenzo'].forEach(id=>addHiddenValleyNpcCard(body,id));
 }
 function bldHiddenValleyLab(body){
   hvRefreshState();
+  const rep=bosRep();
   body.appendChild(el('div','bs2','Scribe Level'));
-  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The lower level is full of diagnostic noise, archive terminals, and people trying to keep old world systems alive without admitting how fragile they are.</div>`));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The lower level is full of diagnostic noise, archive terminals, and people trying to keep old world systems alive without admitting how fragile they are.</div><div style="font-size:10px;color:var(--amber);margin-top:6px">Brotherhood standing: ${rep}</div>`));
   const assistBtn=el('button','bt go','🔬 Assist with bunker maintenance');
-  assistBtn.onclick=()=>{advanceTime(1);S.xp+=9;log('You assist the scribes with routine bunker maintenance in Hidden Valley.','e');closeBld();showResult('Maintenance Shift','🔬',['⭐ +9 XP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  assistBtn.onclick=()=>{advanceTime(1);S.xp+=9;const repGain=R()<.5?1:0;if(repGain)S.rep.BOS=(S.rep.BOS||0)+repGain;log('You assist the scribes with routine bunker maintenance in Hidden Valley.','e');closeBld();showResult('Maintenance Shift','🔬',['⭐ +9 XP',repGain?'🏴 Brotherhood standing +1':'No standing change this shift.','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
   body.appendChild(assistBtn);
   const archiveBtn=el('button','bt','📚 Search dead archive terminals');
-  archiveBtn.onclick=()=>{advanceTime(1);const pick=rndA(['pre_war_money','sensor_module','scrap_electronics','conductor']);S.inv.push(pick);log('You salvage useful data and hardware from the Hidden Valley archive terminals.','e');closeBld();showResult('Archive Salvage','📚',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  archiveBtn.onclick=()=>{advanceTime(1);const pick=rndA(rep>=18?['pre_war_money','sensor_module','scrap_electronics','conductor','bos_holotape','scribe_data_slate','damaged_holotape','laser_focusing_lens']:['pre_war_money','sensor_module','scrap_electronics','conductor','damaged_holotape']);S.inv.push(pick);log('You salvage useful data and hardware from the Hidden Valley archive terminals.','e');closeBld();showResult('Archive Salvage','📚',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
   body.appendChild(archiveBtn);
+  if(rep>=25){
+    const calibrateBtn=el('button','bt','⚡ Calibrate captured energy weapons');
+    calibrateBtn.onclick=bosTuneEnergyGear;
+    body.appendChild(calibrateBtn);
+  }else body.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">Advanced calibration work unlocks at Brotherhood standing 25.</div>'));
   body.appendChild(el('div','bs2','Notable Scribes'));
   ['scribe_ibsen','veronica','elder_mcnamara'].forEach(id=>addHiddenValleyNpcCard(body,id));
+}
+function bldHiddenValleyMaintenance(body){
+  hvRefreshState();
+  const rep=bosRep();
+  body.appendChild(el('div','bs2','Maintenance Bay'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Service gantries, stripped armor frames, and benches full of Brotherhood tools crowd the maintenance bay. This is where bunker hardware actually survives.</div><div style="font-size:10px;color:var(--amber);margin-top:6px">Brotherhood standing: ${rep}</div>`));
+  const shiftBtn=el('button','bt go','🔧 Pull a maintenance duty shift');
+  shiftBtn.onclick=()=>{advanceTime(1);S.xp+=10;const repGain=R()<.65?1:0;if(repGain)S.rep.BOS=(S.rep.BOS||0)+1;const pick=rndA(['scrap_electronics','servo_motor','knight_toolkit','weapon_repair_kit']);S.inv.push(pick);log('You work a Brotherhood maintenance shift in Hidden Valley.','e');closeBld();showResult('Maintenance Shift','🔧',['⭐ +10 XP',repGain?'🏴 Brotherhood standing +1':'No standing change this shift.',`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  body.appendChild(shiftBtn);
+  const storesBtn=el('button','bt','🧰 Check engineering stores');
+  storesBtn.onclick=()=>{advanceTime(1);const pick=rndA(rep>=25?['laser_focusing_lens','microfusion_regulator','servo_motor','targeting_module','knight_toolkit','power_armor_parts']:['servo_motor','damaged_holotape','duct_tape','scrap','laser_focusing_lens']);S.inv.push(pick);log('You pull useful parts from Brotherhood engineering stores.','e');closeBld();showResult('Engineering Stores','🧰',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(storesBtn);
+  const repairBtn=el('button','bt','🛠 Bench-tune your weapons (+1 ATK, 20 caps)');
+  repairBtn.onclick=()=>{if(S.caps<20){notify('Need 20 caps.');return}const pool=['weapon_repair_kit','scrap_electronics','servo_motor','knight_toolkit'];const found=S.inv.findIndex(i=>pool.includes(i));if(found===-1){notify('Need repair supplies.');return}S.caps-=20;S.inv.splice(found,1);S.atk+=1;log('You tune your weapons using Brotherhood maintenance benches.','e');closeBld();showResult('Weapons Tuned','🛠',['⚔ +1 ATK','💰 20 caps spent','Used repair supplies'],'Continue','upAll()')};
+  body.appendChild(repairBtn);
+  if(rep>=30){
+    const cellsBtn=el('button','bt','⚡ Convert tech parts into 8 Energy Cells');
+    cellsBtn.onclick=()=>{const a=S.inv.findIndex(i=>['microfusion_regulator','conductor','laser_focusing_lens','targeting_module'].includes(i));const b=S.inv.findIndex((i,idx)=>idx!==a&&['scrap_electronics','servo_motor','damaged_holotape','knight_toolkit'].includes(i));if(a===-1||b===-1){notify('Need advanced tech parts.');return}S.inv.splice(Math.max(a,b),1);S.inv.splice(Math.min(a,b),1);for(let i=0;i<8;i++)S.inv.push('energy_cell');advanceTime(1);log('You convert spare Brotherhood tech into fresh energy cells.','e');closeBld();showResult('Energy Cells Rebuilt','⚡',['Energy Cells ×8','⏰ 1 hour passed'],'Continue','upAll()')};
+    body.appendChild(cellsBtn);
+  }else body.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">Advanced fabrication unlocks at Brotherhood standing 30.</div>'));
+  body.appendChild(el('div','bs2','Bay Staff'));
+  ['knight_torres','senior_knight_lorenzo','scribe_ibsen'].forEach(id=>addHiddenValleyNpcCard(body,id));
 }
 
 // ============================================================
@@ -3257,6 +3423,13 @@ function openPropertyMenu(){
       if(p.id==='hidden_valley_quarters'){
         const energy=el('button','bt','⚡ Collect energy ration');energy.onclick=claimBosEnergyRation;card.appendChild(energy);
         const meds=el('button','bt','⚕️ Check med cache');meds.onclick=claimBosMedCache;card.appendChild(meds);
+      }
+      if(p.id==='hidden_valley_workbench'){
+        const cache=el('button','bt','🔧 Open tech cache');cache.onclick=claimBosTechCache;card.appendChild(cache);
+        const tune=el('button','bt','⚡ Tune energy gear');tune.onclick=bosTuneEnergyGear;card.appendChild(tune);
+      }
+      if(p.id==='hidden_valley_requisition'){
+        const elite=el('button','bt','🛡 Open elite requisition');elite.onclick=claimBosEliteCache;card.appendChild(elite);
       }
       body.appendChild(card);
     });
