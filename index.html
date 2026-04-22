@@ -59,7 +59,7 @@ border:1px solid #2a2818;border-radius:5px;margin:3px 0;cursor:pointer}
 .bc:active{background:#2a2a1a}
 /* Overlays */
 #CO{position:fixed;inset:0;background:rgba(5,5,2,.9);display:none;justify-content:center;
-align-items:flex-start;z-index:200;padding-top:8px;overflow-y:auto}
+align-items:center;z-index:200;padding:12px;overflow-y:auto}
 #CP{background:var(--panel);border:1px solid var(--amber2);border-radius:8px;padding:10px;
 width:96%;max-width:400px;max-height:92vh;overflow-y:auto}
 /* Building overlay */
@@ -139,6 +139,22 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 .icon-wrap img,.icon-wrap svg{width:100%;height:100%;object-fit:contain;display:block}
 .combat-bar{display:flex;gap:4px;margin:4px 0;flex-wrap:wrap}
 .combat-bar .bt{flex:1;min-width:80px;text-align:center}
+/* Combat */
+.combat-panel{background:#1a0a0a;border:1px solid #3a1818;border-radius:6px;padding:10px;margin:4px 0}
+.enemy-portrait{text-align:center;font-size:48px;margin:8px 0}
+.icon-wrap{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;line-height:1;flex:0 0 auto}
+.icon-wrap img,.icon-wrap svg{width:100%;height:100%;object-fit:contain;display:block}
+.combat-bar{display:flex;gap:4px;margin:4px 0;flex-wrap:wrap}
+.combat-bar .bt{flex:1;min-width:80px;text-align:center}
+.corpse-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:8px}
+.corpse-card{background:#15150d;border:1px solid #3a3828;border-radius:8px;padding:8px;text-align:center;position:relative}
+.corpse-portrait{position:relative;width:72px;height:72px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;background:#0f0f08;border:1px solid #2a2818;border-radius:8px}
+.corpse-portrait .icon-wrap{width:46px !important;height:46px !important;font-size:46px !important}
+.loot-marker{position:absolute;right:-6px;bottom:-6px;width:30px;height:30px;border-radius:50%;border:2px solid var(--amber2);background:#2a2208;color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 12px rgba(0,0,0,.5);cursor:pointer}
+.loot-marker.taken{background:#102010;color:var(--green);border-color:#2d5a2d}
+.loot-check{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dotted #2a2818;font-size:11px}
+.loot-check:last-child{border-bottom:none}
+.loot-check input{accent-color:#c9a230}
 </style>
 </head>
 <body>
@@ -176,7 +192,44 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 <div id="RBG"></div><div id="RP"></div>
 <div id="TK"><div class="tk" id="ticker-inner"></div></div>
 <div id="NF"></div>
-
+<script>
+</style>
+</head>
+<body>
+<div class="scanline"></div>
+<div id="W">
+<div id="H">FALLOUT: NEW VEGAS<div class="sub">Mojave Wasteland</div></div>
+<div id="SB"></div>
+<div id="C">
+<div id="world-tab" class="T A"></div>
+<div id="char-tab" class="T"></div>
+<div id="inv-tab" class="T"></div>
+<div id="roads-tab" class="T"></div>
+<div id="log-tab" class="T"></div>
+</div>
+</div>
+<div id="N">
+<button onclick="switchTab('world')" id="nb-world" class="A"><i>🏜</i>World</button>
+<button onclick="switchTab('char')" id="nb-char"><i>👤</i>Char</button>
+<button onclick="switchTab('inv')" id="nb-inv"><i>🎒</i>Items</button>
+<button onclick="switchTab('roads')" id="nb-roads"><i>🗺</i>Travel</button>
+<button onclick="switchTab('log')" id="nb-log"><i>📋</i>Log</button>
+</div>
+<div id="BO"><div id="BI"></div></div>
+<div id="TO">
+<div style="padding:calc(var(--st)+10px) 12px 12px">
+<div style="text-align:center;font-size:48px;margin:20px 0" id="TS">🏜</div>
+<div style="text-align:center;font-size:14px;margin-bottom:12px" id="TT"></div>
+<div class="hb" style="margin:8px 20px"><div class="hf g" id="TB" style="width:0%"></div></div>
+<div id="TC" style="padding:0 10px"></div>
+<button class="bt go" id="TN" style="display:none;text-align:center;margin:8px 10px" onclick="travelCont()">Continue</button>
+</div>
+</div>
+<div id="DO"><div id="DB"></div></div>
+<div id="CO"><div id="CP"></div></div>
+<div id="RBG"></div><div id="RP"></div>
+<div id="TK"><div class="tk" id="ticker-inner"></div></div>
+<div id="NF"></div>
 <script>
 // ============================================================
 // UTILITIES
@@ -1713,18 +1766,205 @@ function startCombat(enemies){
   combat={enemies,turn:0,log:[]};
   renderCombat();
 }
+
+function maybeLoot(pool,id,chance){
+  if(ITEMS[id]&&R()<chance)pool.push(id);
+}
+function buildEnemyLoot(enemy){
+  const pool=[];
+  const id=(enemy.id||'').toLowerCase();
+
+  if(['gecko','bloatfly','mantis','radroach','bark_scorpion','radscorpion','cazador','nightstalker','giant_rat','giant_ant','lakelurk','deathclaw','young_deathclaw'].includes(id)){
+    if(id==='gecko'){maybeLoot(pool,'gecko_hide',0.85);maybeLoot(pool,'gecko_steak',0.55);maybeLoot(pool,'herbs',0.25);}
+    if(id==='bloatfly'){maybeLoot(pool,'herbs',0.45);maybeLoot(pool,'dirty_water',0.18);}
+    if(id==='mantis'){maybeLoot(pool,'scrap',0.35);maybeLoot(pool,'herbs',0.22);}
+    if(id==='radroach'){maybeLoot(pool,'herbs',0.18);maybeLoot(pool,'dirty_water',0.12);}
+    if(id==='bark_scorpion'){maybeLoot(pool,'antivenom',0.35);maybeLoot(pool,'herbs',0.22);}
+    if(id==='radscorpion'){maybeLoot(pool,'antivenom',0.7);maybeLoot(pool,'stimpak',0.22);}
+    if(id==='cazador'){maybeLoot(pool,'antivenom',0.85);maybeLoot(pool,'stimpak',0.3);}
+    if(id==='nightstalker'){maybeLoot(pool,'stimpak',0.22);maybeLoot(pool,'herbs',0.28);}
+    if(id==='giant_rat'){maybeLoot(pool,'cram',0.22);maybeLoot(pool,'dirty_water',0.3);}
+    if(id==='giant_ant'){maybeLoot(pool,'scrap',0.22);maybeLoot(pool,'herbs',0.22);}
+    if(id==='lakelurk'){maybeLoot(pool,'purified_water',0.4);maybeLoot(pool,'stimpak',0.25);maybeLoot(pool,'pre_war_money',0.18);}
+    if(id==='deathclaw'){maybeLoot(pool,'super_stimpak',0.55);maybeLoot(pool,'combat_armor',0.2);}
+    if(id==='young_deathclaw'){maybeLoot(pool,'stimpak',0.35);maybeLoot(pool,'combat_armor',0.12);}
+  }else if(['feral_ghoul','glowing_one','feral_ghoul_trooper','centaur'].includes(id)){
+    maybeLoot(pool,'pre_war_money',0.25);
+    maybeLoot(pool,'stimpak',id==='glowing_one'?0.55:0.22);
+    maybeLoot(pool,'med_x',id==='glowing_one'||id==='centaur'?0.32:0.08);
+    if(id==='feral_ghoul_trooper'){
+      maybeLoot(pool,'ammo_556',0.45);
+      maybeLoot(pool,'ncr_armor',0.12);
+    }
+  }else if(['convict','powder_ganger','freeside_thug','fiend','jackal_raider','viper_gunslinger','rogue_scavenger','great_khan','legion_recruit','legion_veteran','legion_centurion','legion_scout','super_mutant','nightkin','securitron'].includes(id)){
+    if(id==='convict'){
+      maybeLoot(pool,'ammo_9mm',0.55);maybeLoot(pool,'switchblade',0.35);maybeLoot(pool,'sunset_sars',0.28);maybeLoot(pool,'pre_war_money',0.18);
+    }
+    if(id==='powder_ganger'){
+      maybeLoot(pool,'dynamite',0.55);maybeLoot(pool,'powder_charge',0.38);maybeLoot(pool,'ammo_9mm',0.45);maybeLoot(pool,'stimpak',0.15);
+    }
+    if(id==='freeside_thug'){
+      maybeLoot(pool,'switchblade',0.5);maybeLoot(pool,'jet',0.28);maybeLoot(pool,'pre_war_money',0.32);
+    }
+    if(id==='fiend'){
+      maybeLoot(pool,'jet',0.55);maybeLoot(pool,'psycho',0.45);maybeLoot(pool,'ammo_9mm',0.35);maybeLoot(pool,'ammo_10mm',0.32);maybeLoot(pool,'combat_knife',0.22);maybeLoot(pool,'pistol_10mm',0.14);
+    }
+    if(id==='jackal_raider'){
+      maybeLoot(pool,'ammo_9mm',0.42);maybeLoot(pool,'switchblade',0.42);maybeLoot(pool,'single_shotgun',0.12);maybeLoot(pool,'cigarette_pack',0.35);
+    }
+    if(id==='viper_gunslinger'){
+      maybeLoot(pool,'ammo_357',0.55);maybeLoot(pool,'varmint_rifle',0.14);maybeLoot(pool,'leather_armor',0.1);maybeLoot(pool,'cigarette_carton',0.22);
+    }
+    if(id==='rogue_scavenger'){
+      maybeLoot(pool,'ammo_9mm',0.4);maybeLoot(pool,'duct_tape',0.45);maybeLoot(pool,'damaged_holotape',0.35);maybeLoot(pool,'pre_war_money',0.25);maybeLoot(pool,'targeting_module',0.12);
+    }
+    if(id==='great_khan'){
+      maybeLoot(pool,'ammo_9mm',0.45);maybeLoot(pool,'ammo_357',0.38);maybeLoot(pool,'jet',0.4);maybeLoot(pool,'stimpak',0.22);maybeLoot(pool,'revolver_357',0.12);
+    }
+    if(id==='legion_recruit'){
+      maybeLoot(pool,'machete',0.42);maybeLoot(pool,'healing_powder',0.45);maybeLoot(pool,'legion_coin',0.65);
+    }
+    if(id==='legion_veteran'){
+      maybeLoot(pool,'legion_coin',0.85);maybeLoot(pool,'healing_powder',0.38);maybeLoot(pool,'super_stimpak',0.2);maybeLoot(pool,'thermic_lance',0.08);
+    }
+    if(id==='legion_centurion'){
+      maybeLoot(pool,'legion_coin',0.95);maybeLoot(pool,'super_stimpak',0.42);maybeLoot(pool,'power_fist',0.12);maybeLoot(pool,'thermic_lance',0.12);
+    }
+    if(id==='legion_scout'){
+      maybeLoot(pool,'machete',0.28);maybeLoot(pool,'healing_powder',0.4);maybeLoot(pool,'legion_coin',0.55);maybeLoot(pool,'ammo_357',0.25);
+    }
+    if(id==='super_mutant'){
+      maybeLoot(pool,'ammo_556',0.62);maybeLoot(pool,'scrap',0.35);maybeLoot(pool,'stimpak',0.18);maybeLoot(pool,'cowboy_repeater',0.1);
+    }
+    if(id==='nightkin'){
+      maybeLoot(pool,'stealth_boy',0.28);maybeLoot(pool,'super_stimpak',0.2);maybeLoot(pool,'energy_cell',0.22);
+    }
+    if(id==='securitron'){
+      maybeLoot(pool,'energy_cell',0.75);maybeLoot(pool,'sensor_module',0.45);maybeLoot(pool,'scrap',0.6);maybeLoot(pool,'scrap_electronics',0.3);
+    }
+  }
+
+  if(!pool.length && enemy.loot && enemy.loot.length){
+    enemy.loot.forEach(x=>maybeLoot(pool,x,0.35));
+  }
+  if(!pool.length) maybeLoot(pool,'scrap',0.7);
+
+  const capsBase = ['gecko','bloatfly','mantis','radroach','bark_scorpion','giant_rat','giant_ant'].includes(id) ? [0,2]
+    : ['deathclaw','young_deathclaw','nightkin','legion_centurion','securitron'].includes(id) ? [8,22]
+    : [2,12];
+
+  const corpseLoot=[];
+  const caps=rnd(capsBase[0],capsBase[1]);
+  if(caps>0) corpseLoot.push({type:'caps',amount:caps,label:`${caps} caps`,icon:'💰'});
+
+  const itemCount = ['deathclaw','legion_centurion','nightkin','super_mutant','fiend','great_khan','securitron'].includes(id) ? rnd(2,3) : rnd(1,2);
+  for(let i=0;i<itemCount && pool.length;i++){
+    const pick=rndA(pool);
+    corpseLoot.push({type:'item',id:pick,label:ITEMS[pick].n,icon:ITEMS[pick].e});
+  }
+  return corpseLoot;
+}
+function renderLootSelection(index){
+  if(!combat||!combat.corpses||!combat.corpses[index])return;
+  const corpse=combat.corpses[index];
+  if(corpse.taken){notify('Already looted.');return}
+  const rows=corpse.loot.map((entry,i)=>`<label class="loot-check"><input type="checkbox" checked id="corpse_take_${index}_${i}"><span>${entry.icon}</span><span style="flex:1">${entry.label}</span></label>`).join('');
+  openDlg(`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(corpse.icon,28)}</span><span style="color:var(--amber)">Loot ${corpse.name}</span></h3>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:8px">Choose what to take from this corpse.</div>
+  <div>${rows||'<div style="font-size:11px;color:var(--muted)">Nothing worth taking.</div>'}</div>
+  <button class="bt go" onclick="takeCorpseLoot(${index})">🎒 Take selected loot</button>
+  <button class="bt" onclick="closeDlg()">Close</button>`);
+}
+function takeCorpseLoot(index){
+  if(!combat||!combat.corpses||!combat.corpses[index])return;
+  const corpse=combat.corpses[index];
+  if(corpse.taken){closeDlg();return}
+  let tookAnything=false;
+  corpse.loot.forEach((entry,i)=>{
+    const cb=$(`corpse_take_${index}_${i}`);
+    if(!cb||!cb.checked)return;
+    tookAnything=true;
+    if(entry.type==='caps'){
+      S.caps+=entry.amount;
+      S.capsEarned=(S.capsEarned||0)+entry.amount;
+    }else if(entry.type==='item'&&ITEMS[entry.id]){
+      S.inv.push(entry.id);
+    }
+  });
+  corpse.taken=true;
+  log((tookAnything?`Looted ${corpse.name}.`:`Left ${corpse.name} untouched.`),'e');
+  closeDlg();
+  renderCombat();
+  queueSave();
+}
+function finishCombatLoot(){
+  const lootCaps=combat.pendingRewards?.caps||0;
+  const lootXp=combat.pendingRewards?.xp||0;
+  const bounty=combat.pendingRewards?.bounty;
+  const expArea=combat._expArea;
+  const postT=combat.postT;
+
+  S.xp+=lootXp;
+  if(lootCaps>0){
+    S.caps+=lootCaps;
+    S.capsEarned=(S.capsEarned||0)+lootCaps;
+  }
+
+  const lines=[`⭐ +${lootXp} XP`];
+  if(lootCaps>0)lines.push(`💰 +${lootCaps} combat reward caps`);
+
+  if(bounty){
+    const bonusCaps=rnd(bounty.caps[0],bounty.caps[1]);
+    S.caps+=bonusCaps;S.capsEarned+=bonusCaps;
+    S.xp+=bounty.xp;
+    lines.push('🎯 Bounty claimed: '+bounty.name);
+    lines.push('💰 +'+bonusCaps+' caps bonus');
+    lines.push('⭐ +'+bounty.xp+' XP bonus');
+    if(bounty.rep){Object.entries(bounty.rep).forEach(([fac,val])=>{S.rep[fac]=(S.rep[fac]||0)+val;lines.push('🏴 +'+val+' '+(FACTIONS[fac]||fac)+' standing')})}
+    if(S.flags.bountyBoard)S.flags.bountyBoard.current=null;
+    log('Claimed bounty on '+bounty.name+'.','q');
+  }
+
+  $('CO').style.display='none';
+  combat=null;
+  chkLU();save();
+
+  if(postT){
+    showResult('Victory!','⚔',lines,'Continue','resumeTravelAfterCombat()');
+  } else if(expArea){
+    showResult('Victory!','⚔',lines,'Continue','resumeExpeditionAfterCombat()');
+  } else {
+    showResult('Victory!','⚔',lines,'Continue','upAll()');
+  }
+}
+
+  
 function renderCombat(){
   if(!combat)return;
   const o=$('CO');o.style.display='flex';
-  const p=$('CP');if(!p){
-    const cp=el('div','','');cp.id='CP';o.appendChild(cp);
-  }
   const panel=$('CP');
-  const e=combat.enemies[0];if(!e)return;
+  if(combat.lootPhase){
+    const allTaken=!combat.corpses.some(c=>!c.taken);
+    panel.innerHTML=`<div style="text-align:center;font-size:10px;color:var(--amber);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">⚔ BATTLE WON ⚔</div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px">Tap the loot icon on each corpse to choose what to take.</div>
+    <div class="corpse-grid">
+      ${combat.corpses.map((corpse,i)=>`<div class="corpse-card">
+        <div class="corpse-portrait">
+          ${renderIcon(corpse.icon,46)}
+          <button class="loot-marker ${corpse.taken?'taken':''}" onclick="renderLootSelection(${i})">${corpse.taken?'✓':'💰'}</button>
+        </div>
+        <div style="font-size:11px;font-weight:bold;color:${corpse.taken?'var(--green)':'var(--text)'}">${corpse.name}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px">${corpse.taken?'Looted':'Unlooted'}</div>
+      </div>`).join('')}
+    </div>
+    <button class="bt go" style="text-align:center;margin-top:10px" onclick="finishCombatLoot()">${allTaken?'Continue':'Continue anyway'}</button>`;
+    return;
+  }
+
   const alive=combat.enemies.filter(en=>en.hp>0);
   const hp=hpPct(S.hp,S.maxHp);
 
-  let enemyHtml=alive.map((en,i)=>`<div class="combat-panel" style="margin:2px 0;padding:6px">
+  let enemyHtml=alive.map((en)=>`<div class="combat-panel" style="margin:2px 0;padding:6px">
   <div style="display:flex;align-items:center;gap:8px">
   <div style="font-size:28px">${renderIcon(en.e,28)}</div>
   <div style="flex:1"><div style="font-weight:bold;font-size:12px;color:var(--red)">${en.name}</div>
@@ -1745,6 +1985,7 @@ function renderCombat(){
   <button class="bt dn" onclick="combatAction('flee')">🏃 Flee</button></div>
   <div style="max-height:100px;overflow-y:auto;margin-top:6px;padding:4px;background:#0a0a04;border-radius:4px;font-size:10px;color:var(--muted)">${combat.log.slice(-8).map(l=>'<div>'+l+'</div>').join('')}</div>`;
 }
+  
 function combatAction(act){
   if(!combat)return;
   const alive=combat.enemies.filter(en=>en.hp>0);
@@ -1856,44 +2097,30 @@ function endCombat(won,died){
     return;
   }
 
-  let totalXp=0,totalCaps=0;const lootFound=[];
+  let totalXp=0,totalCaps=0;
+  const corpses=[];
   combat.enemies.forEach(en=>{
     totalXp+=en.xp;
-    const c=rnd(3,8+S.level*2);totalCaps+=c;
-    if(en.loot&&en.loot.length){
-      const li=rndA(en.loot);
-      if(ITEMS[li]){lootFound.push(li);S.inv.push(li)}
-    }
+    totalCaps+=rnd(3,8+S.level*2);
+    corpses.push({
+      name:en.name,
+      icon:en.e,
+      loot:buildEnemyLoot(en),
+      taken:false
+    });
   });
-  S.xp+=totalXp;S.caps+=totalCaps;S.capsEarned+=totalCaps;
 
-  const lines=['⭐ +'+totalXp+' XP','💰 +'+totalCaps+' caps'];
-  lootFound.forEach(l=>{const it=ITEMS[l];if(it)lines.push(it.e+' '+it.n)});
-  if(combat.bountyTarget){
-    const bt=combat.bountyTarget;
-    const bonusCaps=rnd(bt.caps[0],bt.caps[1]);
-    S.caps+=bonusCaps;S.capsEarned+=bonusCaps;
-    S.xp+=bt.xp;
-    lines.push('🎯 Bounty claimed: '+bt.name);
-    lines.push('💰 +'+bonusCaps+' caps bonus');
-    lines.push('⭐ +'+bt.xp+' XP bonus');
-    if(bt.rep){Object.entries(bt.rep).forEach(([fac,val])=>{S.rep[fac]=(S.rep[fac]||0)+val;lines.push('🏴 +'+val+' '+(FACTIONS[fac]||fac)+' standing')})}
-    if(S.flags.bountyBoard)S.flags.bountyBoard.current=null;
-    log('Claimed bounty on '+bt.name+'.','q');
-  }
-
-  combat=null;
-  chkLU();save();
-
-  if(postT){
-    showResult('Victory!','⚔',lines,'Continue','resumeTravelAfterCombat()');
-  } else if(expArea){
-    showResult('Victory!','⚔',lines,'Continue','resumeExpeditionAfterCombat()');
-  } else {
-    showResult('Victory!','⚔',lines,'Continue','upAll()');
-  }
+  combat.pendingRewards={xp:totalXp,caps:totalCaps,bounty:combat.bountyTarget||null};
+  combat.corpses=corpses;
+  combat.lootPhase=true;
+  chkLU();
+  renderCombat();
+  return;
 }
 
+
+
+  
 // ============================================================
 // LEVEL UP
 // ============================================================
