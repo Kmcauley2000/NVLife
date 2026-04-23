@@ -150,11 +150,22 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 .corpse-card{background:#15150d;border:1px solid #3a3828;border-radius:8px;padding:8px;text-align:center;position:relative}
 .corpse-portrait{position:relative;width:72px;height:72px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;background:#0f0f08;border:1px solid #2a2818;border-radius:8px}
 .corpse-portrait .icon-wrap{width:46px !important;height:46px !important;font-size:46px !important}
-.loot-marker{position:absolute;right:-6px;bottom:-6px;width:30px;height:30px;border-radius:50%;border:2px solid var(--amber2);background:#2a2208;color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 12px rgba(0,0,0,.5);cursor:pointer}
-.loot-marker.taken{background:#102010;color:var(--green);border-color:#2d5a2d}
-.loot-check{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dotted #2a2818;font-size:11px}
-.loot-check:last-child{border-bottom:none}
-.loot-check input{accent-color:#c9a230}
+.loot-actions{display:flex;gap:8px;margin-top:10px}
+.loot-actions .bt{flex:1;text-align:center}
+.loot-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.loot-item{
+  display:flex;align-items:center;gap:8px;
+  background:#1a1a10;border:1px solid #3a3828;border-radius:6px;
+  padding:8px;cursor:pointer
+}
+.loot-item:active{transform:scale(.98);filter:brightness(1.08)}
+.loot-item.taken{opacity:.45;filter:grayscale(.2)}
+.loot-item-icon{
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  background:#0f0f08;border:1px solid #2a2818;border-radius:6px;font-size:18px;flex:0 0 auto
+}
+.loot-item-name{flex:1;font-size:11px}
+.loot-item-tick{color:var(--green);font-size:16px}
 </style>
 </head>
 <body>
@@ -1893,38 +1904,77 @@ function buildEnemyLoot(enemy){
   }
   return corpseLoot;
 }
-function renderLootSelection(index){
-  if(!combat||!combat.corpses||!combat.corpses[index])return;
-  const corpse=combat.corpses[index];
-  if(corpse.taken){notify('Already looted.');return}
-  const rows=corpse.loot.map((entry,i)=>`<label class="loot-check"><input type="checkbox" checked id="corpse_take_${index}_${i}"><span>${entry.icon}</span><span style="flex:1">${entry.label}</span></label>`).join('');
-  openDlg(`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(corpse.icon,28)}</span><span style="color:var(--amber)">Loot ${corpse.name}</span></h3>
-  <div style="font-size:10px;color:var(--muted);margin-bottom:8px">Choose what to take from this corpse.</div>
-  <div>${rows||'<div style="font-size:11px;color:var(--muted)">Nothing worth taking.</div>'}</div>
-  <button class="bt go" onclick="takeCorpseLoot(${index})">🎒 Take selected loot</button>
-  <button class="bt" onclick="closeDlg()">Close</button>`);
+function takeLootEntry(corpseIndex,entryIndex){
+  if(!combat||!combat.corpses||!combat.corpses[corpseIndex])return;
+  const corpse=combat.corpses[corpseIndex];
+  if(corpse.taken)return;
+
+  const entry=corpse.loot[entryIndex];
+  if(!entry||entry.taken)return;
+
+  if(entry.type==='caps'){
+    S.caps+=entry.amount;
+    S.capsEarned=(S.capsEarned||0)+entry.amount;
+    notify(`💰 +${entry.amount} caps`);
+  }else if(entry.type==='item'&&ITEMS[entry.id]){
+    const added=giveItem(entry.id);
+    if(!added)return;
+    notify(`${ITEMS[entry.id].e} ${ITEMS[entry.id].n}`);
+  }
+
+  entry.taken=true;
+
+  if(corpse.loot.every(x=>x.taken)){
+    corpse.taken=true;
+    log(`Looted ${corpse.name}.`,'e');
+  }
+
+  renderCombat();
+  queueSave();
 }
-function takeCorpseLoot(index){
-  if(!combat||!combat.corpses||!combat.corpses[index])return;
-  const corpse=combat.corpses[index];
-  if(corpse.taken){closeDlg();return}
-  let tookAnything=false;
-  corpse.loot.forEach((entry,i)=>{
-    const cb=$(`corpse_take_${index}_${i}`);
-    if(!cb||!cb.checked)return;
-    tookAnything=true;
+
+function lootAllCorpse(corpseIndex){
+  if(!combat||!combat.corpses||!combat.corpses[corpseIndex])return;
+  const corpse=combat.corpses[corpseIndex];
+  if(corpse.taken)return;
+
+  let gotSomething=false;
+
+  corpse.loot.forEach(entry=>{
+    if(entry.taken)return;
+
     if(entry.type==='caps'){
       S.caps+=entry.amount;
       S.capsEarned=(S.capsEarned||0)+entry.amount;
-    }else if(entry.type==='item'&&ITEMS[entry.id]){
-      giveItem(entry.id);
+      entry.taken=true;
+      gotSomething=true;
+      return;
+    }
+
+    if(entry.type==='item'&&ITEMS[entry.id]){
+      const added=giveItem(entry.id);
+      if(added){
+        entry.taken=true;
+        gotSomething=true;
+      }
     }
   });
-  corpse.taken=true;
-  log((tookAnything?`Looted ${corpse.name}.`:`Left ${corpse.name} untouched.`),'e');
-  closeDlg();
+
+  if(corpse.loot.every(x=>x.taken)){
+    corpse.taken=true;
+    log(`Looted ${corpse.name}.`,'e');
+  }
+
+  if(gotSomething)notify(`🎒 Looted ${corpse.name}`);
   renderCombat();
   queueSave();
+}
+
+function lootAllCorpses(){
+  if(!combat||!combat.corpses)return;
+  combat.corpses.forEach((corpse,i)=>{
+    if(!corpse.taken)lootAllCorpse(i);
+  });
 }
 function finishCombatLoot(){
   const lootCaps=combat.pendingRewards?.caps||0;
@@ -1975,18 +2025,31 @@ function renderCombat(){
   if(combat.lootPhase){
     const allTaken=!combat.corpses.some(c=>!c.taken);
     panel.innerHTML=`<div style="text-align:center;font-size:10px;color:var(--amber);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">⚔ BATTLE WON ⚔</div>
-    <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px">Tap the loot icon on each corpse to choose what to take.</div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:8px">Tap an item to take it instantly, or hit Loot All.</div>
     <div class="corpse-grid">
       ${combat.corpses.map((corpse,i)=>`<div class="corpse-card">
         <div class="corpse-portrait">
           ${renderIcon(corpse.icon,46)}
-          <button class="loot-marker ${corpse.taken?'taken':''}" onclick="renderLootSelection(${i})">${corpse.taken?'✓':'💰'}</button>
         </div>
-        <div style="font-size:11px;font-weight:bold;color:${corpse.taken?'var(--green)':'var(--text)'}">${corpse.name}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:4px">${corpse.taken?'Looted':'Unlooted'}</div>
+        <div style="font-size:11px;font-weight:bold;color:${corpse.taken?'var(--green)':'var(--text)'};margin-bottom:6px">${corpse.name}</div>
+        <div class="loot-list">
+          ${corpse.loot.map((entry,j)=>`
+            <div class="loot-item ${entry.taken?'taken':''}" onclick="${entry.taken?'':'takeLootEntry('+i+','+j+')'}">
+              <div class="loot-item-icon">${entry.icon}</div>
+              <div class="loot-item-name">${entry.label}</div>
+              <div class="loot-item-tick">${entry.taken?'✓':'+'}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="loot-actions">
+          <button class="bt go" onclick="lootAllCorpse(${i})" ${corpse.taken?'disabled':''}>Loot All</button>
+        </div>
       </div>`).join('')}
     </div>
-    <button class="bt go" style="text-align:center;margin-top:10px" onclick="finishCombatLoot()">${allTaken?'Continue':'Continue anyway'}</button>`;
+    <div class="loot-actions">
+      <button class="bt go" onclick="lootAllCorpses()">Loot Everything</button>
+      <button class="bt ${allTaken?'go':''}" onclick="finishCombatLoot()">${allTaken?'Continue':'Leave Loot / Continue'}</button>
+    </div>`;
     return;
   }
 
@@ -2134,7 +2197,7 @@ function endCombat(won,died){
     corpses.push({
       name:en.name,
       icon:en.e,
-      loot:buildEnemyLoot(en),
+      loot:buildEnemyLoot(en).map(x=>({...x,taken:false})),
       taken:false
     });
   });
