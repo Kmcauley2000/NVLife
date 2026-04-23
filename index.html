@@ -763,6 +763,109 @@ dam_power:{n:"Dam Power Plant",e:"⚡",am:["Turbines hum. The Mojave's lifeline.
 // Factions
 const FACTIONS={NCR:"New California Republic",Legion:"Caesar\'s Legion",House:"Mr. House",BOS:"Brotherhood of Steel",Followers:"Followers of the Apocalypse",Kings:"The Kings",Khans:"Great Khans",Boomers:"Nellis Boomers",PowderGangers:"Powder Gangers"};
 
+
+const GOODSPRINGS_NPCS={
+  trudy:{name:"Trudy",male:false,age:52,role:"Prospector Saloon owner",icon:ICONS.NPC.COOK,line:"If Goodsprings stays standing, it'll be because folks here still know how to look after each other."},
+  sunny_smiles:{name:"Sunny Smiles",male:false,age:28,role:"Goodsprings hunter",icon:ICONS.NPC.NCR_RANGER,line:"If you can shoot straight and keep your head, the Mojave gets a lot less scary."},
+  doc_mitchell:{name:"Doc Mitchell",male:true,age:64,role:"Town doctor",icon:ICONS.NPC.DOCTOR,line:"I dug a bullet out of your skull once already. I'd rather not make that a habit."},
+  chet:{name:"Chet",male:true,age:34,role:"General store owner",icon:ICONS.NPC.MERCHANT,line:"You want supplies, you pay caps. You want charity, try the saloon."},
+  easy_pete:{name:"Easy Pete",male:true,age:61,role:"Old prospector",icon:ICONS.NPC.CIVILIAN,line:"Dynamite solves problems right up until it solves you with 'em."},
+  victor:{name:"Victor",male:true,age:8,role:"Securitron drifter",icon:ICONS.NPC.SECURITRON,line:"Well butter my butt and call me a biscuit, if it ain't my old friend from the grave."},
+  ringo:{name:"Ringo",male:true,age:31,role:"Caravan trader",icon:ICONS.NPC.CIVILIAN,line:"I came here to lie low. Mojave had other ideas."}
+};
+function gsEnsure(){
+  if(!S.flags)S.flags={};
+  if(!S.flags.goodsprings)S.flags.goodsprings={spoke:{}};
+  return S.flags.goodsprings;
+}
+function gsNpcRel(id){return S.relationships.find(r=>r.name===GOODSPRINGS_NPCS[id].name)}
+function addGoodspringsNpcCard(body,id){
+  const npc=GOODSPRINGS_NPCS[id];if(!npc)return;
+  const ex=gsNpcRel(id);
+  const nc=el('div','bn');nc.style.cursor='pointer';
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.onclick=()=>openGoodspringsNPC(id);
+  body.appendChild(nc);
+}
+function gsFindQuest(id){return (S.quests||[]).find(q=>q.id===id)||null}
+function gsQuestActive(id){const q=gsFindQuest(id);return !!(q&&!q.done)}
+function gsKillSince(start,id){return Math.max(0,(S.kills[id]||0)-((start||{})[id]||0))}
+function gsCompleteQuest(id){
+  const q=gsFindQuest(id);if(!q||q.done)return;
+  q.done=true;
+  S.xp+=(q.rx||0);S.caps+=(q.rg||0);S.questsComplete=(S.questsComplete||0)+1;
+  log('Quest complete: '+q.name+' (+'+(q.rg||0)+' caps, +'+(q.rx||0)+' XP)','q');
+  notify('📜 Quest Complete!');
+  chkLU();queueSave();
+}
+function gsRefreshState(){
+  const q1=gsFindQuest('gs_source_clear');
+  if(q1&&!q1.done){
+    const geckos=gsKillSince(q1.ks,'gecko');
+    const scorps=gsKillSince(q1.ks,'bark_scorpion');
+    q1.progText=`Kill geckos and a bark scorpion near Goodsprings Source (${Math.min(geckos,2)}/2 geckos, ${Math.min(scorps,1)}/1 bark scorpion).`;
+    if(geckos>=2&&scorps>=1)gsCompleteQuest('gs_source_clear');
+  }
+  const q2=gsFindQuest('gs_schoolhouse_clear');
+  if(q2&&!q2.done){
+    const mantis=gsKillSince(q2.ks,'mantis');
+    q2.progText=`Thin out the schoolhouse mantises (${Math.min(mantis,2)}/2).`;
+    if(mantis>=2)gsCompleteQuest('gs_schoolhouse_clear');
+  }
+  const q3=gsFindQuest('gs_powder_road');
+  if(q3&&!q3.done){
+    const pg=gsKillSince(q3.ks,'powder_ganger');
+    const conv=gsKillSince(q3.ks,'convict');
+    q3.progText=`Break up the raiders hitting roads near Goodsprings (${Math.min(pg,2)}/2 Powder Gangers, ${Math.min(conv,1)}/1 convict).`;
+    if(pg>=2&&conv>=1)gsCompleteQuest('gs_powder_road');
+  }
+}
+function gsStartQuest(id){
+  if(gsFindQuest(id))return;
+  if(id==='gs_source_clear')S.quests.push({id:'gs_source_clear',name:'Clean Water, Clear Source',desc:'Sunny Smiles wants the creatures around Goodsprings Source culled before they turn a water run into a funeral.',t:'custom',progText:'Kill geckos and a bark scorpion near Goodsprings Source (0/2 geckos, 0/1 bark scorpion).',rg:90,rx:20,done:false,ks:{gecko:S.kills['gecko']||0,bark_scorpion:S.kills['bark_scorpion']||0}});
+  if(id==='gs_schoolhouse_clear')S.quests.push({id:'gs_schoolhouse_clear',name:'Schoolhouse Sweep',desc:'Doc Mitchell wants the abandoned schoolhouse made a little less lethal for anyone stupid enough to poke around in it.',t:'custom',progText:'Thin out the schoolhouse mantises (0/2).',rg:85,rx:18,done:false,ks:{mantis:S.kills['mantis']||0}});
+  if(id==='gs_powder_road')S.quests.push({id:'gs_powder_road',name:'Roadside Trouble',desc:'Trudy wants the raiders and Powder Gangers around the Goodsprings roads knocked down before trade gets strangled completely.',t:'custom',progText:'Break up the raiders hitting roads near Goodsprings (0/2 Powder Gangers, 0/1 convict).',rg:120,rx:26,done:false,ks:{powder_ganger:S.kills['powder_ganger']||0,convict:S.kills['convict']||0}});
+  log('Accepted: '+gsFindQuest(id).name,'q');notify('📜 Quest accepted!');queueSave();
+}
+function openGoodspringsNPC(id){
+  gsRefreshState();
+  const npc=GOODSPRINGS_NPCS[id];if(!npc)return;
+  const rel=gsNpcRel(id);
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div><div class="npc-line">"${npc.line}"</div>`;
+  if(id==='trudy'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Trudy','🍺',['Trudy says Goodsprings stays alive because people here still step up when trouble walks in armed.','She makes it clear the town has no interest in being pushed around by Powder Gangers or drifters.'],'Continue','upAll()')">🍺 Ask about Goodsprings</button>`;
+    if(!gsFindQuest('gs_powder_road'))h+=`<button class="bt pip" onclick="gsStartQuest('gs_powder_road');closeDlg();showResult('Roadside Trouble','📜',['Trudy wants the raiders on the roads around Goodsprings thinned out before they start choking off trade completely.'],'Continue','upAll()')">📜 Offer to deal with the road trouble</button>`;
+    if(gsQuestActive('gs_powder_road'))h+=`<button class="bt pip" onclick="closeDlg();showResult('Roadside Trouble','📜',['Take out 2 Powder Gangers and 1 escaped convict anywhere around the southern roads.'],'Continue','upAll()')">📜 Review Roadside Trouble</button>`;
+    h+=`<button class="bt go" onclick="if(S.caps<6){notify('Not enough caps.');return}S.caps-=6;S.hp=Math.min(S.maxHp,S.hp+14);S.ap=Math.min(S.maxAp,S.ap+6);advanceTime(1);log('Trudy serves you a hot plate and a drink.','e');closeDlg();showResult('Prospector Saloon','🍲',['❤ +14 HP','⚡ +6 AP','⏰ 1 hour passed'],'Continue','upAll()')">🍲 Buy food and a drink (6 caps)</button>`;
+  }else if(id==='sunny_smiles'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Sunny Smiles','🎯',['Sunny says Goodsprings Source is fine right up until something with teeth decides it is theirs instead.','She respects people who can keep the source usable and the roads safe.'],'Continue','upAll()')">🎯 Ask about hunting around town</button>`;
+    if(!gsFindQuest('gs_source_clear'))h+=`<button class="bt pip" onclick="gsStartQuest('gs_source_clear');closeDlg();showResult('Clean Water, Clear Source','📜',['Sunny wants 2 geckos and 1 bark scorpion taken out before the next water run turns ugly.'],'Continue','upAll()')">📜 Volunteer for the source run</button>`;
+    if(gsQuestActive('gs_source_clear'))h+=`<button class="bt pip" onclick="closeDlg();showResult('Clean Water, Clear Source','📜',['Kill 2 geckos and 1 bark scorpion after taking Sunny\'s job. Goodsprings Source is the safest place to start.'],'Continue','upAll()')">📜 Review the source job</button>`;
+    h+=`<button class="bt go" onclick="advanceTime(2);S.xp+=10;S.ap=Math.min(S.maxAp,S.ap+8);log('Sunny Smiles gives you a quick shooting lesson outside Goodsprings.','e');closeDlg();showResult('Field Lesson','🎯',['⭐ +10 XP','⚡ +8 AP','⏰ 2 hours passed'],'Continue','chkLU();upAll()')">🎯 Take a shooting lesson</button>`;
+  }else if(id==='doc_mitchell'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Doc Mitchell','💉',['Doc reminds you he already patched a bullet wound in your skull once, which by his standards is more than enough excitement for one patient.','He worries more about idiots wandering into the schoolhouse than he lets on.'],'Continue','upAll()')">💉 Ask how you looked when he found you</button>`;
+    if(!gsFindQuest('gs_schoolhouse_clear'))h+=`<button class="bt pip" onclick="gsStartQuest('gs_schoolhouse_clear');closeDlg();showResult('Schoolhouse Sweep','📜',['Doc wants the worst of the mantis problem at the abandoned schoolhouse cut down before somebody gets carved up in there.'],'Continue','upAll()')">📜 Offer to clear the schoolhouse</button>`;
+    if(gsQuestActive('gs_schoolhouse_clear'))h+=`<button class="bt pip" onclick="closeDlg();showResult('Schoolhouse Sweep','📜',['Kill 2 giant mantises after taking Doc\'s job. The abandoned schoolhouse is the obvious place to start.'],'Continue','upAll()')">📜 Review Schoolhouse Sweep</button>`;
+    const cost=22-Math.floor((S.special?S.special[3]:5)*2);
+    h+=`<button class="bt go" onclick="goodspringsDocTreatment()">⚕️ Ask for full treatment (${cost} caps)</button>`;
+    h+=`<button class="bt" onclick="closeDlg();openBld('doc_house')">🏠 Look around the house</button>`;
+  }else if(id==='chet'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Chet','📦',['Chet says Goodsprings survives on practical people, practical prices, and not wasting ammo on heroics unless it pays.'],'Continue','upAll()')">📦 Ask about business in town</button>`;
+    h+=`<button class="bt go" onclick="openGoodspringsTrade()">💰 Browse Chet's stock</button>`;
+  }else if(id==='easy_pete'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Easy Pete','🧨',['Easy Pete has strong feelings about dynamite, mostly that fools use too much of it and get buried by the results.'],'Continue','upAll()')">🧨 Ask about explosives</button>`;
+    h+=`<button class="bt go" onclick="if(S.caps<12){notify('Not enough caps.');return}S.caps-=12;const added=giveItem('dynamite');if(!added){S.caps+=12;return}log('Easy Pete parts with a stick of dynamite.','e');closeDlg();showResult('Easy Pete','🧨',['Dynamite added to inventory.'],'Continue','upAll()')">🧨 Buy dynamite (12 caps)</button>`;
+    h+=`<button class="bt" onclick="if(S.caps<10){notify('Not enough caps.');return}const si=S.inv.indexOf('scrap');if(si===-1){notify('Need Scrap Metal.');return}S.caps-=10;S.inv.splice(si,1);S.atk+=1;advanceTime(1);log('Easy Pete helps you tune up your gear with old workshop know-how.','e');closeDlg();closeBld();showResult('Easy Pete','🔧',['⚔ +1 ATK','Used Scrap Metal','⏰ 1 hour passed'],'Continue','upAll()')">🔧 Ask Easy Pete to help tune your gear</button>`;
+  }else if(id==='victor'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Victor','🤖',['Victor talks around the important parts in that smooth cowboy voice of his, like he knows more about you than he plans to say.'],'Continue','upAll()')">🤖 Ask why he helped you</button>`;
+  }else if(id==='ringo'){
+    h+=`<button class="bt" onclick="closeDlg();showResult('Ringo','📦',['Ringo says lying low in Goodsprings stopped being quiet the second armed men started deciding they wanted his hide.'],'Continue','upAll()')">📦 Ask about the Powder Gangers</button>`;
+  }
+  h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(GOODSPRINGS_NPCS['${id}'],S.relationships.find(r=>r.name===GOODSPRINGS_NPCS['${id}'].name))">💬 General social talk</button>`;
+  h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+  openDlg(h);
+}
+
 const PRIMM_NPCS={
   johnson_nash:{name:"Johnson Nash",male:true,age:63,role:"Mojave Express agent",icon:ICONS.NPC.JOHNSON_NASH,line:"Package couriers, not package thieves. That's how Primm used to work."},
   ruby_nash:{name:"Ruby Nash",male:false,age:61,role:"Casino cook",icon:ICONS.NPC.COOK,line:"If you've got caps, I've got something warm and edible."},
@@ -2389,6 +2492,7 @@ function openBld(bId){
   }
   const npc=getBuildingNpc(S.loc,bId,{loc:S.loc,bId});
   const o=$('BO');const bi=$('BI');bi.innerHTML='';
+  const isGoodspringsSpecial=['saloon','general_store','gas_station','doc_house'].includes(bId);
   const isPrimmSpecial=['vikki_vance','mojave_express','sheriff_office','bison_steve'].includes(bId);
   const isNovacSpecial=['dino_bite','motel','mcbride_house','ranger_bungalow','no_bark_shack'].includes(bId);
   const isFreesideSpecial=['atomic_wrangler','kings_hq','mick_ralph','old_mormon_fort','silver_rush','cerulean_robotics'].includes(bId);
@@ -2404,7 +2508,7 @@ function openBld(bId){
   bi.appendChild(hd);
   bi.appendChild(el('div','ba',rndA(b.am)));
 
-  if(!isPrimmSpecial&&!isNovacSpecial&&!isFreesideSpecial&&!isCampGolfSpecial&&!isBitterSpringsSpecial&&!isNcrcFSpecial&&!isHeliosSpecial&&!isCinderGulchSpecial&&!isHiddenValleySpecial){
+  if(!isGoodspringsSpecial&&!isPrimmSpecial&&!isNovacSpecial&&!isFreesideSpecial&&!isCampGolfSpecial&&!isBitterSpringsSpecial&&!isNcrcFSpecial&&!isHeliosSpecial&&!isCinderGulchSpecial&&!isHiddenValleySpecial){
     const np=el('div','bn');np.style.cursor='pointer';
     np.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
     np.onclick=()=>openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
@@ -2413,7 +2517,11 @@ function openBld(bId){
 
   const body=el('div','bp');
 
-  if(bId==='vikki_vance'){bldPrimmVikki(body)}
+  if(bId==='saloon'){bldGoodspringsSaloon(body)}
+  else if(bId==='general_store'){bldGoodspringsStore(body)}
+  else if(bId==='gas_station'){bldGoodspringsGas(body)}
+  else if(bId==='doc_house'){bldGoodspringsDoc(body)}
+  else if(bId==='vikki_vance'){bldPrimmVikki(body)}
   else if(bId==='mojave_express'){bldPrimmExpress(body)}
   else if(bId==='sheriff_office'){bldPrimmSheriff(body)}
   else if(bId==='bison_steve'){bldPrimmBison(body)}
@@ -3235,6 +3343,69 @@ function buildBuyButtons(body,items,bId){
     body.appendChild(sb);
   });
 }
+
+function bldGoodspringsSaloon(body){
+  body.appendChild(el('div','bs2','Prospector Saloon'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The saloon feels like the real heart of Goodsprings: warm food, wary eyes, and people quietly deciding whether you are worth trusting.</div>`));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">If you want a proper meal or town business, talk to Trudy. The room itself is just a room.</div>`));
+  const rumorBtn=el('button','bt','🗣 Listen to town talk');
+  rumorBtn.onclick=()=>{closeBld();showResult('Town Talk','🗣',[rndA(['Folks are worried about trouble spilling up from the prison roads.','The source stays clean only if somebody keeps the wildlife honest.','Goodsprings looks peaceful until you remember how close the Mojave is to everything else.'])],'Continue','upAll()')};
+  body.appendChild(rumorBtn);
+  const tableBtn=el('button','bt','🔎 Check the empty tables');
+  tableBtn.onclick=()=>{advanceTime(1);const pick=rndA(['sunset_sars','pre_war_money','fancy_lad']);giveItem(pick);log('You check the saloon tables and find '+ITEMS[pick].n+'.','e');closeBld();showResult('Prospector Saloon','🔎',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(tableBtn);
+  body.appendChild(el('div','bs2','Notable People'));
+  ['trudy','sunny_smiles','victor','ringo'].forEach(id=>addGoodspringsNpcCard(body,id));
+}
+function bldGoodspringsStore(body){
+  body.appendChild(el('div','bs2','General Store'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Chet keeps the shelves practical: ammo, water, medicine, and just enough trade goods to keep Goodsprings from feeling cut off.</div>`));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">If you want to actually buy anything, talk to Chet. He is not leaving the counter open on trust.</div>`));
+  const stashBtn=el('button','bt','📦 Check the side shelf');
+  stashBtn.onclick=()=>{advanceTime(1);const pick=rndA(['bobby_pin','duct_tape','sunset_sars','pre_war_money']);giveItem(pick);log('You check a side shelf in the Goodsprings store.','e');closeBld();showResult('Side Shelf','📦',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(stashBtn);
+  body.appendChild(el('div','bs2','Owner'));
+  addGoodspringsNpcCard(body,'chet');
+}
+function bldGoodspringsGas(body){
+  body.appendChild(el('div','bs2','Old Gas Station'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The pumps are dead, but the workshop still matters. Prospectors, drifters, and Easy Pete all leave bits of the Mojave lying around here.</div>`));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">If you want explosives or help tuning gear, talk to Easy Pete. The station itself still has loose salvage lying around.</div>`));
+  const searchBtn=el('button','bt','🔎 Search the workshop');
+  searchBtn.onclick=()=>{advanceTime(1);const pick=rndA(['scrap','wrench','duct_tape','dynamite','ammo_9mm']);giveItem(pick);log('You search the old Goodsprings gas station workshop.','e');closeBld();showResult('Workshop Search','🔎',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(searchBtn);
+  body.appendChild(el('div','bs2','Resident'));
+  addGoodspringsNpcCard(body,'easy_pete');
+}
+function goodspringsDocTreatment(){
+  const cost=22-Math.floor((S.special?S.special[3]:5)*2);
+  if(S.caps<cost){notify('Not enough caps.');return}
+  S.caps-=cost;S.hp=S.maxHp;S.ap=S.maxAp;advanceTime(1);
+  log('Doc Mitchell patches you up in Goodsprings.','e');
+  closeDlg();closeBld();
+  showResult('Doc Mitchell','💉',['❤ Full HP restored','⚡ AP restored','⏰ 1 hour passed',`💰 -${cost} caps`],'Continue','upAll()');
+}
+function openGoodspringsTrade(){
+  const body=el('div','');
+  buildBuyButtons(body,['stimpak','purified_water','sunset_sars','ammo_9mm','ammo_10mm','ammo_357','pistol_9mm','varmint_rifle','bobby_pin','duct_tape'],'general_store');
+  openDlg(`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(GOODSPRINGS_NPCS.chet.icon||ICONS.NPC.MERCHANT,28)}</span><span style="color:var(--amber)">Chet's Stock</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:8px">Chet unlocks the shelves and lets you look over the practical stuff.</div>${body.innerHTML}<button class="bt" onclick="closeDlg()">Done</button>`);
+}
+function bldGoodspringsDoc(body){
+  body.appendChild(el('div','bs2','Doc Mitchell's House'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The house still smells like antiseptic, dust, and someone stubborn enough to keep patching up the Mojave one idiot at a time.</div>`));
+  const cost=22-Math.floor((S.special?S.special[3]:5)*2);
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">If you want proper treatment, talk to Doc Mitchell. He is not running this place like a vending machine.</div><div style="font-size:10px;color:var(--amber);margin-top:6px">Full treatment price: ${cost} caps</div>`));
+  const talkBtn=el('button','bt go','💬 Talk to Doc Mitchell for treatment');
+  talkBtn.onclick=()=>openGoodspringsNPC('doc_mitchell');
+  body.appendChild(talkBtn);
+  const medBtn=el('button','bt','🧰 Check the spare med shelf');
+  medBtn.onclick=()=>{advanceTime(1);const pick=rndA(['stimpak','purified_water','doctor_bag']);giveItem(pick);log('You pull a little extra from Doc Mitchell's spare shelf.','e');closeBld();showResult('Medical Shelf','🧰',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  body.appendChild(medBtn);
+  body.appendChild(el('div','bs2','Resident'));
+  addGoodspringsNpcCard(body,'doc_mitchell');
+}
+
+
 function bldPrimmVikki(body){
   body.appendChild(el('div','bs2','Casino Floor'));
   body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Primm's main casino still has working tables, cheap drinks, and just enough warmth to make it feel like the town can survive.</div>`));
@@ -4051,6 +4222,7 @@ function advanceTime(hours){
     if(q.t==='explore'){q.ed=(q.ed||0);if(q.ed>=q.ec)completeQuest(q)}
   });
   if(S.flags&&S.flags.hv)hvRefreshState();
+  gsRefreshState();
   // AP regen
   S.ap=Math.min(S.maxAp,S.ap+Math.floor(hours*3));
 }
