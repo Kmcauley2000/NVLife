@@ -1243,11 +1243,15 @@ let S=null,combat=null,tQ=[],tDest=null;
 const SAVE_KEY='fnv_rpg';
 const SAVE_BACKUP_KEY='fnv_rpg_backup';
 const SAVE_MIRROR_KEY='fnv_rpg_mirror';
+const SAVE_META_KEY='fnv_rpg_meta';
+const SAVE_SLOT_KEYS=['fnv_rpg_slot0','fnv_rpg_slot1','fnv_rpg_slot2','fnv_rpg_slot3'];
 const SAVE_DB_NAME='fnv_rpg_db';
 const SAVE_DB_STORE='saves';
-const SAVE_DB_SLOT='primary';
+const SAVE_DB_SLOTS=['primary','backup','mirror','recovery'];
 let _saveTimer=null,_autoSaveTimer=null,_lastSaveStamp=0;
 let _dbPromise=null;
+let _slotCursor=0;
+let _lastSerialized='';
 
 const BASE={name:"Courier",hp:80,maxHp:80,ap:60,maxAp:60,xp:0,level:1,caps:30,
 special:[5,5,5,5,5,5,5],perks:[],
@@ -1275,6 +1279,40 @@ function serializeSave(){return JSON.stringify(S)}
 function canUseStorage(){
   try{return typeof localStorage!=='undefined'}catch(e){return false}
 }
+function safeParse(raw){
+  if(!raw||typeof raw!=='string')return null;
+  try{return JSON.parse(raw)}catch(e){return null}
+}
+function makeSaveEnvelope(raw){
+  return JSON.stringify({stamp:Date.now(),version:2,raw});
+}
+function unpackSaveEnvelope(packed){
+  const parsed=safeParse(packed);
+  if(!parsed)return null;
+  if(typeof parsed.raw==='string')return parsed;
+  if(typeof packed==='string')return {stamp:0,version:1,raw:packed};
+  return null;
+}
+function collectStorageCandidates(){
+  const out=[];
+  if(!canUseStorage())return out;
+  [SAVE_KEY,SAVE_BACKUP_KEY,SAVE_MIRROR_KEY,...SAVE_SLOT_KEYS].forEach(key=>{
+    const packed=localStorage.getItem(key);
+    const env=unpackSaveEnvelope(packed);
+    if(env&&env.raw)out.push({raw:env.raw,stamp:env.stamp||0,src:key});
+  });
+  return out.sort((a,b)=>b.stamp-a.stamp);
+}
+function writeLocalCopies(raw,stamp){
+  if(!canUseStorage())return;
+  const packed=JSON.stringify({stamp,version:2,raw});
+  localStorage.setItem(SAVE_KEY,packed);
+  localStorage.setItem(SAVE_BACKUP_KEY,packed);
+  localStorage.setItem(SAVE_MIRROR_KEY,packed);
+  localStorage.setItem(SAVE_SLOT_KEYS[_slotCursor%SAVE_SLOT_KEYS.length],packed);
+  localStorage.setItem(SAVE_META_KEY,JSON.stringify({stamp,slot:_slotCursor%SAVE_SLOT_KEYS.length}));
+  _slotCursor++;
+}
 function getSaveDb(){
   if(_dbPromise)return _dbPromise;
   _dbPromise=new Promise(resolve=>{
@@ -1297,7 +1335,9 @@ async function saveToIndexedDb(raw){
   return await new Promise(resolve=>{
     try{
       const tx=db.transaction(SAVE_DB_STORE,'readwrite');
-      tx.objectStore(SAVE_DB_STORE).put({raw,stamp:Date.now()},SAVE_DB_SLOT);
+      const store=tx.objectStore(SAVE_DB_STORE);
+      const stamp=Date.now();
+      SAVE_DB_SLOTS.forEach((slot,i)=>store.put({raw,stamp:stamp-i},slot));
       tx.oncomplete=()=>resolve(true);
       tx.onerror=()=>resolve(false);
       tx.onabort=()=>resolve(false);
@@ -1310,9 +1350,18 @@ async function loadFromIndexedDb(){
   return await new Promise(resolve=>{
     try{
       const tx=db.transaction(SAVE_DB_STORE,'readonly');
-      const req=tx.objectStore(SAVE_DB_STORE).get(SAVE_DB_SLOT);
-      req.onsuccess=()=>resolve(req.result&&req.result.raw?req.result.raw:null);
-      req.onerror=()=>resolve(null);
+      const store=tx.objectStore(SAVE_DB_STORE);
+      const reqs=SAVE_DB_SLOTS.map(slot=>new Promise(done=>{
+        try{
+          const req=store.get(slot);
+          req.onsuccess=()=>done(req.result&&req.result.raw?{raw:req.result.raw,stamp:req.result.stamp||0,src:'idb:'+slot}:null);
+          req.onerror=()=>done(null);
+        }catch(e){done(null)}
+      }));
+      Promise.all(reqs).then(rows=>{
+        const best=rows.filter(Boolean).sort((a,b)=>b.stamp-a.stamp)[0]||null;
+        resolve(best?best.raw:null);
+      });
     }catch(e){resolve(null)}
   });
 }
@@ -1322,16 +1371,17 @@ function save(force=false){
   if(!force&&now-_lastSaveStamp<150)return true;
   try{
     const raw=serializeSave();
-    if(canUseStorage()){
-      localStorage.setItem(SAVE_KEY,raw);
-      localStorage.setItem(SAVE_BACKUP_KEY,raw);
-      localStorage.setItem(SAVE_MIRROR_KEY,raw);
-    }
+    _lastSerialized=raw;
+    writeLocalCopies(raw,now);
     saveToIndexedDb(raw);
     _lastSaveStamp=now;
     return true;
   }catch(e){
-    try{saveToIndexedDb(serializeSave())}catch(err){}
+    try{
+      const raw=_lastSerialized||serializeSave();
+      writeLocalCopies(raw,Date.now());
+      saveToIndexedDb(raw)
+    }catch(err){}
     return false
   }
 }
@@ -1340,46 +1390,63 @@ function queueSave(delay=180){
   clearTimeout(_saveTimer);
   _saveTimer=setTimeout(()=>save(true),delay);
 }
+function snapshotState(){
+  if(!S)return;
+  try{window.name='fnv_rpg::'+serializeSave()}catch(e){}
+}
+function recoverWindowSnapshot(){
+  try{
+    if(typeof window.name!=='string'||!window.name.startsWith('fnv_rpg::'))return false;
+    const raw=window.name.slice(9);
+    const parsed=safeParse(raw);
+    if(!parsed)return false;
+    S=parsed;
+    migrate();
+    save(true);
+    return true;
+  }catch(e){return false}
+}
 function startAutoSaveLoop(){
   clearInterval(_autoSaveTimer);
-  _autoSaveTimer=setInterval(()=>save(true),5000);
+  _autoSaveTimer=setInterval(()=>{save(true);snapshotState()},3000);
 }
 function bindAutoSave(){
-  const hardSave=()=>save(true);
-  ['pagehide','beforeunload','blur','focusout'].forEach(ev=>window.addEventListener(ev,hardSave,{capture:true}));
-  window.addEventListener('pageshow',()=>{if(S)save(true)},{capture:true});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')hardSave()},{capture:true});
-  document.addEventListener('freeze',hardSave,{capture:true});
-  document.addEventListener('resume',hardSave,{capture:true});
-  document.addEventListener('pause',hardSave,{capture:true});
+  const hardSave=()=>{save(true);snapshotState()};
+  ['pagehide','beforeunload','blur','focusout','unload'].forEach(ev=>window.addEventListener(ev,hardSave,{capture:true}));
+  ['visibilitychange','webkitvisibilitychange','freeze','resume','pause'].forEach(ev=>document.addEventListener(ev,()=>{
+    if(ev==='visibilitychange'||ev==='webkitvisibilitychange'){
+      if(document.visibilityState==='hidden')hardSave();
+      return;
+    }
+    hardSave();
+  },{capture:true}));
+  ['pageshow','focus','online'].forEach(ev=>window.addEventListener(ev,()=>{if(S){save(true);snapshotState()}},{capture:true}));
+  ['touchend','click'].forEach(ev=>document.addEventListener(ev,()=>queueSave(120),{capture:true,passive:true}));
 }
 function load(){
-  const candidates=[];
-  if(canUseStorage())candidates.push(localStorage.getItem(SAVE_KEY),localStorage.getItem(SAVE_BACKUP_KEY),localStorage.getItem(SAVE_MIRROR_KEY));
-  for(const raw of candidates){
-    if(!raw)continue;
+  const candidates=collectStorageCandidates();
+  for(const row of candidates){
     try{
-      S=JSON.parse(raw);
+      S=JSON.parse(row.raw);
       migrate();
+      _lastSerialized=row.raw;
       return true;
     }catch(e){}
   }
-  return false;
+  return recoverWindowSnapshot();
 }
 async function loadAsync(){
   if(load())return true;
   const raw=await loadFromIndexedDb();
-  if(!raw)return false;
+  if(!raw)return recoverWindowSnapshot();
   try{
     S=JSON.parse(raw);
     migrate();
-    if(canUseStorage()){
-      localStorage.setItem(SAVE_KEY,raw);
-      localStorage.setItem(SAVE_BACKUP_KEY,raw);
-      localStorage.setItem(SAVE_MIRROR_KEY,raw);
-    }
+    _lastSerialized=raw;
+    writeLocalCopies(raw,Date.now());
+    snapshotState();
     return true;
-  }catch(e){return false}
+  }catch(e){return recoverWindowSnapshot()}
 }
 async function requestPersistentStorage(){
   try{
@@ -3391,7 +3458,7 @@ function openGoodspringsTrade(){
   openDlg(`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(GOODSPRINGS_NPCS.chet.icon||ICONS.NPC.MERCHANT,28)}</span><span style="color:var(--amber)">Chet's Stock</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:8px">Chet unlocks the shelves and lets you look over the practical stuff.</div>${body.innerHTML}<button class="bt" onclick="closeDlg()">Done</button>`);
 }
 function bldGoodspringsDoc(body){
-  body.appendChild(el('div','bs2','Doc Mitchell's House'));
+  body.appendChild(el('div','bs2',"Doc Mitchell's House"));
   body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The house still smells like antiseptic, dust, and someone stubborn enough to keep patching up the Mojave one idiot at a time.</div>`));
   const cost=22-Math.floor((S.special?S.special[3]:5)*2);
   body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">If you want proper treatment, talk to Doc Mitchell. He is not running this place like a vending machine.</div><div style="font-size:10px;color:var(--amber);margin-top:6px">Full treatment price: ${cost} caps</div>`));
@@ -3399,7 +3466,7 @@ function bldGoodspringsDoc(body){
   talkBtn.onclick=()=>openGoodspringsNPC('doc_mitchell');
   body.appendChild(talkBtn);
   const medBtn=el('button','bt','🧰 Check the spare med shelf');
-  medBtn.onclick=()=>{advanceTime(1);const pick=rndA(['stimpak','purified_water','doctor_bag']);giveItem(pick);log('You pull a little extra from Doc Mitchell's spare shelf.','e');closeBld();showResult('Medical Shelf','🧰',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  medBtn.onclick=()=>{advanceTime(1);const pick=rndA(['stimpak','purified_water','doctor_bag']);giveItem(pick);log("You pull a little extra from Doc Mitchell's spare shelf.",'e');closeBld();showResult('Medical Shelf','🧰',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
   body.appendChild(medBtn);
   body.appendChild(el('div','bs2','Resident'));
   addGoodspringsNpcCard(body,'doc_mitchell');
@@ -4283,7 +4350,7 @@ function worldTick(){
   bindAutoSave();
   startAutoSaveLoop();
   requestPersistentStorage();
-  if(await loadAsync()){upAll();save(true)}else{newGame()}
+  if(await loadAsync()){upAll();save(true);snapshotState()}else{newGame()}
 })();
 </script>
 </body>
