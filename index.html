@@ -10,18 +10,18 @@
 <meta name="theme-color" content="#1a1a0e">
 <title>Fallout: New Vegas RPG</title>
 <style>
-:root{--bg:#1a1a0e;--panel:#242418;--panel2:#1e1e14;--amber:#f0c850;--amber2:#c9a230;--green:#4aff4a;--green2:#2ecc2e;--red:#ff4444;--blue:#4488cc;--text:#e8e4d0;--muted:#9a9680;--line:#3a3828;--pip:#14cc64;--hp-red:#cc3333;--ap-blue:#3388cc;--xp-gold:#ccaa33;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+:root{--bg:#1a1a0e;--panel:#242418;--panel2:#1e1e14;--amber:#f0c850;--amber2:#c9a230;--green:#4aff4a;--green2:#2ecc2e;--red:#ff4444;--blue:#4488cc;--text:#e8e4d0;--muted:#9a9680;--line:#3a3828;--pip:#14cc64;--hp-red:#cc3333;--ap-blue:#3388cc;--xp-gold:#ccaa33;--st:max(env(safe-area-inset-top,0px),10px);--sb:max(env(safe-area-inset-bottom,0px),8px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 @font-face{font-family:'Pip';src:local('Courier New'),local('Courier');font-weight:normal}
 body{background:var(--bg);font-family:'Courier New',monospace;color:var(--text);min-height:100dvh;overscroll-behavior:none;font-size:14px}
 #W{max-width:430px;margin:0 auto;min-height:100dvh;overflow:hidden;position:relative;
 background:linear-gradient(180deg,#1a1a0e 0%,#141410 100%)}
 #H{position:sticky;top:0;background:linear-gradient(180deg,#1a1808,#141408);
-color:var(--amber);text-align:center;padding:calc(var(--st)+6px) 12px 5px;
+color:var(--amber);text-align:center;padding:calc(var(--st)+8px) 76px 7px 12px;min-height:52px;
 font-size:13px;font-weight:bold;letter-spacing:3px;z-index:100;
 border-bottom:1px solid #3a3418;text-transform:uppercase}
 #H .sub{font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:1px}
-#NG{position:absolute;right:8px;bottom:5px;background:#2a1818;color:var(--red);border:1px solid #4a2828;border-radius:4px;font-family:'Courier New',monospace;font-size:9px;padding:4px 6px;letter-spacing:0;cursor:pointer}
+#NG{position:absolute;right:8px;top:calc(var(--st) + 6px);background:#2a1818;color:var(--red);border:1px solid #4a2828;border-radius:4px;font-family:'Courier New',monospace;font-size:10px;padding:7px 8px;min-height:32px;letter-spacing:0;cursor:pointer}
 #SB{background:#0e0e08;color:var(--text);font-size:11px;display:flex;flex-wrap:wrap;padding:3px 4px;gap:1px;border-bottom:1px solid #282818}
 #SB .s{flex:1 1 auto;text-align:center;padding:3px 4px;white-space:nowrap}
 #SB .s b{color:var(--amber)}
@@ -30,13 +30,13 @@ border-bottom:1px solid #3a3418;text-transform:uppercase}
 .scanline{position:fixed;top:0;left:50%;transform:translateX(-50%);width:430px;height:100%;
 pointer-events:none;z-index:999;
 background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px)}
-#C{padding:10px;padding-bottom:calc(100px + var(--sb))}
+#C{padding:8px 10px;padding-bottom:calc(86px + var(--sb))}
 .T{display:none}.T.A{display:block}
 #N{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
 background:linear-gradient(0deg,#0e0e06,#1a1a0e);display:flex;
 border-top:1px solid var(--amber2);z-index:100;padding-bottom:var(--sb)}
-#N button{flex:1;padding:8px 1px 6px;background:0 0;color:var(--muted);border:0;
-font-size:10px;text-align:center;cursor:pointer;line-height:1.3;font-family:'Courier New',monospace}
+#N button{flex:1;padding:7px 1px calc(7px + var(--sb));background:0 0;color:var(--muted);border:0;
+font-size:10px;text-align:center;cursor:pointer;line-height:1.2;min-height:58px;font-family:'Courier New',monospace}
 #N button i{font-size:18px;display:flex;justify-content:center;align-items:center;height:26px;font-style:normal;margin-bottom:2px}
 #N button.A{background:#2a2a10;color:var(--amber)}
 .sh{color:var(--amber2);padding:4px 0;margin:12px 0 5px;font-size:11px;letter-spacing:2px;
@@ -66,9 +66,9 @@ width:96%;max-width:400px;max-height:92vh;overflow-y:auto}
 /* Building overlay */
 #BO{position:fixed;inset:0;background:var(--bg);z-index:150;overflow-y:auto;display:none}
 #BO.A{display:block}
-.bh{display:flex;align-items:center;gap:8px;padding:calc(var(--st)+8px) 10px 8px;
+.bh{display:flex;align-items:center;gap:8px;padding:calc(var(--st)+12px) 10px 10px;min-height:58px;
 background:#141408;border-bottom:1px solid #2a2818;position:sticky;top:0;z-index:10}
-.bb{font-size:20px;color:var(--amber);cursor:pointer;padding:4px 8px}
+.bb{font-size:22px;color:var(--amber);cursor:pointer;padding:8px 12px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
 .bp{padding:10px}
 .bs2{color:var(--amber2);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
 padding:3px 0;margin:10px 0 4px;border-bottom:1px solid #2a2818}
@@ -542,6 +542,8 @@ HooverDam:{BoulderCity:1,TheFort:2,CampSearchlight:2,NellisAFB:2,CampForlornHope
 // DATA - ITEMS
 // ============================================================
 const ITEMS={
+// FNV_WEAPON_STATS_AUDIT: official weapon entries use Fallout: New Vegas base DAM/value/weight where there is a direct counterpart.
+
 // Official Fallout: New Vegas items below use canonical base cap values where an exact FNV counterpart exists. Fan/custom quest items retain project-specific values.
 // Consumables
 stimpak:{n:"Stimpak",t:"c",e:'<img src="NVImages/StimpakIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',hp:40,p:75,w:0.1},
@@ -568,25 +570,25 @@ psycho:{n:"Psycho",t:"chem",e:'<img src="NVImages/PsychoIcon.png" style="width:1
 med_x:{n:"Med-X",t:"chem",e:"💊",p:20,w:0,buff:{dr:15}},
 stealth_boy:{n:"Stealth Boy",t:"chem",e:"👻",p:100,w:0,rare:1},
 // Weapons
-pistol_9mm:{n:"9mm Pistol",t:"w",e:'<img src="NVImages/9mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:16,p:100,w:2,ammo:"ammo_9mm"},
+pistol_9mm:{n:"9mm Pistol",t:"w",e:'<img src="NVImages/9mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:16,p:100,w:1.5,ammo:"ammo_9mm"},
 pistol_10mm:{n:"10mm Pistol",t:"w",e:'<img src="NVImages/10mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:22,p:750,w:3,ammo:"ammo_10mm"},
-revolver_357:{n:".357 Magnum Revolver",t:"w",e:'<img src="NVImages/357magnumrevolverIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:26,p:110,w:3,ammo:"ammo_357"},
+revolver_357:{n:".357 Magnum Revolver",t:"w",e:'<img src="NVImages/357magnumrevolverIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:26,p:110,w:2,ammo:"ammo_357"},
 varmint_rifle:{n:"Varmint Rifle",t:"w",e:'<img src="NVImages/VarmintrifleIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:18,p:75,w:5.5,ammo:"ammo_556"},
-service_rifle:{n:"Service Rifle",t:"w",e:'<img src="NVImages/ServicerifleIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:24,p:540,w:6,ammo:"ammo_556"},
-assault_carbine:{n:"Assault Carbine",t:"w",e:'<img src="NVImages/AssaultcarbineIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:32,p:3950,w:6.5,ammo:"ammo_556",rare:1},
-hunting_rifle:{n:"Hunting Rifle",t:"w",e:"🔫",a:25,p:2200,w:6,ammo:"ammo_308"},
-sniper_rifle:{n:"Sniper Rifle",t:"w",e:"🔫",a:40,p:4100,w:8,ammo:"ammo_308",rare:1},
-caravan_shotgun:{n:"Caravan Shotgun",t:"w",e:"🔫",a:20,p:675,w:4.5,ammo:"ammo_shells"},
-combat_shotgun:{n:"Combat Shotgun",t:"w",e:"🔫",a:30,p:3800,w:7.5,ammo:"ammo_shells",rare:1},
-laser_pistol:{n:"Laser Pistol",t:"w",e:"⚡",a:12,p:175,w:2,ammo:"energy_cell"},
-laser_rifle:{n:"Laser Rifle",t:"w",e:"⚡",a:22,p:800,w:5,ammo:"energy_cell"},
-plasma_rifle:{n:"Plasma Rifle",t:"w",e:"⚡",a:35,p:1300,w:8,ammo:"energy_cell",rare:1},
-machete:{n:"Machete",t:"w",e:"🔪",a:11,p:50,w:3},
+service_rifle:{n:"Service Rifle",t:"w",e:'<img src="NVImages/ServicerifleIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:18,p:540,w:8.5,ammo:"ammo_556"},
+assault_carbine:{n:"Assault Carbine",t:"w",e:'<img src="NVImages/AssaultcarbineIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:13,p:3950,w:6,ammo:"ammo_556",rare:1},
+hunting_rifle:{n:"Hunting Rifle",t:"w",e:"🔫",a:52,p:2200,w:6,ammo:"ammo_308"},
+sniper_rifle:{n:"Sniper Rifle",t:"w",e:"🔫",a:45,p:4100,w:8,ammo:"ammo_308",rare:1},
+caravan_shotgun:{n:"Caravan Shotgun",t:"w",e:"🔫",a:45,p:675,w:3,ammo:"ammo_shells"},
+combat_shotgun:{n:"Combat Shotgun",t:"w",e:"🔫",a:55,p:3800,w:7.5,ammo:"ammo_shells",rare:1},
+laser_pistol:{n:"Laser Pistol",t:"w",e:"⚡",a:12,p:175,w:3,ammo:"energy_cell"},
+laser_rifle:{n:"Laser Rifle",t:"w",e:"⚡",a:22,p:800,w:8,ammo:"energy_cell"},
+plasma_rifle:{n:"Plasma Rifle",t:"w",e:"⚡",a:32,p:1300,w:8,ammo:"energy_cell",rare:1},
+machete:{n:"Machete",t:"w",e:"🔪",a:11,p:50,w:2},
 combat_knife:{n:"Combat Knife",t:"w",e:"🗡",a:15,p:500,w:1},
 switchblade:{n:"Switchblade",t:"w",e:"🔪",a:7,p:35,w:1},
 power_fist:{n:"Power Fist",t:"w",e:"👊",a:28,p:800,w:6,rare:1},
-thermic_lance:{n:"Thermic Lance",t:"w",e:"🔱",a:40,p:5500,w:12,rare:2},
-maria:{n:"Maria",t:"w",e:"🔫",a:22,p:1000,desc:"Benny's gun. 9mm, gold-plated.",w:2,ammo:"ammo_9mm",rare:2},
+thermic_lance:{n:"Thermic Lance",t:"w",e:"🔱",a:100,p:5500,w:20,rare:2},
+maria:{n:"Maria",t:"w",e:"🔫",a:20,p:1000,desc:"Benny's gun. 9mm, gold-plated.",w:1.5,ammo:"ammo_9mm",rare:2},
 // Armor
 leather_armor:{n:"Leather Armor",t:"a",e:"🧥",d:6,p:160,w:15,slot:"body"},
 ncr_armor:{n:"NCR Trooper Armor",t:"a",e:"🦺",d:10,p:300,w:20,slot:"body"},
@@ -596,7 +598,7 @@ power_armor:{n:"T-45d Power Armor",t:"a",e:"🤖",d:28,p:4500,w:45,slot:"body",r
 headwrap:{n:"Head Wrap",t:"a",e:"🪖",d:1,p:6,w:1,slot:"head"},
 combat_helmet:{n:"Combat Helmet",t:"a",e:"🪖",d:4,p:100,w:3,slot:"head"},
 boones_beret:{n:"1st Recon Beret",t:"a",e:"🎖",d:2,p:40,w:0.1,slot:"head",rare:2,desc:"Boone's old 1st Recon beret. Light, lucky, and hard-earned."},
-boones_varmint_rifle:{n:"Boone's Scoped Varmint Rifle",t:"w",e:"🔭",a:24,p:260,w:5.5,ammo:"ammo_556",rare:2,desc:"A carefully maintained rifle from Craig Boone."},
+boones_varmint_rifle:{n:"Boone's Scoped Varmint Rifle",t:"w",e:"🔭",a:18,p:220,w:5.5,ammo:"ammo_556",rare:2,desc:"A carefully maintained rifle from Craig Boone."},
 boone_bill_of_sale:{n:"Bill of Sale: Carla Boone",t:"m",e:"📄",p:0,w:0,rare:2,desc:"Proof that Carla Boone was sold to Caesar's Legion."},
 goodsprings_town_supplies:{n:"Goodsprings Town Supplies",t:"m",e:"📦",p:0,w:0,rare:1,desc:"Ammo, food, and spare goods Chet set aside for Goodsprings defence."},
 goodsprings_dynamite_bundle:{n:"Easy Pete Dynamite Bundle",t:"m",e:"🧨",p:0,w:0,rare:1,desc:"Old dynamite Easy Pete agreed to spare for the Goodsprings fight."},
@@ -611,8 +613,8 @@ energy_cell:{n:"Energy Cells",t:"ammo",e:"⚡",p:1,w:0,stack:1},
 doctor_bag:{n:"Doctor's Bag",t:"c",e:"🩹",hp:55,p:55,w:1},
 primm_sheriff_badge:{n:"Primm Sheriff's Badge",t:"m",e:"⭐",p:120,w:0,rare:2,desc:"A restored Primm badge from the sheriff's office."},
 primm_sheriff_papers:{n:"Primm Sheriff Paperwork",t:"m",e:"📄",p:45,w:0,rare:1,desc:"Authority papers for appointing a new sheriff in Primm."},
-cowboy_repeater:{n:"Cowboy Repeater",t:"w",e:"🔫",a:19,p:800,w:6,ammo:"ammo_357"},
-pickaxe:{n:"Pickaxe",t:"w",e:"⛏",a:11,p:55,w:8},
+cowboy_repeater:{n:"Cowboy Repeater",t:"w",e:"🔫",a:32,p:800,w:5,ammo:"ammo_357"},
+pickaxe:{n:"Pickaxe",t:"w",e:"⛏",a:15,p:55,w:8},
 // Materials
 scrap:{n:"Scrap Metal",t:"m",e:"⚙",p:1,w:2},
 duct_tape:{n:"Duct Tape",t:"m",e:"🔧",p:1,w:1},
@@ -626,10 +628,10 @@ legion_coin:{n:"Legion Denarius",t:"m",e:'<img src="NVImages/LegiondenariusIcon.
 dirty_water:{n:"Dirty Water",t:"c",e:"💧",hp:3,p:10,w:1},
 cram:{n:"Cram",t:"c",e:'<img src="NVImages/CramIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:12,p:5,w:1},
 iguana_bits:{n:"Iguana Bits",t:"c",e:"🥩",hp:14,p:5,w:1},
-tire_iron:{n:"Tire Iron",t:"w",e:"🔧",a:8,p:25,w:4},
-single_shotgun:{n:"Single Shotgun",t:"w",e:"🔫",a:18,p:175,w:5,ammo:"ammo_shells"},
-trail_carbine:{n:"Trail Carbine",t:"w",e:"🔫",a:22,p:3900,w:5,ammo:"ammo_357"},
-smg_9mm:{n:"9mm SMG",t:"w",e:"🔫",a:16,p:850,w:4.5,ammo:"ammo_9mm",rare:1},
+tire_iron:{n:"Tire Iron",t:"w",e:"🔧",a:12,p:25,w:3},
+single_shotgun:{n:"Single Shotgun",t:"w",e:"🔫",a:50,p:175,w:7,ammo:"ammo_shells"},
+trail_carbine:{n:"Trail Carbine",t:"w",e:"🔫",a:48,p:3900,w:5.5,ammo:"ammo_357"},
+smg_9mm:{n:"9mm SMG",t:"w",e:"🔫",a:14,p:850,w:4,ammo:"ammo_9mm",rare:1},
 reinforced_leather_armor:{n:"Reinforced Leather Armor",t:"a",e:"🧥",d:8,p:250,w:18,slot:"body"},
 metal_helmet:{n:"Metal Helmet",t:"a",e:"🪖",d:6,p:125,w:5,slot:"head"},
 wonderglue:{n:"Wonderglue",t:"m",e:"🧴",p:1,w:1,desc:"Useful junk for repairs."},
@@ -658,9 +660,9 @@ bos_recon_armor:{n:"Brotherhood Recon Armor",t:"a",e:"🛡",d:12,p:7200,w:20,slo
 bos_recon_helmet:{n:"Brotherhood Recon Helmet",t:"a",e:"🪖",d:5,p:110,w:3,slot:"head",desc:"A reinforced recon helmet with Brotherhood markings."},
 bos_combat_armor:{n:"Brotherhood Combat Armor",t:"a",e:"🛡",d:22,p:6500,w:25,slot:"body",rare:1,desc:"Upgraded combat armor issued to trusted Brotherhood personnel."},
 bos_power_armor:{n:"Brotherhood Power Armor",t:"a",e:"🤖",d:34,p:4500,w:45,slot:"body",rare:2,desc:"Heavy Brotherhood power armor reserved for the most trusted allies."},
-plasma_defender:{n:"Plasma Defender",t:"w",e:"⚡",a:24,p:3000,w:2,ammo:"energy_cell",desc:"A compact Brotherhood-favored plasma sidearm."},
-multiplas_rifle:{n:"Multiplas Rifle",t:"w",e:"⚡",a:42,p:2500,w:10,ammo:"energy_cell",rare:2,desc:"A dangerous burst plasma rifle kept under Brotherhood lock and key."},
-laser_rcw:{n:"Laser RCW",t:"w",e:"⚡",a:22,p:2150,w:4,ammo:"energy_cell",rare:1,desc:"A rapid-fire laser weapon pulled from old world stock."},
+plasma_defender:{n:"Plasma Defender",t:"w",e:"⚡",a:38,p:3000,w:3,ammo:"energy_cell",desc:"A compact Brotherhood-favored plasma sidearm."},
+multiplas_rifle:{n:"Multiplas Rifle",t:"w",e:"⚡",a:105,p:2500,w:12,ammo:"energy_cell",rare:2,desc:"A dangerous burst plasma rifle kept under Brotherhood lock and key."},
+laser_rcw:{n:"Laser RCW",t:"w",e:"⚡",a:15,p:2150,w:4,ammo:"energy_cell",rare:1,desc:"A rapid-fire laser weapon pulled from old world stock."},
 bos_holotape:{n:"Brotherhood Holotape",t:"m",e:"💾",p:55,w:0,desc:"Encrypted Brotherhood field notes and requisition records."},
 };
 
