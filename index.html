@@ -13,7 +13,7 @@
 :root{--bg:#1a1a0e;--panel:#242418;--panel2:#1e1e14;--amber:#f0c850;--amber2:#c9a230;--green:#4aff4a;--green2:#2ecc2e;--red:#ff4444;--blue:#4488cc;--text:#e8e4d0;--muted:#9a9680;--line:#3a3828;--pip:#14cc64;--hp-red:#cc3333;--ap-blue:#3388cc;--xp-gold:#ccaa33;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 @font-face{font-family:'Pip';src:local('Courier New'),local('Courier');font-weight:normal}
-body{background:var(--bg);font-family:'Courier New',monospace;color:var(--text);min-height:100dvh;overscroll-behavior:none;font-size:13px}
+body{background:var(--bg);font-family:'Courier New',monospace;color:var(--text);min-height:100dvh;overscroll-behavior:none;font-size:14px}
 #W{max-width:430px;margin:0 auto;min-height:100dvh;overflow:hidden;position:relative;
 background:linear-gradient(180deg,#1a1a0e 0%,#141410 100%)}
 #H{position:sticky;top:0;background:linear-gradient(180deg,#1a1808,#141408);
@@ -21,41 +21,41 @@ color:var(--amber);text-align:center;padding:calc(var(--st)+6px) 12px 5px;
 font-size:13px;font-weight:bold;letter-spacing:3px;z-index:100;
 border-bottom:1px solid #3a3418;text-transform:uppercase}
 #H .sub{font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:1px}
-#SB{background:#0e0e08;color:var(--text);font-size:10px;display:flex;flex-wrap:wrap;padding:2px 4px;gap:1px;border-bottom:1px solid #282818}
-#SB .s{flex:1 1 auto;text-align:center;padding:2px 3px;white-space:nowrap}
+#SB{background:#0e0e08;color:var(--text);font-size:11px;display:flex;flex-wrap:wrap;padding:3px 4px;gap:1px;border-bottom:1px solid #282818}
+#SB .s{flex:1 1 auto;text-align:center;padding:3px 4px;white-space:nowrap}
 #SB .s b{color:var(--amber)}
 #SB .s .g{color:var(--green)}
 #SB .s .r{color:var(--red)}
 .scanline{position:fixed;top:0;left:50%;transform:translateX(-50%);width:430px;height:100%;
 pointer-events:none;z-index:999;
 background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px)}
-#C{padding:10px;padding-bottom:calc(90px + var(--sb))}
+#C{padding:10px;padding-bottom:calc(100px + var(--sb))}
 .T{display:none}.T.A{display:block}
 #N{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
 background:linear-gradient(0deg,#0e0e06,#1a1a0e);display:flex;
 border-top:1px solid var(--amber2);z-index:100;padding-bottom:var(--sb)}
-#N button{flex:1;padding:6px 1px 4px;background:0 0;color:var(--muted);border:0;
-font-size:8px;text-align:center;cursor:pointer;line-height:1.3;font-family:'Courier New',monospace}
-#N button i{font-size:14px;display:flex;justify-content:center;align-items:center;height:22px;font-style:normal;margin-bottom:2px}
+#N button{flex:1;padding:8px 1px 6px;background:0 0;color:var(--muted);border:0;
+font-size:10px;text-align:center;cursor:pointer;line-height:1.3;font-family:'Courier New',monospace}
+#N button i{font-size:18px;display:flex;justify-content:center;align-items:center;height:26px;font-style:normal;margin-bottom:2px}
 #N button.A{background:#2a2a10;color:var(--amber)}
-.sh{color:var(--amber2);padding:3px 0;margin:10px 0 4px;font-size:10px;letter-spacing:2px;
+.sh{color:var(--amber2);padding:4px 0;margin:12px 0 5px;font-size:11px;letter-spacing:2px;
 text-transform:uppercase;border-bottom:1px solid #2a2818}
 .cd{background:var(--panel);border:1px solid #2a2818;border-radius:6px;padding:8px;margin:4px 0}
-.bt{display:block;width:100%;padding:8px 10px;margin:3px 0;background:#2a2a18;color:var(--text);
-border:1px solid #3a3828;border-radius:4px;font-family:'Courier New',monospace;font-size:12px;
-cursor:pointer;text-align:left;transition:transform 80ms}
+.bt{display:block;width:100%;padding:11px 12px;margin:4px 0;background:#2a2a18;color:var(--text);
+border:1px solid #3a3828;border-radius:4px;font-family:'Courier New',monospace;font-size:13px;
+cursor:pointer;text-align:left;transition:transform 80ms;min-height:44px}
 .bt:active{transform:scale(.97);filter:brightness(1.1)}
 .bt.go{background:#2a3a18;color:var(--green);border-color:#3a4828}
 .bt.dn{background:#3a1818;color:var(--red);border-color:#4a2828}
 .bt.pip{background:#182a1a;color:var(--pip);border-color:#1a3a1a}
 .bt:disabled{opacity:.4;transform:none}
-.bt.sm{display:inline-block;width:auto;padding:4px 8px;font-size:10px;margin:2px}
-.hb{background:#1a1a10;border-radius:3px;height:7px;overflow:hidden;margin:2px 0;border:1px solid #2a2818}
+.bt.sm{display:inline-block;width:auto;padding:6px 10px;font-size:11px;margin:2px;min-height:36px}
+.hb{background:#1a1a10;border-radius:3px;height:9px;overflow:hidden;margin:3px 0;border:1px solid #2a2818}
 .hf{height:100%;border-radius:2px;transition:width .3s}
 .hf.hp{background:var(--hp-red)}.hf.ap{background:var(--ap-blue)}.hf.xp{background:var(--xp-gold)}
 .hf.g{background:var(--green2)}.hf.lo{background:var(--amber2)}.hf.cr{background:var(--red)}
-.bc{display:flex;align-items:center;gap:8px;padding:7px 8px;background:var(--panel);
-border:1px solid #2a2818;border-radius:5px;margin:3px 0;cursor:pointer}
+.bc{display:flex;align-items:center;gap:8px;padding:10px 10px;background:var(--panel);
+border:1px solid #2a2818;border-radius:5px;margin:4px 0;cursor:pointer;min-height:48px}
 .bc:active{background:#2a2a1a}
 /* Overlays */
 #CO{position:fixed;inset:0;background:rgba(5,5,2,.9);display:none;justify-content:center;
@@ -105,24 +105,24 @@ opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--ambe
 #NF.show{opacity:1}
 /* Log */
 .log-group{margin:4px 0;border:1px solid #2a2818;border-radius:4px;overflow:hidden}
-.log-header{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;
-background:var(--panel2);cursor:pointer;font-size:11px}
+.log-header{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;
+background:var(--panel2);cursor:pointer;font-size:12px;min-height:44px}
 .log-header:active{background:#1a1a12}
-.log-entries{display:none;padding:4px 8px 6px;font-size:11px;line-height:1.5}
+.log-entries{display:none;padding:5px 10px 8px;font-size:12px;line-height:1.6}
 .log-entries.open{display:block}
 .log-entry{padding:2px 0;border-bottom:1px dotted #1a1810}
 .log-entry:last-child{border-bottom:none}
 .combat-log{color:var(--red)}.event-log{color:var(--green2)}.quest-log{color:var(--blue)}
 /* SPECIAL bars */
-.sp-bar{display:flex;align-items:center;gap:6px;margin:2px 0;font-size:11px}
-.sp-label{width:14px;color:var(--amber);font-weight:bold;text-align:center}
-.sp-fill-bg{flex:1;height:6px;background:#1a1a10;border-radius:3px;overflow:hidden;border:1px solid #2a2818}
+.sp-bar{display:flex;align-items:center;gap:6px;margin:3px 0;font-size:12px}
+.sp-label{width:16px;color:var(--amber);font-weight:bold;text-align:center}
+.sp-fill-bg{flex:1;height:8px;background:#1a1a10;border-radius:3px;overflow:hidden;border:1px solid #2a2818}
 .sp-fill{height:100%;background:var(--green2);border-radius:2px;transition:width .3s}
-.sp-val{width:16px;text-align:right;color:var(--muted);font-size:10px}
+.sp-val{width:18px;text-align:right;color:var(--muted);font-size:11px}
 /* Tap button */
-.tap-btn{width:100%;padding:16px;background:linear-gradient(135deg,#2a3a18,#1a2a10);
+.tap-btn{width:100%;padding:20px;background:linear-gradient(135deg,#2a3a18,#1a2a10);
 color:var(--green);border:2px solid #3a4a28;border-radius:8px;font-family:'Courier New',monospace;
-font-size:16px;font-weight:bold;cursor:pointer;text-align:center;letter-spacing:2px;
+font-size:18px;font-weight:bold;cursor:pointer;text-align:center;letter-spacing:2px;
 text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 .tap-btn:active{transform:scale(.95);box-shadow:0 0 20px rgba(74,255,74,.2) inset}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -158,16 +158,16 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 .loot-item{
   display:flex;align-items:center;gap:8px;
   background:#1a1a10;border:1px solid #3a3828;border-radius:6px;
-  padding:8px;cursor:pointer
+  padding:10px;cursor:pointer;min-height:48px
 }
 .loot-item:active{transform:scale(.98);filter:brightness(1.08)}
 .loot-item.taken{opacity:.45;filter:grayscale(.2)}
 .loot-item-icon{
-  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
-  background:#0f0f08;border:1px solid #2a2818;border-radius:6px;font-size:18px;flex:0 0 auto
+  width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+  background:#0f0f08;border:1px solid #2a2818;border-radius:6px;font-size:20px;flex:0 0 auto
 }
-.loot-item-name{flex:1;font-size:11px}
-.loot-item-tick{color:var(--green);font-size:16px}
+.loot-item-name{flex:1;font-size:12px}
+.loot-item-tick{color:var(--green);font-size:18px}
 /* Perk screen */
 #PO{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;display:none;
   justify-content:center;align-items:center;padding:16px}
@@ -175,14 +175,14 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 #PP{background:var(--panel);border:2px solid var(--amber);border-radius:10px;
   padding:14px;width:96%;max-width:400px;max-height:90vh;overflow-y:auto}
 .perk-card{background:#1e1e10;border:1px solid #3a3828;border-radius:8px;
-  padding:10px 12px;margin:6px 0;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+  padding:12px 14px;margin:6px 0;cursor:pointer;transition:border-color .15s,background .15s;position:relative;min-height:52px}
 .perk-card:active{transform:scale(.98)}
 .perk-card.selected{border-color:var(--amber);background:#2a2a14}
 .perk-card.locked{opacity:.38;cursor:not-allowed}
-.perk-icon{font-size:26px;flex:0 0 auto;width:38px;text-align:center}
-.perk-name{font-size:13px;font-weight:bold;color:var(--amber)}
-.perk-desc{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4}
-.perk-req{font-size:9px;color:var(--red);margin-top:3px}
+.perk-icon{font-size:28px;flex:0 0 auto;width:40px;text-align:center}
+.perk-name{font-size:14px;font-weight:bold;color:var(--amber)}
+.perk-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.45}
+.perk-req{font-size:10px;color:var(--red);margin-top:3px}
 /* Crafting */
 .craft-card{background:#1a1a10;border:1px solid #2a2818;border-radius:6px;padding:8px 10px;margin:5px 0}
 .craft-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -206,11 +206,11 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 </div>
 </div>
 <div id="N">
-<button onclick="switchTab('world')" id="nb-world" class="A"><i><img src="NVImages/WorldIcon.png" style="width:22px;height:22px;object-fit:contain;display:block;margin:0 auto"></i>World</button>
-<button onclick="switchTab('char')" id="nb-char"><i><img src="NVImages/CharIcon.png" style="width:22px;height:22px;object-fit:contain;display:block;margin:0 auto"></i>Char</button>
-<button onclick="switchTab('inv')" id="nb-inv"><i><img src="NVImages/ItemsIcon.png" style="width:22px;height:22px;object-fit:contain;display:block;margin:0 auto"></i>Items</button>
-<button onclick="switchTab('roads')" id="nb-roads"><i><img src="NVImages/TravelIcon.png" style="width:22px;height:22px;object-fit:contain;display:block;margin:0 auto"></i>Travel</button>
-<button onclick="switchTab('log')" id="nb-log"><i><img src="NVImages/LogIcon.png" style="width:22px;height:22px;object-fit:contain;display:block;margin:0 auto"></i>Log</button>
+<button onclick="switchTab('world')" id="nb-world" class="A"><i><img src="NVImages/WorldIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>World</button>
+<button onclick="switchTab('char')" id="nb-char"><i><img src="NVImages/CharIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Char</button>
+<button onclick="switchTab('inv')" id="nb-inv"><i><img src="NVImages/ItemsIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Items</button>
+<button onclick="switchTab('roads')" id="nb-roads"><i><img src="NVImages/TravelIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Travel</button>
+<button onclick="switchTab('log')" id="nb-log"><i><img src="NVImages/LogIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Log</button>
 </div>
 <div id="BO"><div id="BI"></div></div>
 <div id="TO">
@@ -232,13 +232,14 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 // ============================================================
 // UTILITIES
 // ============================================================
-const $=id=>document.getElementById(id);
+const $=id=>{const e=document.getElementById(id);return e};
 const el=(t,c,h)=>{const e=document.createElement(t||'div');if(c)e.className=c;if(h)e.innerHTML=h;return e};
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
-function rndA(a){return a[Math.floor(Math.random()*a.length)]}
+function rndA(a){if(!a||!a.length)return undefined;return a[Math.floor(Math.random()*a.length)]}
 function R(){return Math.random()}
-function clone(o){return JSON.parse(JSON.stringify(o))}
-function notify(m,d=2200){const n=$('NF');n.textContent=m;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),d)}
+function clone(o){try{return JSON.parse(JSON.stringify(o))}catch(e){return o}}
+function safeGet(el,fn){try{if(el)fn(el)}catch(e){}}
+function notify(m,d=2200){const n=$('NF');if(!n)return;n.textContent=m;n.classList.add('show');setTimeout(()=>n.classList.remove('show'),d)}
 function showResult(title,emoji,lines,btnText,btnFn){
   const rp=$('RP');const bg=$('RBG');
   rp.innerHTML=`<div style="font-size:40px;margin-bottom:8px">${emoji}</div><div style="font-size:15px;font-weight:bold;margin-bottom:8px;color:var(--amber)">${title}</div>${lines.map(l=>'<div style="font-size:11px;margin:3px 0;color:var(--muted)">'+l+'</div>').join('')}<button class="bt go" style="margin-top:10px;text-align:center" onclick="closeResult();${btnFn||''}">${btnText||'Continue'}</button>`;
@@ -246,8 +247,8 @@ function showResult(title,emoji,lines,btnText,btnFn){
   requestAnimationFrame(()=>requestAnimationFrame(()=>{rp.classList.add('show');bg.classList.add('show')}));
 }
 function closeResult(){$('RP').classList.remove('show');$('RBG').classList.remove('show');setTimeout(()=>{$('RP').style.display='none';$('RBG').style.display='none'},200)}
-function openDlg(h){$('DB').innerHTML=h;$('DO').classList.add('A')}
-function closeDlg(){$('DO').classList.remove('A')}
+function openDlg(h){const db=$('DB'),dlg=$('DO');if(!db||!dlg)return;db.innerHTML=h;dlg.classList.add('A')}
+function closeDlg(){const dlg=$('DO');if(dlg)dlg.classList.remove('A')}
 
 function getBonusLootPool(locId,area){
   const loc=LOCS[locId];
@@ -1280,7 +1281,7 @@ flags:{},
 carryCap:120,
 };
 
-function serializeSave(){return JSON.stringify(S)}
+function serializeSave(){try{return JSON.stringify(S)}catch(e){return null}}
 function canUseStorage(){
   try{return typeof localStorage!=='undefined'}catch(e){return false}
 }
@@ -1376,6 +1377,7 @@ function save(force=false){
   if(!force&&now-_lastSaveStamp<150)return true;
   try{
     const raw=serializeSave();
+    if(!raw)return false; // serializeSave failed
     _lastSerialized=raw;
     writeLocalCopies(raw,now);
     saveToIndexedDb(raw);
@@ -1384,8 +1386,7 @@ function save(force=false){
   }catch(e){
     try{
       const raw=_lastSerialized||serializeSave();
-      writeLocalCopies(raw,Date.now());
-      saveToIndexedDb(raw)
+      if(raw){writeLocalCopies(raw,Date.now());saveToIndexedDb(raw)}
     }catch(err){}
     return false
   }
@@ -1489,6 +1490,7 @@ function migrate(){
   if(S.isMale===undefined)S.isMale=true;
   if(!S.recentEncounters)S.recentEncounters=[];
   if(S.carryCap===undefined)S.carryCap=120;
+  if(!S.lastScavengeTick)S.lastScavengeTick=null;
 }
 
 
@@ -1757,7 +1759,7 @@ function log(text,type='n'){
   if(S.log.length>40)S.log.pop();
   // Ticker
   const ti=$('ticker-inner');
-  if(ti){ti.textContent=text.replace(/<[^>]*>/g,'');ti.classList.add('show');
+  if(ti){ti.textContent=(text||'').replace(/<[^>]*>/g,'');ti.classList.add('show');
   clearTimeout(window._tt);window._tt=setTimeout(()=>ti.classList.remove('show'),3000)}
 }
 
@@ -1766,8 +1768,9 @@ function log(text,type='n'){
 // ============================================================
 function switchTab(t){
   ['world','char','inv','roads','log'].forEach(id=>{
-    $(id+'-tab').classList.toggle('A',id===t);
-    $('nb-'+id).classList.toggle('A',id===t);
+    const tab=$(id+'-tab'),btn=$('nb-'+id);
+    if(tab)tab.classList.toggle('A',id===t);
+    if(btn)btn.classList.toggle('A',id===t);
   });
   refreshActiveTab();
 }
@@ -1782,14 +1785,15 @@ function refreshActiveTab(){
 function upAll(){upSB();refreshActiveTab();save();queueSave(220)}
 
 function upSB(){
-  const sb=$('SB');if(!S)return;
+  const sb=$('SB');if(!S||!sb)return;
   const hp=hpPct(S.hp,S.maxHp);
   const cw=currentCarryWeight(), cap=carryCapacity(), ow=overEncumbered();
+  const nearFull=!ow&&(cw/cap)>=0.8;
   sb.innerHTML=`<div class="s">❤ <b class="${hp<=25?'r':''}">${S.hp}/${S.maxHp}</b></div>
-  <div class="s">⚡ <b>${S.ap}</b></div>
+  <div class="s">⚡ <b style="color:${S.ap<20?'var(--red)':'inherit'}">${S.ap}</b></div>
   <div class="s">💰 <b>${S.caps}</b></div>
   <div class="s">⭐ <b>Lv${S.level}</b></div>
-  <div class="s">🎒 <b class="${ow?'r':''}">${fmtWeight(cw)}/${fmtWeight(cap)}kg</b></div>
+  <div class="s">🎒 <b class="${ow?'r':nearFull?'':''}" style="${nearFull?'color:var(--amber2)':''}">${fmtWeight(cw)}/${fmtWeight(cap)}kg</b></div>
   <div class="s">📅 <b>D${S.days}</b></div>`;
 }
 
@@ -1816,9 +1820,11 @@ function upWorld(){
 
   // Scavenge tap button
   tab.appendChild(el('div','sh','Scavenge'));
+  const lastSc=S.lastScavengeTick||0;
+  const hrsSince=lastSc?Math.floor((S.hours+(S.days-lastSc.day)*24)-lastSc.hour):null;
   const tapDiv=el('div','');
   tapDiv.innerHTML=`<button class="tap-btn" onclick="doScavenge()">⛏ SCAVENGE ${loc.n}</button>
-  <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:3px">Tap to search for loot, caps, and encounters</div>`;
+  <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:3px">${hrsSince!==null?`Last searched ${hrsSince}h ago · `:''}Tap to search for loot, caps, and encounters</div>`;
   tab.appendChild(tapDiv);
 
   // Surroundings
@@ -1865,6 +1871,17 @@ function upWorld(){
     fc.innerHTML=`<div style="font-size:11px">Standing: <b style="color:${rep>=0?'var(--green)':'var(--red)'}">[ ${repLabel} ] ${rep>=0?'+':''}${rep}</b></div>`;
     tab.appendChild(fc);
   }
+
+  // Active World Events
+  if(S.worldEvents&&S.worldEvents.length){
+    tab.appendChild(el('div','sh','Mojave Intel'));
+    S.worldEvents.forEach(ev=>{
+      const daysLeft=Math.max(0,ev.duration-(S.days-ev.started));
+      const typeColor=ev.type==='raid'?'var(--red)':ev.type==='military'?'var(--amber)':ev.type==='trade'?'var(--green)':'var(--muted)';
+      const typeIcon=ev.type==='raid'?'⚠':ev.type==='military'?'🛡':ev.type==='trade'?'🐪':ev.type==='crisis'?'💧':'📰';
+      tab.appendChild(el('div','cd',`<div style="font-size:11px"><span style="color:${typeColor}">${typeIcon} ${ev.title}</span></div><div style="font-size:10px;color:var(--muted);margin-top:2px">Expires in ${daysLeft} day${daysLeft!==1?'s':''}</div>`));
+    });
+  }
 }
 
 // ============================================================
@@ -1873,6 +1890,7 @@ function upWorld(){
 function doScavenge(){
   if(combat)return;
   S.scavengeCount++;
+  S.lastScavengeTick={day:S.days,hour:S.hours||8};
   advanceTime(1);
   const loc=LOCS[S.loc];
   const r=R();
@@ -2858,6 +2876,13 @@ function renderCombat(){
 
   const alive=combat.enemies.filter(en=>en.hp>0);
   const hp=hpPct(S.hp,S.maxHp);
+  const ap=hpPct(S.ap,S.maxAp);
+
+  // Count usable healing items
+  const stimpakCount=countItem('stimpak');
+  const superStimpakCount=countItem('super_stimpak');
+  const healCount=stimpakCount+superStimpakCount;
+  const healLabel=healCount>0?`💉 Heal (${healCount} left)`:'💉 No Heals';
 
   let enemyHtml=alive.map((en)=>`<div class="combat-panel" style="margin:2px 0;padding:6px">
   <div style="display:flex;align-items:center;gap:8px">
@@ -2866,19 +2891,20 @@ function renderCombat(){
   <div class="hb"><div class="hf cr" style="width:${hpPct(en.hp,en.maxHp)}%"></div></div>
   <div style="font-size:9px;color:var(--muted)">HP ${en.hp}/${en.maxHp} · ATK ${en.a} · DEF ${en.d}</div></div></div></div>`).join('');
 
-  panel.innerHTML=`<div style="text-align:center;font-size:10px;color:var(--amber);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">⚔ COMBAT ⚔</div>
+  panel.innerHTML=`<div style="text-align:center;font-size:10px;color:var(--amber);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">⚔ COMBAT · Turn ${combat.turn+1} ⚔</div>
   ${enemyHtml}
   <div style="margin:6px 0;padding:6px;background:#0a1a0a;border-radius:4px;border:1px solid #1a3a1a">
-  <div style="display:flex;justify-content:space-between;font-size:11px"><span>❤ ${S.hp}/${S.maxHp}</span><span>⚡ AP ${S.ap}</span></div>
-  <div class="hb"><div class="hf g" style="width:${hp}%"></div></div>
+  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span>❤ ${S.hp}/${S.maxHp}</span><span style="color:${S.ap>=20?'var(--ap-blue)':'var(--red)'}">⚡ AP ${S.ap}/${S.maxAp}</span></div>
+  <div class="hb"><div class="hf ${hp<=25?'cr':'g'}" style="width:${hp}%"></div></div>
+  <div class="hb" style="margin-top:3px"><div class="hf ap" style="width:${ap}%"></div></div>
   <div style="font-size:10px;color:var(--muted);margin-top:4px">${(()=>{const w=getEquippedWeapon();if(!w)return 'Weapon: Unarmed';if(!w.ammo)return `Weapon: ${w.e} ${w.n}`;const ammoId=w.ammo;const ammo=ITEMS[ammoId];const ammoCount=countItem(ammoId);return `Weapon: ${w.e} ${w.n} · ${ammo?ammo.e+' '+ammo.n:''} ×${ammoCount}`})()}</div></div>
   <div class="combat-bar">
   <button class="bt go" onclick="combatAction('attack')">⚔ Attack</button>
-  <button class="bt pip" onclick="combatAction('vats')">🎯 V.A.T.S.</button></div>
+  <button class="bt pip" onclick="combatAction('vats')" ${S.ap<20?'disabled':''}>🎯 V.A.T.S. (20 AP)</button></div>
   <div class="combat-bar">
-  <button class="bt" onclick="combatAction('heal')">💉 Heal</button>
+  <button class="bt${healCount===0?' ':' pip'}" onclick="combatAction('heal')" ${healCount===0?'disabled':''}>${healLabel}</button>
   <button class="bt dn" onclick="combatAction('flee')">🏃 Flee</button></div>
-  <div style="max-height:100px;overflow-y:auto;margin-top:6px;padding:4px;background:#0a0a04;border-radius:4px;font-size:10px;color:var(--muted)">${combat.log.slice(-8).map(l=>'<div>'+l+'</div>').join('')}</div>`;
+  <div style="max-height:90px;overflow-y:auto;margin-top:6px;padding:4px;background:#0a0a04;border-radius:4px;font-size:10px;color:var(--muted)">${combat.log.slice(-8).map(l=>'<div>'+l+'</div>').join('')}</div>`;
 }
   
 function combatAction(act){
@@ -4982,11 +5008,36 @@ function upChar(){
   if(active.length){
     tab.appendChild(el('div','sh','Active Quests'));
     active.forEach(q=>{
-      const prog=q.progText|| (q.t==='kill'?`${q.kd||0}/${q.kc}`:q.t==='fetch'?`${q.fd||0}/${q.fc}`:q.t==='explore'?`${q.ed||0}/${q.ec}`:'');
+      let progPct=0,progText='';
+      if(q.t==='kill'){const kd=q.kd||0;progPct=Math.min(100,Math.round(kd/q.kc*100));progText=`${kd}/${q.kc} killed`}
+      else if(q.t==='fetch'){const fd=q.fd||0;progPct=Math.min(100,Math.round(fd/q.fc*100));progText=`${fd}/${q.fc} collected`}
+      else if(q.t==='explore'){const ed=q.ed||0;progPct=Math.min(100,Math.round(ed/q.ec*100));progText=`${ed}/${q.ec} areas`}
+      else{progText=q.progText||'In progress'}
       tab.appendChild(el('div','qc',`<div style="font-weight:bold;font-size:12px">📜 ${q.name}</div>
-      <div style="font-size:10px;color:var(--muted)">${q.desc}</div>
-      <div style="font-size:10px;color:var(--green);margin-top:2px">Progress: ${prog} · 💰 ${q.rg} · ⭐ ${q.rx}</div>`));
+      <div style="font-size:10px;color:var(--muted);margin:2px 0">${q.desc}</div>
+      ${progPct>0?`<div class="hb" style="margin:4px 0"><div class="hf g" style="width:${progPct}%"></div></div>`:''}
+      <div style="font-size:10px;color:var(--green);">${progText} · 💰 ${q.rg} · ⭐ ${q.rx}</div>`));
     });
+  }
+
+  // Faction Standings
+  const repEntries=Object.entries(S.rep||{}).filter(([fac,val])=>val!==0&&FACTIONS[fac]);
+  if(repEntries.length){
+    tab.appendChild(el('div','sh','Faction Standings'));
+    const fc=el('div','cd');
+    fc.innerHTML=repEntries.map(([fac,rep])=>{
+      const label=rep>=50?'Idolized':rep>=30?'Liked':rep>=10?'Accepted':rep>=0?'Neutral':rep>=-20?'Shunned':'Vilified';
+      const col=rep>=10?'var(--green)':rep>=0?'var(--muted)':'var(--red)';
+      const pct=Math.max(0,Math.min(100,Math.round((rep+50)/100*100)));
+      return `<div style="margin:4px 0">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+          <span style="color:var(--amber)">${FACTIONS[fac]||fac}</span>
+          <span style="color:${col}">${label} (${rep>=0?'+':''}${rep})</span>
+        </div>
+        <div class="hb"><div class="hf ${rep>=0?'g':'cr'}" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('');
+    tab.appendChild(fc);
   }
 
   // Relationships
@@ -5014,15 +5065,32 @@ function upInv(){
   const b2=S.gear.body?ITEMS[S.gear.body]:null;
   const h=S.gear.head?ITEMS[S.gear.head]:null;
   gear.innerHTML=`<div style="font-size:11px">
-  <div>🔫 Weapon: <b>${w?w.e+' '+w.n:'— None —'}</b>${w?' (ATK +'+w.a+')':''}</div>
-  ${w&&w.ammo?`<div>🔸 Ammo: <b>${ITEMS[w.ammo]?.n||'Ammo'} ×${countItem(w.ammo)}</b> <span style="color:var(--muted)">(uses 1 per attack)</span></div>`:''}
-  <div>🧥 Body: <b>${b2?b2.e+' '+b2.n:'— None —'}</b>${b2?' (DEF +'+b2.d+')':''}</div>
-  <div>🪖 Head: <b>${h?h.e+' '+h.n:'— None —'}</b>${h?' (DEF +'+h.d+')':''}</div><div style="margin-top:4px">🎒 Carry: <b style="color:${overEncumbered()?'var(--red)':'var(--green)'}">${fmtWeight(currentCarryWeight())}/${fmtWeight(carryCapacity())}kg</b></div></div>`;
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+    <span>🔫 Weapon: <b>${w?w.e+' '+w.n:'— None —'}</b>${w?' (ATK +'+w.a+')':''}</span>
+    ${w?`<button class="bt sm dn" style="margin:0" onclick="unequipSlot('w')">Unequip</button>`:''}
+  </div>
+  ${w&&w.ammo?`<div style="margin-bottom:2px">🔸 Ammo: <b>${ITEMS[w.ammo]?.n||'Ammo'} ×${countItem(w.ammo)}</b> <span style="color:var(--muted)">(uses 1 per attack)</span></div>`:''}
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+    <span>🧥 Body: <b>${b2?b2.e+' '+b2.n:'— None —'}</b>${b2?' (DEF +'+b2.d+')':''}</span>
+    ${b2?`<button class="bt sm dn" style="margin:0" onclick="unequipSlot('body')">Unequip</button>`:''}
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+    <span>🪖 Head: <b>${h?h.e+' '+h.n:'— None —'}</b>${h?' (DEF +'+h.d+')':''}</span>
+    ${h?`<button class="bt sm dn" style="margin:0" onclick="unequipSlot('head')">Unequip</button>`:''}
+  </div>
+  <div>🎒 Carry: <b style="color:${overEncumbered()?'var(--red)':'var(--green)'}">${fmtWeight(currentCarryWeight())}/${fmtWeight(carryCapacity())}kg</b></div></div>`;
   tab.appendChild(gear);
 
   // Inventory
+  const carryWarn=overEncumbered()?'cr':carryPct()>=80?'lo':'g';
   tab.appendChild(el('div','sh',`Inventory (${S.inv.length} items)`));
-  tab.appendChild(el('div','cd',`<div style="font-size:11px">Carry Weight: <b style="color:${overEncumbered()?'var(--red)':'var(--green)'}">${fmtWeight(currentCarryWeight())}/${fmtWeight(carryCapacity())}kg</b></div><div class="hb" style="margin-top:6px"><div class="hf ${overEncumbered()?'cr':'lo'}" style="width:${carryPct()}%"></div></div>`));
+  const invCtrl=el('div','cd');
+  invCtrl.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+    <div style="flex:1"><div style="font-size:11px;margin-bottom:3px">🎒 Carry: <b style="color:${overEncumbered()?'var(--red)':carryPct()>=80?'var(--amber2)':'var(--green)'}">${fmtWeight(currentCarryWeight())}/${fmtWeight(carryCapacity())}kg${overEncumbered()?' OVER!':carryPct()>=80?' Heavy':''}</b></div>
+    <div class="hb"><div class="hf ${carryWarn}" style="width:${carryPct()}%"></div></div></div>
+    <button class="bt sm" onclick="sellJunk()" style="white-space:nowrap;flex-shrink:0">💰 Sell Junk</button>
+  </div>`;
+  tab.appendChild(invCtrl);
   if(!S.inv.length){tab.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">Empty.</div>'));return}
 
   const counts={};S.inv.forEach(id=>{counts[id]=(counts[id]||0)+1});
@@ -5059,6 +5127,33 @@ function dropItem(id){
   const idx=S.inv.indexOf(id);if(idx===-1)return;
   S.inv.splice(idx,1);log('Dropped '+ITEMS[id]?.n+'.','n');upInv();save();
 }
+function unequipSlot(slot){
+  if(!S.gear||!S.gear[slot])return;
+  const id=S.gear[slot];
+  giveItem(id,1,{ignoreLimit:true,silent:true});
+  S.gear[slot]=null;
+  log('Unequipped '+(ITEMS[id]?.n||id)+'.','n');
+  notify('Unequipped '+(ITEMS[id]?.n||id));
+  upInv();save();
+}
+function sellJunk(){
+  // Sell all material-type items (type 'm') at half price
+  const junkIds=S.inv.filter(id=>ITEMS[id]&&ITEMS[id].t==='m');
+  if(!junkIds.length){notify('No junk to sell.');return}
+  let total=0;
+  const sold={};
+  junkIds.forEach(id=>{
+    total+=Math.floor((ITEMS[id].p||0)*0.5);
+    sold[id]=(sold[id]||0)+1;
+  });
+  S.inv=S.inv.filter(id=>!(ITEMS[id]&&ITEMS[id].t==='m'));
+  S.caps+=total;
+  S.capsEarned=(S.capsEarned||0)+total;
+  const names=Object.entries(sold).map(([id,n])=>`${ITEMS[id]?.n||id}${n>1?' ×'+n:''}`).join(', ');
+  log(`Sold junk: ${names} for ${total} caps.`,'e');
+  notify(`💰 Sold junk for ${total} caps`);
+  upInv();upSB();save();
+}
 
 // ============================================================
 // TRAVEL TAB
@@ -5070,8 +5165,9 @@ function upRoads(){
   if(!Object.keys(roads).length){tab.appendChild(el('div','cd','No known routes.'));return}
   Object.entries(roads).forEach(([dest,days])=>{
     const loc=LOCS[dest];if(!loc)return;
+    const dgColor=loc.dg>=4?'var(--red)':loc.dg>=2?'var(--amber2)':'var(--muted)';
     const dc=el('div','bc');
-    dc.innerHTML=`<div style="font-size:28px">${loc.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:13px">${loc.n}</div><div style="font-size:10px;color:var(--muted)">${loc.r} · ${days} day${days>1?'s':''} · ${'☠'.repeat(loc.dg)}</div><div style="font-size:10px;color:var(--muted);font-style:italic">${loc.d.substring(0,50)}${loc.d.length>50?'...':''}</div></div><div style="color:var(--muted)">›</div>`;
+    dc.innerHTML=`<div style="font-size:28px">${loc.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:13px">${loc.n}</div><div style="font-size:10px;color:var(--muted)">${loc.r} · ~${days} day${days>1?'s':''} · <span style="color:${dgColor}">${'☠'.repeat(loc.dg)||'Safe'}</span></div><div style="font-size:10px;color:var(--muted);font-style:italic">${loc.d.substring(0,50)}${loc.d.length>50?'...':''}</div></div><div style="color:var(--muted)">›</div>`;
     dc.onclick=()=>beginTravel(dest,days);
     tab.appendChild(dc);
   });
@@ -5258,11 +5354,28 @@ function worldTick(){
 // ============================================================
 // INIT
 // ============================================================
+// Global error shield — catches any uncaught JS exception and shows
+// a brief non-intrusive toast rather than silently breaking.
+window.addEventListener('error',ev=>{
+  if(S)queueSave(50); // emergency save on any error
+  console.error('[FNV-RPG]',ev.message,ev.filename,ev.lineno);
+});
+window.addEventListener('unhandledrejection',ev=>{
+  if(S)queueSave(50);
+  console.error('[FNV-RPG promise]',ev.reason);
+});
+
 (async function init(){
-  bindAutoSave();
-  startAutoSaveLoop();
-  requestPersistentStorage();
-  if(await loadAsync()){upAll();save(true);snapshotState()}else{newGame()}
+  try{
+    bindAutoSave();
+    startAutoSaveLoop();
+    requestPersistentStorage();
+    if(await loadAsync()){upAll();save(true);snapshotState()}else{newGame()}
+  }catch(e){
+    console.error('[FNV-RPG init error]',e);
+    // Last-resort: try to boot a new game if init fails
+    try{newGame()}catch(e2){console.error('[FNV-RPG] Fatal init failure',e2)}
+  }
 })();
 </script>
 </body>
