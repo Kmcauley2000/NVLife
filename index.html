@@ -190,6 +190,27 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
   border:1px solid #2a2818;border-radius:4px;padding:2px 6px;font-size:10px}
 .craft-mat.ok{border-color:#2a4a18;color:var(--green)}
 .craft-mat.missing{border-color:#4a1818;color:var(--red)}
+
+/* Encounter/icon image size safety */
+#TS{display:flex;align-items:center;justify-content:center;min-height:74px;text-align:center}
+#TS img,#TS svg,#TS .icon-wrap{
+  width:64px!important;height:64px!important;
+  max-width:64px!important;max-height:64px!important;
+  object-fit:contain!important;display:block!important;margin:0 auto!important
+}
+#TT img,#TT svg,#TT .icon-wrap,
+#TC img,#TC svg,#TC .icon-wrap{
+  width:42px!important;height:42px!important;
+  max-width:42px!important;max-height:42px!important;
+  object-fit:contain!important;display:inline-flex!important;vertical-align:middle!important
+}
+.loot-item-icon img,.loot-item-icon svg,
+.inv-card img,.inv-card svg,
+.bc img,.bc svg,.bn img,.bn svg{
+  width:28px!important;height:28px!important;
+  max-width:28px!important;max-height:28px!important;
+  object-fit:contain!important;display:inline-block!important;vertical-align:middle!important
+}
 </style>
 </head>
 <body>
@@ -210,7 +231,7 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 <button onclick="switchTab('char')" id="nb-char"><i><img src="NVImages/CharIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Char</button>
 <button onclick="switchTab('inv')" id="nb-inv"><i><img src="NVImages/ItemsIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Items</button>
 <button onclick="switchTab('roads')" id="nb-roads"><i><img src="NVImages/TravelIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Travel</button>
-<button onclick="switchTab('log')" id="nb-log"><i><img src="NVImages/LogIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Log</button>
+<button onclick="switchTab('log')" id="nb-log"><i><img src="NVImages/LogIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>People</button>
 </div>
 <div id="BO"><div id="BI"></div></div>
 <div id="TO">
@@ -516,6 +537,11 @@ combat_armor:{n:"Combat Armor",t:"a",e:"🛡",d:18,p:350,w:20,slot:"body",rare:1
 power_armor:{n:"T-45d Power Armor",t:"a",e:"🤖",d:28,p:800,w:45,slot:"body",rare:2},
 headwrap:{n:"Head Wrap",t:"a",e:"🪖",d:1,p:5,w:1,slot:"head"},
 combat_helmet:{n:"Combat Helmet",t:"a",e:"🪖",d:4,p:40,w:3,slot:"head"},
+boones_beret:{n:"1st Recon Beret",t:"a",e:"🎖",d:2,p:180,w:0.1,slot:"head",rare:2,desc:"Boone's old 1st Recon beret. Light, lucky, and hard-earned."},
+boones_varmint_rifle:{n:"Boone's Scoped Varmint Rifle",t:"w",e:"🔭",a:24,p:260,w:5.5,ammo:"ammo_556",rare:2,desc:"A carefully maintained rifle from Craig Boone."},
+boone_bill_of_sale:{n:"Bill of Sale: Carla Boone",t:"m",e:"📄",p:0,w:0,rare:2,desc:"Proof that Carla Boone was sold to Caesar's Legion."},
+goodsprings_town_supplies:{n:"Goodsprings Town Supplies",t:"m",e:"📦",p:0,w:0,rare:1,desc:"Ammo, food, and spare goods Chet set aside for Goodsprings defence."},
+goodsprings_dynamite_bundle:{n:"Easy Pete Dynamite Bundle",t:"m",e:"🧨",p:0,w:0,rare:1,desc:"Old dynamite Easy Pete agreed to spare for the Goodsprings fight."},
 // Ammo
 ammo_9mm:{n:"9mm Rounds",t:"ammo",e:'<img src="NVImages/9mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:2,w:0,stack:1},
 ammo_10mm:{n:"10mm Rounds",t:"ammo",e:'<img src="NVImages/10mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:3,w:0,stack:1},
@@ -525,6 +551,8 @@ ammo_308:{n:".308 Rounds",t:"ammo",e:"🔸",p:5,w:0,stack:1},
 ammo_shells:{n:"Shotgun Shells",t:"ammo",e:"🔸",p:4,w:0,stack:1},
 energy_cell:{n:"Energy Cells",t:"ammo",e:"⚡",p:5,w:0,stack:1},
 doctor_bag:{n:"Doctor's Bag",t:"c",e:"🩹",hp:55,p:85,w:1},
+primm_sheriff_badge:{n:"Primm Sheriff's Badge",t:"m",e:"⭐",p:120,w:0,rare:2,desc:"A restored Primm badge from the sheriff's office."},
+primm_sheriff_papers:{n:"Primm Sheriff Paperwork",t:"m",e:"📄",p:45,w:0,rare:1,desc:"Authority papers for appointing a new sheriff in Primm."},
 cowboy_repeater:{n:"Cowboy Repeater",t:"w",e:"🔫",a:19,p:190,w:6,ammo:"ammo_357"},
 pickaxe:{n:"Pickaxe",t:"w",e:"⛏",a:11,p:55,w:8},
 // Materials
@@ -647,7 +675,9 @@ nightstalker: {n:"Night Stalker",      hp:40,  a:12, d:4,  xp:20,  e:ICONS.ENEMY
 nightkin:     {n:"Nightkin",           hp:100, a:25, d:12, xp:60,  e:ICONS.ENEMY.NIGHTKIN,       loot:["stealth_boy","super_stimpak"],                           type:'mutant',   fac:'SuperMutants'},
 feral_ghoul:  {n:"Feral Ghoul",        hp:35,  a:10, d:2,  xp:15,  e:ICONS.ENEMY.GHOUL,          loot:["stimpak","pre_war_money"],                               type:'undead',   fac:'wild'},
 convict:      {n:"Escaped Convict",    hp:30,  a:8,  d:3,  xp:12,  e:ICONS.ENEMY.CONVICT,        loot:["ammo_9mm","switchblade","sunset_sars"],                   type:'human',    fac:'PowderGangers', hostile:true},
+bison_convict_boss:{n:"Bison Steve Convict Boss",hp:48,a:13,d:5,xp:24,e:ICONS.ENEMY.CONVICT,loot:["pistol_10mm","ammo_10mm","pre_war_money","primm_sheriff_papers"],type:'human',fac:'PowderGangers',hostile:true},
 powder_ganger:{n:"Powder Ganger",      hp:35,  a:10, d:4,  xp:15,  e:ICONS.ENEMY.POWDER_GANGER,  loot:["dynamite","ammo_9mm","stimpak"],                         type:'human',    fac:'PowderGangers', hostile:true},
+joe_cobb:     {n:"Joe Cobb",            hp:55,  a:14, d:5,  xp:28,  e:ICONS.ENEMY.POWDER_GANGER,  loot:["dynamite","pistol_9mm","ammo_9mm","powder_charge"], type:'human', fac:'PowderGangers', hostile:true},
 freeside_thug:{n:"Freeside Thug",      hp:30,  a:7,  d:3,  xp:10,  e:ICONS.ENEMY.FREESIDE_THUG,  loot:["switchblade","jet","pre_war_money"],                     type:'human',    fac:'Freeside',      hostile:true},
 fiend:        {n:"Fiend",              hp:40,  a:14, d:5,  xp:20,  e:ICONS.ENEMY.FIEND,          loot:["jet","psycho","ammo_9mm","ammo_10mm","combat_knife","pistol_10mm"], type:'human', fac:'Fiends', hostile:true},
 legion_recruit:  {n:"Legion Recruit",  hp:40,  a:12, d:6,  xp:18,  e:ICONS.ENEMY.LEGION,         loot:["machete","healing_powder","legion_coin"],                type:'human',    fac:'Legion',        hostile:true},
@@ -804,6 +834,68 @@ function gsCompleteQuest(id){
   notify('📜 Quest Complete!');
   chkLU();queueSave();
 }
+
+function gsGhostQuest(){return gsFindQuest('gs_ghost_town_gunfight')}
+function gsGhostActive(){const q=gsGhostQuest();return !!(q&&!q.done)}
+function gsGhostDone(){const q=gsGhostQuest();return !!(q&&q.done)}
+function gsGhostCount(){return ['gs_ghost_trudy','gs_ghost_sunny','gs_ghost_chet','gs_ghost_pete'].filter(hasFlag).length}
+function gsGhostLine(){
+  const bits=[];
+  if(hasFlag('gs_ghost_trudy'))bits.push('Trudy rallied');
+  if(hasFlag('gs_ghost_sunny'))bits.push('Sunny ready');
+  if(hasFlag('gs_ghost_chet'))bits.push('Chet supplied');
+  if(hasFlag('gs_ghost_pete'))bits.push('Easy Pete armed');
+  return bits.length?bits.join(', '):'No town help recruited yet';
+}
+function gsUpdateGhostQuest(){
+  const q=gsGhostQuest();if(!q||q.done)return;
+  const n=gsGhostCount();
+  q.progText=`Recruit Goodsprings help, then start the fight from the Prospector Saloon (${n}/4 helped: ${gsGhostLine()}).`;
+}
+function gsStartGhostQuest(){
+  if(gsGhostDone()){closeDlg();showResult('Ringo','📦',['The Powder Ganger trouble is already settled.','Goodsprings still remembers who stood with them.'],'Continue','upAll()');return}
+  if(gsGhostActive()){gsUpdateGhostQuest();closeDlg();showResult('Ghost Town Gunfight','📜',[gsGhostQuest().progText],'Continue','upAll()');return}
+  S.quests.push({id:'gs_ghost_town_gunfight',name:'Ghost Town Gunfight',desc:'Ringo is hiding in Goodsprings while Joe Cobb and the Powder Gangers threaten the town. Recruit help, then defend the Prospector Saloon.',t:'custom',progText:'Recruit Goodsprings help, then start the fight from the Prospector Saloon (0/4 helped).',rg:160,rx:75,fac:'NCR',repBonus:8,giver:'Ringo',done:false});
+  log('Accepted: Ghost Town Gunfight','q');
+  closeDlg();showResult('New Quest!','📜',['<b>Ghost Town Gunfight</b>','Ringo needs help against Joe Cobb. Talk to Trudy, Sunny Smiles, Chet, and Easy Pete before starting the fight at the saloon.'],'Continue','upAll()');
+}
+function gsRecruitGhost(id,label,lines,item){
+  if(!gsGhostActive()){notify('No active town defence quest.');return}
+  const flag='gs_ghost_'+id;
+  if(hasFlag(flag)){notify(label+' is already helping.');return}
+  setFlag(flag);
+  if(item)giveItem(item,1,{ignoreLimit:true});
+  gsUpdateGhostQuest();
+  log(label+' agreed to help defend Goodsprings.','q');
+  closeDlg();showResult('Help Recruited','🤝',lines,'Continue','upAll()');
+}
+function gsStartGhostFight(){
+  const q=gsGhostQuest();
+  if(!q||q.done){notify('No Goodsprings fight to start.');return}
+  const n=gsGhostCount();
+  if(n<2){notify('Recruit at least 2 townsfolk first.');return}
+  setFlag('gs_ghost_fight_started');
+  closeBld();closeDlg();
+  const gang=[mkEnemy('joe_cobb'),mkEnemy('powder_ganger'),mkEnemy('powder_ganger')];
+  if(n<4)gang.push(mkEnemy('powder_ganger'));
+  combat={enemies:gang,turn:0,log:[`Joe Cobb and the Powder Gangers march on Goodsprings.`,`${gsGhostLine()}.`],questComplete:'gs_ghost_town_gunfight'};
+  renderCombat();
+}
+function gsFinishGhostQuest(lines){
+  const q=gsGhostQuest();if(!q||q.done)return lines;
+  setFlag('gs_ghost_fight_won');
+  const idx1=S.inv.indexOf('goodsprings_town_supplies');if(idx1!==-1)S.inv.splice(idx1,1);
+  const idx2=S.inv.indexOf('goodsprings_dynamite_bundle');if(idx2!==-1)S.inv.splice(idx2,1);
+  completeQuest(q);
+  giveItem('varmint_rifle',1,{ignoreLimit:true});
+  giveItem('ammo_556',3,{ignoreLimit:true});
+  S.karma=(S.karma||0)+5;
+  lines.push('📜 Ghost Town Gunfight complete');
+  lines.push('🔫 Varmint Rifle');
+  lines.push('🔸 5.56mm Rounds x3');
+  lines.push('⚖ +5 karma');
+  return lines;
+}
 function gsRefreshState(){
   const q1=gsFindQuest('gs_source_clear');
   if(q1&&!q1.done){
@@ -825,6 +917,7 @@ function gsRefreshState(){
     q3.progText=`Break up the raiders hitting roads near Goodsprings (${Math.min(pg,2)}/2 Powder Gangers, ${Math.min(conv,1)}/1 convict).`;
     if(pg>=2&&conv>=1)gsCompleteQuest('gs_powder_road');
   }
+  gsUpdateGhostQuest();
 }
 function gsStartQuest(id){
   if(gsFindQuest(id))return;
@@ -840,11 +933,13 @@ function openGoodspringsNPC(id){
   let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div><div class="npc-line">"${npc.line}"</div>`;
   if(id==='trudy'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Trudy','🍺',['Trudy says Goodsprings stays alive because people here still step up when trouble walks in armed.','She makes it clear the town has no interest in being pushed around by Powder Gangers or drifters.'],'Continue','upAll()')">🍺 Ask about Goodsprings</button>`;
+    if(gsGhostActive()&&!hasFlag('gs_ghost_trudy'))h+=`<button class="bt pip" onclick="gsRecruitGhost('trudy','Trudy',['Trudy agrees to stand with Ringo and talk the locals into backing the fight.','The saloon will not roll over for Joe Cobb.'])">🤝 Ask Trudy to rally the town</button>`;
     if(!gsFindQuest('gs_powder_road'))h+=`<button class="bt pip" onclick="gsStartQuest('gs_powder_road');closeDlg();showResult('Roadside Trouble','📜',['Trudy wants the raiders on the roads around Goodsprings thinned out before they start choking off trade completely.'],'Continue','upAll()')">📜 Offer to deal with the road trouble</button>`;
     if(gsQuestActive('gs_powder_road'))h+=`<button class="bt pip" onclick="closeDlg();showResult('Roadside Trouble','📜',['Take out 2 Powder Gangers and 1 escaped convict anywhere around the southern roads.'],'Continue','upAll()')">📜 Review Roadside Trouble</button>`;
     h+=`<button class="bt go" onclick="if(S.caps<6){notify('Not enough caps.');return}S.caps-=6;S.hp=Math.min(S.maxHp,S.hp+14);S.ap=Math.min(S.maxAp,S.ap+6);advanceTime(1);log('Trudy serves you a hot plate and a drink.','e');closeDlg();showResult('Prospector Saloon','🍲',['❤ +14 HP','⚡ +6 AP','⏰ 1 hour passed'],'Continue','upAll()')">🍲 Buy food and a drink (6 caps)</button>`;
   }else if(id==='sunny_smiles'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Sunny Smiles','🎯',['Sunny says Goodsprings Source is fine right up until something with teeth decides it is theirs instead.','She respects people who can keep the source usable and the roads safe.'],'Continue','upAll()')">🎯 Ask about hunting around town</button>`;
+    if(gsGhostActive()&&!hasFlag('gs_ghost_sunny'))h+=`<button class="bt pip" onclick="gsRecruitGhost('sunny','Sunny Smiles',['Sunny agrees to cover the saloon when Joe Cobb comes calling.','She tells you to keep your head down and shoot straight.'])">🤝 Ask Sunny to help with the fight</button>`;
     if(!gsFindQuest('gs_source_clear'))h+=`<button class="bt pip" onclick="gsStartQuest('gs_source_clear');closeDlg();showResult('Clean Water, Clear Source','📜',['Sunny wants 2 geckos and 1 bark scorpion taken out before the next water run turns ugly.'],'Continue','upAll()')">📜 Volunteer for the source run</button>`;
     if(gsQuestActive('gs_source_clear'))h+=`<button class="bt pip" onclick="closeDlg();showResult('Clean Water, Clear Source','📜',['Kill 2 geckos and 1 bark scorpion after taking Sunny\'s job. Goodsprings Source is the safest place to start.'],'Continue','upAll()')">📜 Review the source job</button>`;
     h+=`<button class="bt go" onclick="advanceTime(2);S.xp+=10;S.ap=Math.min(S.maxAp,S.ap+8);log('Sunny Smiles gives you a quick shooting lesson outside Goodsprings.','e');closeDlg();showResult('Field Lesson','🎯',['⭐ +10 XP','⚡ +8 AP','⏰ 2 hours passed'],'Continue','chkLU();upAll()')">🎯 Take a shooting lesson</button>`;
@@ -857,15 +952,18 @@ function openGoodspringsNPC(id){
     h+=`<button class="bt" onclick="closeDlg();openBld('doc_house')">🏠 Look around the house</button>`;
   }else if(id==='chet'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Chet','📦',['Chet says Goodsprings survives on practical people, practical prices, and not wasting ammo on heroics unless it pays.'],'Continue','upAll()')">📦 Ask about business in town</button>`;
+    if(gsGhostActive()&&!hasFlag('gs_ghost_chet'))h+=`<button class="bt pip" onclick="gsRecruitGhost('chet','Chet',['Chet complains the whole time, but he sets aside supplies for the defence.','📦 Goodsprings Town Supplies added'],'goodsprings_town_supplies')">📦 Talk Chet into supplies</button>`;
     h+=`<button class="bt go" onclick="openGoodspringsTrade()">💰 Browse Chet's stock</button>`;
   }else if(id==='easy_pete'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Easy Pete','🧨',['Easy Pete has strong feelings about dynamite, mostly that fools use too much of it and get buried by the results.'],'Continue','upAll()')">🧨 Ask about explosives</button>`;
+    if(gsGhostActive()&&!hasFlag('gs_ghost_pete'))h+=`<button class="bt pip" onclick="gsRecruitGhost('pete','Easy Pete',['Easy Pete decides you look steady enough not to blow up half the town.','🧨 Easy Pete Dynamite Bundle added'],'goodsprings_dynamite_bundle')">🧨 Ask Easy Pete for dynamite</button>`;
     h+=`<button class="bt go" onclick="if(S.caps<12){notify('Not enough caps.');return}S.caps-=12;const added=giveItem('dynamite');if(!added){S.caps+=12;return}log('Easy Pete parts with a stick of dynamite.','e');closeDlg();showResult('Easy Pete','🧨',['Dynamite added to inventory.'],'Continue','upAll()')">🧨 Buy dynamite (12 caps)</button>`;
     h+=`<button class="bt" onclick="if(S.caps<10){notify('Not enough caps.');return}const si=S.inv.indexOf('scrap');if(si===-1){notify('Need Scrap Metal.');return}S.caps-=10;S.inv.splice(si,1);S.atk+=1;advanceTime(1);log('Easy Pete helps you tune up your gear with old workshop know-how.','e');closeDlg();closeBld();showResult('Easy Pete','🔧',['⚔ +1 ATK','Used Scrap Metal','⏰ 1 hour passed'],'Continue','upAll()')">🔧 Ask Easy Pete to help tune your gear</button>`;
   }else if(id==='victor'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Victor','🤖',['Victor talks around the important parts in that smooth cowboy voice of his, like he knows more about you than he plans to say.'],'Continue','upAll()')">🤖 Ask why he helped you</button>`;
   }else if(id==='ringo'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Ringo','📦',['Ringo says lying low in Goodsprings stopped being quiet the second armed men started deciding they wanted his hide.'],'Continue','upAll()')">📦 Ask about the Powder Gangers</button>`;
+    if(!gsGhostDone())h+=`<button class="bt pip" onclick="gsStartGhostQuest()">📜 Help Ringo against Joe Cobb</button>`;
   }
   h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(GOODSPRINGS_NPCS['${id}'],S.relationships.find(r=>r.name===GOODSPRINGS_NPCS['${id}'].name))">💬 General social talk</button>`;
   h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
@@ -880,6 +978,58 @@ const PRIMM_NPCS={
   deputy_beagle:{name:"Deputy Beagle",male:true,age:39,role:"Primm deputy",icon:ICONS.NPC.LAW,line:"I am a deputy, you know. This town is in a terrible state."},
   lieutenant_hayes:{name:"Lieutenant Hayes",male:true,age:34,role:"NCR officer",icon:ICONS.NPC.NCR,line:"We can hold the roads, but Primm still needs real law and order."}
 };
+
+
+function primmFindQuest(id){return (S.quests||[]).find(q=>q.id===id)||null}
+function primmKindQuest(){return primmFindQuest('primm_my_kind_of_town')}
+function primmKindActive(){const q=primmKindQuest();return !!(q&&!q.done)}
+function primmKindDone(){const q=primmKindQuest();return !!(q&&q.done)}
+function primmKindReadyForSheriff(){return primmKindActive()&&hasFlag('primm_beagle_freed_for_quest')}
+function primmRefreshKindQuest(){
+  const q=primmKindQuest();if(!q||q.done)return;
+  if(hasFlag('primm_sheriff_chosen'))q.progText='Return to Johnson Nash at Vikki & Vance and tell him Primm has a sheriff.';
+  else if(hasFlag('primm_beagle_freed_for_quest'))q.progText='Choose Primm\'s new sheriff: reprogram Primm Slim, ask NCR under Hayes, or recruit Meyers from NCRCF.';
+  else q.progText='Go to the Bison Steve Hotel and free Deputy Beagle from the convicts.';
+}
+function primmStartKindQuest(){
+  if(primmKindDone()){closeDlg();showResult('My Kind of Town','⭐',['Primm already has a sheriff again.','The town is safer because of it.'],'Continue','upAll()');return}
+  if(primmKindActive()){primmRefreshKindQuest();closeDlg();showResult('My Kind of Town','📜',[primmKindQuest().progText],'Continue','upAll()');return}
+  S.quests.push({id:'primm_my_kind_of_town',name:'My Kind of Town',desc:'Primm needs law again. Free Deputy Beagle, then help the town choose a new sheriff.',t:'custom',progText:'Go to the Bison Steve Hotel and free Deputy Beagle from the convicts.',rg:95,rx:80,fac:'NCR',repBonus:6,giver:'Johnson Nash',done:false});
+  log('Accepted: My Kind of Town','q');
+  closeDlg();showResult('New Quest!','📜',['<b>My Kind of Town</b>','Johnson Nash says Primm cannot recover without law.','Start by freeing Deputy Beagle from the Bison Steve.'],'Continue','upAll()');
+}
+function primmFreeBeagleQuest(){
+  const q=primmKindQuest();
+  if(!q||q.done){notify('No active reason to risk that storage room.');return}
+  if(hasFlag('primm_beagle_freed_for_quest')){notify('Deputy Beagle is already free.');return}
+  setFlag('primm_beagle_freed_for_quest');setFlag('bison_beagle_rescued');
+  giveItem('primm_sheriff_papers',1,{ignoreLimit:true});
+  q.progText='Choose Primm\'s new sheriff: reprogram Primm Slim, ask NCR under Hayes, or recruit Meyers from NCRCF.';
+  advanceTime(1);
+  log('You free Deputy Beagle and recover Primm sheriff paperwork.','q');
+  closeBld();showResult('Deputy Rescued','👮',['You force open the storage room and drive off the convicts guarding Beagle.','📄 Primm Sheriff Paperwork added','Beagle says Primm needs a real sheriff.'],'Continue','upAll()');
+}
+function primmChooseSheriff(who){
+  const q=primmKindQuest();
+  if(!q||q.done){notify('Primm is not waiting on your decision.');return}
+  if(!hasFlag('primm_beagle_freed_for_quest')){notify('Free Deputy Beagle first.');return}
+  if(hasFlag('primm_sheriff_chosen')){notify('A sheriff has already been chosen.');return}
+  setFlag('primm_sheriff_chosen',who);
+  const names={slim:'Primm Slim',ncr:'NCR protection under Lieutenant Hayes',meyers:'Meyers'};
+  q.progText='Return to Johnson Nash at Vikki & Vance and tell him Primm has a sheriff.';
+  log('Chosen sheriff for Primm: '+(names[who]||who)+'.','q');
+  closeDlg();showResult('Sheriff Chosen','⭐',[`${names[who]||'A new sheriff'} will take responsibility for Primm.`,`Return to Johnson Nash at Vikki & Vance.`],'Continue','upAll()');
+}
+function primmFinishKindQuest(){
+  const q=primmKindQuest();
+  if(!q||q.done){closeDlg();showResult('Johnson Nash','📦',['Nash says Primm is trading again, slowly but surely.'],'Continue','upAll()');return}
+  primmRefreshKindQuest();
+  if(!hasFlag('primm_sheriff_chosen')){closeDlg();showResult('My Kind of Town','📜',[q.progText],'Continue','upAll()');return}
+  const idx=S.inv.indexOf('primm_sheriff_papers');if(idx!==-1)S.inv.splice(idx,1);
+  giveItem('primm_sheriff_badge',1,{ignoreLimit:true});
+  completeQuest(q);
+  closeDlg();showResult('My Kind of Town Complete','⭐',['Primm has law again.','Johnson Nash presses an old sheriff badge into your hand.','⭐ Primm Sheriff\'s Badge','💰 +95 caps','⭐ +80 XP'],'Continue','upAll()');
+}
 
 const NOVAC_NPCS={
   cliff_briscoe:{name:"Cliff Briscoe",male:true,age:49,role:"Dino Bite merchant",icon:ICONS.NPC.DINO,line:"If you want guns, toys, or a motel room, talk straight and pay in caps."},
@@ -1267,7 +1417,7 @@ rep:{NCR:0,Legion:0,House:0,BOS:0,Followers:0,Kings:0,Khans:0,PowderGangers:0},
 kills:{},days:1,hours:8,log:[],karma:0,
 bg:null,class:'courier',
 // Social
-spouse:null,children:[],companions:[],relationships:[],
+spouse:null,children:[],companions:[],relationships:[],localContacts:{},
 buildingNpcs:{},
 properties:[],
 age:25,isMale:true,
@@ -1471,6 +1621,7 @@ function migrate(){
   if(!S.ap)S.ap=60;if(!S.maxAp)S.maxAp=60;
   if(!S.worldEvents)S.worldEvents=[];
   if(!S.relationships)S.relationships=[];
+  if(!S.localContacts)S.localContacts={};
   if(!S.buildingNpcs)S.buildingNpcs={};
   if(!S.spouse)S.spouse=null;
   if(!S.children)S.children=[];
@@ -1780,7 +1931,7 @@ function refreshActiveTab(){
   if($('char-tab').classList.contains('A'))upChar();
   if($('inv-tab').classList.contains('A'))upInv();
   if($('roads-tab').classList.contains('A'))upRoads();
-  if($('log-tab').classList.contains('A'))upLog();
+  if($('log-tab').classList.contains('A'))upPeople();
 }
 function upAll(){upSB();refreshActiveTab();save();queueSave(220)}
 
@@ -1956,9 +2107,9 @@ Goodsprings:[
   {id:'gs_powder_threat',icon:'🧨',title:'Powder Ganger Scout',
    body:'A lone Powder Ganger is watching the road from behind a rock. He hasn\'t spotted you yet.',
    choices:[
-     {label:'🤫 Sneak past',fn:()=>{log('Slipped past the Powder Ganger scout.','e');advanceTime(1)},result:'You move quietly through the brush. He never sees you.'},
+     {label:'🤫 Sneak past [AGI check]',fn:()=>{const agi=statVal(5);if(R()<checkChance(agi,6)){log('Slipped past the Powder Ganger scout.','e');advanceTime(1);return'You move quietly through the brush. He never sees you.'}startCombatCard('powder_ganger');return null},result:'Agility gives you an attempt, not a guarantee.'},
      {label:'⚔ Take him out',fn:()=>{startCombatCard('powder_ganger')},result:'You close the distance fast.'},
-     {label:'💬 Bluff — you\'re with the gangers',fn:()=>{if((S.special?S.special[3]:5)>=5){S.rep.PowderGangers=(S.rep.PowderGangers||0)+1;log('Bluffed a Powder Ganger scout.','e');return'He buys it and waves you off. +1 Powder Ganger standing.'}else{startCombatCard('powder_ganger');return null}},result:'The bluff lands — he waves you through.'},
+     {label:'💬 Bluff — you\'re with the gangers [CHA check]',fn:()=>{const cha=statVal(3);if(R()<checkChance(cha,5)){S.rep.PowderGangers=(S.rep.PowderGangers||0)+1;log('Bluffed a Powder Ganger scout.','e');return'He buys it and waves you off. +1 Powder Ganger standing.'}startCombatCard('powder_ganger');return null},result:'Charisma gives you an attempt. If it fails, he reaches for his weapon.'},
    ]},
   {id:'gs_settler_help',icon:'👩',title:'Settler in Trouble',
    body:'A Goodsprings settler is crouched behind a broken fence post, a gecko circling nearby.',
@@ -1987,7 +2138,7 @@ Primm:[
    body:'Two convicts are shaking down a caravan driver at gunpoint. The driver catches your eye — desperate.',
    choices:[
      {label:'⚔ Jump the convicts',fn:()=>{startCombatCard('convict',2);S.karma+=3;S.rep.NCR=(S.rep.NCR||0)+2},result:'You move fast. The driver owes you one.'},
-     {label:'💰 Bribe them off (20 caps)',fn:()=>{if(S.caps>=20){S.caps-=20;S.karma+=1;log('Paid off convicts harassing a caravan.','e')}else{notify('Not enough caps.')}},result:'They pocket it and walk. Cheaper than a fight.'},
+     {label:'💰 Bribe them off (20 caps · CHA check)',fn:()=>{if(S.caps<20){notify('Not enough caps.');return null}S.caps-=20;const cha=statVal(3);if(R()<checkChance(cha,6)){S.karma+=1;log('Paid off convicts harassing a caravan.','e');return'They pocket it and walk. Cheaper than a fight.'}startCombatCard('convict',2);return null},result:'A bribe can work, but desperate convicts might take the caps and still fight.'},
      {label:'🚶 Not your problem',fn:()=>{S.karma-=3;log('Watched convicts rob a caravan driver. Did nothing.','e')},result:'You walk. The driver\'s shout follows you down the road. ⚖ -3 karma.'},
    ]},
   {id:'primm_courier_wreck',icon:'📦',title:'Mojave Express Wreck',
@@ -2046,7 +2197,7 @@ FreesideN:[
    body:'Three Kings members are blocking the alley, hands in pockets. "New face. New face needs to pay the King\'s tax."',
    choices:[
      {label:'💰 Pay up (15 caps)',fn:()=>{if(S.caps>=15){S.caps-=15;S.rep.Kings=(S.rep.Kings||0)+1;log('Paid the Kings street tax.','e')}else{notify('Not enough caps.')}},result:'15 caps. They step aside. +1 Kings rep.'},
-     {label:'💬 Talk your way through',fn:()=>{if((S.special?S.special[3]:5)>=6){S.rep.Kings=(S.rep.Kings||0)+2;log('Talked through a Kings shakedown.','e')}else{startCombatCard('freeside_thug',2);S.karma-=1}},result:'Silver tongue or a fight — depends on your Charisma.'},
+     {label:'💬 Talk your way through [CHA check]',fn:()=>{const cha=statVal(3);if(R()<checkChance(cha,6)){S.rep.Kings=(S.rep.Kings||0)+2;log('Talked through a Kings shakedown.','e');return'They laugh, clap your shoulder, and let you pass. +2 Kings rep.'}startCombatCard('freeside_thug',2);S.karma-=1;return null},result:'Silver tongue helps, but it is still a risk.'},
      {label:'⚔ Show them what you think of taxes',fn:()=>{startCombatCard('freeside_thug',3);S.karma-=2;S.rep.Kings=(S.rep.Kings||0)-4},result:'Three Kings members hit the ground. -4 Kings rep. ⚖ -2 karma.'},
    ]},
   {id:'fs_junkie',icon:'💊',title:'Addicted Drifter',
@@ -2114,7 +2265,7 @@ BoulderCity:[
    body:'A Great Khan and an NCR trooper are squared off in the rubble, hands on weapons. Both turn to you, looking for an edge.',
    choices:[
      {label:'🛡 Back the NCR trooper',fn:()=>{S.rep.NCR=(S.rep.NCR||0)+3;S.rep.Khans=(S.rep.Khans||0)-2;S.karma+=1;log('Backed an NCR trooper in a Boulder City standoff.','e')},result:'+3 NCR rep. -2 Khans rep.'},
-     {label:'💬 Talk them both down',fn:()=>{if((S.special?S.special[3]:5)>=5){S.xp+=12;S.karma+=2;log('Defused a Khan/NCR standoff in Boulder City.','e')}else{startCombatCard('great_khan')}},result:'Charisma check. If you have it, both walk away. If not — one of them doesn\'t.'},
+     {label:'💬 Talk them both down [CHA check]',fn:()=>{const cha=statVal(3);if(R()<checkChance(cha,5)){S.xp+=12;S.karma+=2;log('Defused a Khan/NCR standoff in Boulder City.','e');return'Both sides back down. ⭐ +12 XP. ⚖ +2 karma.'}startCombatCard('great_khan');return null},result:'Charisma opens the attempt, but bad timing can still spark violence.'},
      {label:'🚶 Walk away fast',fn:()=>{advanceTime(1);log('Avoided a Boulder City standoff.','e')},result:'You hear the shot behind you ten seconds later. ⏰ +1 hour detour.'},
    ]},
 ],
@@ -2142,7 +2293,7 @@ HooverDam:[
    body:'A "civilian" worker near the dam has a Legion coin in his boot and is making very detailed sketches. He hasn\'t noticed you watching.',
    choices:[
      {label:'🚨 Report him',fn:()=>{S.rep.NCR=(S.rep.NCR||0)+6;S.karma+=2;S.xp+=15;log('Exposed a Legion spy at Hoover Dam.','e')},result:'+6 NCR rep. ⭐ +15 XP. NCR security takes him away hard.'},
-     {label:'💰 Blackmail him (50 caps)',fn:()=>{if((S.special?S.special[3]:5)>=5){S.caps+=50;S.karma-=2;log('Blackmailed a Legion spy at Hoover Dam.','e')}else{startCombatCard('legion_scout')}},result:'50 caps for your silence. ⚖ -2 karma. He pays.'},
+     {label:'💰 Blackmail him (50 caps · CHA check)',fn:()=>{const cha=statVal(3);if(R()<checkChance(cha,5)){S.caps+=50;S.karma-=2;log('Blackmailed a Legion spy at Hoover Dam.','e');return'50 caps for your silence. ⚖ -2 karma. He pays.'}startCombatCard('legion_scout');return null},result:'Blackmail can pay, but he may panic and attack.'},
      {label:'🚶 Not your war',fn:()=>{S.karma-=2;log('Ignored a Legion spy at Hoover Dam.','e')},result:'You walk. Somebody dies for that later. ⚖ -2 karma.'},
    ]},
 ],
@@ -2170,7 +2321,7 @@ RedRockCanyon:[
    body:'A senior Khan stops you on the trail. "You want to move through Great Khan territory, you prove you\'re not soft. One hit. If you\'re standing, you pass."',
    choices:[
      {label:'🥊 Take the hit',fn:()=>{const dmg=rnd(10,20);S.hp=Math.max(1,S.hp-dmg);S.rep.Khans=(S.rep.Khans||0)+4;log('Took a Khan proving blow. Passed.','e')},result:`You take it full in the face. He nods. +4 Khans rep. ${rnd(10,20)} damage.`},
-     {label:'💬 Challenge him back instead',fn:()=>{if((S.special?S.special[0]:5)>=7){S.rep.Khans=(S.rep.Khans||0)+6;log('Challenged a Khan back and earned real respect.','e')}else{startCombatCard('great_khan')}},result:'Strength check. If you have it, he laughs and steps aside. If not — you\'re fighting.'},
+     {label:'💬 Challenge him back instead [STR check]',fn:()=>{const str=statVal(0);if(R()<checkChance(str,7)){S.rep.Khans=(S.rep.Khans||0)+6;log('Challenged a Khan back and earned real respect.','e');return'He laughs and steps aside. +6 Khans rep.'}startCombatCard('great_khan');return null},result:'Strength gives you a shot at respect, not immunity.'},
      {label:'🚶 Find another route',fn:()=>{advanceTime(2);log('Detoured around the Khan proving ground.','e')},result:'⏰ +2 hours. No rep lost. Not gained either.'},
    ]},
 ],
@@ -2207,7 +2358,7 @@ NellisAFB:[
   {id:'nellis_dud',icon:'💣',title:'Unexploded Shell',
    body:'A massive unexploded Boomer artillery shell is half-buried in the field south of the fence. A Boomer technician is standing over it, looking worried.',
    choices:[
-     {label:'🔧 Help defuse it',fn:()=>{if((S.special?S.special[4]:5)>=6){S.rep.Boomers=(S.rep.Boomers||0)+5;S.xp+=14;log('Helped a Boomer technician defuse a dud shell.','e')}else{const dmg=rnd(15,30);S.hp=Math.max(1,S.hp-dmg);log('Fumbled the defuse. Close call.','c')}},result:'Repair check. Success means +5 Boomers rep and ⭐ +14 XP. Failure means pain.'},
+     {label:'🔧 Help defuse it [INT check]',fn:()=>{const intel=statVal(4);if(R()<checkChance(intel,6)){S.rep.Boomers=(S.rep.Boomers||0)+5;S.xp+=14;log('Helped a Boomer technician defuse a dud shell.','e');return'+5 Boomers rep. ⭐ +14 XP.'}const dmg=rnd(15,30);S.hp=Math.max(1,S.hp-dmg);log('Fumbled the defuse. Close call.','c');return'It spits sparks in your face. You survive, barely.'},result:'Your stats help, but live ordnance is never safe.'},
      {label:'🏃 Back away very slowly',fn:()=>{advanceTime(1);log('Backed away from an unexploded Boomer shell.','e')},result:'⏰ +1 hour. You are still alive. That counts.'},
    ]},
 ],
@@ -2389,6 +2540,21 @@ function groupIsHostile(enemies){
   return enemies.some(en=>isHostileToPlayer(en.id));
 }
 
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function statVal(i){return S.special?S.special[i]:5}
+function checkChance(stat,diff=6,bonus=0){
+  // Stat unlocks the option, but never makes it automatic.
+  return clamp(0.25+(stat-diff)*0.08+bonus,0.15,0.88);
+}
+function checkLabel(name,stat,diff,bonus=0){
+  return `${name} ${stat}/${diff} · ${Math.round(checkChance(stat,diff,bonus)*100)}%`;
+}
+function startFailedEncounter(enemies,area,step,travelMode,msg){
+  log(msg||'The attempt failed.','c');
+  if(travelMode){startCombat(enemies);combat.postT=tDest}
+  else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+}
+
 // ── PRE-ENCOUNTER SYSTEM ───────────────────────────────────
 
 // Called instead of startCombat — presents interaction options first
@@ -2434,16 +2600,13 @@ function preEncounter(enemies,area,step,travelMode=false){
   // Animals/insects: Scare off (Strength check, no perk needed)
   if(isAnimal&&!isUndead){
     choices.push({
-      label:`💪 Scare them off [STR ${str}/6 needed]`,
+      label:`💪 Scare them off [${checkLabel('STR',str,6)}]`,
       style:'bt',
       fn:()=>{
-        if(str>=6||R()<0.3){
+        if(R()<checkChance(str,6)){
           return _preEncResolve(`You stand tall and shout. The creatures scatter.`,area,step,travelMode,true);
-        }else{
-          log('Failed to scare off the creatures.','c');
-          if(travelMode){startCombat(enemies);combat.postT=tDest}
-          else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
         }
+        startFailedEncounter(enemies,area,step,travelMode,'Failed to scare off the creatures.');
       }
     });
   }
@@ -2467,17 +2630,14 @@ function preEncounter(enemies,area,step,travelMode=false){
   // Hostile humans with high CHA: Intimidate
   if(anchor.type==='human'&&!isUndead){
     choices.push({
-      label:`😠 Intimidate [CHA ${cha}/7 needed]`,
+      label:`😠 Intimidate [${checkLabel('CHA',cha,7)}]`,
       style:'bt',
       fn:()=>{
-        if(cha>=7||R()<(cha*0.08)){
+        if(R()<checkChance(cha,7)){
           S.xp+=rnd(8,14);
           return _preEncResolve(`You meet their eyes and don't blink. They back down.`,area,step,travelMode,true);
-        }else{
-          log('Intimidation failed.','c');
-          if(travelMode){startCombat(enemies);combat.postT=tDest}
-          else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
         }
+        startFailedEncounter(enemies,area,step,travelMode,'Intimidation failed.');
       }
     });
   }
@@ -2486,29 +2646,29 @@ function preEncounter(enemies,area,step,travelMode=false){
   if(anchor.type==='human'&&!isUndead&&hostile){
     const bribeAmt=Math.max(20,enemies.length*15+S.level*5);
     choices.push({
-      label:`💰 Bribe them off (${bribeAmt} caps)`,
+      label:`💰 Bribe them off (${bribeAmt} caps · ${Math.round(checkChance(cha,6,rep/200)*100)}%)`,
       style:'bt',
       fn:()=>{
         if(S.caps<bribeAmt){notify('Not enough caps.');return null}
         S.caps-=bribeAmt;
-        return _preEncResolve(`You slide them the caps. They count it slowly and walk.`,area,step,travelMode,true);
+        if(R()<checkChance(cha,6,rep/200)){
+          return _preEncResolve(`You slide them the caps. They count it slowly and walk.`,area,step,travelMode,true);
+        }
+        startFailedEncounter(enemies,area,step,travelMode,'Bribe failed. They take the caps and reach for their weapons.');
       }
     });
   }
 
-  // Sneak past (Agility check)
+  // Sneak past (Agility attempt — chanced, never guaranteed)
   if(!isUndead){
     choices.push({
-      label:`🤫 Sneak past [AGI ${agi}/6 needed]`,
+      label:`🤫 Sneak past [${checkLabel('AGI',agi,6)}]`,
       style:'bt',
       fn:()=>{
-        if(agi>=6||R()<(agi*0.1)){
+        if(R()<checkChance(agi,6)){
           return _preEncResolve(`You move quietly through the terrain. They never spot you.`,area,step,travelMode,true);
-        }else{
-          log('Sneak attempt spotted.','c');
-          if(travelMode){startCombat(enemies);combat.postT=tDest}
-          else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
         }
+        startFailedEncounter(enemies,area,step,travelMode,'Sneak attempt spotted.');
       }
     });
   }
@@ -2657,9 +2817,12 @@ function buildEnemyLoot(enemy){
       maybeLoot(pool,'ammo_556',0.45);
       maybeLoot(pool,'ncr_armor',0.12);
     }
-  }else if(['convict','powder_ganger','freeside_thug','fiend','jackal_raider','viper_gunslinger','rogue_scavenger','great_khan','legion_recruit','legion_veteran','legion_centurion','legion_scout','super_mutant','nightkin','securitron'].includes(id)){
+  }else if(['convict','bison_convict_boss','powder_ganger','joe_cobb','freeside_thug','fiend','jackal_raider','viper_gunslinger','rogue_scavenger','great_khan','legion_recruit','legion_veteran','legion_centurion','legion_scout','super_mutant','nightkin','securitron'].includes(id)){
     if(id==='convict'){
       maybeLoot(pool,'ammo_9mm',0.55);maybeLoot(pool,'switchblade',0.35);maybeLoot(pool,'sunset_sars',0.28);maybeLoot(pool,'pre_war_money',0.18);
+    }
+    if(id==='bison_convict_boss'){
+      maybeLoot(pool,'pistol_10mm',0.35);maybeLoot(pool,'ammo_10mm',0.75);maybeLoot(pool,'pre_war_money',0.45);
     }
     if(id==='powder_ganger'){
       maybeLoot(pool,'dynamite',0.55);maybeLoot(pool,'powder_charge',0.38);maybeLoot(pool,'ammo_9mm',0.45);maybeLoot(pool,'stimpak',0.15);
@@ -2801,6 +2964,7 @@ function finishCombatLoot(){
   const lootCaps=combat.pendingRewards?.caps||0;
   const lootXp=grantXP(combat.pendingRewards?.xp||0);
   const bounty=combat.pendingRewards?.bounty;
+  const questComplete=combat.questComplete;
   const expArea=combat._expArea;
   const postT=combat.postT;
 
@@ -2824,6 +2988,7 @@ function finishCombatLoot(){
     if(S.flags.bountyBoard)S.flags.bountyBoard.current=null;
     log('Claimed bounty on '+bounty.name+'.','q');
   }
+  if(questComplete==='gs_ghost_town_gunfight')gsFinishGhostQuest(lines);
 
   $('CO').style.display='none';
   combat=null;
@@ -3263,13 +3428,13 @@ function openNPCInteraction(npc,existing){
   ${aff?`<div class="hb" style="margin-bottom:8px"><div class="hf g" style="width:${aff}%"></div></div>`:''}
   <div class="npc-line">"${rndA(["Hey there.","What do you want?","Looking for something?","Watch yourself out there.","Got caps? I got time.","You look like trouble.","Need something?","Stay safe, stranger."])}"</div>`;
 
-  h+=`<button class="bt" onclick="npcAct('chat','${npc.name.replace(/'/g,"\\'")}')">💬 Talk</button>`;
-  h+=`<button class="bt" onclick="npcAct('compliment','${npc.name.replace(/'/g,"\\'")}')">😊 Compliment</button>`;
-  if(canFlirt)h+=`<button class="bt" onclick="npcAct('flirt','${npc.name.replace(/'/g,"\\'")}')">💕 Flirt</button>`;
-  h+=`<button class="bt" onclick="npcAct('drink','${npc.name.replace(/'/g,"\\'")}')">🍺 Share a drink (5 caps)</button>`;
-  h+=`<button class="bt" onclick="npcAct('quest','${npc.name.replace(/'/g,"\\'")}')">📜 Ask for work</button>`;
-  if(aff>=40)h+=`<button class="bt pip" onclick="npcAct('recruit','${npc.name.replace(/'/g,"\\'")}')">🤝 Recruit as companion</button>`;
-  if(aff>=60&&canFlirt)h+=`<button class="bt" onclick="npcAct('propose','${npc.name.replace(/'/g,"\\'")}')">💍 Propose</button>`;
+  const safeName=npc.name.replace(/'/g,"\'");
+  h+=`<button class="bt" onclick="npcAct('chat','${safeName}')">💬 Talk</button>`;
+  h+=`<button class="bt" onclick="npcAct('rumour','${safeName}')">📡 Ask for rumours</button>`;
+  h+=`<button class="bt" onclick="npcAct('quest','${safeName}')">📜 Ask for work</button>`;
+  h+=`<button class="bt" onclick="npcAct('favour','${safeName}')">🤝 Request favour</button>`;
+  h+=`<button class="bt" onclick="npcAct('drink','${safeName}')">🍺 Share supplies (5 caps)</button>`;
+  if(aff>=45)h+=`<button class="bt pip" onclick="npcAct('recruit','${safeName}')">🧭 Ask to travel with you</button>`;
   h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
   openDlg(h);
 }
@@ -3442,24 +3607,32 @@ function openPrimmNPC(id){
 
   if(id==='johnson_nash'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Johnson Nash','📦',['He remembers the courier job that passed through Primm before Benny headed for New Vegas.','He points you toward the Strip and reminds you that business in Primm collapsed after the convict takeover.'],'Continue','upAll()')">📦 Ask about the courier</button>`;
+    if(!primmKindQuest())h+=`<button class="bt pip" onclick="primmStartKindQuest()">📜 Help restore law to Primm</button>`;
+    if(primmKindActive()&&!hasFlag('primm_sheriff_chosen'))h+=`<button class="bt pip" onclick="primmStartKindQuest()">📜 Review My Kind of Town</button>`;
+    if(primmKindActive()&&hasFlag('primm_sheriff_chosen'))h+=`<button class="bt go" onclick="primmFinishKindQuest()">⭐ Tell Nash Primm has a sheriff</button>`;
     h+=`<button class="bt pip" onclick="queueNamedQuest('johnson_nash','Mojave Express',15,10)">📜 Ask for delivery work</button>`;
     h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(PRIMM_NPCS['johnson_nash'],S.relationships.find(r=>r.name===PRIMM_NPCS['johnson_nash'].name))">💬 Talk</button>`;
   }else if(id==='ruby_nash'){
+
     h+=`<button class="bt go" onclick="if(S.caps<8){notify('Not enough caps.');return}S.caps-=8;S.hp=Math.min(S.maxHp,S.hp+18);S.ap=Math.min(S.maxAp,S.ap+8);advanceTime(1);log('Ruby Nash serves you a hot meal.','e');closeDlg();showResult('Ruby Nash','🍲',['❤ +18 HP','⚡ +8 AP','⏰ 1 hour passed'],'Continue','upAll()')">🍲 Buy Ruby's meal (8 caps)</button>`;
     h+=`<button class="bt" onclick="closeDlg();showResult('Ruby Nash','🗣',['Ruby says Primm used to be lively before the Powder Gangers hit the town.','She insists the casino would bounce back if law and trade ever returned.'],'Continue','upAll()')">🗣 Ask about Primm</button>`;
     h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(PRIMM_NPCS['ruby_nash'],S.relationships.find(r=>r.name===PRIMM_NPCS['ruby_nash'].name))">💬 Talk</button>`;
   }else if(id==='primm_slim'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Primm Slim','🤖',['Primm Slim launches into a polished retelling of the exploits of Vikki and Vance.','For a moment, the empty casino feels alive again.'],'Continue','upAll()')">🎙 Hear the Vikki & Vance story</button>`;
     h+=`<button class="bt" onclick="closeDlg();showResult('Primm Slim','⭐',['Slim proudly explains that with the right paperwork he could be programmed to uphold the law in Primm.','He seems very enthusiastic about being sheriff.'],'Continue','upAll()')">⭐ Ask about law in Primm</button>`;
+    if(primmKindReadyForSheriff()&&!hasFlag('primm_sheriff_chosen'))h+=`<button class="bt pip" onclick="primmChooseSheriff('slim')">🤖 Reprogram Primm Slim as sheriff</button>`;
   }else if(id==='ede'){
+
     h+=`<button class="bt" onclick="closeDlg();showResult('ED-E','📻',['The eyebot emits a series of old recordings and navigation chirps.','It sounds like it still wants to keep moving east.'],'Continue','upAll()')">📻 Listen to ED-E</button>`;
     h+=`<button class="bt" onclick="closeDlg();showResult('ED-E','🔧',['You look over the damaged eyebot chassis.','With the right tools, somebody could probably get it flying again.'],'Continue','upAll()')">🔧 Inspect damage</button>`;
   }else if(id==='deputy_beagle'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Deputy Beagle','🚨',['Beagle complains that the Powder Gangers overwhelmed Primm before help could arrive.','He insists the town still needs a proper sheriff.'],'Continue','upAll()')">🚨 Ask about the convicts</button>`;
+    if(primmKindActive()&&hasFlag('primm_beagle_freed_for_quest')&&!hasFlag('primm_sheriff_chosen'))h+=`<button class="bt pip" onclick="closeDlg();showResult('Deputy Beagle','⭐',['Beagle nervously lists the realistic options: Primm Slim, NCR protection, or Meyers from the prison.','He is very clear that he is not volunteering.'],'Continue','upAll()')">⭐ Ask who could be sheriff</button>`;
     h+=`<button class="bt pip" onclick="queueNamedQuest('deputy_beagle','Primm Deputy',15,10)">📜 Ask for deputy work</button>`;
     h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(PRIMM_NPCS['deputy_beagle'],S.relationships.find(r=>r.name===PRIMM_NPCS['deputy_beagle'].name))">💬 Talk</button>`;
   }else if(id==='lieutenant_hayes'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Lieutenant Hayes','🪖',['Hayes says the NCR can patrol the roads, but Primm needs local authority to truly recover.','He mentions several options for who could wear the badge.'],'Continue','upAll()')">🪖 Ask about NCR help</button>`;
+    if(primmKindReadyForSheriff()&&!hasFlag('primm_sheriff_chosen'))h+=`<button class="bt pip" onclick="primmChooseSheriff('ncr')">🪖 Request NCR protection for Primm</button>`;
     h+=`<button class="bt pip" onclick="queueNamedQuest('lieutenant_hayes','NCR Patrol',20,12)">📜 Ask for an NCR assignment</button>`;
     h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(PRIMM_NPCS['lieutenant_hayes'],S.relationships.find(r=>r.name===PRIMM_NPCS['lieutenant_hayes'].name))">💬 Talk</button>`;
   }
@@ -3476,6 +3649,61 @@ function addNovacNpcCard(body,id){
   nc.onclick=()=>openNovacNPC(id);
   body.appendChild(nc);
 }
+
+function novacFindQuest(id){return (S.quests||[]).find(q=>q.id===id)||null}
+function booneQuest(){return novacFindQuest('novac_one_for_my_baby')}
+function booneQuestActive(){const q=booneQuest();return !!(q&&!q.done)}
+function booneQuestDone(){const q=booneQuest();return !!(q&&q.done)}
+function novacRefreshState(){
+  const q=booneQuest();if(!q||q.done)return;
+  if(hasFlag('boone_culprit_exposed')){
+    q.progText='Return to Boone at the dinosaur mouth.';
+  }else if(hasFlag('boone_bill_found')){
+    q.progText='Show Boone the Bill of Sale or confront Jeannie May at the Dino Dee-lite Motel.';
+  }else{
+    q.progText='Search the Dino Dee-lite Motel office records for proof about Carla Boone.';
+  }
+}
+function startBooneQuest(){
+  if(booneQuestDone()){closeDlg();showResult('Boone','🔭',['Boone has nothing more to say about Carla.','The matter is finished.'],'Continue','upAll()');return}
+  if(booneQuestActive()){closeDlg();showResult('One for My Baby','📜',[booneQuest().progText||'Keep investigating Novac.'],'Continue','upAll()');return}
+  S.quests.push({id:'novac_one_for_my_baby',name:'One for My Baby',desc:'Craig Boone wants proof of who betrayed his wife Carla in Novac.',t:'custom',progText:'Search the Dino Dee-lite Motel office records for proof about Carla Boone.',rg:80,rx:65,giver:'Craig Boone',done:false});
+  log('Accepted: One for My Baby','q');
+  closeDlg();showResult('New Quest!','📜',['<b>One for My Baby</b>','Boone asks you to quietly find proof of who betrayed Carla.','Start at the Dino Dee-lite Motel office.'],'Continue','upAll()');
+}
+function findBooneBill(){
+  const q=booneQuest();
+  if(!q||q.done){notify('No reason to dig through those records yet.');return}
+  if(hasFlag('boone_bill_found')){notify('You already found the bill of sale.');return}
+  setFlag('boone_bill_found');
+  giveItem('boone_bill_of_sale',1,{ignoreLimit:true});
+  q.progText='Show Boone the Bill of Sale or confront Jeannie May at the Dino Dee-lite Motel.';
+  advanceTime(1);
+  log('Found the Bill of Sale implicating Jeannie May Crawford.','q');
+  closeBld();showResult('Bill of Sale Found','📄',['You find a locked-away sale record naming Carla Boone.','Jeannie May Crawford signed the deal.','📄 Bill of Sale added','⏰ 1 hour passed'],'Continue','upAll()');
+}
+function confrontJeannieMay(){
+  const q=booneQuest();
+  if(!q||q.done){closeDlg();showResult('Jeannie May Crawford','🏨',['Jeannie keeps her smile polished and her answers careful.'],'Continue','upAll()');return}
+  if(!hasFlag('boone_bill_found')){closeDlg();showResult('No Proof','📄',['You suspect something is wrong, but you need hard evidence first.','Search the motel office records.'],'Continue','upAll()');return}
+  setFlag('boone_culprit_exposed');
+  q.progText='Return to Boone at the dinosaur mouth.';
+  log('You confront Jeannie May with the Bill of Sale.','q');
+  closeDlg();showResult('Jeannie Exposed','🏨',['Jeannie May loses the smile when you show her the Bill of Sale.','She knows Boone will believe the evidence.','Return to Boone at the dinosaur mouth.'],'Continue','upAll()');
+}
+function finishBooneQuest(){
+  const q=booneQuest();
+  if(!q||q.done){closeDlg();showResult('Boone','🔭',['Boone keeps watching the highway.'],'Continue','upAll()');return}
+  if(!hasFlag('boone_bill_found')){closeDlg();showResult('Boone','🔭',['Boone needs proof, not guesses.','Search the motel office records.'],'Continue','upAll()');return}
+  const idx=S.inv.indexOf('boone_bill_of_sale');if(idx!==-1)S.inv.splice(idx,1);
+  setFlag('boone_culprit_exposed');setFlag('boone_quest_done');
+  completeQuest(q);
+  giveItem('boones_beret',1,{ignoreLimit:true});
+  giveItem('boones_varmint_rifle',1,{ignoreLimit:true});
+  log('Boone gives you his 1st Recon beret and scoped varmint rifle.','q');
+  closeDlg();showResult('One for My Baby Complete','🎖',['Boone reads the Bill of Sale in silence.','He gives you his old 1st Recon beret and a scoped rifle.','🎖 1st Recon Beret','🔭 Boone\'s Scoped Varmint Rifle','💰 +80 caps','⭐ +65 XP'],'Continue','upAll()');
+}
+
 function openNovacNPC(id){
   const npc=NOVAC_NPCS[id];if(!npc)return;
   const rel=novacNamedNpcRel(id);
@@ -3490,12 +3718,21 @@ function openNovacNPC(id){
     h+=`<button class="bt pip" onclick="queueNovacQuest('manny_vargas','Novac Watch',15,10)">📜 Ask for lookout work</button>`;
   }else if(id==='craig_boone'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Boone','🔭',['Boone keeps his answers short. He watches the highway and remembers every caravan that passes.','You get the impression he trusts scopes more than people.'],'Continue','upAll()')">🔭 Ask about the road</button>`;
+    if(!booneQuestDone()){
+      h+=`<button class="bt pip" onclick="startBooneQuest()">📜 Ask about Carla Boone</button>`;
+    }
+    if(booneQuestActive()&&hasFlag('boone_bill_found')){
+      h+=`<button class="bt go" onclick="finishBooneQuest()">📄 Give Boone the Bill of Sale</button>`;
+    }
     h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(NOVAC_NPCS['craig_boone'],S.relationships.find(r=>r.name===NOVAC_NPCS['craig_boone'].name))">💬 Talk</button>`;
   }else if(id==='no_bark'){
     h+=`<button class="bt" onclick="closeDlg();showResult('No-bark Noonan','🛸',[rndA(['No-bark warns you that invisible chupacabras are watching the road to the north.','No-bark whispers that the cows know more than the NCR ever will.','No-bark insists the town is built on top of secrets and bad decisions.'])],'Continue','upAll()')">🛸 Hear a theory</button>`;
   }else if(id==='jeannie_may'){
     h+=`<button class="bt go" onclick="closeDlg();openBld('motel')">🛏 Rent a room</button>`;
     h+=`<button class="bt" onclick="closeDlg();showResult('Jeannie May Crawford','🏨',['Jeannie proudly talks about Novac as if grit alone could keep the whole Mojave standing.','She reminds you to pay before expecting any comfort.'],'Continue','upAll()')">🏨 Ask about Novac</button>`;
+    if(booneQuestActive()&&hasFlag('boone_bill_found')&&!hasFlag('boone_culprit_exposed')){
+      h+=`<button class="bt pip" onclick="confrontJeannieMay()">📄 Confront her about Carla Boone</button>`;
+    }
   }else if(id==='daisy_whitman'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Daisy Whitman','🛩',['Daisy tells a story about flying old birds over battlefields where the sky itself seemed on fire.','She misses the cockpit more than she admits.'],'Continue','upAll()')">🛩 Hear a flying story</button>`;
     h+=`<button class="bt go" onclick="if(S.caps<7){notify('Not enough caps.');return}S.caps-=7;S.hp=Math.min(S.maxHp,S.hp+15);S.ap=Math.min(S.maxAp,S.ap+10);advanceTime(1);log('Daisy Whitman serves you a proper warm meal.','e');closeDlg();showResult('Home Cooking','🍲',['❤ +15 HP','⚡ +10 AP','⏰ 1 hour passed'],'Continue','upAll()')">🍲 Share chow with Daisy (7 caps)</button>`;
@@ -3542,8 +3779,13 @@ function bldNovacMotel(body){
   clinicBtn.onclick=()=>{if(S.caps<clinicCost){notify('Not enough caps.');return}S.caps-=clinicCost;S.hp=S.maxHp;S.ap=S.maxAp;advanceTime(1);log('Doctor Ada Straus patches you up in Novac.','e');closeBld();showResult('Treated','⚕️',['❤ Full HP restored','⚡ AP restored','⏰ 1 hour passed'],'Continue','upAll()')};
   body.appendChild(clinicBtn);
   const safeBtn=el('button','bt','🗄 Search the office safe');
-  safeBtn.onclick=()=>{advanceTime(1);if(hasFlag('novac_office_safe')){closeBld();showResult('Already Opened','🗄',['The office safe has already been cleaned out.'],'Continue','upAll()');return}setFlag('novac_office_safe');const caps=rnd(18,35);S.caps+=caps;const pick=rndA(['pre_war_money','sunset_sars']);giveItem(pick);log('You crack open a safe at the Novac office.','e');closeBld();showResult('Office Safe','🗄',[`💰 +${caps} caps`,`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
+  safeBtn.onclick=()=>{advanceTime(1);if(hasFlag('novac_office_safe')){closeBld();showResult('Already Opened','🗄',['The office safe has already been cleaned out.'],'Continue','upAll()');return}setFlag('novac_office_safe');const caps=rnd(18,35);S.caps+=caps;const pick=rndA(['pre_war_money','sunset_sars']);giveItem(pick);const lines=[`💰 +${caps} caps`,`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'];log('You crack open a safe at the Novac office.','e');closeBld();showResult('Office Safe','🗄',lines,'Continue','upAll()')};
   body.appendChild(safeBtn);
+  if(booneQuestActive()&&!hasFlag('boone_bill_found')){
+    const billBtn=el('button','bt pip','📄 Search motel records for Carla Boone');
+    billBtn.onclick=()=>findBooneBill();
+    body.appendChild(billBtn);
+  }
   body.appendChild(el('div','bs2','Residents'));
   ['jeannie_may','daisy_whitman','ada_straus','bruce_isaac','manny_vargas','craig_boone'].forEach(id=>addNovacNpcCard(body,id));
 }
@@ -3828,9 +4070,11 @@ function openNcrcfNPC(id){
     h+=`<button class="bt" onclick="closeDlg();showResult('Carter','💰',['Carter says prison life taught him one rule: somebody always needs something, and the smart man charges caps before asking why.'],'Continue','upAll()')">💰 Ask about trading here</button>`;
   }else if(id==='meyers'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Meyers','⭐',['Meyers talks like an old lawman who has seen too many towns let the wrong men wear badges.','He still thinks Primm deserves a sheriff, just not a fool.'],'Continue','upAll()')">⭐ Ask about Primm</button>`;
+    if(primmKindReadyForSheriff()&&!hasFlag('primm_sheriff_chosen'))h+=`<button class="bt pip" onclick="primmChooseSheriff('meyers')">⭐ Recruit Meyers as Primm sheriff</button>`;
     h+=`<button class="bt go" onclick="advanceTime(1);S.xp+=9;S.hp=Math.min(S.maxHp,S.hp+8);log('Meyers drills you on keeping your nerve when the room turns ugly.','e');closeDlg();showResult('Hard Lesson','⭐',['⭐ +9 XP','❤ +8 HP','⏰ 1 hour passed'],'Continue','chkLU();upAll()')">⭐ Learn from Meyers</button>`;
     h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(NCRCF_NPCS['meyers'],S.relationships.find(r=>r.name===NCRCF_NPCS['meyers'].name))">💬 Talk</button>`;
   }else if(id==='hannigan'){
+
     h+=`<button class="bt go" onclick="closeDlg();openBld('ncrcf_block_b')">⚕️ Get patched up</button>`;
     h+=`<button class="bt" onclick="closeDlg();showResult('Hannigan','⚕️',['Hannigan complains that prison medicine mostly means deciding who is worth the last clean bandage.'],'Continue','upAll()')">⚕️ Ask about the clinic</button>`;
   }
@@ -4202,6 +4446,12 @@ function bldGoodspringsSaloon(body){
   const tableBtn=el('button','bt','🔎 Check the empty tables');
   tableBtn.onclick=()=>{advanceTime(1);const pick=rndA(['sunset_sars','pre_war_money','fancy_lad']);giveItem(pick);log('You check the saloon tables and find '+ITEMS[pick].n+'.','e');closeBld();showResult('Prospector Saloon','🔎',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
   body.appendChild(tableBtn);
+  if(gsGhostActive()){
+    gsUpdateGhostQuest();
+    const fightBtn=el('button','bt dn',`⚔ Start Ghost Town Gunfight (${gsGhostCount()}/4 help)`);
+    fightBtn.onclick=()=>gsStartGhostFight();
+    body.appendChild(fightBtn);
+  }
   body.appendChild(el('div','bs2','Notable People'));
   ['trudy','sunny_smiles','victor','ringo'].forEach(id=>addGoodspringsNpcCard(body,id));
 }
@@ -4292,6 +4542,11 @@ function bldPrimmSheriff(body){
   const sheriffBtn=el('button','bt pip','⭐ Review sheriff options');
   sheriffBtn.onclick=()=>{closeBld();showResult('Future of Primm','⭐',['Possible candidates are discussed in the office: NCR lawmen, an old convict sheriff, or even Primm Slim with the right paperwork.','None of it matters unless someone takes responsibility for the town.'],'Continue','upAll()')};
   body.appendChild(sheriffBtn);
+  if(primmKindReadyForSheriff()&&!hasFlag('primm_sheriff_chosen')&&!S.inv.includes('primm_sheriff_papers')){
+    const papersBtn=el('button','bt pip','📄 Collect Primm sheriff paperwork');
+    papersBtn.onclick=()=>{giveItem('primm_sheriff_papers',1,{ignoreLimit:true});log('Collected Primm sheriff paperwork from the sheriff office.','q');closeBld();showResult('Paperwork Found','📄',['📄 Primm Sheriff Paperwork added','This should help formalise whoever takes the badge.'],'Continue','upAll()')};
+    body.appendChild(papersBtn);
+  }
   body.appendChild(el('div','bs2','Notable People'));
   addNamedNpcCard(body,'lieutenant_hayes');
 }
@@ -4307,9 +4562,16 @@ function bldPrimmBison(body){
   const roomsBtn=el('button','bt','🛏 Clear the guest rooms');
   roomsBtn.onclick=()=>{advanceTime(1);const pick=rndA(['ammo_9mm','stimpak','doctor_bag','pre_war_money']);giveItem(pick);log('You search the guest rooms and salvage '+ITEMS[pick].n+'.','e');closeBld();showResult('Guest Rooms','🛏',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
   body.appendChild(roomsBtn);
-  const rescueBtn=el('button','bt go',hasFlag('bison_beagle_rescued')?'🔓 Deputy Beagle is already free':'🔓 Force open the storage room');
-  rescueBtn.onclick=()=>{advanceTime(1);if(hasFlag('bison_beagle_rescued')){closeBld();showResult('Already Done','🔓',['Deputy Beagle already got out of the storage room.'],'Continue','upAll()');return}setFlag('bison_beagle_rescued');S.caps+=20;S.xp+=15;log('You free Deputy Beagle from the Bison Steve storage room.','q');closeBld();showResult('Deputy Rescued','👮',['Deputy Beagle stumbles out, trying to act dignified.','💰 +20 caps','⭐ +15 XP'],'Continue','chkLU();upAll()')};
-  body.appendChild(rescueBtn);
+  if(primmKindActive()&&!hasFlag('primm_beagle_freed_for_quest')){
+    const rescueBtn=el('button','bt go','🔓 Free Deputy Beagle from storage');
+    rescueBtn.onclick=()=>primmFreeBeagleQuest();
+    body.appendChild(rescueBtn);
+  }
+  if(primmKindActive()&&!hasFlag('primm_beagle_freed_for_quest')){
+    const guardBtn=el('button','bt dn','⚔ Fight the Bison Steve guard');
+    guardBtn.onclick=()=>{advanceTime(1);closeBld();startCombat([mkEnemy('convict'),mkEnemy('bison_convict_boss')])};
+    body.appendChild(guardBtn);
+  }
   body.appendChild(el('div','bs2','Notable People'));
   addNamedNpcCard(body,'deputy_beagle');
 }
@@ -5260,6 +5522,85 @@ function finTravel(){
 // ============================================================
 // LOG TAB
 // ============================================================
+
+function relTitle(v){
+  v=Number(v||0);
+  if(v>=80)return 'Loyal';
+  if(v>=60)return 'Close Ally';
+  if(v>=35)return 'Trusted';
+  if(v>=15)return 'Friendly';
+  if(v<=-20)return 'Hostile';
+  if(v<0)return 'Wary';
+  return 'Neutral';
+}
+function getNpcRumour(rel){
+  const loc=LOCS[rel.loc||S.loc]||LOCS[S.loc];
+  const s=rndA((loc&&loc.sur)||[]);
+  const roads=Object.keys(ROADS[S.loc]||{});
+  const road=rndA(roads);
+  const fac=rel.fac||loc?.fac||'';
+  if(s)return rel.name+' mentions '+s.n+': '+s.d;
+  if(road)return rel.name+' says the road toward '+(LOCS[road]?.n||road)+' has been busy lately.';
+  if(fac)return rel.name+' says '+(FACTIONS[fac]||fac)+' patrols have been active nearby.';
+  return rel.name+' has not heard anything useful today.';
+}
+function npcFavour(rel){
+  if((rel.aff||0)<20)return {ok:false,msg:rel.name+' does not trust you enough yet.'};
+  const roll=R();
+  if(roll<.35){S.hp=Math.min(S.maxHp,S.hp+15);return{ok:true,msg:rel.name+' patches you up a little. +15 HP'}}
+  if(roll<.7){const ammo=rndA(['ammo_9mm','ammo_10mm','ammo_357','ammo_556']);addItem(ammo,rnd(3,8));return{ok:true,msg:rel.name+' hands over spare '+ITEMS[ammo].n+'.'}}
+  const caps=rnd(8,22);S.caps+=caps;return{ok:true,msg:rel.name+' tips you toward a small paying lead. +'+caps+' caps'};
+}
+function ensureLocalContacts(){
+  if(!S.localContacts)S.localContacts={};
+  const loc=S.loc||'Goodsprings';
+  if(!S.localContacts[loc]){
+    S.localContacts[loc]=Array.from({length:rnd(2,4)},()=>mkNPC({loc}));
+  }
+  return S.localContacts[loc];
+}
+function meetLocalContact(){
+  const list=ensureLocalContacts();
+  const unknown=list.filter(n=>!S.relationships.find(r=>r.name===n.name));
+  const npc=rndA(unknown.length?unknown:list);
+  openNPCInteraction(npc,S.relationships.find(r=>r.name===npc.name));
+}
+function upPeople(){
+  const tab=$('log-tab');if(!S)return;tab.innerHTML='';
+  tab.appendChild(el('div','sh','Mojave Network'));
+  const intro=el('div','cd');
+  intro.innerHTML='<div style="font-size:12px;color:var(--muted);line-height:1.45">Known NPCs, useful locals, rumours, favours, and work. Random wastelanders can become contacts too.</div>'+ 
+  '<button class="bt go" style="margin-top:8px;text-align:center" onclick="meetLocalContact()">📡 Meet locals in '+(LOCS[S.loc]?.n||'this area')+'</button>';
+  tab.appendChild(intro);
+  const known=(S.relationships||[]).slice().sort((a,b)=>(b.aff||0)-(a.aff||0));
+  tab.appendChild(el('div','sh','Known People'));
+  if(!known.length)tab.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">No contacts yet. Meet locals or talk to named NPCs in buildings.</div>'));
+  known.forEach(r=>{
+    const card=el('div','bc');
+    const pct=Math.max(0,Math.min(100,r.aff||0));
+    card.innerHTML='<div class="icon-wrap" style="width:34px;height:34px;font-size:28px">'+renderIcon(r.icon||inferNpcIcon(r,{loc:r.loc||S.loc}),28)+'</div>'+ 
+    '<div style="flex:1;min-width:0"><div style="font-size:12px;color:var(--amber);font-weight:bold">'+r.name+'</div>'+ 
+    '<div style="font-size:10px;color:var(--muted)">'+(r.role||'Wastelander')+' · '+(LOCS[r.loc]?.n||r.loc||'Mojave')+' · '+relTitle(r.aff)+'</div>'+ 
+    '<div class="hb" style="margin-top:4px"><div class="hf g" style="width:'+pct+'%"></div></div>'+ 
+    (r.last?'<div style="font-size:10px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.last+'</div>':'')+'</div>';
+    card.onclick=()=>openNPCInteraction({name:r.name,male:r.male,age:r.age,role:r.role||'Wastelander',loc:r.loc||S.loc,fac:r.fac,icon:r.icon},r);
+    tab.appendChild(card);
+  });
+  const locals=ensureLocalContacts();
+  tab.appendChild(el('div','sh','Local Faces'));
+  locals.forEach(n=>{
+    const met=S.relationships.find(r=>r.name===n.name);
+    const c=el('div','inv-card');c.style.cursor='pointer';
+    c.innerHTML='<div class="inv-row"><div>'+renderIcon(n.icon||inferNpcIcon(n,{loc:S.loc}),18)+' '+(met?n.name:'Unknown '+(n.role||'Local'))+'</div><div style="font-size:10px;color:var(--muted)">'+(met?relTitle(met.aff):'Unmet')+'</div></div>';
+    c.onclick=()=>openNPCInteraction(n,met);
+    tab.appendChild(c);
+  });
+  if(S.log&&S.log.length){
+    tab.appendChild(el('div','sh','Recent Activity'));
+    const recent=(S.log[0].entries||[]).slice(-5).reverse().map(e=>'<div class="log-entry '+(e.type==='c'?'combat-log':e.type==='q'?'quest-log':'event-log')+'">'+e.text+'</div>').join('');
+    tab.appendChild(el('div','cd',recent));
+  }
+}
 function upLog(){
   const tab=$('log-tab');if(!S)return;tab.innerHTML='';
   tab.appendChild(el('div','sh','Chronicle'));
@@ -5298,6 +5639,7 @@ function advanceTime(hours){
   });
   if(S.flags&&S.flags.hv)hvRefreshState();
   gsRefreshState();
+  if(typeof novacRefreshState==='function')novacRefreshState();
   // AP regen
   S.ap=Math.min(S.maxAp,S.ap+Math.floor(hours*3));
 }
