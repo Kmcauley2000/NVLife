@@ -17,11 +17,10 @@ body{background:var(--bg);font-family:'Courier New',monospace;color:var(--text);
 #W{max-width:430px;margin:0 auto;min-height:100dvh;overflow:hidden;position:relative;
 background:linear-gradient(180deg,#1a1a0e 0%,#141410 100%)}
 #H{position:sticky;top:0;background:linear-gradient(180deg,#1a1808,#141408);
-color:var(--amber);text-align:center;padding:calc(var(--st)+8px) 76px 7px 12px;min-height:52px;
+color:var(--amber);text-align:center;padding:calc(var(--st)+8px) 12px 7px;min-height:52px;
 font-size:13px;font-weight:bold;letter-spacing:3px;z-index:100;
 border-bottom:1px solid #3a3418;text-transform:uppercase}
 #H .sub{font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:1px}
-#NG{position:absolute;right:8px;top:calc(var(--st) + 6px);background:#2a1818;color:var(--red);border:1px solid #4a2828;border-radius:4px;font-family:'Courier New',monospace;font-size:10px;padding:7px 8px;min-height:32px;letter-spacing:0;cursor:pointer}
 #SB{background:#0e0e08;color:var(--text);font-size:11px;display:flex;flex-wrap:wrap;padding:3px 4px;gap:1px;border-bottom:1px solid #282818}
 #SB .s{flex:1 1 auto;text-align:center;padding:3px 4px;white-space:nowrap}
 #SB .s b{color:var(--amber)}
@@ -239,7 +238,7 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 <body>
 <div class="scanline"></div>
 <div id="W">
-<div id="H">FALLOUT: NEW VEGAS<div class="sub">Mojave Wasteland</div><button id="NG" onclick="confirmNewGame()">New Game</button></div>
+<div id="H">FALLOUT: NEW VEGAS<div class="sub">Mojave Wasteland</div></div>
 <div id="SB"></div>
 <div id="C">
 <div id="world-tab" class="T A"></div>
@@ -254,7 +253,7 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 <button onclick="switchTab('char')" id="nb-char"><i><img src="NVImages/CharIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Char</button>
 <button onclick="switchTab('inv')" id="nb-inv"><i><img src="NVImages/ItemsIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Items</button>
 <button onclick="switchTab('roads')" id="nb-roads"><i><img src="NVImages/TravelIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Travel</button>
-<button onclick="switchTab('log')" id="nb-log"><i><img src="NVImages/LogIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>People</button>
+<button onclick="switchTab('log')" id="nb-log"><i><img src="NVImages/LogIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Log</button>
 </div>
 <div id="BO"><div id="BI"></div></div>
 <div id="TO">
@@ -2011,7 +2010,7 @@ function refreshActiveTab(){
   if($('char-tab').classList.contains('A'))upChar();
   if($('inv-tab').classList.contains('A'))upInv();
   if($('roads-tab').classList.contains('A'))upRoads();
-  if($('log-tab').classList.contains('A'))upPeople();
+  if($('log-tab').classList.contains('A'))upLog();
 }
 function upAll(){upSB();refreshActiveTab();save();queueSave(220)}
 
@@ -2093,13 +2092,29 @@ function upWorld(){
   propBtn.onclick=()=>openPropertyMenu();
   tab.appendChild(propBtn);
 
-  // Faction standing
+  // Faction standing at current location
   if(loc.fac&&loc.fac!=='None'){
     tab.appendChild(el('div','sh',FACTIONS[loc.fac]||loc.fac));
     const fc=el('div','cd');
     const rep=S.rep[loc.fac]||0;
     const repLabel=rep>=50?'Idolized':rep>=30?'Liked':rep>=10?'Accepted':rep>=0?'Neutral':rep>=-20?'Shunned':'Vilified';
-    fc.innerHTML=`<div style="font-size:11px">Standing: <b style="color:${rep>=0?'var(--green)':'var(--red)'}">[ ${repLabel} ] ${rep>=0?'+':''}${rep}</b></div>`;
+    const repCol=rep>=10?'var(--green)':rep>=-10?'var(--muted)':rep>=-20?'var(--amber2)':'var(--red)';
+    let consequence='';
+    if(loc.fac==='NCR'){
+      if(rep<=-20)consequence='<div style="font-size:10px;color:var(--red);margin-top:4px">⚠ Troopers will attack on sight. Leave the area.</div>';
+      else if(rep<=-10)consequence='<div style="font-size:10px;color:var(--amber2);margin-top:4px">⚡ Expect toll demands and rough treatment at checkpoints.</div>';
+      else if(rep>=30)consequence='<div style="font-size:10px;color:var(--green);margin-top:4px">🛡 NCR personnel are friendly. Checkpoints wave you through.</div>';
+    } else if(loc.fac==='Legion'){
+      if(rep<=-20)consequence='<div style="font-size:10px;color:var(--red);margin-top:4px">⚠ Legion soldiers will kill you here. Move fast or leave.</div>';
+      else if(rep>=30)consequence='<div style="font-size:10px;color:var(--amber);margin-top:4px">🏴 Legion respects your presence. You move more freely in their territory.</div>';
+    } else if(loc.fac==='BOS'){
+      if(rep<10)consequence='<div style="font-size:10px;color:var(--amber2);margin-top:4px">🔒 Brotherhood access is limited at this standing.</div>';
+      else if(rep>=35)consequence='<div style="font-size:10px;color:var(--green);margin-top:4px">🛡 Knight-level standing. Full bunker access.</div>';
+    } else if(loc.fac==='Khans'){
+      if(rep<=-15)consequence='<div style="font-size:10px;color:var(--red);margin-top:4px">⚠ Khans here are hostile. Watch your back.</div>';
+      else if(rep>=20)consequence='<div style="font-size:10px;color:var(--green);margin-top:4px">🤝 Khans treat you as a known quantity.</div>';
+    }
+    fc.innerHTML=`<div style="font-size:11px">Standing: <b style="color:${repCol}">[ ${repLabel} ] ${rep>=0?'+':''}${rep}</b></div>${consequence}`;
     tab.appendChild(fc);
   }
 
@@ -2107,11 +2122,33 @@ function upWorld(){
   if(S.worldEvents&&S.worldEvents.length){
     tab.appendChild(el('div','sh','Mojave Intel'));
     S.worldEvents.forEach(ev=>{
+      if(ev.resolved)return;
       const daysLeft=Math.max(0,ev.duration-(S.days-ev.started));
-      const typeColor=ev.type==='raid'?'var(--red)':ev.type==='military'?'var(--amber)':ev.type==='trade'?'var(--green)':'var(--muted)';
-      const typeIcon=ev.type==='raid'?'⚠':ev.type==='military'?'🛡':ev.type==='trade'?'🐪':ev.type==='crisis'?'💧':'📰';
-      tab.appendChild(el('div','cd',`<div style="font-size:11px"><span style="color:${typeColor}">${typeIcon} ${ev.title}</span></div><div style="font-size:10px;color:var(--muted);margin-top:2px">Expires in ${daysLeft} day${daysLeft!==1?'s':''}</div>`));
+      const typeColor=ev.type==='raid'?'var(--red)':ev.type==='military'?'var(--amber)':ev.type==='trade'?'var(--green)':'var(--blue)';
+      const card=el('div','cd');
+      card.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <div style="font-size:22px">${ev.icon}</div>
+        <div style="flex:1"><div style="font-size:12px;font-weight:bold;color:${typeColor}">${ev.title}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">Expires in ${daysLeft} day${daysLeft!==1?'s':''}</div></div></div>
+        <div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:6px">${ev.body}</div>
+        <button class="bt go" style="text-align:center" onclick="interceptWorldEvent('${ev.id}')">🎯 Intercept — make a choice</button>`;
+      tab.appendChild(card);
     });
+  }
+
+  // Rep consequence warnings
+  const repWarnings=[];
+  if((S.rep.NCR||0)<=-20)repWarnings.push({col:'var(--red)',msg:'⚠ NCR is hostile — checkpoints will attack on sight'});
+  if((S.rep.Legion||0)<=-20)repWarnings.push({col:'var(--red)',msg:'⚠ Legion is hostile — Legion territory is extremely dangerous'});
+  if((S.rep.PowderGangers||0)<=-20)repWarnings.push({col:'var(--red)',msg:'⚠ Powder Gangers will attack you near NCRCF'});
+  if((S.rep.NCR||0)>=-10&&(S.rep.NCR||0)<0)repWarnings.push({col:'var(--amber2)',msg:'⚡ NCR Shunned — expect toll demands at checkpoints'});
+  if((S.rep.Legion||0)>=30)repWarnings.push({col:'var(--amber)',msg:'🏴 Legion allies — Legion territory is safer for you'});
+  if((S.rep.NCR||0)>=30)repWarnings.push({col:'var(--green)',msg:'🛡 NCR Liked — checkpoints wave you through freely'});
+  if(repWarnings.length){
+    tab.appendChild(el('div','sh','Standing Alerts'));
+    const wc=el('div','cd');
+    wc.innerHTML=repWarnings.map(w=>`<div style="font-size:11px;color:${w.col};padding:3px 0;border-bottom:1px solid #1a1810">${w.msg}</div>`).join('');
+    tab.appendChild(wc);
   }
 }
 
@@ -3076,9 +3113,25 @@ function finishCombatLoot(){
   }
   if(questComplete==='gs_ghost_town_gunfight')gsFinishGhostQuest(lines);
 
+  const pendingWEId=combat._pendingWEId;
+  const pendingWEResult=combat._pendingWEResult;
+
   $('CO').style.display='none';
   combat=null;
   chkLU();save();
+
+  // Resolve pending world event if combat was triggered by one
+  if(pendingWEId){
+    const ev=S.worldEvents.find(e=>e.id===pendingWEId);
+    if(ev&&!ev.resolved&&pendingWEResult){
+      resolveWorldEvent(ev,pendingWEResult);
+      const resultLines=[...lines];
+      if(pendingWEResult.postText)resultLines.push(pendingWEResult.postText);
+      if(pendingWEResult.repDelta)Object.entries(pendingWEResult.repDelta).forEach(([fac,v])=>{if(v!==0)resultLines.push((FACTIONS[fac]||fac)+': '+(v>0?'+':'')+v+' rep')});
+      showResult('Victory!','⚔',resultLines,'Continue','upAll()');
+      return;
+    }
+  }
 
   if(postT){
     showResult('Victory!','⚔',lines,'Continue','resumeTravelAfterCombat()');
@@ -5340,13 +5393,6 @@ function upChar(){
     });
   }
 
-  // Family
-  if(S.spouse||S.children.length){
-    tab.appendChild(el('div','sh','Family'));
-    if(S.spouse)tab.appendChild(el('div','cd',`💍 Spouse: <b>${S.spouse.name}</b>`));
-    S.children.forEach(c=>{tab.appendChild(el('div','cd',`👶 ${c.name} — Age ${c.age||0}`))});
-  }
-
   // Perks
   if(S.perks&&S.perks.length){
     tab.appendChild(el('div','sh','Perks'));
@@ -5399,16 +5445,6 @@ function upChar(){
     tab.appendChild(fc);
   }
 
-  // Relationships
-  if(S.relationships.length){
-    tab.appendChild(el('div','sh','Relationships'));
-    S.relationships.slice(0,8).forEach(r=>{
-      const rc=el('div','inv-card');rc.style.cursor='pointer';
-      rc.innerHTML=`<div class="inv-row"><div>${renderIcon(r.icon||inferNpcIcon(r,{loc:r.loc||S.loc}),18)} ${r.name}</div><div style="font-size:10px;color:var(--muted)">${r.rel} · ❤${r.aff}</div></div>`;
-      rc.onclick=()=>openNPCInteraction({name:r.name,male:r.male,age:r.age,role:r.role||r.rel,loc:r.loc||S.loc,fac:r.fac,icon:r.icon},r);
-      tab.appendChild(rc);
-    });
-  }
 }
 
 // ============================================================
@@ -5532,7 +5568,65 @@ function upRoads(){
   });
 }
 function beginTravel(dest,days){
-  if(combat)return;tDest=dest;
+  if(combat)return;
+  const destLoc=LOCS[dest];
+  const ncrRep=S.rep.NCR||0;
+  const legionRep=S.rep.Legion||0;
+  const destFac=destLoc?.fac;
+
+  // NCR hostile — blocked at NCR territory
+  if(destFac==='NCR'&&ncrRep<=-20){
+    openDlg(`<div style="text-align:center">
+      <div style="font-size:36px;margin-bottom:8px">🛑</div>
+      <div style="font-size:14px;font-weight:bold;color:var(--red);margin-bottom:6px">NCR Hostile</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px">NCR troopers have orders to shoot you on sight. Travelling to ${destLoc.n} right now would be suicide. Raise your NCR standing first.</div>
+      <button class="bt" style="text-align:center" onclick="closeDlg()">Back down</button>
+      <button class="bt dn" style="text-align:center" onclick="closeDlg();_beginTravelForce('${dest}',${days})">Push through anyway (very dangerous)</button>
+    </div>`);
+    return;
+  }
+
+  // NCR shunned — toll warning
+  if(destFac==='NCR'&&ncrRep>=-20&&ncrRep<-5){
+    const toll=20;
+    openDlg(`<div style="text-align:center">
+      <div style="font-size:36px;margin-bottom:8px">🛡</div>
+      <div style="font-size:14px;font-weight:bold;color:var(--amber);margin-bottom:6px">NCR Checkpoint Ahead</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Your standing with the NCR is poor. Expect a toll of ~${toll} caps at the checkpoint into ${destLoc.n}.</div>
+      <button class="bt go" style="text-align:center" onclick="closeDlg();_applyNcrToll(${toll});_beginTravelForce('${dest}',${days})">Pay the toll (${toll} caps) and travel</button>
+      <button class="bt" style="text-align:center" onclick="closeDlg()">Wait until your rep improves</button>
+    </div>`);
+    return;
+  }
+
+  // Legion hostile — Legion territory is a death sentence
+  if(destFac==='Legion'&&legionRep<=-20){
+    openDlg(`<div style="text-align:center">
+      <div style="font-size:36px;margin-bottom:8px">⚔</div>
+      <div style="font-size:14px;font-weight:bold;color:var(--red);margin-bottom:6px">Legion Territory — Vilified</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Caesar's Legion has marked you for death. Entering ${destLoc.n} means fighting your way in — and probably not out.</div>
+      <button class="bt" style="text-align:center" onclick="closeDlg()">Back down</button>
+      <button class="bt dn" style="text-align:center" onclick="closeDlg();_beginTravelForce('${dest}',${days})">Push through anyway</button>
+    </div>`);
+    return;
+  }
+
+  // Legion liked — note the relative safety
+  if(destFac==='Legion'&&legionRep>=30){
+    _beginTravelForce(dest,days);
+    return;
+  }
+
+  _beginTravelForce(dest,days);
+}
+function _applyNcrToll(amount){
+  if((S.caps||0)<amount){notify('Not enough caps for the toll.');return}
+  S.caps-=amount;
+  log('Paid NCR checkpoint toll: '+amount+' caps.','e');
+  notify('🛡 NCR toll: -'+amount+' caps');
+}
+function _beginTravelForce(dest,days){
+  tDest=dest;
   tQ=genTravelEv(days,S.loc,dest);
   $('TO').classList.add('A');$('TB').style.width='0%';$('TC').innerHTML='';$('TN').style.display='none';
   nextTEv();
@@ -5667,42 +5761,6 @@ function meetLocalContact(){
   const npc=rndA(unknown.length?unknown:list);
   openNPCInteraction(npc,S.relationships.find(r=>r.name===npc.name));
 }
-function upPeople(){
-  const tab=$('log-tab');if(!S)return;tab.innerHTML='';
-  tab.appendChild(el('div','sh','Mojave Network'));
-  const intro=el('div','cd');
-  intro.innerHTML='<div style="font-size:12px;color:var(--muted);line-height:1.45">Known NPCs, useful locals, rumours, favours, and work. Random wastelanders can become contacts too.</div>'+ 
-  '<button class="bt go" style="margin-top:8px;text-align:center" onclick="meetLocalContact()">📡 Meet locals in '+(LOCS[S.loc]?.n||'this area')+'</button>';
-  tab.appendChild(intro);
-  const known=(S.relationships||[]).slice().sort((a,b)=>(b.aff||0)-(a.aff||0));
-  tab.appendChild(el('div','sh','Known People'));
-  if(!known.length)tab.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">No contacts yet. Meet locals or talk to named NPCs in buildings.</div>'));
-  known.forEach(r=>{
-    const card=el('div','bc');
-    const pct=Math.max(0,Math.min(100,r.aff||0));
-    card.innerHTML='<div class="icon-wrap" style="width:34px;height:34px;font-size:28px">'+renderIcon(r.icon||inferNpcIcon(r,{loc:r.loc||S.loc}),28)+'</div>'+ 
-    '<div style="flex:1;min-width:0"><div style="font-size:12px;color:var(--amber);font-weight:bold">'+r.name+'</div>'+ 
-    '<div style="font-size:10px;color:var(--muted)">'+(r.role||'Wastelander')+' · '+(LOCS[r.loc]?.n||r.loc||'Mojave')+' · '+relTitle(r.aff)+'</div>'+ 
-    '<div class="hb" style="margin-top:4px"><div class="hf g" style="width:'+pct+'%"></div></div>'+ 
-    (r.last?'<div style="font-size:10px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.last+'</div>':'')+'</div>';
-    card.onclick=()=>openNPCInteraction({name:r.name,male:r.male,age:r.age,role:r.role||'Wastelander',loc:r.loc||S.loc,fac:r.fac,icon:r.icon},r);
-    tab.appendChild(card);
-  });
-  const locals=ensureLocalContacts();
-  tab.appendChild(el('div','sh','Local Faces'));
-  locals.forEach(n=>{
-    const met=S.relationships.find(r=>r.name===n.name);
-    const c=el('div','inv-card');c.style.cursor='pointer';
-    c.innerHTML='<div class="inv-row"><div>'+renderIcon(n.icon||inferNpcIcon(n,{loc:S.loc}),18)+' '+(met?n.name:'Unknown '+(n.role||'Local'))+'</div><div style="font-size:10px;color:var(--muted)">'+(met?relTitle(met.aff):'Unmet')+'</div></div>';
-    c.onclick=()=>openNPCInteraction(n,met);
-    tab.appendChild(c);
-  });
-  if(S.log&&S.log.length){
-    tab.appendChild(el('div','sh','Recent Activity'));
-    const recent=(S.log[0].entries||[]).slice(-5).reverse().map(e=>'<div class="log-entry '+(e.type==='c'?'combat-log':e.type==='q'?'quest-log':'event-log')+'">'+e.text+'</div>').join('');
-    tab.appendChild(el('div','cd',recent));
-  }
-}
 function upLog(){
   const tab=$('log-tab');if(!S)return;tab.innerHTML='';
   tab.appendChild(el('div','sh','Chronicle'));
@@ -5775,24 +5833,213 @@ function dailyEvent(){
     rndA(events)();
   }
 }
+// ============================================================
+// WORLD EVENT TEMPLATES — each has choices with real outcomes
+// ============================================================
+const WORLD_EVENT_TEMPLATES=[
+  // ── NCR ──────────────────────────────────────────────────────
+  {title:'NCR supply convoy ambushed near {loc}',type:'military',fac:'NCR',duration:8,icon:'🚚',
+   body:'Raiders hit an NCR supply wagon on the road. The driver is dead, a trooper is pinned, and the crates are still there.',
+   choices:[
+     {label:'🛡 Fight off the raiders and secure the supplies',fn:()=>{startCombatWE('jackal_raider',2);return{repDelta:{NCR:6},karma:3,caps:0,xpBonus:20,postText:'You hold the road. The surviving trooper radios HQ. +6 NCR rep.'}},result:'NCR will hear about this.'},
+     {label:'💰 Loot the crates and slip away',fn:()=>{const pool=['ammo_556','stimpak','ncr_armor','super_stimpak'];const p=rndA(pool);giveItem(p);giveItem('ammo_556');return{repDelta:{NCR:-4},karma:-3,caps:rnd(20,45),xpBonus:5,postText:'Caps and supplies gained. NCR won\'t know your face — yet. -4 NCR rep.'}},result:'There\'s a risk if they ever piece it together.'},
+     {label:'🏃 Ride past — not your problem',fn:()=>{return{repDelta:{},karma:-1,caps:0,xpBonus:0,postText:'The trooper\'s shouts fade behind you. Sometimes the Mojave just takes people.'}},result:'Nothing gained, nothing lost. Except the trooper.'},
+   ]},
+  {title:'NCR checkpoint demanding papers near {loc}',type:'military',fac:'NCR',duration:6,icon:'🛡',
+   body:'An NCR roadblock has set up on the highway. They\'re checking everyone who passes through.',
+   choices:[
+     {label:'📋 Present yourself honestly',fn:()=>{const rep=S.rep.NCR||0;if(rep>=-10){return{repDelta:{NCR:1},karma:0,caps:0,xpBonus:5,postText:'They wave you through with a nod. +1 NCR rep.'}}else{return{repDelta:{NCR:0},karma:0,caps:-20,xpBonus:0,postText:'They charge a "toll" for low-rep travellers. -20 caps.',capsDelta:-20}}},result:'Your standing with NCR determines how this goes.'},
+     {label:'💬 Talk your way through [CHA check]',fn:()=>{const cha=statVal(3);if(R()<checkChance(cha,6)){return{repDelta:{NCR:2},karma:0,caps:0,xpBonus:10,postText:'You spin a convincing story. They\'re impressed. +2 NCR rep.'}}else{return{repDelta:{NCR:-2},karma:0,caps:-15,xpBonus:0,postText:'The sergeant doesn\'t buy it. Toll collected anyway. -2 NCR rep.',capsDelta:-15}}},result:'Charisma helps but NCR sergeants are used to liars.'},
+     {label:'🏜 Detour around through the desert',fn:()=>{advanceTime(3);return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'The long way around. +3 hours lost.'}},result:'Nobody stops you. The Mojave is slower than the road.'},
+   ]},
+  {title:'NCR field camp under Fiend attack at {loc}',type:'raid',fac:'NCR',duration:5,icon:'⚔',
+   body:'You hear gunfire and shouting ahead. An NCR camp is being overrun by Fiends. A few troopers are still fighting.',
+   choices:[
+     {label:'⚔ Charge in and help the troopers',fn:()=>{startCombatWE('fiend',3);return{repDelta:{NCR:8},karma:4,caps:0,xpBonus:25,postText:'The Fiends scatter. The camp commander shakes your hand hard. +8 NCR rep.'}},result:'Bold move. Dangerous. The troopers will remember.'},
+     {label:'🎯 Pick off stragglers from cover [AGI check]',fn:()=>{const agi=statVal(5);if(R()<checkChance(agi,7)){const xp=grantXP(20);S.xp+=xp;S.rep.NCR=(S.rep.NCR||0)+4;log('Picked off Fiends from cover near the NCR camp.','e');return{repDelta:{NCR:4},karma:2,caps:0,xpBonus:0,postText:'Clean shots from the rocks. +4 NCR rep. ⭐ +'+xp+' XP.'}}else{return{repDelta:{NCR:1},karma:1,caps:0,xpBonus:0,postText:'You help where you can. One shot connects. The camp holds. +1 NCR rep.'}}},result:'Agility gives you the angle, not the guarantee.'},
+     {label:'🚶 Keep moving — you didn\'t see this',fn:()=>{return{repDelta:{NCR:-3},karma:-2,caps:0,xpBonus:0,postText:'Three troopers don\'t make it out. Word travels fast on the road. -3 NCR rep.'}},result:'Someone will remember who walked past.'},
+   ]},
+
+  // ── LEGION ───────────────────────────────────────────────────
+  {title:'Legion raiding party crossing the road near {loc}',type:'raid',fac:'Legion',duration:7,icon:'⚔',
+   body:'A Legion war party is moving openly across the highway. They haven\'t noticed you — yet. Slaves in chains walk behind them.',
+   choices:[
+     {label:'⚔ Ambush them — free the slaves',fn:()=>{startCombatWE('legion_recruit',3);return{repDelta:{NCR:5,Legion:-6},karma:5,caps:0,xpBonus:30,postText:'The Legion soldiers fall. The slaves scatter into the desert. +5 NCR rep, -6 Legion rep.'}},result:'Risky. Very risky. But the NCR and the slaves will remember.'},
+     {label:'🏃 Let them pass — you\'re not suicidal',fn:()=>{return{repDelta:{Legion:1},karma:-2,caps:0,xpBonus:0,postText:'You wait in the scrub until they\'re gone. The slaves don\'t look back. +1 Legion rep for not interfering.'}},result:'Sometimes survival is the choice.'},
+     {label:'💬 Approach and offer information for safe passage [CHA]',fn:()=>{const cha=statVal(3);const rep=S.rep.Legion||0;if(R()<checkChance(cha,5,rep>10?0.1:0)){const caps=rnd(15,30);S.caps+=caps;return{repDelta:{Legion:3,NCR:-2},karma:-3,caps:0,xpBonus:0,postText:'The decanus accepts your intel. You walk away. +3 Legion rep, -2 NCR rep.',capsDelta:caps}}else{startCombatWE('legion_recruit',2);return{repDelta:{Legion:-2},karma:0,caps:0,xpBonus:15,postText:'The legionaries don\'t negotiate. They attack.'}}},result:'Legion respect words of strength — only sometimes.'},
+   ]},
+  {title:'Legion execution staged as warning near {loc}',type:'raid',fac:'Legion',duration:4,icon:'⚠',
+   body:'A crucified NCR soldier hangs at a crossroads. A Legion scout watches to see who reacts.',
+   choices:[
+     {label:'😤 Cut him down — openly defiant',fn:()=>{S.karma+=4;S.rep.NCR=(S.rep.NCR||0)+4;S.rep.Legion=(S.rep.Legion||0)-5;log('Cut down a crucified NCR soldier near '+LOCS[rndA(Object.keys(LOCS))]?.n+'.','e');return{repDelta:{},karma:0,caps:0,xpBonus:12,postText:'The scout radios it in. You\'ve made an enemy. +4 NCR rep, -5 Legion rep.'}},result:'He\'s still alive. The Legion will hear what you did.'},
+     {label:'🚶 Read the message and keep moving',fn:()=>{return{repDelta:{Legion:1},karma:-1,caps:0,xpBonus:0,postText:'The scout relaxes. You understand power. +1 Legion rep.'}},result:'The Mojave doesn\'t always let you pick fights.'},
+     {label:'🎯 Kill the scout quietly first, then cut him down',fn:()=>{const agi=statVal(5);if(R()<checkChance(agi,7)){S.karma+=5;S.rep.NCR=(S.rep.NCR||0)+5;giveItem('ammo_357');log('Killed a Legion scout silently and freed a prisoner.','e');return{repDelta:{NCR:5},karma:0,caps:0,xpBonus:18,postText:'Clean. The scout never radios back. +5 NCR rep. Found ammo on the body.'}}else{startCombatWE('legion_scout',1);return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'The scout hears you. It gets loud.'}}},result:'If your hands are steady enough.'},
+   ]},
+
+  // ── KHANS ────────────────────────────────────────────────────
+  {title:'Khan drug runners shaking down a caravan near {loc}',type:'raid',fac:'Khans',duration:6,icon:'💊',
+   body:'Three Khans have a small trader surrounded. They want product. He doesn\'t have any. This is going badly.',
+   choices:[
+     {label:'⚔ Step in for the trader',fn:()=>{startCombatWE('great_khan',2);return{repDelta:{Khans:-4,NCR:3},karma:3,caps:0,xpBonus:18,postText:'The Khans back off fast when it gets real. +3 NCR rep, -4 Khans rep.'}},result:'The trader looks like he might actually survive now.'},
+     {label:'💰 Buy the trader\'s way out (30 caps)',fn:()=>{if((S.caps||0)<30){return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'Not enough caps. The Khans aren\'t interested in promises.'}}S.caps-=30;return{repDelta:{Khans:2},karma:2,caps:0,xpBonus:8,postText:'Thirty caps buys a quiet afternoon. +2 Khans rep for doing business properly.',capsDelta:-30}},result:'Caps talk. Even Khans respect that.'},
+     {label:'🚶 None of your business',fn:()=>{return{repDelta:{Khans:1},karma:-2,caps:0,xpBonus:0,postText:'The Khans nod. You understand how things work. +1 Khans rep.'}},result:'Not your caravan. Not your caps.'},
+   ]},
+
+  // ── BOOMERS ─────────────────────────────────────────────────
+  {title:'Boomer patrol testing their mortars near {loc}',type:'military',fac:'Boomers',duration:5,icon:'💥',
+   body:'The ground shakes. Boomer artillery is walking rounds toward a stretch of road ahead, methodically.',
+   choices:[
+     {label:'⏱ Wait them out (3 hours)',fn:()=>{advanceTime(3);return{repDelta:{Boomers:1},karma:0,caps:0,xpBonus:0,postText:'The shelling stops. You move. +1 Boomers rep for respecting their range.'}},result:'Patience is safer than bravery here.'},
+     {label:'🎯 Identify the shell pattern and cross [INT check]',fn:()=>{const intel=statVal(4);if(R()<checkChance(intel,7)){const xp=grantXP(15);S.xp+=xp;return{repDelta:{Boomers:2},karma:0,caps:0,xpBonus:0,postText:'You read the cadence and move between salvos. ⭐ XP. +2 Boomers rep.'}}else{const dmg=rnd(20,40);S.hp=Math.max(1,S.hp-dmg);log('Misjudged the Boomer mortar pattern.','c');return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'Wrong guess. You catch a blast. -'+dmg+' HP.'}}},result:'One miscounted pause and the Mojave ends your streak.'},
+     {label:'🚩 Wave a white cloth — signal you\'re friendly',fn:()=>{if((S.rep.Boomers||0)>=10){return{repDelta:{Boomers:3},karma:0,caps:0,xpBonus:10,postText:'A spotter relays you\'re cleared. You cross. +3 Boomers rep.'}}else{const dmg=rnd(8,18);S.hp=Math.max(1,S.hp-dmg);return{repDelta:{Boomers:0},karma:0,caps:0,xpBonus:0,postText:'They don\'t care about cloth. They care about authorization. -'+dmg+' HP from a near miss.'}}},result:'Works if they know you. Otherwise you\'re just a better target.'},
+   ]},
+
+  // ── FOLLOWERS ───────────────────────────────────────────────
+  {title:'Followers clinic overwhelmed with wounded near {loc}',type:'crisis',fac:'Followers',duration:7,icon:'⚕',
+   body:'A Followers of the Apocalypse field medic is working alone, three wounded on the ground, supplies running thin.',
+   choices:[
+     {label:'💊 Donate stimpaks and help triage',fn:()=>{const si=S.inv.indexOf('stimpak');if(si===-1){return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'You have no stimpaks to give.'}}S.inv.splice(si,1);const xp=grantXP(15);S.xp+=xp;S.rep.Followers=(S.rep.Followers||0)+5;S.karma+=4;log('Donated stimpaks to a Followers field clinic.','e');return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'The medic thanks you with exhausted eyes. +5 Followers rep, ⭐ XP, +4 karma.'}},result:'One stimpak can mean a life here.'},
+     {label:'💬 Offer to hold a perimeter while they work',fn:()=>{advanceTime(2);const xp=grantXP(10);S.xp+=xp;S.rep.Followers=(S.rep.Followers||0)+3;S.karma+=2;log('Stood guard at a Followers clinic.','e');return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'Two hours on watch. Three people lived. +3 Followers rep, +2 karma.'}},result:'Not medical training. Still useful.'},
+     {label:'🚶 Too dangerous to stop that long',fn:()=>{return{repDelta:{Followers:-2},karma:-1,caps:0,xpBonus:0,postText:'You don\'t stop. The medic watches you walk past. -2 Followers rep.'}},result:''},
+   ]},
+
+  // ── CARAVAN / TRADE ─────────────────────────────────────────
+  {title:'Caravan route to {loc} under attack',type:'trade',fac:'None',duration:6,icon:'🐪',
+   body:'Smoke ahead. A Crimson Caravan wagon is burning. The guards are spread thin fighting off Jackals.',
+   choices:[
+     {label:'⚔ Help the caravan guards',fn:()=>{startCombatWE('jackal_raider',2);return{repDelta:{NCR:2},karma:3,caps:rnd(30,60),xpBonus:20,postText:'The Jackals break and run. The caravan master presses caps into your hand.'}},result:'They can pay. The Jackals cannot.'},
+     {label:'💰 Loot the burning wagon while everyone\'s distracted',fn:()=>{const pick=rndA(['ammo_556','stimpak','sunset_sars','pre_war_money','ammo_9mm']);giveItem(pick);giveItem(rndA(['caps_stash','sunset_sars','ammo_10mm'])||'pre_war_money');return{repDelta:{NCR:-3},karma:-4,caps:rnd(15,35),xpBonus:0,postText:'You grab what you can from the fire. Nobody catches you. -3 NCR rep, -4 karma.'}},result:'Fast hands. Cold conscience.'},
+     {label:'🏃 Ride past before you become part of it',fn:()=>{return{repDelta:{},karma:-1,caps:0,xpBonus:0,postText:'Smoke and screaming behind you. The Mojave keeps score.'}},result:''},
+   ]},
+  {title:'Abandoned caravan camp found near {loc}',type:'trade',fac:'None',duration:4,icon:'🏕',
+   body:'A camp with still-smouldering embers. Crates and packs left behind in a hurry. No bodies.',
+   choices:[
+     {label:'🔍 Search the camp carefully',fn:()=>{const finds=['ammo_9mm','stimpak','sunset_sars','purified_water','scrap','pre_war_money','ammo_556'];const a=rndA(finds);const b=rndA(finds);giveItem(a);giveItem(b);const caps=rnd(10,30);S.caps+=caps;return{repDelta:{},karma:0,caps:0,xpBonus:8,postText:'Found '+ITEMS[a]?.n+', '+ITEMS[b]?.n+', and '+caps+' caps stashed in a bedroll.',capsDelta:caps}},result:'Whoever left this in a hurry left things behind.'},
+     {label:'📋 Look for clues about what happened [INT check]',fn:()=>{const intel=statVal(4);if(R()<checkChance(intel,5)){const xp=grantXP(12);S.xp+=xp;giveItem('damaged_holotape');log('Pieced together what happened to the Mojave Express camp.','e');return{repDelta:{},karma:1,caps:0,xpBonus:0,postText:'Tracks, supplies, timing. Legion scouts hit them before dawn. Found a holotape.'}}else{const caps=rnd(5,15);S.caps+=caps;return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'Nothing useful — but you found '+caps+' caps in a boot.',capsDelta:caps}}},result:'The camp tells a story if you know how to read it.'},
+   ]},
+
+  // ── CRISIS ───────────────────────────────────────────────────
+  {title:'Water shortage affecting settlements near {loc}',type:'crisis',fac:'NCR',duration:9,icon:'💧',
+   body:'A brahmin-pulled water cart has broken down. The driver is trying to fix a wheel. People at the next settlement are already thirsty.',
+   choices:[
+     {label:'🔧 Help fix the cart [END/STR check]',fn:()=>{const str=statVal(0);if(R()<checkChance(str,5)){const xp=grantXP(12);S.xp+=xp;S.rep.NCR=(S.rep.NCR||0)+3;S.karma+=3;log('Fixed a water cart on the highway.','e');return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'Twenty minutes of real work. The driver makes it to town. +3 NCR rep, +3 karma.'}}else{return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'The axle is worse than it looks. You give up, and the driver tries to flag down a Brahmin rider.'}}},result:'Not glamorous. Still matters.'},
+     {label:'💧 Give your purified water',fn:()=>{const wi=S.inv.indexOf('purified_water');if(wi===-1){return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'You don\'t have any purified water to give.'}}S.inv.splice(wi,1);S.karma+=3;S.rep.NCR=(S.rep.NCR||0)+2;return{repDelta:{},karma:0,caps:0,xpBonus:8,postText:'A small thing. Means a lot out here. +2 NCR rep, +3 karma.'}},result:'The Mojave remembers generosity — eventually.'},
+     {label:'🚶 Not your cart, not your problem',fn:()=>{return{repDelta:{NCR:-1},karma:-1,caps:0,xpBonus:0,postText:'The driver watches you go. -1 NCR rep.'}},result:''},
+   ]},
+  {title:'Radiation leak reported at old facility near {loc}',type:'crisis',fac:'None',duration:5,icon:'☢',
+   body:'A cracked pipe at an old pre-war water processing plant is leaking into the ground water. A handful of settlers are trying to find someone who knows what to do.',
+   choices:[
+     {label:'🔬 Assess the damage and advise [INT check]',fn:()=>{const intel=statVal(4);if(R()<checkChance(intel,6)){const xp=grantXP(18);S.xp+=xp;S.karma+=4;giveItem('stimpak');log('Helped contain a radiation leak near the highway.','e');return{repDelta:{Followers:3},karma:0,caps:0,xpBonus:0,postText:'You isolate the worst of it and give clear instructions. +3 Followers rep, +4 karma, stimpak from grateful settler.'}}else{const dmg=rnd(5,15);S.hp=Math.max(1,S.hp-dmg);return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'You try but it\'s beyond your knowledge. You take '+dmg+' rads/HP getting close. Walk away.'}}},result:'Medical knowledge makes this survivable. Ignorance does not.'},
+     {label:'💰 Offer to find a Followers medic for 40 caps',fn:()=>{const caps=40;if((S.caps||0)<caps){return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'They can\'t pay. Nobody has 40 caps.'}}S.caps+=caps;S.rep.Followers=(S.rep.Followers||0)+2;return{repDelta:{},karma:1,caps:0,xpBonus:10,postText:'You play middleman. The caps are fair. +2 Followers rep.',capsDelta:caps}},result:'Helping for hire still helps.'},
+   ]},
+];
+
 function worldTick(){
   if(!S.worldEvents)S.worldEvents=[];
-  if(S.days-S.lastWorldTick<5)return;
+  if(S.days-S.lastWorldTick<4)return;
   S.lastWorldTick=S.days;
-  if(R()<.5&&S.worldEvents.length<3){
-    const templates=[
-      {title:'NCR patrols increase near {loc}',type:'military',duration:10},
-      {title:'Legion raids reported near {loc}',type:'raid',duration:8},
-      {title:'Caravan route to {loc} reopened',type:'trade',duration:12},
-      {title:'Fiend attacks intensify near {loc}',type:'raid',duration:7},
-      {title:'Water supply issues at {loc}',type:'crisis',duration:6},
-    ];
-    const t=rndA(templates);const locKey=rndA(Object.keys(LOCS));
-    const title=t.title.replace('{loc}',LOCS[locKey]?.n||'somewhere');
-    S.worldEvents.push({...t,title,started:S.days,loc:locKey});
-    log('📰 '+title,'e');
-  }
+  // Expire old events
   S.worldEvents=S.worldEvents.filter(ev=>S.days-ev.started<ev.duration);
+  // Only roll if under cap
+  if(R()<.55&&S.worldEvents.length<4){
+    const t=rndA(WORLD_EVENT_TEMPLATES);
+    const locKey=rndA(Object.keys(LOCS));
+    const locName=LOCS[locKey]?.n||'somewhere';
+    const id='we_'+Date.now()+'_'+Math.floor(R()*1000);
+    S.worldEvents.push({
+      id,
+      templateId:t.title,
+      title:t.title.replace('{loc}',locName),
+      body:t.body,
+      type:t.type,
+      fac:t.fac,
+      icon:t.icon,
+      duration:t.duration,
+      started:S.days,
+      loc:locKey,
+      resolved:false
+    });
+    log('📰 '+t.title.replace('{loc}',locName),'e');
+    notify('📰 New world event — check the World tab');
+  }
+}
+
+// Helper: start a combat encounter from within a world event resolution
+// Uses a lightweight approach — sets up combat and stores a pending WE result
+function startCombatWE(enemyId,count){
+  const enList=[];
+  for(let i=0;i<(count||1);i++){if(ENEMIES[enemyId])enList.push(mkEnemy(enemyId))}
+  if(!enList.length)return;
+  closeDlg();
+  startCombat(enList);
+  combat._fromWorldEvent=true;
+}
+
+function resolveWorldEvent(ev,result){
+  if(!ev||ev.resolved)return;
+  ev.resolved=true;
+  // Apply rep deltas
+  if(result.repDelta){
+    Object.entries(result.repDelta).forEach(([fac,val])=>{
+      if(val===0)return;
+      S.rep[fac]=(S.rep[fac]||0)+val;
+      const label=val>0?'+'+val:String(val);
+      log(FACTIONS[fac]||fac+' standing: '+label,'e');
+    });
+  }
+  if(result.karma){S.karma=(S.karma||0)+result.karma}
+  if(result.caps&&result.caps>0){S.caps+=result.caps}
+  if(result.capsDelta&&result.capsDelta<0){S.caps=Math.max(0,S.caps+result.capsDelta)}
+  if(result.capsDelta&&result.capsDelta>0){S.caps+=result.capsDelta}
+  if(result.xpBonus&&result.xpBonus>0){const x=grantXP(result.xpBonus);S.xp+=x}
+  chkLU();save();
+  // Remove event
+  S.worldEvents=S.worldEvents.filter(e=>e.id!==ev.id);
+}
+
+function interceptWorldEvent(evId){
+  const ev=S.worldEvents.find(e=>e.id===evId);
+  if(!ev||ev.resolved){notify('This situation has already passed.');upWorld();return}
+  // Find matching template
+  const tmpl=WORLD_EVENT_TEMPLATES.find(t=>t.title===ev.templateId);
+  if(!tmpl){notify('No choices available.');return}
+  let html=`<div style="text-align:center;font-size:32px;margin-bottom:8px">${ev.icon}</div>`;
+  html+=`<div style="font-size:14px;font-weight:bold;color:var(--amber);margin-bottom:6px">${ev.title}</div>`;
+  html+=`<div class="npc-line" style="margin-bottom:10px">${ev.body}</div>`;
+  if(ev.fac&&ev.fac!=='None'&&FACTIONS[ev.fac]){
+    const rep=S.rep[ev.fac]||0;
+    const label=rep>=50?'Idolized':rep>=30?'Liked':rep>=10?'Accepted':rep>=0?'Neutral':rep>=-20?'Shunned':'Vilified';
+    const col=rep>=10?'var(--green)':rep>=0?'var(--muted)':'var(--red)';
+    html+=`<div style="font-size:10px;color:var(--muted);margin-bottom:8px">${FACTIONS[ev.fac]}: <span style="color:${col}">${label} (${rep>=0?'+':''}${rep})</span></div>`;
+  }
+  tmpl.choices.forEach((ch,i)=>{
+    html+=`<button class="bt" style="text-align:left;margin:3px 0" onclick="weChoose('${evId}',${i})">${ch.label}</button>`;
+  });
+  html+=`<button class="bt" style="text-align:center;margin-top:4px;color:var(--muted)" onclick="closeDlg()">↩ Come back later</button>`;
+  openDlg(html);
+}
+
+function weChoose(evId,choiceIdx){
+  const ev=S.worldEvents.find(e=>e.id===evId);
+  if(!ev||ev.resolved){closeDlg();return}
+  const tmpl=WORLD_EVENT_TEMPLATES.find(t=>t.title===ev.templateId);
+  if(!tmpl||!tmpl.choices[choiceIdx]){closeDlg();return}
+  const ch=tmpl.choices[choiceIdx];
+  closeDlg();
+  const result=ch.fn();
+  if(!result){
+    // Combat was triggered — store event for post-combat resolution
+    if(combat){combat._pendingWEId=evId;combat._pendingWEResult={repDelta:{},karma:0,caps:0,xpBonus:15,postText:ch.result||'The situation resolves.'}}
+    return;
+  }
+  resolveWorldEvent(ev,result);
+  const lines=[result.postText||ch.result||'Done.'];
+  if(result.repDelta)Object.entries(result.repDelta).forEach(([fac,v])=>{if(v!==0)lines.push((FACTIONS[fac]||fac)+': '+(v>0?'+':'')+v+' rep')});
+  if(result.karma&&result.karma!==0)lines.push('⚖ Karma: '+(result.karma>0?'+':'')+result.karma);
+  if(result.caps&&result.caps>0)lines.push('💰 +'+result.caps+' caps');
+  if(result.capsDelta&&result.capsDelta<0)lines.push('💰 '+result.capsDelta+' caps');
+  if(result.xpBonus&&result.xpBonus>0)lines.push('⭐ +'+result.xpBonus+' XP');
+  showResult(ev.title,ev.icon,lines,'Continue','upAll()');
 }
 
 // ============================================================
