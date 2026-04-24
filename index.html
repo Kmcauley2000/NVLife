@@ -32,6 +32,7 @@ background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0
 #C{padding:8px 10px;padding-bottom:calc(86px + var(--sb))}
 #roads-tab.T.A{margin:-8px -10px;padding-bottom:calc(86px + var(--sb))}
 .T{display:none}.T.A{display:block}
+.T:not(.A){display:none!important}
 #N{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
 background:linear-gradient(0deg,#0e0e06,#1a1a0e);display:flex;
 border-top:1px solid var(--amber2);z-index:100;padding-bottom:var(--sb)}
@@ -437,6 +438,7 @@ function resumeExpeditionAfterCombat(){
 }
 function resumeTravelAfterCombat(){
   clearTravelEncounterIcons();
+  if(!tTravelActive&&!tDest){upAll();return}
   $('TO').classList.add('A');
   if(tQ.length) nextTEv();
   else finTravel();
@@ -454,6 +456,8 @@ function resetTransientState(){
   combat=null;
   tQ=[];
   tDest=null;
+  tOrigin=null;
+  tTravelActive=false;
   window._resumeArea=null;
   window._resumeStep=0;
   window._pendingQuest=null;
@@ -654,6 +658,40 @@ HooverDam:{BoulderCity:1,TheFort:2,CampSearchlight:2,NellisAFB:2,CampForlornHope
 };
 
 // ============================================================
+// ENDGAME SCALING / INFINITE TUNNELS
+// ============================================================
+LOCS.MojaveTunnels={n:"Mojave Service Tunnels",r:"New Vegas Underground",d:"A half-myth network of utility tunnels, vault access shafts, sewer cuts, and buried military corridors under Vegas. The deeper you push, the worse it gets.",e:"🕳",t:"dungeon",b:[],dg:4,fac:"None",endgame:1,
+  sur:[{n:"Tunnel Mouth",e:"🚇",d:"Old maintenance passages beneath the Strip. Raiders, ghouls, and things that learned to hunt in the dark.",en:["feral_ghoul","glowing_one","fiend","nightstalker","centaur"],lt:["stimpak","super_stimpak","ammo_556","energy_cell","scrap_electronics","sensor_module"]},
+  {n:"Collapsed Utility Depths",e:"⚠️",d:"Flooded service rooms, power cables, mutant spoor, and sealed doors that keep leading downward.",en:["glowing_one","nightkin","super_mutant","radscorpion","cazador"],lt:["super_stimpak","stealth_boy","laser_rifle","plasma_rifle","microfusion_regulator","fission_battery"]},
+  {n:"Black Level",e:"☢️",d:"No maps. No lights. Only old alarms, claw marks, and legends that should have stayed buried.",en:["nightkin","super_mutant","deathclaw","legion_centurion","securitron"],lt:["super_stimpak","combat_armor","power_fist","thermic_lance","ammo_308","energy_cell"]}]};
+ROADS.MojaveTunnels={TheStrip:1,FreesideN:1};
+
+function tunnelsUnlocked(){return !!(S&&S.flags&&S.flags.mojave_tunnels_unlocked)}
+function unlockMojaveTunnels(){
+  if(!S.flags)S.flags={};
+  S.flags.mojave_tunnels_unlocked=true;
+  if(!ROADS.TheStrip)ROADS.TheStrip={};
+  if(!ROADS.FreesideN)ROADS.FreesideN={};
+  ROADS.TheStrip.MojaveTunnels=1;
+  ROADS.FreesideN.MojaveTunnels=1;
+  mapMarkVisited('TheStrip');
+  log('The Tunnel Broker marked the Mojave Service Tunnels on your Pip-Boy.','q');
+  save();upAll();
+  showResult('Tunnels Unlocked','🕳',["A hidden route has been added from the Strip.","The Mojave Service Tunnels are built for level 20+ characters and scale upward without making early towns harder.","Expect elite packs, rare legendary enemies, and deeper loot."],'Enter later');
+}
+function openTunnelBroker(){
+  if(S.level<20){openDlg(`<div style="text-align:center"><div style="font-size:42px">🕶️</div><h3 style="color:var(--amber)">Tunnel Broker</h3><div style="font-size:11px;color:var(--muted);margin:8px 0">"You are not ready for what is under Vegas. Come back at level 20."</div><button class="bt" style="text-align:center" onclick="closeDlg()">Leave</button></div>`);return}
+  if(tunnelsUnlocked()){openDlg(`<div style="text-align:center"><div style="font-size:42px">🕳</div><h3 style="color:var(--amber)">Tunnel Broker</h3><div style="font-size:11px;color:var(--muted);margin:8px 0">"You already have the route. The deeper doors keep moving."</div><button class="bt go" style="text-align:center" onclick="closeDlg();beginTravel('MojaveTunnels',1)">Travel to the Tunnels</button><button class="bt" style="text-align:center" onclick="closeDlg()">Leave</button></div>`);return}
+  openDlg(`<div style="text-align:center"><div style="font-size:42px">🕶️</div><h3 style="color:var(--amber)">Tunnel Broker</h3><div style="font-size:11px;color:var(--muted);margin:8px 0;text-align:left;line-height:1.45">"There are service tunnels below the Strip that do not appear on tourist maps. People go in looking for weapons, tech, and old-world doors. Most come back as rumours. You look experienced enough to hear the route."</div><button class="bt go" style="text-align:center" onclick="closeDlg();unlockMojaveTunnels()">Mark the tunnels on my Pip-Boy</button><button class="bt" style="text-align:center" onclick="closeDlg()">Not now</button></div>`);
+}
+function applyEndgameRoutes(){
+  if(!S||!S.flags||!S.flags.mojave_tunnels_unlocked)return;
+  if(!ROADS.TheStrip)ROADS.TheStrip={}; if(!ROADS.FreesideN)ROADS.FreesideN={};
+  ROADS.TheStrip.MojaveTunnels=1; ROADS.FreesideN.MojaveTunnels=1;
+}
+
+
+// ============================================================
 // DATA - ITEMS
 // ============================================================
 const ITEMS={
@@ -674,7 +712,7 @@ healing_powder:{n:"Healing Powder",t:"c",e:'<img src="NVImages/HealingpowderIcon
 antivenom:{n:"Antivenom",t:"c",e:'<img src="NVImages/AntivenomIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:10,p:30,w:0.1},
 radscorpion_gland:{n:"Radscorpion Poison Gland",t:"m",e:"🦂",p:25,w:1,desc:"Venom sac harvested from a radscorpion."},
 bark_scorpion_gland:{n:"Bark Scorpion Poison Gland",t:"m",e:"🦂",p:10,w:1,desc:"Small venom gland from a bark scorpion."},
-bloatfly_meat:{n:"Bloatfly Meat",t:"c",e:"🪰",hp:8,p:4,w:1},
+bloatfly_meat:{n:"Bloatfly Meat",t:"c",e:'<img src="NVImages/BloatflymeatIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:8,p:4,w:1},
 radroach_meat:{n:"Radroach Meat",t:"c",e:"🥩",hp:5,p:4,w:1},
 giant_mantis_foreleg:{n:"Giant Mantis Foreleg",t:"c",e:"🦗",hp:6,p:4,w:1},
 cazador_poison_gland:{n:"Cazador Poison Gland",t:"m",e:"🐝",p:50,w:1,desc:"A venom gland cut from a cazador."},
@@ -694,7 +732,7 @@ service_rifle:{n:"Service Rifle",t:"w",e:'<img src="NVImages/ServicerifleIcon.pn
 assault_carbine:{n:"Assault Carbine",t:"w",e:'<img src="NVImages/AssaultcarbineIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:18,p:3950,w:6,ammo:"ammo_556",rare:1},
 hunting_rifle:{n:"Hunting Rifle",t:"w",e:"🔫",a:20,p:2200,w:6,ammo:"ammo_308"},
 sniper_rifle:{n:"Sniper Rifle",t:"w",e:"🔫",a:24,p:4100,w:8,ammo:"ammo_308",rare:1},
-caravan_shotgun:{n:"Caravan Shotgun",t:"w",e:"🔫",a:15,p:675,w:3,ammo:"ammo_shells"},
+caravan_shotgun:{n:"Caravan Shotgun",t:"w",e:'<img src="NVImages/CaravanshotgunIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',a:15,p:675,w:3,ammo:"ammo_shells"},
 combat_shotgun:{n:"Combat Shotgun",t:"w",e:"🔫",a:20,p:3800,w:7.5,ammo:"ammo_shells",rare:1},
 laser_pistol:{n:"Laser Pistol",t:"w",e:"⚡",a:8,p:175,w:3,ammo:"energy_cell"},
 laser_rifle:{n:"Laser Rifle",t:"w",e:"⚡",a:14,p:800,w:8,ammo:"energy_cell"},
@@ -722,32 +760,32 @@ goodsprings_dynamite_bundle:{n:"Easy Pete Dynamite Bundle",t:"m",e:"🧨",p:0,w:
 ammo_9mm:{n:"9mm Rounds",t:"ammo",e:'<img src="NVImages/9mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:0,stack:1},
 ammo_10mm:{n:"10mm Rounds",t:"ammo",e:'<img src="NVImages/10mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:2,w:0,stack:1},
 ammo_357:{n:".357 Magnum Rounds",t:"ammo",e:"🔸",p:2,w:0,stack:1},
-ammo_556:{n:"5.56mm Rounds",t:"ammo",e:"🔸",p:2,w:0,stack:1},
-ammo_308:{n:".308 Rounds",t:"ammo",e:"🔸",p:4,w:0,stack:1},
-ammo_shells:{n:"Shotgun Shells",t:"ammo",e:"🔸",p:3,w:0,stack:1},
-energy_cell:{n:"Energy Cells",t:"ammo",e:"⚡",p:1,w:0,stack:1},
+ammo_556:{n:"5.56mm Rounds",t:"ammo",e:'<img src="NVImages/5.56mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:2,w:0,stack:1},
+ammo_308:{n:".308 Rounds",t:"ammo",e:'<img src="NVImages/308mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:4,w:0,stack:1},
+ammo_shells:{n:"Shotgun Shells",t:"ammo",e:'<img src="NVImages/ShotgunshellsIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:3,w:0,stack:1},
+energy_cell:{n:"Energy Cells",t:"ammo",e:'<img src="NVImages/EnergycellIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:0,stack:1},
 doctor_bag:{n:"Doctor's Bag",t:"c",e:"🩹",hp:55,p:55,w:1},
 primm_sheriff_badge:{n:"Primm Sheriff's Badge",t:"m",e:"⭐",p:120,w:0,rare:2,desc:"A restored Primm badge from the sheriff's office."},
 primm_sheriff_papers:{n:"Primm Sheriff Paperwork",t:"m",e:"📄",p:45,w:0,rare:1,desc:"Authority papers for appointing a new sheriff in Primm."},
-cowboy_repeater:{n:"Cowboy Repeater",t:"w",e:"🔫",a:14,p:800,w:5,ammo:"ammo_357"},
+cowboy_repeater:{n:"Cowboy Repeater",t:"w",e:'<img src="NVImages/CowboyrepeaterIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',a:14,p:800,w:5,ammo:"ammo_357"},
 pickaxe:{n:"Pickaxe",t:"w",e:"⛏",a:10,p:55,w:8},
 // Materials
-scrap:{n:"Scrap Metal",t:"m",e:"⚙",p:1,w:2},
-duct_tape:{n:"Duct Tape",t:"m",e:"🔧",p:1,w:1},
+scrap:{n:"Scrap Metal",t:"m",e:'<img src="NVImages/ScrapmetalIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:2},
+duct_tape:{n:"Duct Tape",t:"m",e:'<img src="NVImages/DucttapeIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:1},
 bobby_pin:{n:"Bobby Pin",t:"m",e:"📎",p:1,w:0},
 sensor_module:{n:"Sensor Module",t:"m",e:"📡",p:30,w:2},
 pre_war_money:{n:"Pre-War Money",t:"m",e:'<img src="NVImages/PrewarmoneyIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',p:10,w:0},
-powder_charge:{n:"Powder Charge",t:"m",e:"💣",p:50,w:1},
-dynamite:{n:"Dynamite",t:"m",e:"🧨",p:25,w:1},
+powder_charge:{n:"Powder Charge",t:"m",e:'<img src="NVImages/PowderchargeIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:50,w:1},
+dynamite:{n:"Dynamite",t:"m",e:'<img src="NVImages/DynamitestickIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:25,w:1},
 gecko_hide:{n:"Gecko Hide",t:"m",e:"🦎",p:10,w:1},
 legion_coin:{n:"Legion Denarius",t:"m",e:'<img src="NVImages/LegiondenariusIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',p:10,w:0},
 dirty_water:{n:"Dirty Water",t:"c",e:"💧",hp:3,p:10,w:1},
 cram:{n:"Cram",t:"c",e:'<img src="NVImages/CramIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:12,p:5,w:1},
-iguana_bits:{n:"Iguana Bits",t:"c",e:"🥩",hp:14,p:5,w:1},
+iguana_bits:{n:"Iguana Bits",t:"c",e:'<img src="NVImages/IguanabitsIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:14,p:5,w:1},
 tire_iron:{n:"Tire Iron",t:"w",e:"🔧",a:8,p:25,w:3},
-single_shotgun:{n:"Single Shotgun",t:"w",e:"🔫",a:13,p:175,w:7,ammo:"ammo_shells"},
-trail_carbine:{n:"Trail Carbine",t:"w",e:"🔫",a:19,p:3900,w:5.5,ammo:"ammo_357"},
-smg_9mm:{n:"9mm SMG",t:"w",e:"🔫",a:8,p:850,w:4,ammo:"ammo_9mm",rare:1},
+single_shotgun:{n:"Single Shotgun",t:"w",e:'<img src="NVImages/SingleshotgunIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',a:13,p:175,w:7,ammo:"ammo_shells"},
+trail_carbine:{n:"Trail Carbine",t:"w",e:'<img src="NVImages/TrailcarbineIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',a:19,p:3900,w:5.5,ammo:"ammo_357"},
+smg_9mm:{n:"9mm SMG",t:"w",e:'<img src="NVImages/9mmsmgIconIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',a:8,p:850,w:4,ammo:"ammo_9mm",rare:1},
 reinforced_leather_armor:{n:"Reinforced Leather Armor",t:"a",e:"🧥",d:8,p:250,w:18,slot:"body"},
 metal_helmet:{n:"Metal Helmet",t:"a",e:"🪖",d:6,p:125,w:5,slot:"head"},
 wonderglue:{n:"Wonderglue",t:"m",e:"🧴",p:1,w:1,desc:"Useful junk for repairs."},
@@ -755,11 +793,11 @@ wrench:{n:"Wrench",t:"m",e:'<img src="NVImages/WrenchIcon.png" style="width:10%;
 scrap_electronics:{n:"Scrap Electronics",t:"m",e:'<img src="NVImages/ScrapelectronicsIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:2,desc:"Salvageable circuitry and parts."},
 fission_battery:{n:"Fission Battery",t:"m",e:"🔋",p:75,w:6,desc:"Valuable old world power cell."},
 camera:{n:"Camera",t:"m",e:'<img src="NVImages/CameraIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:65,w:3,desc:"A pre-war camera in workable condition."},
-cigarette_pack:{n:"Cigarette Pack",t:"m",e:"🚬",p:10,w:0,desc:"A common barter item."},
+cigarette_pack:{n:"Cigarette Pack",t:"m",e:'<img src="NVImages/CigarettepackIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:10,w:0,desc:"A common barter item."},
 cigarette_carton:{n:"Cigarette Carton",t:"m",e:'<img src="NVImages/CigarettecartonIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:50,w:0.5,desc:"A valuable sealed carton."},
 silverware:{n:"Silverware",t:"m",e:'<img src="NVImages/SilverwareIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:1,desc:"Useful to sell for quick caps."},
 silver_watch:{n:"Silver Pocket Watch",t:"m",e:"⌚",p:25,w:0,desc:"A valuable pre-war keepsake."},
-gold_necklace:{n:"Gold Necklace",t:"m",e:"h",p:25,w:0,desc:"High-value jewelry."},
+gold_necklace:{n:"Gold Necklace",t:"m",e:'<img src="NVImages/GoldnecklaceIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:25,w:0,desc:"High-value jewelry."},
 conductor:{n:"Conductors",t:"m",e:"h",p:15,w:2,desc:"Electronic salvage with decent value."},
 laser_focusing_lens:{n:"Laser Focusing Lens",t:"m",e:"h",p:25,w:0.2,desc:"A precision lens used in Brotherhood energy weapon servicing."},
 microfusion_regulator:{n:"Microfusion Regulator",t:"m",e:"🔋",p:25,w:1,desc:"A compact power-control component prized by Brotherhood scribes."},
@@ -1583,7 +1621,7 @@ const START_PRESETS=[
 // ============================================================
 // STATE
 // ============================================================
-let S=null,combat=null,tQ=[],tDest=null;
+let S=null,combat=null,tQ=[],tDest=null,tOrigin=null,tTravelActive=false;
 const SAVE_KEY='fnv_rpg';
 const SAVE_BACKUP_KEY='fnv_rpg_backup';
 const SAVE_MIRROR_KEY='fnv_rpg_mirror';
@@ -2129,7 +2167,8 @@ function refreshActiveTab(){
   if($('roads-tab').classList.contains('A'))upRoads();
   if($('log-tab').classList.contains('A'))upLog();
 }
-function upAll(){upSB();refreshActiveTab();save();queueSave(220)}
+function upAll(){
+  applyEndgameRoutes();upSB();refreshActiveTab();save();queueSave(220)}
 
 function upSB(){
   const sb=$('SB');if(!S||!sb)return;
@@ -2164,6 +2203,19 @@ function upWorld(){
   <div style="font-size:10px;color:var(--muted)">${loc.r} · ${timeStr()} · ${'☠'.repeat(loc.dg)}</div>
   <div style="font-size:11px;color:var(--muted);margin-top:2px;font-style:italic">${loc.d}</div></div></div>`;
   tab.appendChild(hdr);
+  applyEndgameRoutes();
+
+  if(S.loc==='TheStrip'){
+    const broker=el('div','bc big-icon-card');
+    broker.innerHTML=`<div class="card-icon-lg">🕶️</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Tunnel Broker</div><div style="font-size:10px;color:var(--muted)">${S.level>=20?(tunnelsUnlocked()?'Travel to the Mojave Service Tunnels.':'Level 20+ rumour: hidden tunnels under Vegas.'):('Come back at level 20. Current level '+S.level+'.')}</div></div><div style="color:var(--muted)">›</div>`;
+    broker.onclick=()=>openTunnelBroker();
+    tab.appendChild(broker);
+  }
+  if(S.loc==='MojaveTunnels'){
+    const depth=el('div','cd');
+    depth.innerHTML=`<div style="font-size:12px;color:var(--amber);font-weight:bold">Endgame Depth</div><div style="font-size:11px;color:var(--muted);margin-top:3px">This area keeps scaling after level 20. Elite enemies are common here, legendary enemies are rare but possible, and deeper runs give stronger loot pressure.</div>`;
+    tab.appendChild(depth);
+  }
 
   // Scavenge tap button
   tab.appendChild(el('div','sh','Scavenge'));
@@ -2744,9 +2796,63 @@ const FAC_GROUPS={
   SuperMutants:['SuperMutants','mutant'],
 };
 
+
+function locDangerForScaling(){
+  const loc=LOCS[S?.loc]||{};
+  if(S?.loc==='MojaveTunnels')return 5;
+  return Number(loc.dg||1);
+}
+function canScaleHere(){
+  // Keeps starter areas and low-danger towns from suddenly spawning endgame monsters.
+  if(!S)return false;
+  if(S.loc==='Goodsprings'||S.loc==='Primm'||S.loc==='MojaveOutpost')return false;
+  return locDangerForScaling()>=2 && S.level>=12;
+}
+function scaleEnemyForEndgame(enemy){
+  if(!enemy||!canScaleHere())return enemy;
+  const danger=locDangerForScaling();
+  const tunnel=S.loc==='MojaveTunnels';
+  const lvl=Math.max(1,S.level||1);
+  let eliteChance=(lvl>=12?0.05:0)+(lvl>=18?0.06:0)+(danger>=3?0.05:0)+(tunnel?0.14:0);
+  let legendaryChance=(lvl>=20&&danger>=3?0.025:0)+(tunnel&&lvl>=20?0.045:0);
+  if(enemy.boss)legendaryChance*=0.5;
+  if(R()<legendaryChance){
+    enemy.name='Legendary '+enemy.name;
+    enemy.hp=enemy.maxHp=Math.round(enemy.maxHp*(1.9+Math.min(0.9,lvl/40)));
+    enemy.a=Math.round(enemy.a*(1.45+Math.min(0.45,lvl/50)));
+    enemy.d=Math.round(enemy.d+4+lvl/5);
+    enemy.xp=Math.round(enemy.xp*2.4);
+    enemy.legendary=1;
+    enemy.loot=(enemy.loot||[]).concat(['super_stimpak','ammo_308','energy_cell','combat_armor']);
+  }else if(R()<eliteChance){
+    const tag=rndA(['Hardened','Veteran','Alpha','Armoured','Ravenous']);
+    enemy.name=tag+' '+enemy.name;
+    enemy.hp=enemy.maxHp=Math.round(enemy.maxHp*(1.35+Math.min(0.45,lvl/60)));
+    enemy.a=Math.round(enemy.a*(1.18+Math.min(0.25,lvl/70)));
+    enemy.d=Math.round(enemy.d+2+lvl/8);
+    enemy.xp=Math.round(enemy.xp*1.55);
+    enemy.elite=1;
+  }
+  return enemy;
+}
+function maybeUpgradePatrolPool(pool){
+  if(!S||S.level<16)return pool;
+  const danger=locDangerForScaling();
+  if(S.loc==='Goodsprings'||S.loc==='Primm'||S.loc==='MojaveOutpost')return pool;
+  const out=pool.slice();
+  if(danger>=3&&R()<0.25){
+    if(out.includes('legion_recruit'))out.push('legion_veteran');
+    if(out.includes('fiend'))out.push('fiend','centaur');
+    if(out.includes('feral_ghoul'))out.push('glowing_one');
+    if(out.includes('radscorpion'))out.push('cazador');
+    if(out.includes('super_mutant'))out.push('nightkin');
+  }
+  if(S.loc==='MojaveTunnels')out.push('nightkin','glowing_one','super_mutant','deathclaw');
+  return out;
+}
 function buildCohesiveGroup(pool,count){
   // Pick anchor enemy first, then only add compatible faction-mates
-  const validPool=pool.filter(id=>ENEMIES[id]);
+  const validPool=maybeUpgradePatrolPool(pool.filter(id=>ENEMIES[id]));
   if(!validPool.length)return[];
   const anchorId=rndA(validPool);
   const anchorFac=ENEMIES[anchorId]?.fac||'wild';
@@ -2759,7 +2865,7 @@ function buildCohesiveGroup(pool,count){
   const group=[];
   for(let i=0;i<count;i++){
     const pick=rndA(i===0?[anchorId]:compatible);
-    if(ENEMIES[pick])group.push(mkEnemy(pick));
+    if(ENEMIES[pick])group.push(scaleEnemyForEndgame(mkEnemy(pick)));
   }
   return group;
 }
@@ -2920,7 +3026,7 @@ function preEncounter(enemies,area,step,travelMode=false){
     style:'bt dn',
     fn:()=>{
       log('Retreated from '+( area?.n||'the road')+'.','e');
-      if(travelMode){$('TO').classList.remove('A');finTravel()}
+      if(travelMode){cancelTravel('You turn back before reaching your destination.')}
       else{$('TO').classList.remove('A');upAll()}
     }
   });
@@ -3035,6 +3141,8 @@ function maybeLoot(pool,id,chance){
 function buildEnemyLoot(enemy){
   const pool=[];
   const id=(enemy.id||'').toLowerCase();
+  if(enemy.elite){maybeLoot(pool,'stimpak',0.45);maybeLoot(pool,'ammo_556',0.3);maybeLoot(pool,'pre_war_money',0.35);}
+  if(enemy.legendary){maybeLoot(pool,'super_stimpak',0.75);maybeLoot(pool,'ammo_308',0.55);maybeLoot(pool,'energy_cell',0.55);maybeLoot(pool,'combat_armor',0.22);}
 
   if(['gecko','bloatfly','mantis','radroach','bark_scorpion','radscorpion','cazador','nightstalker','giant_rat','giant_ant','lakelurk','deathclaw','young_deathclaw'].includes(id)){
     if(id==='gecko'){maybeLoot(pool,'gecko_hide',0.85);maybeLoot(pool,'gecko_steak',0.55);maybeLoot(pool,'herbs',0.25);}
@@ -3122,7 +3230,7 @@ function buildEnemyLoot(enemy){
   const caps=rnd(capsBase[0],capsBase[1]);
   if(caps>0) corpseLoot.push({type:'caps',amount:caps,label:`${caps} caps`,icon:'💰'});
 
-  const itemCount = ['deathclaw','legion_centurion','nightkin','super_mutant','fiend','great_khan','securitron'].includes(id) ? rnd(2,3) : rnd(1,2);
+  const itemCount = enemy.legendary ? rnd(3,5) : enemy.elite ? rnd(2,4) : ['deathclaw','legion_centurion','nightkin','super_mutant','fiend','great_khan','securitron'].includes(id) ? rnd(2,3) : rnd(1,2);
   for(let i=0;i<itemCount && pool.length;i++){
     const pick=rndA(pool);
     corpseLoot.push({type:'item',id:pick,label:ITEMS[pick].n,icon:ITEMS[pick].e});
@@ -5930,6 +6038,7 @@ const MAP_COORDS={
   CottonwoodCove:  {x:338, y:522},  // Colorado River, far SE
   TheFort:         {x:368, y:330},  // across Hoover Dam, Legion HQ
   LegatesCamp:     {x:368, y:310},  // Legion endgame camp, near the dam east side
+  MojaveTunnels:   {x:205, y:255},  // hidden endgame tunnel network under Vegas
 };
 
 const MAP_ICON={
@@ -5971,6 +6080,7 @@ const MAP_ICON={
   ElDoradoDryLake: 'NVImages/188tradingpostIcon.png',
   Vault11:         'NVImages/HiddenvalleyIcon.png',
   SearchlightAirport:'NVImages/CampsearchlightIcon.png',
+  MojaveTunnels:'NVImages/HiddenvalleyIcon.png',
 };
 
 // Metadata for map-only locations (not full game locations in LOCS)
@@ -6013,6 +6123,7 @@ function mapMarkVisited(locId){
 }
 
 function upRoads(){
+  applyEndgameRoutes();
   // Mark current location as visited
   mapMarkVisited(S.loc);
   const tab=$('roads-tab');if(!S)return;
@@ -6508,6 +6619,9 @@ function mapDoTravel(dest,days){
 }
 function beginTravel(dest,days){
   if(combat)return;
+  if(tTravelActive||tDest){notify('Already travelling.');return;}
+  applyEndgameRoutes();
+  if(dest==='MojaveTunnels'&&!tunnelsUnlocked()){notify('Find the Tunnel Broker on the Strip at level 20.');return;}
   const destLoc=LOCS[dest];
   const ncrRep=S.rep.NCR||0;
   const legionRep=S.rep.Legion||0;
@@ -6565,7 +6679,10 @@ function _applyNcrToll(amount){
   notify('🛡 NCR toll: -'+amount+' caps');
 }
 function _beginTravelForce(dest,days){
+  if(tTravelActive||tDest){notify('Already travelling.');return;}
+  tOrigin=S.loc;
   tDest=dest;
+  tTravelActive=true;
   tQ=genTravelEv(days,S.loc,dest);
   $('TO').classList.add('A');$('TB').style.width='0%';$('TC').innerHTML='';$('TN').style.display='none';
   buildTravelMap(S.loc,dest);
@@ -6573,6 +6690,7 @@ function _beginTravelForce(dest,days){
   nextTEv();
 }
 function genTravelEv(days,from,to){
+  applyEndgameRoutes();
   const evs=[];const total=days*2+rnd(1,3);
   for(let i=0;i<total;i++){
     const r=R();
@@ -6646,19 +6764,47 @@ function nextTEv(){
   if(ev.fn)ev.fn();
   $('TN').style.display='block';$('TN').onclick=()=>travelCont();
 }
+function cancelTravel(msg){
+  const from=tOrigin||S.loc;
+  tDest=null;tQ=[];tOrigin=null;tTravelActive=false;
+  clearTravelEncounterIcons();
+  clearTravelMap();
+  $('TO').classList.remove('A');
+  if(from)S.loc=from;
+  upSB();refreshActiveTab();save();
+  if(msg)showResult('Travel Cancelled','↩',[msg],'Continue','upAll()');
+}
 function finTravel(){
-  if(tDest){
-    S.loc=tDest;S.days++;S.hours=8;
+  if(!tTravelActive&&!tDest){
+    tQ=[];tOrigin=null;
+    $('TO').classList.remove('A');
+    clearTravelMap();
+    upAll();
+    return;
+  }
+  const arrived=tDest;
+  const arrivedName=LOCS[arrived]?.n||arrived||'your destination';
+
+  // Clear route state before refreshing UI or showing the arrival popup.
+  // This prevents stale Continue buttons / old travel cards from starting the same route again.
+  tDest=null;
+  tQ=[];
+  tOrigin=null;
+  tTravelActive=false;
+  clearTravelEncounterIcons();
+  clearTravelMap();
+  $('TO').classList.remove('A');
+
+  if(arrived){
+    S.loc=arrived;S.days++;S.hours=8;
     payDaily();
     mapMarkVisited(S.loc);
-    log('Arrived at '+LOCS[S.loc]?.n+'.','q');
+    log('Arrived at '+arrivedName+'.','q');
   }
-  tDest=null;tQ=[];
   upSB();
   refreshActiveTab();
   save();
-  $('TO').classList.remove('A');
-  clearTravelMap();
+  if(arrived)showResult('Destination Reached','📍',[`You arrived at ${arrivedName}.`],'Continue','upAll()');
 }
 
 // ============================================================
