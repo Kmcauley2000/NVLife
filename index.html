@@ -436,6 +436,7 @@ function resumeExpeditionAfterCombat(){
   runExpedition(window._resumeArea,window._resumeStep||0);
 }
 function resumeTravelAfterCombat(){
+  clearTravelEncounterIcons();
   $('TO').classList.add('A');
   if(tQ.length) nextTEv();
   else finTravel();
@@ -2935,6 +2936,7 @@ function preEncounter(enemies,area,step,travelMode=false){
 }
 
 function _preEncResolve(msg,area,step,travelMode,skipCombat){
+  if(travelMode)clearTravelEncounterIcons();
   $('TC').innerHTML='';
   $('TS').innerHTML='✅';
   $('TT').innerHTML=`<span style="font-size:11px;color:var(--muted)">${msg}</span>`;
@@ -5981,17 +5983,19 @@ const MAP_META={
   SearchlightAirport:{n:'Searchlight Airport',r:'East Mojave',  dg:3, d:'A radiation-soaked airfield near the ruined NCR town.'},
 };
 
-function mapIsKnown(locId){
+function mapIsVisited(locId){
+  if(!S)return false;
   if(locId===S.loc)return true;
   if(S.visitedLocs&&S.visitedLocs.has&&S.visitedLocs.has(locId))return true;
-  // Visited = stored as array in save
-  if(S.visitedLocs&&Array.isArray(S.visitedLocs)&&S.visitedLocs.includes(locId))return true;
-  // Directly reachable from current location = known
+  return !!(S.visitedLocs&&Array.isArray(S.visitedLocs)&&S.visitedLocs.includes(locId));
+}
+
+function mapIsKnown(locId){
+  // Pins are always visible on the Pip-Boy map now.
+  // This still lets old code ask if a location has been discovered/reached.
+  if(mapIsVisited(locId))return true;
   if(ROADS[S.loc]&&ROADS[S.loc][locId]!==undefined)return true;
-  // Map-only pins are reference points, not playable destinations yet.
-  // Keep them visible/tappable so they can show info without a travel button.
   if(MAP_META&&MAP_META[locId])return true;
-  // Reachable from any visited loc
   if(S.visitedLocs){
     const vl=Array.isArray(S.visitedLocs)?S.visitedLocs:[...S.visitedLocs];
     for(const v of vl){if(ROADS[v]&&ROADS[v][locId]!==undefined)return true}
@@ -6209,6 +6213,7 @@ function upRoads(){
   Object.entries(MAP_COORDS).forEach(([locId,pos])=>{
     const loc=LOCS[locId]||MAP_META[locId];if(!loc)return;
     const known=mapIsKnown(locId);
+    const visited=mapIsVisited(locId);
     const isCurrent=locId===S.loc;
     const isSelected=_mapSel===locId;
     const iconSrc=MAP_ICON[locId];
@@ -6238,14 +6243,15 @@ function upRoads(){
       g.appendChild(selRing);
     }
 
-    if(known&&iconSrc){
+    if(iconSrc){
       // Background circle
       const bg=document.createElementNS('http://www.w3.org/2000/svg','circle');
       bg.setAttribute('cx',pos.x);bg.setAttribute('cy',pos.y);bg.setAttribute('r','13');
-      const dgFill=loc.dg>=4?'#2a0e0e':loc.dg>=3?'#1e1408':loc.dg>=2?'#141408':'#0e1408';
+      const dgFill=visited?(loc.dg>=4?'#2a0e0e':loc.dg>=3?'#1e1408':loc.dg>=2?'#141408':'#0e1408'):'#111108';
       bg.setAttribute('fill',dgFill);
-      const bStroke=isCurrent?'#f0c850':isSelected?'#c9a230':reachable?'#3a4820':'#1e1e12';
+      const bStroke=isCurrent?'#f0c850':isSelected?'#c9a230':reachable?'#3a4820':visited?'#1e1e12':'#2a2818';
       bg.setAttribute('stroke',bStroke);bg.setAttribute('stroke-width',isCurrent?'2':'1.2');
+      if(!visited&&!isCurrent)bg.setAttribute('opacity','0.65');
       g.appendChild(bg);
 
       // Location icon image
@@ -6254,7 +6260,12 @@ function upRoads(){
       img.setAttribute('x',pos.x-IMG_SIZE/2);img.setAttribute('y',pos.y-IMG_SIZE/2);
       img.setAttribute('width',IMG_SIZE);img.setAttribute('height',IMG_SIZE);
       img.setAttribute('preserveAspectRatio','xMidYMid meet');
-      if(!isCurrent&&!reachable)img.setAttribute('opacity','0.55');
+      if(!visited&&!isCurrent){
+        img.setAttribute('opacity',reachable?'0.68':'0.38');
+        img.setAttribute('filter','grayscale(1) brightness(0.55)');
+      } else if(!isCurrent&&!reachable){
+        img.setAttribute('opacity','0.78');
+      }
       g.appendChild(img);
 
       // Danger skulls (top-right dot)
@@ -6281,15 +6292,14 @@ function upRoads(){
       label.setAttribute('text-anchor','middle');
       label.setAttribute('font-size','7.5');
       label.setAttribute('font-family','Courier New, monospace');
-      label.setAttribute('fill',isCurrent?'#f0c850':reachable?'#b8b488':'#5a5840');
+      label.setAttribute('fill',isCurrent?'#f0c850':visited?'#b8b488':reachable?'#77745a':'#4a4938');
       label.setAttribute('letter-spacing','0.5');
       // Shorten long names
       const shortName=loc.n.replace('Camp ','').replace('NCR ','').replace(' Correctional Facility','');
       label.textContent=shortName.length>14?shortName.substring(0,13)+'…':shortName;
       g.appendChild(label);
 
-    } else if(!known){
-      // Unknown — dim dot
+    } else {
       const unk=document.createElementNS('http://www.w3.org/2000/svg','circle');
       unk.setAttribute('cx',pos.x);unk.setAttribute('cy',pos.y);
       unk.setAttribute('r','5');unk.setAttribute('fill','#1a1810');
@@ -6368,20 +6378,14 @@ function _mapRenderPanel(panel){
     panel.innerHTML=`<div style="text-align:center;padding:6px 0">
       <div style="color:var(--amber);font-size:13px;font-weight:bold;letter-spacing:1px">📍 ${LOCS[S.loc]?.n||S.loc}</div>
       <div style="font-size:10px;color:var(--muted);margin-top:3px">${reachCount} route${reachCount!==1?'s':''} from here · Tap a location</div>
-      <div style="font-size:9px;color:#3a3828;margin-top:3px">Bright = reachable · Red dot = dangerous · Dim = undiscovered</div>
+      <div style="font-size:9px;color:#3a3828;margin-top:3px">Bright = visited/current · Muted = unvisited · Red dot = dangerous</div>
     </div>`;
     return;
   }
   const loc=LOCS[_mapSel]||MAP_META[_mapSel];
   if(!loc){_mapSel=null;_mapRenderPanel(panel);return}
   const known=mapIsKnown(_mapSel);
-  if(!known){
-    panel.innerHTML=`<div style="padding:6px 0">
-      <div style="color:var(--muted);font-size:12px;font-weight:bold">? Unknown Location</div>
-      <div style="font-size:10px;color:var(--muted);margin-top:2px">Not yet discovered.</div>
-    </div>`;
-    return;
-  }
+  const visited=mapIsVisited(_mapSel);
   if(!loc){panel.innerHTML='';return}
   const isCurrent=_mapSel===S.loc;
   const travelDays=ROADS[S.loc]?.[_mapSel];
@@ -6394,7 +6398,7 @@ function _mapRenderPanel(panel){
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
       ${iconSrc?`<img src="${iconSrc}" style="width:32px;height:32px;object-fit:contain;border:1px solid #2a2818;border-radius:5px;background:#111108;padding:2px;flex-shrink:0">`:''}
       <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:bold;color:${isCurrent?'var(--amber)':'var(--text)'}">${loc.n}${isCurrent?' <span style="font-size:9px;color:var(--amber)">[YOU ARE HERE]</span>':''}</div>
+        <div style="font-size:13px;font-weight:bold;color:${isCurrent?'var(--amber)':visited?'var(--text)':'var(--muted)'}">${loc.n}${isCurrent?' <span style="font-size:9px;color:var(--amber)">[YOU ARE HERE]</span>':visited?'':' <span style="font-size:9px;color:#666">[UNVISITED]</span>'}</div>
         <div style="font-size:10px;color:var(--muted);margin-top:1px">${loc.r} · <span style="color:${dgColor}">${dgLabel}</span>${canTravel?` · ~${travelDays} day${travelDays!==1?'s':''}`:''}</div>
       </div>
     </div>
@@ -6445,7 +6449,40 @@ function buildTravelMap(from,to){
   wrap.appendChild(svg);
   const buttons=wrap.querySelectorAll('.travel-map-zoom button');setupMapPanZoom(svg,VW,VH);
   buttons[0].onclick=()=>svg._zoomIn&&svg._zoomIn();buttons[1].onclick=()=>svg._zoomOut&&svg._zoomOut();
-  _travelMapState={from,to,total:1,done:0};
+  _travelMapState={from,to,total:1,done:0,encounterEnemies:[]};
+}
+function travelEnemyIconSrc(enemy){
+  const html=(enemy&&enemy.e)||'';
+  const m=String(html).match(/<img[^>]+src=["']([^"']+)["']/i);
+  return m?m[1]:null;
+}
+function setTravelEncounterIcons(enemies){
+  const st=_travelMapState;if(!st)return;
+  st.encounterEnemies=Array.isArray(enemies)?enemies.slice(0,4):[];
+  updateTravelMapProgress(st.done||0,st.total||1);
+}
+function clearTravelEncounterIcons(){setTravelEncounterIcons([])}
+function renderTravelEncounterIcons(x,y){
+  const st=_travelMapState;if(!st)return;
+  const svg=$('LIVE_TRAVEL_PLAYER')?.ownerSVGElement;if(!svg)return;
+  let g=$('LIVE_TRAVEL_ENCOUNTERS');
+  if(!st.encounterEnemies||!st.encounterEnemies.length){if(g)g.remove();return}
+  if(!g){g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id='LIVE_TRAVEL_ENCOUNTERS';svg.appendChild(g);}
+  g.innerHTML='';
+  st.encounterEnemies.slice(0,4).forEach((enemy,i)=>{
+    const ox=22+(i%2)*18,oy=-17+Math.floor(i/2)*18;
+    const bg=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    bg.setAttribute('cx',x+ox);bg.setAttribute('cy',y+oy);bg.setAttribute('r','10');
+    bg.setAttribute('fill','#1a0a0a');bg.setAttribute('stroke','#ff4444');bg.setAttribute('stroke-width','1.5');bg.setAttribute('opacity','.96');g.appendChild(bg);
+    const src=travelEnemyIconSrc(enemy);
+    if(src){
+      const im=document.createElementNS('http://www.w3.org/2000/svg','image');
+      im.setAttribute('href',src);im.setAttribute('x',x+ox-8);im.setAttribute('y',y+oy-8);im.setAttribute('width','16');im.setAttribute('height','16');g.appendChild(im);
+    }else{
+      const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
+      txt.setAttribute('x',x+ox);txt.setAttribute('y',y+oy+5);txt.setAttribute('text-anchor','middle');txt.setAttribute('font-size','14');txt.textContent=(enemy&&enemy.e)||'⚔';g.appendChild(txt);
+    }
+  });
 }
 function updateTravelMapProgress(done,total){
   const st=_travelMapState;if(!st)return;
@@ -6454,6 +6491,7 @@ function updateTravelMapProgress(done,total){
   const p=Math.max(0,Math.min(1,st.done/st.total));
   const x=fc.x+(tc.x-fc.x)*p,y=fc.y+(tc.y-fc.y)*p;
   mk.setAttribute('x',x-17);mk.setAttribute('y',y-17);
+  renderTravelEncounterIcons(x,y);
 }
 function clearTravelMap(){const w=$('LIVE_TRAVEL_MAP');if(w)w.remove();_travelMapState=null;}
 
@@ -6565,7 +6603,9 @@ function nextTEv(){
   updateTravelMapProgress(ev._i+1,ev._t);
   $('TB').style.width=Math.round(((ev._i+1)/ev._t)*100)+'%';
   $('TS').innerHTML=ev.e;$('TT').innerHTML=ev.tx;$('TC').innerHTML='';$('TN').style.display='none';
+  clearTravelEncounterIcons();
   if(ev.tp==='combat'){
+    setTravelEncounterIcons(ev.enemies);
     preEncounter(ev.enemies,null,0,true);
     return;
   }
