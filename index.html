@@ -874,11 +874,97 @@ const ICONS={
     PRIMM_SLIM:'<img src="NVImages/PrimmslimIcon.png" alt="Primm Slim" style="width:200%;height:200%;object-fit:contain;display:block;">',
     EDE:'<img src="NVImages/EDEIcon.png" alt="ED-E" style="width:200%;height:200%;object-fit:contain;display:block;">',
     JOHNSON_NASH:'<img src="NVImages/JohnsonnashIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    GOODSPRINGS_TRUDY:'<img src="NVImages/TrudyIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    GOODSPRINGS_SUNNYSMILES:'<img src="NVImages/SunnysmilesIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    GOODSPRINGS_DOCMITCHELL:'<img src="NVImages/DocmitchellIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    GOODSPRINGS_CHET:'<img src="NVImages/ChetIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    GOODSPRINGS_RINGO:'<img src="NVImages/RingoIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    GOODSPRINGS_EASYPETE:'<img src="NVImages/EasypeteIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
   }
 };
 function renderIcon(icon,size=28){
   return `<span class="icon-wrap" style="width:${size}px;height:${size}px;font-size:${size}px">${icon||''}</span>`;
 }
+
+// Helper: create an NPC image icon string from a filename in NVImages/
+function npcImg(filename){return `<img src="NVImages/${filename}" style="width:200%;height:200%;object-fit:contain;display:block;">`}
+
+// ── Centralised NPC icon registry ───────────────────────────
+// To update ANY named NPC's icon, just change the entry here.
+// Use npcImg('Filename.png') for image icons, or emoji strings.
+// NPCs not listed here fall back to their data dict icon, then inferNpcIcon().
+const NPC_ICON={
+  // ── Goodsprings ──
+  'Trudy':             ICONS.NPC.GOODSPRINGS_TRUDY,
+  'Sunny Smiles':      ICONS.NPC.GOODSPRINGS_SUNNYSMILES,
+  'Doc Mitchell':      ICONS.NPC.GOODSPRINGS_DOCMITCHELL,
+  'Chet':              ICONS.NPC.GOODSPRINGS_CHET,
+  'Easy Pete':         ICONS.NPC.GOODSPRINGS_EASYPETE,
+  'Victor':            ICONS.NPC.SECURITRON,
+  'Ringo':             ICONS.NPC.GOODSPRINGS_RINGO,
+  // ── Primm ──
+  'Johnson Nash':      ICONS.NPC.JOHNSON_NASH,
+  'Ruby Nash':         ICONS.NPC.COOK,
+  'Primm Slim':        ICONS.NPC.PRIMM_SLIM,
+  'ED-E':              ICONS.NPC.EDE,
+  'Deputy Beagle':     ICONS.NPC.LAW,
+  'Lieutenant Hayes':  ICONS.NPC.NCR,
+  // ── Novac ──
+  'Cliff Briscoe':     ICONS.NPC.DINO,
+  'Manny Vargas':      ICONS.NPC.NCR_RANGER,
+  'Craig Boone':       ICONS.NPC.NCR_RANGER,
+  'No-bark Noonan':    ICONS.NPC.TOWN,
+  'Jeannie May Crawford':ICONS.NPC.MOTEL,
+  'Daisy Whitman':     ICONS.NPC.PILOT,
+  'Doctor Ada Straus': ICONS.NPC.DOCTOR,
+  'Bruce Isaac':       ICONS.NPC.ENTERTAINER,
+  'Ranger Andy':       ICONS.NPC.NCR_RANGER,
+  'Alice McBride':     ICONS.NPC.RANCHER,
+  'Dusty McBride':     ICONS.NPC.RANCHER,
+  // ── Freeside ──
+  'James Garret':      ICONS.NPC.WRANGLER,
+  'Francine Garret':   ICONS.NPC.WRANGLER,
+  'Old Ben':           ICONS.NPC.CIVILIAN,
+  'Orris':             ICONS.NPC.LAW,
+  'The King':          ICONS.NPC.KINGS,
+  'Pacer':             ICONS.NPC.KINGS,
+  'Rex':               ICONS.NPC.CYBERDOG,
+  'Mick':              ICONS.NPC.MERCHANT,
+  'Ralph':             ICONS.NPC.MERCHANT,
+  'Julie Farkas':      ICONS.NPC.FOLLOWERS,
+  'Major Kieran':      ICONS.NPC.FOLLOWERS,
+  'Loyal':             ICONS.NPC.MECHANIC,
+  // ── Camp Golf ──
+  'Chief Hanlon':      ICONS.NPC.NCR_RANGER,
+  'Sergeant McCredie': ICONS.NPC.NCR_COMMAND,
+  'Dr. Kemp':          ICONS.NPC.NCR_MEDIC,
+  // ── Bitter Springs ──
+  'Captain Gilles':    ICONS.NPC.NCR_COMMAND,
+  'Major Dhatri':      ICONS.NPC.NCR_RANGER,
+  'Oscar Velasco':     ICONS.NPC.CIVILIAN,
+  // ── NCRCF ──
+  'Eddie':             ICONS.NPC.POWDER_GANGER,
+  'Dawes':             ICONS.NPC.POWDER_GANGER,
+  'Carter':            ICONS.NPC.POWDER_TRADER,
+  'Meyers':            ICONS.NPC.PRISONER,
+  'Hannigan':          ICONS.NPC.DOCTOR,
+  // ── HELIOS One ──
+  'Lieutenant Haggerty':ICONS.NPC.NCR_COMMAND,
+  'Fantastic':         ICONS.NPC.NCR,
+  'Ignacio Rivas':     ICONS.NPC.FOLLOWERS,
+  // ── Hidden Valley ──
+  'Elder McNamara':    ICONS.NPC.BOS,
+  'Head Paladin Hardin':ICONS.NPC.BOS,
+  'Senior Knight Lorenzo':ICONS.NPC.BOS,
+  'Knight Torres':     ICONS.NPC.BOS,
+  'Scribe Ibsen':      ICONS.NPC.BOS_SCRIBE,
+  'Veronica Santangelo':ICONS.NPC.BOS_SCRIBE,
+  // ── Cinder Gulch ──
+  'Harlan Voss':       ICONS.NPC.NCR_RANGER,
+  'Dr. Mira Cade':     ICONS.NPC.DOCTOR,
+  'Lena Rourke':       ICONS.NPC.MECHANIC,
+  'Tom Quill':         ICONS.NPC.NCR_SCOUT,
+};
 
 
 // Main-game Fallout: New Vegas barter values for mapped items. Project-only quest/custom items keep local values.
@@ -3747,12 +3833,15 @@ function getNpcRolePool(ctx={}){
   return['Trader','Prospector','Drifter','NCR Trooper','Caravan Guard','Settler','Scavenger','Doctor','Gambler','Bounty Hunter','Mechanic','Farmer'];
 }
 function inferNpcIcon(npc,ctx={}){
+  // 1. Central registry by name — one-stop shop for all named NPC icons
+  if(npc.name&&NPC_ICON[npc.name])return NPC_ICON[npc.name];
+  // 2. Explicit icon on the NPC data object
+  if(npc.icon)return npc.icon;
+
   const locId=ctx.loc||npc.loc||S.loc||'';
   const bId=(ctx.bId||'').toLowerCase();
   const role=((npc.role||'')+'').toLowerCase();
   const fac=((npc.fac||ctx.fac||((LOCS[locId]||{}).fac)||'')+'').toLowerCase();
-
-  if(npc.icon)return npc.icon;
   if(fac==='bos'||bId.includes('bos')||locId==='HiddenValley'||role.includes('brotherhood'))return(role.includes('scribe')||role.includes('technician')||role.includes('scientist'))?ICONS.NPC.BOS_SCRIBE:ICONS.NPC.BOS;
   if(fac==='ncr'||role.includes('ncr')||['CampMcCarran','CampGolf','BitterSprings','HeliosOne','HooverDam','MojaveOutpost','CampForlornHope'].includes(locId)||/(mccarran|golf|bitter|helios|outpost|dam|forlorn)/.test(bId)){
     if(role.includes('ranger'))return ICONS.NPC.NCR_RANGER;
