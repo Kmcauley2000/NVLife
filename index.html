@@ -379,7 +379,7 @@ function startStory(bg){
   "<b>"+title+"</b>",
   v[0],
   v[1],
-  "Early advice: start with Goodsprings Source, the schoolhouse, and small critters. Rest, loot, sell junk, then take the road to Primm when you are ready."
+  "Early advice: start with Goodsprings Source, the schoolhouse, and small critters. Strong starter weapons have limited ammo, so rest, loot, sell junk, and take the road to Primm when you are ready."
  ];
  try{showResult("Welcome to Goodsprings","📜",lines,"Begin");}catch(e){notify(v[0]);}
 }
@@ -542,7 +542,8 @@ HooverDam:{BoulderCity:1,TheFort:2,CampSearchlight:2,NellisAFB:2,CampForlornHope
 // DATA - ITEMS
 // ============================================================
 const ITEMS={
-// FNV_WEAPON_STATS_AUDIT: official weapon entries use Fallout: New Vegas base DAM/value/weight where there is a direct counterpart.
+// FNV_WEAPON_STATS_AUDIT: official weapon entries use Fallout: New Vegas value/weight where there is a direct counterpart.
+// GAME_BALANCED_WEAPON_ATTACK: attack `a` is intentionally scaled for this simplified browser RPG, not raw FNV DAM.
 
 // Official Fallout: New Vegas items below use canonical base cap values where an exact FNV counterpart exists. Fan/custom quest items retain project-specific values.
 // Consumables
@@ -570,25 +571,25 @@ psycho:{n:"Psycho",t:"chem",e:'<img src="NVImages/PsychoIcon.png" style="width:1
 med_x:{n:"Med-X",t:"chem",e:"💊",p:20,w:0,buff:{dr:15}},
 stealth_boy:{n:"Stealth Boy",t:"chem",e:"👻",p:100,w:0,rare:1},
 // Weapons
-pistol_9mm:{n:"9mm Pistol",t:"w",e:'<img src="NVImages/9mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:16,p:100,w:1.5,ammo:"ammo_9mm"},
-pistol_10mm:{n:"10mm Pistol",t:"w",e:'<img src="NVImages/10mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:22,p:750,w:3,ammo:"ammo_10mm"},
-revolver_357:{n:".357 Magnum Revolver",t:"w",e:'<img src="NVImages/357magnumrevolverIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:26,p:110,w:2,ammo:"ammo_357"},
-varmint_rifle:{n:"Varmint Rifle",t:"w",e:'<img src="NVImages/VarmintrifleIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:18,p:75,w:5.5,ammo:"ammo_556"},
-service_rifle:{n:"Service Rifle",t:"w",e:'<img src="NVImages/ServicerifleIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:18,p:540,w:8.5,ammo:"ammo_556"},
-assault_carbine:{n:"Assault Carbine",t:"w",e:'<img src="NVImages/AssaultcarbineIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:13,p:3950,w:6,ammo:"ammo_556",rare:1},
-hunting_rifle:{n:"Hunting Rifle",t:"w",e:"🔫",a:52,p:2200,w:6,ammo:"ammo_308"},
-sniper_rifle:{n:"Sniper Rifle",t:"w",e:"🔫",a:45,p:4100,w:8,ammo:"ammo_308",rare:1},
-caravan_shotgun:{n:"Caravan Shotgun",t:"w",e:"🔫",a:45,p:675,w:3,ammo:"ammo_shells"},
-combat_shotgun:{n:"Combat Shotgun",t:"w",e:"🔫",a:55,p:3800,w:7.5,ammo:"ammo_shells",rare:1},
-laser_pistol:{n:"Laser Pistol",t:"w",e:"⚡",a:12,p:175,w:3,ammo:"energy_cell"},
-laser_rifle:{n:"Laser Rifle",t:"w",e:"⚡",a:22,p:800,w:8,ammo:"energy_cell"},
-plasma_rifle:{n:"Plasma Rifle",t:"w",e:"⚡",a:32,p:1300,w:8,ammo:"energy_cell",rare:1},
-machete:{n:"Machete",t:"w",e:"🔪",a:11,p:50,w:2},
-combat_knife:{n:"Combat Knife",t:"w",e:"🗡",a:15,p:500,w:1},
-switchblade:{n:"Switchblade",t:"w",e:"🔪",a:7,p:35,w:1},
-power_fist:{n:"Power Fist",t:"w",e:"👊",a:28,p:800,w:6,rare:1},
-thermic_lance:{n:"Thermic Lance",t:"w",e:"🔱",a:100,p:5500,w:20,rare:2},
-maria:{n:"Maria",t:"w",e:"🔫",a:20,p:1000,desc:"Benny's gun. 9mm, gold-plated.",w:1.5,ammo:"ammo_9mm",rare:2},
+pistol_9mm:{n:"9mm Pistol",t:"w",e:'<img src="NVImages/9mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:9,p:100,w:1.5,ammo:"ammo_9mm"},
+pistol_10mm:{n:"10mm Pistol",t:"w",e:'<img src="NVImages/10mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:13,p:750,w:3,ammo:"ammo_10mm"},
+revolver_357:{n:".357 Magnum Revolver",t:"w",e:'<img src="NVImages/357magnumrevolverIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:13,p:110,w:2,ammo:"ammo_357"},
+varmint_rifle:{n:"Varmint Rifle",t:"w",e:'<img src="NVImages/VarmintrifleIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:10,p:75,w:5.5,ammo:"ammo_556"},
+service_rifle:{n:"Service Rifle",t:"w",e:'<img src="NVImages/ServicerifleIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:15,p:540,w:8.5,ammo:"ammo_556"},
+assault_carbine:{n:"Assault Carbine",t:"w",e:'<img src="NVImages/AssaultcarbineIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:18,p:3950,w:6,ammo:"ammo_556",rare:1},
+hunting_rifle:{n:"Hunting Rifle",t:"w",e:"🔫",a:20,p:2200,w:6,ammo:"ammo_308"},
+sniper_rifle:{n:"Sniper Rifle",t:"w",e:"🔫",a:24,p:4100,w:8,ammo:"ammo_308",rare:1},
+caravan_shotgun:{n:"Caravan Shotgun",t:"w",e:"🔫",a:15,p:675,w:3,ammo:"ammo_shells"},
+combat_shotgun:{n:"Combat Shotgun",t:"w",e:"🔫",a:20,p:3800,w:7.5,ammo:"ammo_shells",rare:1},
+laser_pistol:{n:"Laser Pistol",t:"w",e:"⚡",a:8,p:175,w:3,ammo:"energy_cell"},
+laser_rifle:{n:"Laser Rifle",t:"w",e:"⚡",a:14,p:800,w:8,ammo:"energy_cell"},
+plasma_rifle:{n:"Plasma Rifle",t:"w",e:"⚡",a:18,p:1300,w:8,ammo:"energy_cell",rare:1},
+machete:{n:"Machete",t:"w",e:"🔪",a:9,p:50,w:2},
+combat_knife:{n:"Combat Knife",t:"w",e:"🗡",a:8,p:500,w:1},
+switchblade:{n:"Switchblade",t:"w",e:"🔪",a:5,p:35,w:1},
+power_fist:{n:"Power Fist",t:"w",e:"👊",a:20,p:800,w:6,rare:1},
+thermic_lance:{n:"Thermic Lance",t:"w",e:"🔱",a:30,p:5500,w:20,rare:2},
+maria:{n:"Maria",t:"w",e:"🔫",a:13,p:1000,desc:"Benny's gun. 9mm, gold-plated.",w:1.5,ammo:"ammo_9mm",rare:2},
 // Armor
 leather_armor:{n:"Leather Armor",t:"a",e:"🧥",d:6,p:160,w:15,slot:"body"},
 ncr_armor:{n:"NCR Trooper Armor",t:"a",e:"🦺",d:10,p:300,w:20,slot:"body"},
@@ -598,7 +599,7 @@ power_armor:{n:"T-45d Power Armor",t:"a",e:"🤖",d:28,p:4500,w:45,slot:"body",r
 headwrap:{n:"Head Wrap",t:"a",e:"🪖",d:1,p:6,w:1,slot:"head"},
 combat_helmet:{n:"Combat Helmet",t:"a",e:"🪖",d:4,p:100,w:3,slot:"head"},
 boones_beret:{n:"1st Recon Beret",t:"a",e:"🎖",d:2,p:40,w:0.1,slot:"head",rare:2,desc:"Boone's old 1st Recon beret. Light, lucky, and hard-earned."},
-boones_varmint_rifle:{n:"Boone's Scoped Varmint Rifle",t:"w",e:"🔭",a:18,p:220,w:5.5,ammo:"ammo_556",rare:2,desc:"A carefully maintained rifle from Craig Boone."},
+boones_varmint_rifle:{n:"Boone's Scoped Varmint Rifle",t:"w",e:"🔭",a:13,p:220,w:5.5,ammo:"ammo_556",rare:2,desc:"A carefully maintained rifle from Craig Boone."},
 boone_bill_of_sale:{n:"Bill of Sale: Carla Boone",t:"m",e:"📄",p:0,w:0,rare:2,desc:"Proof that Carla Boone was sold to Caesar's Legion."},
 goodsprings_town_supplies:{n:"Goodsprings Town Supplies",t:"m",e:"📦",p:0,w:0,rare:1,desc:"Ammo, food, and spare goods Chet set aside for Goodsprings defence."},
 goodsprings_dynamite_bundle:{n:"Easy Pete Dynamite Bundle",t:"m",e:"🧨",p:0,w:0,rare:1,desc:"Old dynamite Easy Pete agreed to spare for the Goodsprings fight."},
@@ -613,8 +614,8 @@ energy_cell:{n:"Energy Cells",t:"ammo",e:"⚡",p:1,w:0,stack:1},
 doctor_bag:{n:"Doctor's Bag",t:"c",e:"🩹",hp:55,p:55,w:1},
 primm_sheriff_badge:{n:"Primm Sheriff's Badge",t:"m",e:"⭐",p:120,w:0,rare:2,desc:"A restored Primm badge from the sheriff's office."},
 primm_sheriff_papers:{n:"Primm Sheriff Paperwork",t:"m",e:"📄",p:45,w:0,rare:1,desc:"Authority papers for appointing a new sheriff in Primm."},
-cowboy_repeater:{n:"Cowboy Repeater",t:"w",e:"🔫",a:32,p:800,w:5,ammo:"ammo_357"},
-pickaxe:{n:"Pickaxe",t:"w",e:"⛏",a:15,p:55,w:8},
+cowboy_repeater:{n:"Cowboy Repeater",t:"w",e:"🔫",a:14,p:800,w:5,ammo:"ammo_357"},
+pickaxe:{n:"Pickaxe",t:"w",e:"⛏",a:10,p:55,w:8},
 // Materials
 scrap:{n:"Scrap Metal",t:"m",e:"⚙",p:1,w:2},
 duct_tape:{n:"Duct Tape",t:"m",e:"🔧",p:1,w:1},
@@ -628,10 +629,10 @@ legion_coin:{n:"Legion Denarius",t:"m",e:'<img src="NVImages/LegiondenariusIcon.
 dirty_water:{n:"Dirty Water",t:"c",e:"💧",hp:3,p:10,w:1},
 cram:{n:"Cram",t:"c",e:'<img src="NVImages/CramIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:12,p:5,w:1},
 iguana_bits:{n:"Iguana Bits",t:"c",e:"🥩",hp:14,p:5,w:1},
-tire_iron:{n:"Tire Iron",t:"w",e:"🔧",a:12,p:25,w:3},
-single_shotgun:{n:"Single Shotgun",t:"w",e:"🔫",a:50,p:175,w:7,ammo:"ammo_shells"},
-trail_carbine:{n:"Trail Carbine",t:"w",e:"🔫",a:48,p:3900,w:5.5,ammo:"ammo_357"},
-smg_9mm:{n:"9mm SMG",t:"w",e:"🔫",a:14,p:850,w:4,ammo:"ammo_9mm",rare:1},
+tire_iron:{n:"Tire Iron",t:"w",e:"🔧",a:8,p:25,w:3},
+single_shotgun:{n:"Single Shotgun",t:"w",e:"🔫",a:13,p:175,w:7,ammo:"ammo_shells"},
+trail_carbine:{n:"Trail Carbine",t:"w",e:"🔫",a:19,p:3900,w:5.5,ammo:"ammo_357"},
+smg_9mm:{n:"9mm SMG",t:"w",e:"🔫",a:8,p:850,w:4,ammo:"ammo_9mm",rare:1},
 reinforced_leather_armor:{n:"Reinforced Leather Armor",t:"a",e:"🧥",d:8,p:250,w:18,slot:"body"},
 metal_helmet:{n:"Metal Helmet",t:"a",e:"🪖",d:6,p:125,w:5,slot:"head"},
 wonderglue:{n:"Wonderglue",t:"m",e:"🧴",p:1,w:1,desc:"Useful junk for repairs."},
@@ -660,9 +661,9 @@ bos_recon_armor:{n:"Brotherhood Recon Armor",t:"a",e:"🛡",d:12,p:7200,w:20,slo
 bos_recon_helmet:{n:"Brotherhood Recon Helmet",t:"a",e:"🪖",d:5,p:110,w:3,slot:"head",desc:"A reinforced recon helmet with Brotherhood markings."},
 bos_combat_armor:{n:"Brotherhood Combat Armor",t:"a",e:"🛡",d:22,p:6500,w:25,slot:"body",rare:1,desc:"Upgraded combat armor issued to trusted Brotherhood personnel."},
 bos_power_armor:{n:"Brotherhood Power Armor",t:"a",e:"🤖",d:34,p:4500,w:45,slot:"body",rare:2,desc:"Heavy Brotherhood power armor reserved for the most trusted allies."},
-plasma_defender:{n:"Plasma Defender",t:"w",e:"⚡",a:38,p:3000,w:3,ammo:"energy_cell",desc:"A compact Brotherhood-favored plasma sidearm."},
-multiplas_rifle:{n:"Multiplas Rifle",t:"w",e:"⚡",a:105,p:2500,w:12,ammo:"energy_cell",rare:2,desc:"A dangerous burst plasma rifle kept under Brotherhood lock and key."},
-laser_rcw:{n:"Laser RCW",t:"w",e:"⚡",a:15,p:2150,w:4,ammo:"energy_cell",rare:1,desc:"A rapid-fire laser weapon pulled from old world stock."},
+plasma_defender:{n:"Plasma Defender",t:"w",e:"⚡",a:18,p:3000,w:3,ammo:"energy_cell",desc:"A compact Brotherhood-favored plasma sidearm."},
+multiplas_rifle:{n:"Multiplas Rifle",t:"w",e:"⚡",a:26,p:2500,w:12,ammo:"energy_cell",rare:2,desc:"A dangerous burst plasma rifle kept under Brotherhood lock and key."},
+laser_rcw:{n:"Laser RCW",t:"w",e:"⚡",a:13,p:2150,w:4,ammo:"energy_cell",rare:1,desc:"A rapid-fire laser weapon pulled from old world stock."},
 bos_holotape:{n:"Brotherhood Holotape",t:"m",e:"💾",p:55,w:0,desc:"Encrypted Brotherhood field notes and requisition records."},
 };
 
@@ -730,10 +731,10 @@ Object.entries(FNV_ITEM_VALUES).forEach(([id,val])=>{if(ITEMS[id])ITEMS[id].p=va
 // ============================================================
 const ENEMIES={
 // Stats use Fallout: New Vegas normal-difficulty style values: HP, attack damage and DT.
-gecko:{n:"Gecko",hp:25,a:10,d:0,xp:20,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_steak"],type:'animal',fac:'wild'},
-bloatfly:{n:"Bloatfly",hp:15,a:8,d:0,xp:10,e:ICONS.ENEMY.BLOATFLY,loot:["bloatfly_meat"],type:'insect',fac:'wild'},
-mantis:{n:"Giant Mantis",hp:30,a:12,d:0,xp:25,e:ICONS.ENEMY.MANTIS,loot:["giant_mantis_foreleg"],type:'insect',fac:'wild'},
-radroach:{n:"Radroach",hp:10,a:5,d:0,xp:5,e:ICONS.ENEMY.RADROACH,loot:["radroach_meat"],type:'insect',fac:'wild'},
+gecko:{n:"Gecko",hp:28,a:5,d:0,xp:12,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_steak"],type:'animal',fac:'wild'},
+bloatfly:{n:"Bloatfly",hp:20,a:4,d:0,xp:9,e:ICONS.ENEMY.BLOATFLY,loot:["bloatfly_meat"],type:'insect',fac:'wild'},
+mantis:{n:"Giant Mantis",hp:22,a:5,d:0,xp:10,e:ICONS.ENEMY.MANTIS,loot:["giant_mantis_foreleg"],type:'insect',fac:'wild'},
+radroach:{n:"Radroach",hp:16,a:3,d:0,xp:7,e:ICONS.ENEMY.RADROACH,loot:["radroach_meat"],type:'insect',fac:'wild'},
 radscorpion:{n:"Radscorpion",hp:75,a:18,d:5,xp:50,e:ICONS.ENEMY.RADSCORPION,loot:["radscorpion_gland"],type:'insect',fac:'wild'},
 cazador:{n:"Cazador",hp:80,a:35,d:0,xp:75,e:ICONS.ENEMY.CAZADOR,loot:["cazador_poison_gland"],type:'insect',fac:'wild'},
 nightstalker:{n:"Night Stalker",hp:80,a:25,d:2,xp:60,e:ICONS.ENEMY.NIGHTSTALKER,loot:["nightstalker_blood","stimpak","herbs"],type:'animal',fac:'wild'},
@@ -753,8 +754,8 @@ great_khan:{n:"Great Khan",hp:85,a:28,d:4,xp:70,e:ICONS.ENEMY.KHAN,loot:["ammo_9
 securitron:{n:"Securitron",hp:150,a:45,d:12,xp:125,e:ICONS.ENEMY.SECURITRON,loot:["energy_cell","sensor_module","scrap"],type:'robot',fac:'House'},
 super_mutant:{n:"Super Mutant",hp:180,a:45,d:0,xp:125,e:ICONS.ENEMY.SUPER_MUTANT,loot:["ammo_556","scrap","stimpak","cowboy_repeater"],type:'mutant',fac:'SuperMutants',hostile:true},
 glowing_one:{n:"Glowing One",hp:110,a:35,d:0,xp:90,e:ICONS.ENEMY.GLOWING_ONE,loot:["doctor_bag","med_x","pre_war_money","stimpak"],type:'undead',fac:'wild'},
-bark_scorpion:{n:"Bark Scorpion",hp:30,a:10,d:1,xp:25,e:ICONS.ENEMY.BARK_SCORPION,loot:["bark_scorpion_gland","antivenom","herbs"],type:'insect',fac:'wild'},
-giant_rat:{n:"Giant Rat",hp:20,a:8,d:0,xp:15,e:ICONS.ENEMY.RAT,loot:["dirty_water","cram"],type:'animal',fac:'wild'},
+bark_scorpion:{n:"Bark Scorpion",hp:32,a:6,d:1,xp:14,e:ICONS.ENEMY.BARK_SCORPION,loot:["bark_scorpion_gland","antivenom","herbs"],type:'insect',fac:'wild'},
+giant_rat:{n:"Giant Rat",hp:18,a:4,d:0,xp:8,e:ICONS.ENEMY.RAT,loot:["dirty_water","cram"],type:'animal',fac:'wild'},
 giant_ant:{n:"Giant Ant",hp:35,a:12,d:0,xp:25,e:ICONS.ENEMY.ANT,loot:["herbs","scrap"],type:'insect',fac:'wild'},
 jackal_raider:{n:"Jackal Gang Member",hp:55,a:20,d:1,xp:40,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","switchblade","single_shotgun","cigarette_pack"],type:'human',fac:'Raiders',hostile:true},
 viper_gunslinger:{n:"Viper Gunslinger",hp:65,a:26,d:2,xp:50,e:ICONS.ENEMY.VIPER,loot:["ammo_357","varmint_rifle","leather_armor","cigarette_carton"],type:'human',fac:'Raiders',hostile:true},
@@ -1430,15 +1431,15 @@ const BACKGROUNDS=[
 {id:'freeside_scrapper',n:'Freeside Scrapper',d:'You learned to survive by reading danger before it found you.',gold:35,atk:5,def:3,spd:6,items:['switchblade','jet','pre_war_money','duct_tape','stimpak'],loc:'Goodsprings',class:'scrapper',karma:-1},
 {id:'prospector',n:'Prospector',d:'You spent years chasing rumors, salvage, and buried luck.',gold:50,atk:4,def:4,spd:5,items:['pickaxe','scrap','scrap','bobby_pin','stimpak','sunset_sars'],loc:'Goodsprings',class:'prospector',karma:0},
 {id:'ncr_medic',n:'NCR Field Medic',d:'You patched up soldiers under fire and kept moving.',gold:65,atk:3,def:4,spd:4,items:['doctor_bag','stimpak','stimpak','med_x','purified_water'],loc:'Goodsprings',class:'medic',karma:8},
-{id:'wasteland_hunter',n:'Wasteland Hunter',d:'You track dangerous things and make a living off what is left behind.',gold:40,atk:6,def:4,spd:6,items:['cowboy_repeater','ammo_357','ammo_357','gecko_steak','antivenom'],loc:'Goodsprings',class:'hunter',karma:3},
-{id:'strip_operative',n:'Strip Operative',d:'You know how to blend in, read rooms, and leave richer than you arrived.',gold:95,atk:4,def:2,spd:5,items:['maria','ammo_9mm','ammo_9mm','fancy_lad','pre_war_money'],loc:'Goodsprings',class:'operative',karma:-3},
-{id:'ncr_trooper',n:'NCR Trooper',d:'An active NCR trooper posted to the Mojave frontier.',gold:60,atk:6,def:6,spd:4,items:['service_rifle','ammo_556','ammo_556','ammo_556','ammo_556','ncr_armor','stimpak'],loc:'Goodsprings',class:'trooper',karma:4,fac:'NCR'},
-{id:'ncr_ranger_recruit',n:'NCR Ranger Recruit',d:'You earned a place on NCR patrols and learned to survive the long roads.',gold:55,atk:6,def:4,spd:6,items:['cowboy_repeater','ammo_357','ammo_357','ammo_357','stimpak','doctor_bag'],loc:'Goodsprings',class:'ranger',karma:6,fac:'NCR'},
+{id:'wasteland_hunter',n:'Wasteland Hunter',d:'You track dangerous things and make a living off what is left behind.',gold:40,atk:6,def:4,spd:6,items:['cowboy_repeater','ammo_357','gecko_steak','antivenom'],loc:'Goodsprings',class:'hunter',karma:3},
+{id:'strip_operative',n:'Strip Operative',d:'You know how to blend in, read rooms, and leave richer than you arrived.',gold:95,atk:4,def:2,spd:5,items:['maria','ammo_9mm','fancy_lad','pre_war_money'],loc:'Goodsprings',class:'operative',karma:-3},
+{id:'ncr_trooper',n:'NCR Trooper',d:'An active NCR trooper posted to the Mojave frontier.',gold:60,atk:6,def:6,spd:4,items:['service_rifle','ammo_556','ammo_556','ncr_armor','stimpak'],loc:'Goodsprings',class:'trooper',karma:4,fac:'NCR'},
+{id:'ncr_ranger_recruit',n:'NCR Ranger Recruit',d:'You earned a place on NCR patrols and learned to survive the long roads.',gold:55,atk:6,def:4,spd:6,items:['cowboy_repeater','ammo_357','ammo_357','stimpak'],loc:'Goodsprings',class:'ranger',karma:6,fac:'NCR'},
 {id:'legion_recruit_start',n:'Legion Recruit',d:'You serve Caesar now, and weakness is punished quickly.',gold:25,atk:7,def:5,spd:5,items:['machete','healing_powder','healing_powder','legion_coin','legion_coin','leather_armor'],loc:'Goodsprings',class:'legionary',karma:-8,fac:'Legion'},
 {id:'legion_scout_start',n:'Legion Scout',d:'You move ahead of the main force, watching roads and waiting to strike.',gold:30,atk:6,def:4,spd:7,items:['revolver_357','ammo_357','ammo_357','healing_powder','legion_coin'],loc:'Goodsprings',class:'scout',karma:-6,fac:'Legion'},
 {id:'great_khan_warrior',n:'Great Khan Warrior',d:'You ride with the Khans and earn your place through nerve and violence.',gold:40,atk:7,def:4,spd:6,items:['revolver_357','ammo_357','ammo_357','jet','machete','stimpak'],loc:'Goodsprings',class:'khan',karma:-4,fac:'Khans'},
 {id:'brotherhood_scribe',n:'Brotherhood Scribe',d:'You serve the Brotherhood by recovering, studying, and protecting old world tech.',gold:45,atk:4,def:4,spd:4,items:['laser_pistol','energy_cell','energy_cell','energy_cell','sensor_module','stimpak'],loc:'Goodsprings',class:'scribe',karma:4,fac:'BOS'},
-{id:'brotherhood_knight',n:'Brotherhood Knight',d:'You stand guard over the bunker and the dangerous knowledge within.',gold:50,atk:7,def:7,spd:3,items:['laser_rifle','energy_cell','energy_cell','energy_cell','combat_helmet','metal_armor'],loc:'Goodsprings',class:'knight',karma:2,fac:'BOS'},
+{id:'brotherhood_knight',n:'Brotherhood Knight',d:'You stand guard over the bunker and the dangerous knowledge within.',gold:50,atk:7,def:7,spd:3,items:['laser_rifle','energy_cell','energy_cell','combat_helmet','metal_armor'],loc:'Goodsprings',class:'knight',karma:2,fac:'BOS'},
 {id:'kings_member',n:'Kings Member',d:'You run with the Kings and protect your own in Freeside.',gold:35,atk:5,def:3,spd:6,items:['pistol_9mm','ammo_9mm','ammo_9mm','ammo_9mm','switchblade','stimpak'],loc:'Goodsprings',class:'king',karma:3,fac:'Kings'},
 {id:'boomer_gunner',n:'Boomer Gunner',d:'You grew up under artillery fire and learned to hit back harder.',gold:50,atk:6,def:5,spd:4,items:['varmint_rifle','ammo_556','ammo_556','ammo_556','scrap','stimpak'],loc:'Goodsprings',class:'gunner',karma:1,fac:'Boomers'},
 {id:'follower_doctor',n:'Follower Doctor',d:'You are an active Follower healer trying to keep the Mojave alive one patient at a time.',gold:55,atk:3,def:3,spd:4,items:['doctor_bag','stimpak','stimpak','purified_water','med_x','herbs'],loc:'Goodsprings',class:'doctor',karma:10,fac:'Followers'},
