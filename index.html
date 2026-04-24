@@ -21,6 +21,7 @@ color:var(--amber);text-align:center;padding:calc(var(--st)+6px) 12px 5px;
 font-size:13px;font-weight:bold;letter-spacing:3px;z-index:100;
 border-bottom:1px solid #3a3418;text-transform:uppercase}
 #H .sub{font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:1px}
+#NG{position:absolute;right:8px;bottom:5px;background:#2a1818;color:var(--red);border:1px solid #4a2828;border-radius:4px;font-family:'Courier New',monospace;font-size:9px;padding:4px 6px;letter-spacing:0;cursor:pointer}
 #SB{background:#0e0e08;color:var(--text);font-size:11px;display:flex;flex-wrap:wrap;padding:3px 4px;gap:1px;border-bottom:1px solid #282818}
 #SB .s{flex:1 1 auto;text-align:center;padding:3px 4px;white-space:nowrap}
 #SB .s b{color:var(--amber)}
@@ -238,7 +239,7 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 <body>
 <div class="scanline"></div>
 <div id="W">
-<div id="H">FALLOUT: NEW VEGAS<div class="sub">Mojave Wasteland</div></div>
+<div id="H">FALLOUT: NEW VEGAS<div class="sub">Mojave Wasteland</div><button id="NG" onclick="confirmNewGame()">New Game</button></div>
 <div id="SB"></div>
 <div id="C">
 <div id="world-tab" class="T A"></div>
@@ -356,6 +357,33 @@ function startFreshGame(){
   if(typeof switchTab==='function')switchTab('world');
   newGame();
 }
+
+
+
+
+
+function showOpeningAfterNewGame(bg){
+  try{
+    const chosen=bg||(S&&S.bg)||'courier';
+    setTimeout(()=>startStory(chosen),180);
+  }catch(e){}
+}
+
+function startStory(bg){
+ const storyMap={"courier": ["You wake in Doc Mitchell's house after being pulled from a shallow grave near Goodsprings. Someone took your package, your caps, and nearly your life.", "Start by checking your gear, talking to townsfolk, and clearing the safer spots around Goodsprings before following the road to Primm."], "ncr_deserter": ["You deserted after a patrol went bad. Wounded, hungry, and hunted, you slipped into Goodsprings hoping the town would not ask too many questions.", "Keep your head down, help the locals, and build strength before deciding whether to face NCR patrols or avoid them."], "tribal": ["Your tribe was scattered by raiders and dust storms. You followed old trails south until Goodsprings' lights became the first safe fire you had seen in days.", "Scavenge the schoolhouse and water source, use healing powder carefully, and earn allies before walking the highway."], "gambler": ["You came out of Vegas with empty pockets and enemies behind you. A ruined caravan ride dumped you near Goodsprings with only luck left to spend.", "Win trust in town, scrape together caps, and avoid rushing back to the Strip until you can survive the road."], "scavenger": ["A salvage run went wrong in the hills. You limped into Goodsprings with a pack full of junk and a strong feeling that the Mojave was testing you.", "Search nearby ruins, sell spare scrap, and upgrade your kit before pushing toward Primm."], "ex_legion": ["You ran from Caesar's camp with a brand on your past and Legion blades behind you. Goodsprings is the first place far enough west to breathe.", "Stay alive, avoid Legion roads early, and use the town as cover while you rebuild from nothing."], "follower": ["You were escorting medical supplies when the road turned violent. Goodsprings patched you up; now the town could use your help too.", "Use your medical edge, gather supplies, and start with low-risk fights before travelling north or east."], "bos_exile": ["The Brotherhood cast you out for asking too many questions. You crossed the wastes until Goodsprings offered silence, distance, and a locked door behind you.", "Conserve energy cells, salvage carefully, and grow stronger before seeking old-world tech sites."], "caravan_guard": ["Your caravan was hit outside the valley. You held the line long enough for others to run, then crawled toward Goodsprings at dawn.", "Recover, restock ammo, and clear nearby threats before returning to the trade roads."], "khan_runner": ["A Khan job soured, and the fastest route out ended near Goodsprings. You still have your nerve, but not enough friends.", "Use speed and chems carefully, build caps, and decide whether to return to Red Rock stronger."], "boomer_mechanic": ["You left Nellis chasing parts and stories. A bad trade stranded you in Goodsprings with tools, dust, and no artillery watching your back.", "Scavenge parts, avoid harder roads, and earn enough gear before heading east."], "freeside_scrapper": ["Freeside taught you how to read danger, but not how to outrun all of it. You fled west and woke up in Goodsprings with bruised ribs.", "Loot carefully, pick easy fights, and build a stash before returning toward Vegas."], "prospector": ["You followed a rumor into the hills and found trouble instead of treasure. Goodsprings is where the trail, and your luck, restart.", "Search the cemetery and schoolhouse, sell salvage, then follow safer roads for better finds."], "ncr_medic": ["Your field station was overrun and the retreat scattered everyone. Goodsprings took you in before the Mojave could finish the job.", "Use medical supplies wisely, help locals, and grow strong enough to reconnect with NCR lines."], "wasteland_hunter": ["You tracked prey too far into bad country. Poison, dust, and blood brought you to Goodsprings barely standing.", "Hunt geckos first, gather meat and antivenom, and avoid bigger predators until you level up."], "strip_operative": ["A quiet job on the Strip became loud fast. You vanished west and resurfaced in Goodsprings with one question: who sold you out?", "Keep a low profile, earn caps, and build enough strength before returning to Vegas politics."], "ncr_trooper": ["Your patrol was ambushed on the southern road. Cut off from command, you staggered into Goodsprings as the nearest safe settlement.", "Rearm, help secure the town, and then push toward NCR outposts when ready."], "ncr_ranger_recruit": ["A long-range patrol left you separated and half-dead. Goodsprings is your rally point now, whether command knows it or not.", "Scout nearby areas, conserve ammo, and prepare before taking the highway."], "legion_recruit_start": ["Your first real campaign ended in disgrace. You survived where others died, then fled west to Goodsprings before Caesar's men could judge you.", "Use brutal melee tactics carefully, recover supplies, and avoid Legion patrols until stronger."], "legion_scout_start": ["You were sent ahead and chose not to return. Goodsprings hides you for now, but the Legion remembers deserters.", "Stay mobile, gather caps, and do not rush east until you can survive retaliation."], "great_khan_warrior": ["A Khan dispute left you bleeding outside your own roads. You rode south until Goodsprings became neutral ground.", "Use chems sparingly, earn local trust, and build strength before returning to Khan territory."], "brotherhood_scribe": ["Your search for tech became exile in all but name. You arrived in Goodsprings with notes, questions, and too few answers.", "Study what you find, salvage electronics, and avoid tougher ruins until better equipped."], "brotherhood_knight": ["A bunker order sent you into the wastes alone. After an attack, Goodsprings became your fallback position.", "Protect your limited gear, train on lesser threats, and seek energy supplies before heading out."], "kings_member": ["Freeside trouble followed you too closely. The King told you to disappear for a while, so Goodsprings gets your act first.", "Help the town, get paid, and build yourself up before going back east."], "boomer_gunner": ["You left Nellis beyond the safety of the guns and paid for it. Goodsprings found you with sand in your mouth and no boom overhead.", "Scavenge ammo and parts, learn the roads, and save the big fights for later."], "follower_doctor": ["A relief run collapsed after an ambush. Goodsprings became your clinic, shelter, and second chance.", "Treat yourself first, help who you can, then gather supplies for the road."], "chairman_runner": ["The Tops sent you on a quiet errand that turned into a very loud betrayal. Goodsprings is far enough away to think.", "Get armed, get paid, and do not head back to the Strip until you know who crossed you."]};
+ const key=(bg||'courier').toLowerCase();
+ const bgObj=(typeof BACKGROUNDS!=='undefined'?BACKGROUNDS.find(b=>b.id===key):null);
+ const title=bgObj?bgObj.n:"The Courier";
+ const v=storyMap[key]||storyMap.courier;
+ const lines=[
+  "<b>"+title+"</b>",
+  v[0],
+  v[1],
+  "Early advice: start with Goodsprings Source, the schoolhouse, and small critters. Rest, loot, sell junk, then take the road to Primm when you are ready."
+ ];
+ try{showResult("Welcome to Goodsprings","📜",lines,"Begin");}catch(e){notify(v[0]);}
+}
+
 function confirmNewGame(){
   openDlg(`<div style="text-align:center">
   <div style="font-size:42px;margin-bottom:8px">⚠️</div>
@@ -372,9 +400,9 @@ function confirmNewGame(){
 const LOCS={
 Goodsprings:{n:"Goodsprings",r:"Mojave South",d:"A quiet frontier town. Clean water, honest people.",e:'<img src="NVImages/GoodspringsIcon.png" style="width:80px;height:80px;object-fit:contain;">',t:"town",
   b:["saloon","general_store","gas_station","doc_house"],dg:1,fac:"NCR",
-  sur:[{n:"Goodsprings Cemetery",e:'<img src="NVImages/GoodspringscemeteryIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Where they left you for dead.",en:["gecko","bloatfly","bark_scorpion"],lt:["ammo_9mm","stimpak","sunset_sars"]},
-  {n:"Goodsprings Source",e:'<img src="NVImages/GoodspringswatersourceIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Fresh water. Geckos lurk nearby.",en:["gecko","gecko","bark_scorpion","mantis"],lt:["purified_water","gecko_hide","herbs"]},
-  {n:"Abandoned Schoolhouse",e:'<img src="NVImages/GoodspringsabandonedschoolhouseIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Giant mantises nest inside.",en:["mantis","mantis","radroach","giant_rat"],lt:["scrap","duct_tape","ammo_9mm","bobby_pin"]}]},
+  sur:[{n:"Goodsprings Cemetery",e:'<img src="NVImages/GoodspringscemeteryIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Where they left you for dead.",en:["gecko","gecko","bloatfly"],lt:["ammo_9mm","stimpak","sunset_sars"]},
+  {n:"Goodsprings Source",e:'<img src="NVImages/GoodspringswatersourceIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Fresh water. Geckos lurk nearby.",en:["gecko","gecko","mantis","radroach"],lt:["purified_water","gecko_hide","herbs"]},
+  {n:"Abandoned Schoolhouse",e:'<img src="NVImages/GoodspringsabandonedschoolhouseIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Giant mantises nest inside.",en:["radroach","giant_rat","mantis"],lt:["scrap","duct_tape","ammo_9mm","bobby_pin"]}]},
 Primm:{n:"Primm",r:"Mojave South",d:"A border town overrun by convicts.",e:'<img src="NVImages/PrimmIcon.png" style="width:90px;height:90px;object-fit:contain;">',t:"town",           
   b:["vikki_vance","mojave_express","sheriff_office","bison_steve"],dg:2,fac:"NCR",
   sur:[{n:"Highway 93",e:'<img src="NVImages/Highway93Icon.png" style="width:40%;height:40%;object-fit:contain;display:block;">',d:"Convicts patrol the road.",en:["convict","convict","jackal_raider","jackal_raider"],lt:["pistol_10mm","revolver_357","leather_armor","stimpak","ammo_10mm","ammo_357"]},
@@ -1387,32 +1415,32 @@ const LN=["Walker","Stone","Cobb","Nash","Cruz","Hunt","Vance","Rivers","Cole","
 // Backgrounds
 const BACKGROUNDS=[
 {id:'courier',n:'The Courier',d:'Shot in the head and left for dead. You got better.',gold:30,atk:5,def:3,spd:5,items:['pistol_9mm','stimpak','ammo_9mm','ammo_9mm','ammo_9mm','ammo_9mm','ammo_9mm','ammo_9mm','sunset_sars'],loc:'Goodsprings',class:'courier',karma:0},
-{id:'ncr_deserter',n:'NCR Deserter',d:'Fled the army. The Mojave eats deserters.',gold:50,atk:6,def:5,spd:4,items:['varmint_rifle','ncr_armor','ammo_556','ammo_556','ammo_556','ammo_556','ammo_556','stimpak'],loc:'Primm',class:'soldier',karma:-5},
+{id:'ncr_deserter',n:'NCR Deserter',d:'Fled the army. The Mojave eats deserters.',gold:50,atk:6,def:5,spd:4,items:['varmint_rifle','ncr_armor','ammo_556','ammo_556','ammo_556','ammo_556','ammo_556','stimpak'],loc:'Goodsprings',class:'soldier',karma:-5},
 {id:'tribal',n:'Tribal Wanderer',d:'Your tribe was wiped out. You survived.',gold:10,atk:7,def:4,spd:6,items:['machete','healing_powder','healing_powder','herbs'],loc:'Goodsprings',class:'tribal',karma:5},
-{id:'gambler',n:'Strip Gambler',d:'Lady Luck has a sense of humor.',gold:120,atk:3,def:2,spd:4,items:['switchblade','fancy_lad','nuka_cola','pre_war_money'],loc:'FreesideN',class:'gambler',karma:0},
-{id:'scavenger',n:'Wasteland Scavenger',d:'One man\'s junk is your livelihood.',gold:40,atk:4,def:3,spd:5,items:['combat_knife','duct_tape','scrap','bobby_pin','bobby_pin','stimpak'],loc:'Novac',class:'scavenger',karma:0},
-{id:'ex_legion',n:'Ex-Legionary',d:'Branded a traitor. Caesar wants your head.',gold:20,atk:8,def:6,spd:4,items:['machete','healing_powder','legion_coin','leather_armor'],loc:'Nipton',class:'legion',karma:-10},
-{id:'follower',n:'Follower of the Apocalypse',d:'Knowledge is the best weapon.',gold:60,atk:3,def:2,spd:4,items:['stimpak','stimpak','purified_water','herbs','herbs'],loc:'FreesideN',class:'doctor',karma:10},
-{id:'bos_exile',n:'Brotherhood Exile',d:'Cast out for asking questions.',gold:35,atk:6,def:7,spd:3,items:['laser_pistol','energy_cell','energy_cell','energy_cell','energy_cell','energy_cell','combat_helmet'],loc:'HiddenValley',class:'knight',karma:5},
-{id:'caravan_guard',n:'Caravan Guard',d:'You kept brahmin and merchants alive for a living.',gold:70,atk:6,def:4,spd:4,items:['caravan_shotgun','ammo_shells','ammo_shells','ammo_shells','leather_armor','stimpak'],loc:'TradingPost188',class:'guard',karma:2},
-{id:'khan_runner',n:'Great Khan Runner',d:'Fast hands, fast caps, and faster exits.',gold:45,atk:5,def:3,spd:7,items:['revolver_357','ammo_357','ammo_357','ammo_357','jet','stimpak'],loc:'RedRockCanyon',class:'runner',karma:-2},
-{id:'boomer_mechanic',n:'Boomer Mechanic',d:'You grew up around artillery, scrap, and old world machines.',gold:55,atk:4,def:4,spd:5,items:['varmint_rifle','ammo_556','ammo_556','scrap','sensor_module','stimpak'],loc:'NellisAFB',class:'mechanic',karma:1},
-{id:'freeside_scrapper',n:'Freeside Scrapper',d:'You learned to survive by reading danger before it found you.',gold:35,atk:5,def:3,spd:6,items:['switchblade','jet','pre_war_money','duct_tape','stimpak'],loc:'FreesideN',class:'scrapper',karma:-1},
-{id:'prospector',n:'Prospector',d:'You spent years chasing rumors, salvage, and buried luck.',gold:50,atk:4,def:4,spd:5,items:['pickaxe','scrap','scrap','bobby_pin','stimpak','sunset_sars'],loc:'Sloan',class:'prospector',karma:0},
-{id:'ncr_medic',n:'NCR Field Medic',d:'You patched up soldiers under fire and kept moving.',gold:65,atk:3,def:4,spd:4,items:['doctor_bag','stimpak','stimpak','med_x','purified_water'],loc:'CampMcCarran',class:'medic',karma:8},
-{id:'wasteland_hunter',n:'Wasteland Hunter',d:'You track dangerous things and make a living off what is left behind.',gold:40,atk:6,def:4,spd:6,items:['cowboy_repeater','ammo_357','ammo_357','gecko_steak','antivenom'],loc:'Jacobstown',class:'hunter',karma:3},
-{id:'strip_operative',n:'Strip Operative',d:'You know how to blend in, read rooms, and leave richer than you arrived.',gold:95,atk:4,def:2,spd:5,items:['maria','ammo_9mm','ammo_9mm','fancy_lad','pre_war_money'],loc:'TheStrip',class:'operative',karma:-3},
-{id:'ncr_trooper',n:'NCR Trooper',d:'An active NCR trooper posted to the Mojave frontier.',gold:60,atk:6,def:6,spd:4,items:['service_rifle','ammo_556','ammo_556','ammo_556','ammo_556','ncr_armor','stimpak'],loc:'CampMcCarran',class:'trooper',karma:4,fac:'NCR'},
-{id:'ncr_ranger_recruit',n:'NCR Ranger Recruit',d:'You earned a place on NCR patrols and learned to survive the long roads.',gold:55,atk:6,def:4,spd:6,items:['cowboy_repeater','ammo_357','ammo_357','ammo_357','stimpak','doctor_bag'],loc:'MojaveOutpost',class:'ranger',karma:6,fac:'NCR'},
-{id:'legion_recruit_start',n:'Legion Recruit',d:'You serve Caesar now, and weakness is punished quickly.',gold:25,atk:7,def:5,spd:5,items:['machete','healing_powder','healing_powder','legion_coin','legion_coin','leather_armor'],loc:'NelsonCamp',class:'legionary',karma:-8,fac:'Legion'},
-{id:'legion_scout_start',n:'Legion Scout',d:'You move ahead of the main force, watching roads and waiting to strike.',gold:30,atk:6,def:4,spd:7,items:['revolver_357','ammo_357','ammo_357','healing_powder','legion_coin'],loc:'CottonwoodCove',class:'scout',karma:-6,fac:'Legion'},
-{id:'great_khan_warrior',n:'Great Khan Warrior',d:'You ride with the Khans and earn your place through nerve and violence.',gold:40,atk:7,def:4,spd:6,items:['revolver_357','ammo_357','ammo_357','jet','machete','stimpak'],loc:'RedRockCanyon',class:'khan',karma:-4,fac:'Khans'},
-{id:'brotherhood_scribe',n:'Brotherhood Scribe',d:'You serve the Brotherhood by recovering, studying, and protecting old world tech.',gold:45,atk:4,def:4,spd:4,items:['laser_pistol','energy_cell','energy_cell','energy_cell','sensor_module','stimpak'],loc:'HiddenValley',class:'scribe',karma:4,fac:'BOS'},
-{id:'brotherhood_knight',n:'Brotherhood Knight',d:'You stand guard over the bunker and the dangerous knowledge within.',gold:50,atk:7,def:7,spd:3,items:['laser_rifle','energy_cell','energy_cell','energy_cell','combat_helmet','metal_armor'],loc:'HiddenValley',class:'knight',karma:2,fac:'BOS'},
-{id:'kings_member',n:'Kings Member',d:'You run with the Kings and protect your own in Freeside.',gold:35,atk:5,def:3,spd:6,items:['pistol_9mm','ammo_9mm','ammo_9mm','ammo_9mm','switchblade','stimpak'],loc:'FreesideN',class:'king',karma:3,fac:'Kings'},
-{id:'boomer_gunner',n:'Boomer Gunner',d:'You grew up under artillery fire and learned to hit back harder.',gold:50,atk:6,def:5,spd:4,items:['varmint_rifle','ammo_556','ammo_556','ammo_556','scrap','stimpak'],loc:'NellisAFB',class:'gunner',karma:1,fac:'Boomers'},
-{id:'follower_doctor',n:'Follower Doctor',d:'You are an active Follower healer trying to keep the Mojave alive one patient at a time.',gold:55,atk:3,def:3,spd:4,items:['doctor_bag','stimpak','stimpak','purified_water','med_x','herbs'],loc:'FreesideN',class:'doctor',karma:10,fac:'Followers'},
-{id:'chairman_runner',n:'Chairman Runner',d:'You work the Tops floor, pass quiet messages, and know which smiles are fake.',gold:85,atk:4,def:2,spd:6,items:['pistol_9mm','ammo_9mm','ammo_9mm','pre_war_money','fancy_lad'],loc:'TheStrip',class:'chairman',karma:-1,fac:'House'},
+{id:'gambler',n:'Strip Gambler',d:'Lady Luck has a sense of humor.',gold:120,atk:3,def:2,spd:4,items:['switchblade','fancy_lad','nuka_cola','pre_war_money'],loc:'Goodsprings',class:'gambler',karma:0},
+{id:'scavenger',n:'Wasteland Scavenger',d:'One man\'s junk is your livelihood.',gold:40,atk:4,def:3,spd:5,items:['combat_knife','duct_tape','scrap','bobby_pin','bobby_pin','stimpak'],loc:'Goodsprings',class:'scavenger',karma:0},
+{id:'ex_legion',n:'Ex-Legionary',d:'Branded a traitor. Caesar wants your head.',gold:20,atk:8,def:6,spd:4,items:['machete','healing_powder','legion_coin','leather_armor'],loc:'Goodsprings',class:'legion',karma:-10},
+{id:'follower',n:'Follower of the Apocalypse',d:'Knowledge is the best weapon.',gold:60,atk:3,def:2,spd:4,items:['stimpak','stimpak','purified_water','herbs','herbs'],loc:'Goodsprings',class:'doctor',karma:10},
+{id:'bos_exile',n:'Brotherhood Exile',d:'Cast out for asking questions.',gold:35,atk:6,def:7,spd:3,items:['laser_pistol','energy_cell','energy_cell','energy_cell','energy_cell','energy_cell','combat_helmet'],loc:'Goodsprings',class:'knight',karma:5},
+{id:'caravan_guard',n:'Caravan Guard',d:'You kept brahmin and merchants alive for a living.',gold:70,atk:6,def:4,spd:4,items:['caravan_shotgun','ammo_shells','ammo_shells','ammo_shells','leather_armor','stimpak'],loc:'Goodsprings',class:'guard',karma:2},
+{id:'khan_runner',n:'Great Khan Runner',d:'Fast hands, fast caps, and faster exits.',gold:45,atk:5,def:3,spd:7,items:['revolver_357','ammo_357','ammo_357','ammo_357','jet','stimpak'],loc:'Goodsprings',class:'runner',karma:-2},
+{id:'boomer_mechanic',n:'Boomer Mechanic',d:'You grew up around artillery, scrap, and old world machines.',gold:55,atk:4,def:4,spd:5,items:['varmint_rifle','ammo_556','ammo_556','scrap','sensor_module','stimpak'],loc:'Goodsprings',class:'mechanic',karma:1},
+{id:'freeside_scrapper',n:'Freeside Scrapper',d:'You learned to survive by reading danger before it found you.',gold:35,atk:5,def:3,spd:6,items:['switchblade','jet','pre_war_money','duct_tape','stimpak'],loc:'Goodsprings',class:'scrapper',karma:-1},
+{id:'prospector',n:'Prospector',d:'You spent years chasing rumors, salvage, and buried luck.',gold:50,atk:4,def:4,spd:5,items:['pickaxe','scrap','scrap','bobby_pin','stimpak','sunset_sars'],loc:'Goodsprings',class:'prospector',karma:0},
+{id:'ncr_medic',n:'NCR Field Medic',d:'You patched up soldiers under fire and kept moving.',gold:65,atk:3,def:4,spd:4,items:['doctor_bag','stimpak','stimpak','med_x','purified_water'],loc:'Goodsprings',class:'medic',karma:8},
+{id:'wasteland_hunter',n:'Wasteland Hunter',d:'You track dangerous things and make a living off what is left behind.',gold:40,atk:6,def:4,spd:6,items:['cowboy_repeater','ammo_357','ammo_357','gecko_steak','antivenom'],loc:'Goodsprings',class:'hunter',karma:3},
+{id:'strip_operative',n:'Strip Operative',d:'You know how to blend in, read rooms, and leave richer than you arrived.',gold:95,atk:4,def:2,spd:5,items:['maria','ammo_9mm','ammo_9mm','fancy_lad','pre_war_money'],loc:'Goodsprings',class:'operative',karma:-3},
+{id:'ncr_trooper',n:'NCR Trooper',d:'An active NCR trooper posted to the Mojave frontier.',gold:60,atk:6,def:6,spd:4,items:['service_rifle','ammo_556','ammo_556','ammo_556','ammo_556','ncr_armor','stimpak'],loc:'Goodsprings',class:'trooper',karma:4,fac:'NCR'},
+{id:'ncr_ranger_recruit',n:'NCR Ranger Recruit',d:'You earned a place on NCR patrols and learned to survive the long roads.',gold:55,atk:6,def:4,spd:6,items:['cowboy_repeater','ammo_357','ammo_357','ammo_357','stimpak','doctor_bag'],loc:'Goodsprings',class:'ranger',karma:6,fac:'NCR'},
+{id:'legion_recruit_start',n:'Legion Recruit',d:'You serve Caesar now, and weakness is punished quickly.',gold:25,atk:7,def:5,spd:5,items:['machete','healing_powder','healing_powder','legion_coin','legion_coin','leather_armor'],loc:'Goodsprings',class:'legionary',karma:-8,fac:'Legion'},
+{id:'legion_scout_start',n:'Legion Scout',d:'You move ahead of the main force, watching roads and waiting to strike.',gold:30,atk:6,def:4,spd:7,items:['revolver_357','ammo_357','ammo_357','healing_powder','legion_coin'],loc:'Goodsprings',class:'scout',karma:-6,fac:'Legion'},
+{id:'great_khan_warrior',n:'Great Khan Warrior',d:'You ride with the Khans and earn your place through nerve and violence.',gold:40,atk:7,def:4,spd:6,items:['revolver_357','ammo_357','ammo_357','jet','machete','stimpak'],loc:'Goodsprings',class:'khan',karma:-4,fac:'Khans'},
+{id:'brotherhood_scribe',n:'Brotherhood Scribe',d:'You serve the Brotherhood by recovering, studying, and protecting old world tech.',gold:45,atk:4,def:4,spd:4,items:['laser_pistol','energy_cell','energy_cell','energy_cell','sensor_module','stimpak'],loc:'Goodsprings',class:'scribe',karma:4,fac:'BOS'},
+{id:'brotherhood_knight',n:'Brotherhood Knight',d:'You stand guard over the bunker and the dangerous knowledge within.',gold:50,atk:7,def:7,spd:3,items:['laser_rifle','energy_cell','energy_cell','energy_cell','combat_helmet','metal_armor'],loc:'Goodsprings',class:'knight',karma:2,fac:'BOS'},
+{id:'kings_member',n:'Kings Member',d:'You run with the Kings and protect your own in Freeside.',gold:35,atk:5,def:3,spd:6,items:['pistol_9mm','ammo_9mm','ammo_9mm','ammo_9mm','switchblade','stimpak'],loc:'Goodsprings',class:'king',karma:3,fac:'Kings'},
+{id:'boomer_gunner',n:'Boomer Gunner',d:'You grew up under artillery fire and learned to hit back harder.',gold:50,atk:6,def:5,spd:4,items:['varmint_rifle','ammo_556','ammo_556','ammo_556','scrap','stimpak'],loc:'Goodsprings',class:'gunner',karma:1,fac:'Boomers'},
+{id:'follower_doctor',n:'Follower Doctor',d:'You are an active Follower healer trying to keep the Mojave alive one patient at a time.',gold:55,atk:3,def:3,spd:4,items:['doctor_bag','stimpak','stimpak','purified_water','med_x','herbs'],loc:'Goodsprings',class:'doctor',karma:10,fac:'Followers'},
+{id:'chairman_runner',n:'Chairman Runner',d:'You work the Tops floor, pass quiet messages, and know which smiles are fake.',gold:85,atk:4,def:2,spd:6,items:['pistol_9mm','ammo_9mm','ammo_9mm','pre_war_money','fancy_lad'],loc:'Goodsprings',class:'chairman',karma:-1,fac:'House'},
 ];
 
 const SPECIAL_LABELS=['S','P','E','C','I','A','L'];
@@ -1751,6 +1779,7 @@ function rerollStart(){
   renderStartPreview();
 }
 function newGame(){
+try{S.loc='Goodsprings';}catch(e){}
   S=clone(BASE);
   initCustomState(rnd(0,BACKGROUNDS.length-1));
   window._custom.presetI=rnd(0,START_PRESETS.length-1);
@@ -1766,7 +1795,7 @@ function quickStart(){
   S.special=clone(preset.special);
   S.atk=bg.atk;S.def=bg.def;S.spd=bg.spd;
   S.caps=bg.gold;S.bg=bg.id;S.class=bg.class;S.karma=bg.karma||0;
-  S.loc=bg.loc;S.inv=clone(bg.items);
+  S.loc='Goodsprings';S.inv=clone(bg.items);
   if(bg.fac&&S.rep&&S.rep[bg.fac]!==undefined)S.rep[bg.fac]=Math.max(S.rep[bg.fac],12);
   if(bg.fac==='Boomers')setFlag('ally_boomers_start',true);
   syncFNVStats(true);
@@ -1774,7 +1803,7 @@ function quickStart(){
   log(S.name+' — '+bg.n+'.','q');
   log(bg.d,'e');
   log('SPECIAL preset: '+preset.n+'.','e');
-  upAll();save(true);
+  upAll();save(true);showOpeningAfterNewGame(bg.id);
 }
 function changeCustomBg(delta){
   if(!window._custom)initCustomState(0);
