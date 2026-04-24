@@ -2243,12 +2243,16 @@ function upWorld(){
       const daysLeft=Math.max(0,ev.duration-(S.days-ev.started));
       const typeColor=ev.type==='raid'?'var(--red)':ev.type==='military'?'var(--amber)':ev.type==='trade'?'var(--green)':'var(--blue)';
       const card=el('div','cd');
+      const atEventLoc=ev.loc===S.loc;
+      const evLocName=LOCS[ev.loc]?.n||MAP_META[ev.loc]?.n||'Unknown location';
       card.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
         <div style="font-size:22px">${ev.icon}</div>
         <div style="flex:1"><div style="font-size:12px;font-weight:bold;color:${typeColor}">${ev.title}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:2px">Expires in ${daysLeft} day${daysLeft!==1?'s':''}</div></div></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">Location: <span style="color:${atEventLoc?'var(--green)':'var(--amber2)'}">${evLocName}</span> · Expires in ${daysLeft} day${daysLeft!==1?'s':''}</div></div></div>
         <div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:6px">${ev.body}</div>
-        <button class="bt go" style="text-align:center" onclick="interceptWorldEvent('${ev.id}')">🎯 Intercept — make a choice</button>`;
+        ${atEventLoc
+          ? `<button class="bt go" style="text-align:center" onclick="interceptWorldEvent('${ev.id}')">🎯 Intercept — make a choice</button>`
+          : `<button class="bt" style="text-align:center;opacity:.55" disabled>Travel to ${evLocName} to interact</button>`}`;
       tab.appendChild(card);
     });
   }
@@ -6356,6 +6360,11 @@ function upRoads(){
   mapWrap.appendChild(svg);mapWrap.appendChild(zc);
   tab.appendChild(mapWrap);
 
+  const hint=el('div','');
+  hint.style.cssText='position:absolute;left:8px;bottom:8px;right:8px;background:rgba(14,14,8,.78);border:1px solid #2a2818;border-radius:6px;padding:6px 8px;font-size:10px;color:var(--muted);text-align:center;pointer-events:none';
+  hint.innerHTML='Tap a location to inspect it · Use the travel button below';
+  mapWrap.appendChild(hint);
+
   // ── Location detail panel ─────────────────────────────────
   const panel=el('div','');
   panel.id='map-panel';
@@ -6365,9 +6374,9 @@ function upRoads(){
 }
 
 function mapTapLoc(locId){
-  if(!MAP_COORDS[locId])return;
+  if(!MAP_COORDS[locId]||!S)return;
   _mapSel=(_mapSel===locId)?null:locId;
-  upRoads(); // re-render map with new selection
+  upRoads(); // re-render map with selected location details
 }
 
 function _mapRenderPanel(panel){
@@ -6402,6 +6411,7 @@ function _mapRenderPanel(panel){
         <div style="font-size:10px;color:var(--muted);margin-top:1px">${loc.r} · <span style="color:${dgColor}">${dgLabel}</span>${canTravel?` · ~${travelDays} day${travelDays!==1?'s':''}`:''}</div>
       </div>
     </div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.45;margin:0 0 8px;border-left:2px solid #2a2818;padding-left:8px">${loc.d||'No description available.'}</div>
     ${canTravel
       ? `<button class="bt go" style="text-align:center;margin:0;padding:12px;font-size:13px;font-weight:bold;letter-spacing:1px" onclick="mapDoTravel('${_mapSel}',${travelDays})">🗺 TRAVEL TO ${loc.n.toUpperCase()}</button>`
       : isCurrent
@@ -6470,17 +6480,14 @@ function renderTravelEncounterIcons(x,y){
   if(!g){g=document.createElementNS('http://www.w3.org/2000/svg','g');g.id='LIVE_TRAVEL_ENCOUNTERS';svg.appendChild(g);}
   g.innerHTML='';
   st.encounterEnemies.slice(0,4).forEach((enemy,i)=>{
-    const ox=22+(i%2)*18,oy=-17+Math.floor(i/2)*18;
-    const bg=document.createElementNS('http://www.w3.org/2000/svg','circle');
-    bg.setAttribute('cx',x+ox);bg.setAttribute('cy',y+oy);bg.setAttribute('r','10');
-    bg.setAttribute('fill','#1a0a0a');bg.setAttribute('stroke','#ff4444');bg.setAttribute('stroke-width','1.5');bg.setAttribute('opacity','.96');g.appendChild(bg);
+    const ox=27+(i%2)*25,oy=-20+Math.floor(i/2)*25;
     const src=travelEnemyIconSrc(enemy);
     if(src){
       const im=document.createElementNS('http://www.w3.org/2000/svg','image');
-      im.setAttribute('href',src);im.setAttribute('x',x+ox-8);im.setAttribute('y',y+oy-8);im.setAttribute('width','16');im.setAttribute('height','16');g.appendChild(im);
+      im.setAttribute('href',src);im.setAttribute('x',x+ox-12);im.setAttribute('y',y+oy-12);im.setAttribute('width','24');im.setAttribute('height','24');im.setAttribute('preserveAspectRatio','xMidYMid meet');g.appendChild(im);
     }else{
       const txt=document.createElementNS('http://www.w3.org/2000/svg','text');
-      txt.setAttribute('x',x+ox);txt.setAttribute('y',y+oy+5);txt.setAttribute('text-anchor','middle');txt.setAttribute('font-size','14');txt.textContent=(enemy&&enemy.e)||'⚔';g.appendChild(txt);
+      txt.setAttribute('x',x+ox);txt.setAttribute('y',y+oy+7);txt.setAttribute('text-anchor','middle');txt.setAttribute('font-size','21');txt.textContent=(enemy&&enemy.e)||'⚔';g.appendChild(txt);
     }
   });
 }
@@ -6939,6 +6946,7 @@ function resolveWorldEvent(ev,result){
 function interceptWorldEvent(evId){
   const ev=S.worldEvents.find(e=>e.id===evId);
   if(!ev||ev.resolved){notify('This situation has already passed.');upWorld();return}
+  if(ev.loc!==S.loc){notify(`Travel to ${LOCS[ev.loc]?.n||MAP_META[ev.loc]?.n||'the event location'} first.`);upWorld();return}
   // Find matching template
   const tmpl=WORLD_EVENT_TEMPLATES.find(t=>t.title===ev.templateId);
   if(!tmpl){notify('No choices available.');return}
