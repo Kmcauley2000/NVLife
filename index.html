@@ -36,7 +36,7 @@ background:linear-gradient(0deg,#0e0e06,#1a1a0e);display:flex;
 border-top:1px solid var(--amber2);z-index:100;padding-bottom:var(--sb)}
 #N button{flex:1;padding:6px 1px 4px;background:0 0;color:var(--muted);border:0;
 font-size:8px;text-align:center;cursor:pointer;line-height:1.3;font-family:'Courier New',monospace}
-#N button i{font-size:14px;display:block;font-style:normal}
+#N button i{font-size:14px;display:flex;justify-content:center;align-items:center;height:22px;font-style:normal;margin-bottom:2px}
 #N button.A{background:#2a2a10;color:var(--amber)}
 .sh{color:var(--amber2);padding:3px 0;margin:10px 0 4px;font-size:10px;letter-spacing:2px;
 text-transform:uppercase;border-bottom:1px solid #2a2818}
@@ -75,8 +75,10 @@ padding:3px 0;margin:10px 0 4px;border-bottom:1px solid #2a2818}
 border-bottom:1px solid #1a1810;margin-bottom:8px}
 .bn{display:flex;align-items:center;gap:10px;padding:8px;background:#1a1a10;border-radius:6px;margin:4px 0}
 /* Travel overlay */
-#TO{position:fixed;inset:0;background:var(--bg);z-index:160;overflow-y:auto;display:none}
-#TO.A{display:block}
+#TO{position:fixed;inset:0;background:var(--bg);z-index:160;overflow-y:auto;display:none;
+flex-direction:column;justify-content:center;align-items:center}
+#TO.A{display:flex}
+#TO>div{width:100%;max-width:430px;padding:20px 12px}
 /* Dialog */
 #DO{position:fixed;inset:0;background:rgba(5,5,2,.88);z-index:250;display:none;
 justify-content:center;align-items:center;overflow-y:auto;padding:20px 10px}
@@ -166,6 +168,28 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 }
 .loot-item-name{flex:1;font-size:11px}
 .loot-item-tick{color:var(--green);font-size:16px}
+/* Perk screen */
+#PO{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;display:none;
+  justify-content:center;align-items:center;padding:16px}
+#PO.A{display:flex}
+#PP{background:var(--panel);border:2px solid var(--amber);border-radius:10px;
+  padding:14px;width:96%;max-width:400px;max-height:90vh;overflow-y:auto}
+.perk-card{background:#1e1e10;border:1px solid #3a3828;border-radius:8px;
+  padding:10px 12px;margin:6px 0;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+.perk-card:active{transform:scale(.98)}
+.perk-card.selected{border-color:var(--amber);background:#2a2a14}
+.perk-card.locked{opacity:.38;cursor:not-allowed}
+.perk-icon{font-size:26px;flex:0 0 auto;width:38px;text-align:center}
+.perk-name{font-size:13px;font-weight:bold;color:var(--amber)}
+.perk-desc{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4}
+.perk-req{font-size:9px;color:var(--red);margin-top:3px}
+/* Crafting */
+.craft-card{background:#1a1a10;border:1px solid #2a2818;border-radius:6px;padding:8px 10px;margin:5px 0}
+.craft-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.craft-mat{display:inline-flex;align-items:center;gap:3px;background:#141408;
+  border:1px solid #2a2818;border-radius:4px;padding:2px 6px;font-size:10px}
+.craft-mat.ok{border-color:#2a4a18;color:var(--green)}
+.craft-mat.missing{border-color:#4a1818;color:var(--red)}
 </style>
 </head>
 <body>
@@ -182,36 +206,15 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 </div>
 </div>
 <div id="N">
-<button onclick="switchTab('world')" id="nb-world" class="A"><i>🏜</i>World</button>
-<button onclick="switchTab('char')" id="nb-char"><i>👤</i>Char</button>
-<button onclick="switchTab('inv')" id="nb-inv"><i>🎒</i>Items</button>
-<button onclick="switchTab('roads')" id="nb-roads"><i>🗺</i>Travel</button>
-<button onclick="switchTab('log')" id="nb-log"><i>📋</i>Log</button>
+<button onclick="switchTab('world')" id="nb-world" class="A"><i><img src="NVImages/WorldIcon.png" style="width:22px;height:22px;object-fit:contain;display:block;margin:0 auto"></i>World</button>
+<button onclick="switchTab('char')" id="nb-char"><i><img src="NVImages/CharIcon.png" style="width:22px;height:22px;object-fit:contain;display:block;margin:0 auto"></i>Char</button>
+<button onclick="switchTab('inv')" id="nb-inv"><i><img src="NVImages/ItemsIcon.png" style="width:22px;height:22px;object-fit:contain;display:block;margin:0 auto"></i>Items</button>
+<button onclick="switchTab('roads')" id="nb-roads"><i><img src="NVImages/TravelIcon.png" style="width:22px;height:22px;object-fit:contain;display:block;margin:0 auto"></i>Travel</button>
+<button onclick="switchTab('log')" id="nb-log"><i><img src="NVImages/LogIcon.png" style="width:22px;height:22px;object-fit:contain;display:block;margin:0 auto"></i>Log</button>
 </div>
 <div id="BO"><div id="BI"></div></div>
 <div id="TO">
-<div style="padding:calc(var(--st)+10px) 12px 12px">
-<div style="text-align:center;font-size:48px;margin:20px 0" id="TS">🏜</div>
-<div style="text-align:center;font-size:14px;margin-bottom:12px" id="TT"></div>
-<div class="hb" style="margin:8px 20px"><div class="hf g" id="TB" style="width:0%"></div></div>
-<div id="TC" style="padding:0 10px"></div>
-<button class="bt go" id="TN" style="display:none;text-align:center;margin:8px 10px" onclick="travelCont()">Continue</button>
-</div>
-</div>
-<div id="DO"><div id="DB"></div></div>
-<div id="CO"><div id="CP"></div></div>
-<div id="RBG"></div><div id="RP"></div>
-<div id="TK"><div class="tk" id="ticker-inner"></div></div>
-<div id="N">
-<button onclick="switchTab('world')" id="nb-world" class="A"><i>'<img src="NVImages/WorldIcon.png" style="width:40%;height:40%;object-fit:contain;display:block;">'</i>World</button>
-<button onclick="switchTab('char')" id="nb-char"><i>'<img src="NVImages/CharIcon.png" style="width:40%;height:40%;object-fit:contain;display:block;">'</i>Char</button>
-<button onclick="switchTab('inv')" id="nb-inv"><i>'<img src="NVImages/ItemsIcon.png" style="width:40%;height:40%;object-fit:contain;display:block;">'</i>Items</button>
-<button onclick="switchTab('roads')" id="nb-roads"><i>'<img src="NVImages/TravelIcon.png" style="width:40%;height:40%;object-fit:contain;display:block;">'</i>Travel</button>
-<button onclick="switchTab('log')" id="nb-log"><i>'<img src="NVImages/LogIcon.png" style="width:40%;height:40%;object-fit:contain;display:block;">'</i>Log</button>
-</div>
-<div id="BO"><div id="BI"></div></div>
-<div id="TO">
-<div style="padding:calc(var(--st)+10px) 12px 12px">
+<div>
 <div style="text-align:center;font-size:48px;margin:20px 0" id="TS">🏜</div>
 <div style="text-align:center;font-size:14px;margin-bottom:12px" id="TT"></div>
 <div class="hb" style="margin:8px 20px"><div class="hf g" id="TB" style="width:0%"></div></div>
@@ -224,6 +227,7 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 <div id="RBG"></div><div id="RP"></div>
 <div id="TK"><div class="tk" id="ticker-inner"></div></div>
 <div id="NF"></div>
+<div id="PO"><div id="PP"></div></div>
 <script>
 // ============================================================
 // UTILITIES
@@ -333,12 +337,12 @@ Primm:{n:"Primm",r:"Mojave South",d:"A border town overrun by convicts.",e:'<img
   {n:"NCRCF Perimeter",e:'<img src="NVImages/NcrcfperimeterIcon.png" style="width:50%;height:50%;object-fit:contain;display:block;">',d:"The prison is close. Dangerous.",en:["powder_ganger","powder_ganger","convict","jackal_raider"],lt:["dynamite","powder_charge","ammo_9mm"]}]},
 Nipton:{n:"Nipton",r:"Mojave South",d:"A town destroyed by the Legion as an example.",e:'<img src="NVImages/NiptonIcon.png" style="width:120px;height:120px;object-fit:contain;">',t:"ruins",
   b:["nipton_hall"],dg:3,fac:"Legion",
-  sur:[{n:"Nipton Road",e:"🛤",d:"Legion patrols and radscorpions.",en:["legion_recruit","radscorpion","jackal_raider"],lt:["machete","healing_powder","legion_coin","revolver_357","ammo_357"]},
-  {n:"Burned Houses",e:"🏚",d:"Ash and ruin. Scavengeable.",en:["radroach","giant_rat","gecko"],lt:["pre_war_money","scrap","duct_tape"]}]},
+  sur:[{n:"Nipton Road",e:"🛤",d:"Legion holds the road. Vermin picked through whatever they left.",en:["legion_recruit","legion_recruit","legion_scout"],lt:["machete","healing_powder","legion_coin","revolver_357","ammo_357"]},
+  {n:"Burned Houses",e:"🏚",d:"Ash and ruin. Scavengeable. Scavengers picked through after the Legion.",en:["radroach","giant_rat","rogue_scavenger"],lt:["pre_war_money","scrap","duct_tape"]}]},
 Novac:{n:"Novac",r:"Mojave Central",d:"A motel town with a giant dinosaur.",e:'<img src="NVImages/NovacIcon.png" alt="Novac Dino" style="width:120px;height:120px;object-fit:contain;">',t:"town",
   b:["dino_bite","motel","mcbride_house","ranger_bungalow","no_bark_shack"],dg:2,fac:"NCR",
   sur:[{n:"REPCONN Test Site",e:"☢",d:"Ghouls and nightkin. Extremely dangerous.",en:["feral_ghoul","feral_ghoul","nightkin"],lt:["energy_cell","laser_rifle","stealth_boy","stimpak","sensor_module"]},
-  {n:"Highway Patrol",e:"🛣",d:"Cazadores and Legion scouts.",en:["cazador","legion_recruit","jackal_raider"],lt:["antivenom","machete","stimpak"]}]},
+  {n:"Highway Patrol",e:"🛣",d:"Legion scouts on the road south, and something worse in the brush.",en:["legion_recruit","legion_scout","jackal_raider"],lt:["antivenom","machete","stimpak"]}]},
 BoulderCity:{n:"Boulder City",r:"Mojave Central",d:"NCR memorial site. Tense standoff with Khans.",e:'<img src="NVImages/BouldercityIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"town",
   b:["boulder_bar","ncr_memorial"],dg:2,fac:"NCR",
   sur:[{n:"Boulder City Ruins",e:"🧱",d:"Rubble and tension.",en:["great_khan","great_khan","jackal_raider"],lt:["ammo_9mm","stimpak","jet"]}]},
@@ -363,7 +367,7 @@ Jacobstown:{n:"Jacobstown",r:"Mojave North",d:"A refuge for super mutants trying
 RedRockCanyon:{n:"Red Rock Canyon",r:"West Mojave",d:"Home of the Great Khans. Harsh, hidden, and dangerous.",e:'<img src="NVImages/RedrockcanyonIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"camp",
   b:["khan_bar","khan_supply","khan_hq"],dg:2,fac:"Khans",
   sur:[{n:"Canyon Pass",e:"🪨",d:"Narrow trails watched by Khan lookouts.",en:["great_khan","great_khan","cazador","bark_scorpion"],lt:["ammo_9mm","jet","stimpak","scrap"]},
-  {n:"Drug Lab Caves",e:"🧪",d:"Chem fumes, hidden caches, and trouble.",en:["great_khan","fiend","centaur"],lt:["jet","psycho","stimpak","pre_war_money"]}]},
+  {n:"Drug Lab Caves",e:"🧪",d:"Chem fumes and hidden caches. Khans don't like visitors.",en:["great_khan","great_khan","great_khan"],lt:["jet","psycho","stimpak","pre_war_money"]}]},
 NelsonCamp:{n:"Nelson",r:"Mojave South",d:"A town captured by Caesar's Legion.",e:'<img src="NVImages/NelsoncampIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"camp",
   b:["legion_tent"],dg:3,fac:"Legion",
   sur:[{n:"Nelson Approach",e:"🏜",d:"Legion territory. Very dangerous.",en:["legion_veteran","legion_recruit","legion_recruit"],lt:["machete","thermic_lance","healing_powder","legion_coin"]}]},
@@ -397,13 +401,13 @@ NellisAFB:{n:"Nellis AFB",r:"East Mojave",d:"A fortified air base ringed with ar
 CampGolf:{n:"Camp Golf",r:"Lake Mead",d:"An NCR training camp built around a ruined lakeside resort on Lake Mead.",e:'<img src="NVImages/CampgolfIcon.png" style="width:100px;height:100px;object-fit:contain;">',t:"base",
   b:["golf_resort","golf_barracks","golf_command","golf_clinic"],dg:2,fac:"NCR",
   sur:[{n:"Driving Range",e:"🏌️",d:"Battered targets, dried fairway grass, and NCR recruits drilling under the sun.",en:["giant_ant","gecko","mantis","radscorpion"],lt:["ammo_556","stimpak","scrap","sunset_sars"]},
-  {n:"Lakeside Cottages",e:"🏚",d:"Old resort cottages near the water, half-collapsed and still worth searching.",en:["lakelurk","gecko","cazador"],lt:["pre_war_money","purified_water","doctor_bag","ammo_9mm"]},
+  {n:"Lakeside Cottages",e:"🏚",d:"Old resort cottages near the water, half-collapsed and worth searching.",en:["lakelurk","lakelurk","feral_ghoul"],lt:["pre_war_money","purified_water","doctor_bag","ammo_9mm"]},
   {n:"Practice Bunkers",e:"🪖",d:"Sand bunkers and firing positions where the NCR tries to turn recruits into soldiers.",en:["giant_ant","radscorpion","mantis"],lt:["ammo_556","ncr_armor","duct_tape","stimpak"]}]},
 BitterSprings:{n:"Bitter Springs",r:"Lake Mead",d:"An NCR refugee camp clinging to the hills above a bitter old massacre site.",e:'<img src="NVImages/BitterspringsIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"camp",
   b:["bitter_refugee","bitter_command","bitter_mess","bitter_clinic"],dg:2,fac:"NCR",
   sur:[{n:"Refugee Ridge",e:"⛰",d:"Old campfires, hidden stashes, and steep trails watched by NCR lookouts.",en:["nightstalker","gecko","radscorpion","giant_ant"],lt:["pre_war_money","doctor_bag","sunset_sars","ammo_9mm"]},
   {n:"Cazador Pass",e:"🐝",d:"A rough trail beyond the camp where hunters and patrols keep running into poison and trouble.",en:["cazador","cazador","nightstalker"],lt:["antivenom","stimpak","ammo_556","purified_water"]},
-  {n:"Spring Overlook",e:"🪖",d:"A dry overlook above the valley where NCR scouts track movement toward the lake.",en:["legion_scout","cazador","nightstalker","lakelurk"],lt:["ammo_556","ncr_armor","scrap","stimpak"]}]},
+  {n:"Spring Overlook",e:"🪖",d:"A dry overlook above the valley where NCR scouts track movement toward the lake.",en:["legion_scout","legion_scout","viper_gunslinger"],lt:["ammo_556","ncr_armor","scrap","stimpak"]}]},
 NCRCF:{n:"NCR Correctional Facility",r:"Mojave South",d:"A prison work camp turned Powder Ganger stronghold behind blasted walls and watchtowers.",e:'<img src="NVImages/NcrcorrectionalfacilityIcon.png" style="width:80px;height:80px;object-fit:contain;">',t:"prison",
   b:["ncrcf_visitor","ncrcf_admin","ncrcf_block_a","ncrcf_block_b"],dg:3,fac:"PowderGangers",
   sur:[{n:"Front Gate Road",e:'<img src="NVImages/NcrcffrontgateroadIcon.png" style="width:50%;height:50%;object-fit:contain;display:block;">',d:"A rail work road leading up to the prison where Powder Gangers shake down anyone careless enough to get close.",en:["powder_ganger","powder_ganger","convict","jackal_raider"],lt:["dynamite","ammo_9mm","pre_war_money","scrap"]},
@@ -426,7 +430,7 @@ CinderGulch:{n:"Cinder Gulch",r:"Mojave North",d:"A scavenger settlement dug int
   b:["gulch_command","gulch_clinic","gulch_garage"],dg:3,fac:"None",
   sur:[{n:"Burned Approach",e:"🔥",d:"Charred rock and wrecked barricades where super mutants keep probing the settlement defenses.",en:["super_mutant","super_mutant","nightkin"],lt:["ammo_556","stimpak","scrap","super_stimpak"]},
   {n:"Cracked Overlook",e:"⛰",d:"A ridge above the gulch littered with spent casings, broken sandbags, and mutant tracks.",en:["super_mutant","super_mutant","super_mutant"],lt:["ammo_556","cowboy_repeater","scrap","doctor_bag"]},
-  {n:"Ruined Pump Station",e:"⚙",d:"An old utility station the settlers are trying to reclaim before the mutants wreck it for good.",en:["super_mutant","nightkin","centaur"],lt:["sensor_module","stimpak","energy_cell","fission_battery"]}]},
+  {n:"Ruined Pump Station",e:"⚙",d:"An old utility station the settlers are trying to reclaim.",en:["super_mutant","super_mutant","nightkin"],lt:["sensor_module","stimpak","energy_cell","fission_battery"]}]},
 HooverDam:{n:"Hoover Dam",r:"East Mojave",d:"The prize everyone's fighting for.",e:'<img src="NVImages/HooverdamIcon.png" style="width:80px;height:80px;object-fit:contain;">',t:"dam",
   b:["dam_offices","dam_power"],dg:2,fac:"NCR",
   sur:[{n:"Dam Exterior",e:"🌊",d:"NCR patrols. Legion scouts across the river.",en:["legion_scout","legion_scout","lakelurk"],lt:["ammo_556","stimpak","ncr_armor"]}]}
@@ -632,38 +636,39 @@ function renderIcon(icon,size=28){
 // DATA - ENEMIES
 // ============================================================
 const ENEMIES={
-gecko:{n:"Gecko",hp:20,a:4,d:0,xp:8,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_steak"]},
-bloatfly:{n:"Bloatfly",hp:15,a:3,d:0,xp:5,e:ICONS.ENEMY.BLOATFLY,loot:["herbs"]},
-mantis:{n:"Giant Mantis",hp:25,a:6,d:1,xp:10,e:ICONS.ENEMY.MANTIS,loot:["scrap"]},
-radroach:{n:"Radroach",hp:10,a:2,d:0,xp:3,e:ICONS.ENEMY.RADROACH,loot:["herbs"]},
-radscorpion:{n:"Radscorpion",hp:60,a:15,d:5,xp:25,e:ICONS.ENEMY.RADSCORPION,loot:["antivenom","stimpak"]},
-cazador:{n:"Cazador",hp:45,a:18,d:3,xp:30,e:ICONS.ENEMY.CAZADOR,loot:["antivenom","stimpak"]},
-nightstalker:{n:"Night Stalker",hp:40,a:12,d:4,xp:20,e:ICONS.ENEMY.NIGHTSTALKER,loot:["stimpak","herbs"]},
-nightkin:{n:"Nightkin",hp:100,a:25,d:12,xp:60,e:ICONS.ENEMY.NIGHTKIN,loot:["stealth_boy","super_stimpak"]},
-feral_ghoul:{n:"Feral Ghoul",hp:35,a:10,d:2,xp:15,e:ICONS.ENEMY.GHOUL,loot:["stimpak","pre_war_money"]},
-convict:{n:"Escaped Convict",hp:30,a:8,d:3,xp:12,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","switchblade","sunset_sars"]},
-powder_ganger:{n:"Powder Ganger",hp:35,a:10,d:4,xp:15,e:ICONS.ENEMY.POWDER_GANGER,loot:["dynamite","ammo_9mm","stimpak"]},
-freeside_thug:{n:"Freeside Thug",hp:30,a:7,d:3,xp:10,e:ICONS.ENEMY.FREESIDE_THUG,loot:["switchblade","jet","pre_war_money"]},
-fiend:{n:"Fiend",hp:40,a:14,d:5,xp:20,e:ICONS.ENEMY.FIEND,loot:["jet","psycho","ammo_9mm","ammo_10mm","combat_knife","pistol_10mm"]},
-legion_recruit:{n:"Legion Recruit",hp:40,a:12,d:6,xp:18,e:ICONS.ENEMY.LEGION,loot:["machete","healing_powder","legion_coin"]},
-legion_veteran:{n:"Legion Veteran",hp:70,a:20,d:10,xp:35,e:ICONS.ENEMY.LEGION,loot:["thermic_lance","super_stimpak","legion_coin"]},
-legion_centurion:{n:"Legion Centurion",hp:120,a:28,d:15,xp:60,e:ICONS.ENEMY.LEGION_ELITE,loot:["thermic_lance","super_stimpak","power_fist","legion_coin"]},
-legion_scout:{n:"Legion Scout",hp:35,a:11,d:5,xp:15,e:ICONS.ENEMY.LEGION_SCOUT,loot:["machete","healing_powder","legion_coin"]},
-great_khan:{n:"Great Khan",hp:45,a:13,d:6,xp:18,e:ICONS.ENEMY.KHAN,loot:["ammo_9mm","ammo_357","jet","stimpak","revolver_357"]},
-securitron:{n:"Securitron",hp:80,a:22,d:14,xp:40,e:ICONS.ENEMY.SECURITRON,loot:["energy_cell","sensor_module","scrap"]},
-super_mutant:{n:"Super Mutant",hp:95,a:24,d:11,xp:45,e:ICONS.ENEMY.SUPER_MUTANT,loot:["ammo_556","scrap","stimpak","cowboy_repeater"]},
-glowing_one:{n:"Glowing One",hp:65,a:17,d:5,xp:30,e:ICONS.ENEMY.GLOWING_ONE,loot:["doctor_bag","med_x","pre_war_money","stimpak"]},
-bark_scorpion:{n:"Bark Scorpion",hp:24,a:6,d:1,xp:9,e:ICONS.ENEMY.BARK_SCORPION,loot:["antivenom","herbs"]},
-giant_rat:{n:"Giant Rat",hp:18,a:5,d:0,xp:7,e:ICONS.ENEMY.RAT,loot:["dirty_water","cram"]},
-giant_ant:{n:"Giant Ant",hp:26,a:7,d:1,xp:10,e:ICONS.ENEMY.ANT,loot:["herbs","scrap"]},
-jackal_raider:{n:"Jackal Gang Member",hp:28,a:9,d:2,xp:12,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","switchblade","single_shotgun","cigarette_pack"]},
-viper_gunslinger:{n:"Viper Gunslinger",hp:34,a:12,d:4,xp:16,e:ICONS.ENEMY.VIPER,loot:["ammo_357","varmint_rifle","leather_armor","cigarette_carton"]},
-centaur:{n:"Centaur",hp:70,a:16,d:6,xp:28,e:ICONS.ENEMY.GHOUL,loot:["med_x","dirty_water","scrap"]},
-feral_ghoul_trooper:{n:"Feral Ghoul Trooper",hp:50,a:14,d:4,xp:22,e:ICONS.ENEMY.GLOWING_ONE,loot:["stimpak","ammo_556","pre_war_money","ncr_armor"]},
-Young_deathclaw:{n:"Young Deathclaw", hp:120,a:28,d:10,xp:55,e:ICONS.ENEMY.YOUNG_DEATHCLAW,loot:["stimpak","combat_armor"]}, 
-lakelurk:{n:"Lakelurk",hp:85,a:22,d:10,xp:38,e:ICONS.ENEMY.LAKELURK,loot:["purified_water","stimpak","pre_war_money"]},
-rogue_scavenger:{n:"Rogue Scavenger",hp:42,a:12,d:4,xp:18,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","duct_tape","damaged_holotape","pre_war_money","targeting_module"]},
-deathclaw:{n:"Deathclaw",hp:200,a:40,d:18,xp:100,e:ICONS.ENEMY.DEATHCLAW,loot:["super_stimpak","super_stimpak","combat_armor"],boss:1},
+gecko:        {n:"Gecko",              hp:20,  a:4,  d:0,  xp:8,   e:ICONS.ENEMY.GECKO,          loot:["gecko_hide","gecko_steak"],                              type:'animal',   fac:'wild'},
+bloatfly:     {n:"Bloatfly",           hp:15,  a:3,  d:0,  xp:5,   e:ICONS.ENEMY.BLOATFLY,       loot:["herbs"],                                                type:'insect',   fac:'wild'},
+mantis:       {n:"Giant Mantis",       hp:25,  a:6,  d:1,  xp:10,  e:ICONS.ENEMY.MANTIS,         loot:["scrap"],                                                type:'insect',   fac:'wild'},
+radroach:     {n:"Radroach",           hp:10,  a:2,  d:0,  xp:3,   e:ICONS.ENEMY.RADROACH,       loot:["herbs"],                                                type:'insect',   fac:'wild'},
+radscorpion:  {n:"Radscorpion",        hp:60,  a:15, d:5,  xp:25,  e:ICONS.ENEMY.RADSCORPION,    loot:["antivenom","stimpak"],                                   type:'insect',   fac:'wild'},
+cazador:      {n:"Cazador",            hp:45,  a:18, d:3,  xp:30,  e:ICONS.ENEMY.CAZADOR,        loot:["antivenom","stimpak"],                                   type:'insect',   fac:'wild'},
+nightstalker: {n:"Night Stalker",      hp:40,  a:12, d:4,  xp:20,  e:ICONS.ENEMY.NIGHTSTALKER,   loot:["stimpak","herbs"],                                       type:'animal',   fac:'wild'},
+nightkin:     {n:"Nightkin",           hp:100, a:25, d:12, xp:60,  e:ICONS.ENEMY.NIGHTKIN,       loot:["stealth_boy","super_stimpak"],                           type:'mutant',   fac:'SuperMutants'},
+feral_ghoul:  {n:"Feral Ghoul",        hp:35,  a:10, d:2,  xp:15,  e:ICONS.ENEMY.GHOUL,          loot:["stimpak","pre_war_money"],                               type:'undead',   fac:'wild'},
+convict:      {n:"Escaped Convict",    hp:30,  a:8,  d:3,  xp:12,  e:ICONS.ENEMY.CONVICT,        loot:["ammo_9mm","switchblade","sunset_sars"],                   type:'human',    fac:'PowderGangers', hostile:true},
+powder_ganger:{n:"Powder Ganger",      hp:35,  a:10, d:4,  xp:15,  e:ICONS.ENEMY.POWDER_GANGER,  loot:["dynamite","ammo_9mm","stimpak"],                         type:'human',    fac:'PowderGangers', hostile:true},
+freeside_thug:{n:"Freeside Thug",      hp:30,  a:7,  d:3,  xp:10,  e:ICONS.ENEMY.FREESIDE_THUG,  loot:["switchblade","jet","pre_war_money"],                     type:'human',    fac:'Freeside',      hostile:true},
+fiend:        {n:"Fiend",              hp:40,  a:14, d:5,  xp:20,  e:ICONS.ENEMY.FIEND,          loot:["jet","psycho","ammo_9mm","ammo_10mm","combat_knife","pistol_10mm"], type:'human', fac:'Fiends', hostile:true},
+legion_recruit:  {n:"Legion Recruit",  hp:40,  a:12, d:6,  xp:18,  e:ICONS.ENEMY.LEGION,         loot:["machete","healing_powder","legion_coin"],                type:'human',    fac:'Legion',        hostile:true},
+legion_veteran:  {n:"Legion Veteran",  hp:70,  a:20, d:10, xp:35,  e:ICONS.ENEMY.LEGION,         loot:["thermic_lance","super_stimpak","legion_coin"],           type:'human',    fac:'Legion',        hostile:true},
+legion_centurion:{n:"Legion Centurion",hp:120, a:28, d:15, xp:60,  e:ICONS.ENEMY.LEGION_ELITE,   loot:["thermic_lance","super_stimpak","power_fist","legion_coin"],type:'human',  fac:'Legion',        hostile:true},
+legion_scout:    {n:"Legion Scout",    hp:35,  a:11, d:5,  xp:15,  e:ICONS.ENEMY.LEGION_SCOUT,   loot:["machete","healing_powder","legion_coin"],                type:'human',    fac:'Legion',        hostile:true},
+great_khan:   {n:"Great Khan",         hp:45,  a:13, d:6,  xp:18,  e:ICONS.ENEMY.KHAN,           loot:["ammo_9mm","ammo_357","jet","stimpak","revolver_357"],     type:'human',    fac:'Khans'},
+securitron:   {n:"Securitron",         hp:80,  a:22, d:14, xp:40,  e:ICONS.ENEMY.SECURITRON,     loot:["energy_cell","sensor_module","scrap"],                   type:'robot',    fac:'House'},
+super_mutant: {n:"Super Mutant",       hp:95,  a:24, d:11, xp:45,  e:ICONS.ENEMY.SUPER_MUTANT,   loot:["ammo_556","scrap","stimpak","cowboy_repeater"],           type:'mutant',   fac:'SuperMutants',  hostile:true},
+glowing_one:  {n:"Glowing One",        hp:65,  a:17, d:5,  xp:30,  e:ICONS.ENEMY.GLOWING_ONE,    loot:["doctor_bag","med_x","pre_war_money","stimpak"],           type:'undead',   fac:'wild'},
+bark_scorpion:{n:"Bark Scorpion",      hp:24,  a:6,  d:1,  xp:9,   e:ICONS.ENEMY.BARK_SCORPION,  loot:["antivenom","herbs"],                                     type:'insect',   fac:'wild'},
+giant_rat:    {n:"Giant Rat",          hp:18,  a:5,  d:0,  xp:7,   e:ICONS.ENEMY.RAT,            loot:["dirty_water","cram"],                                    type:'animal',   fac:'wild'},
+giant_ant:    {n:"Giant Ant",          hp:26,  a:7,  d:1,  xp:10,  e:ICONS.ENEMY.ANT,            loot:["herbs","scrap"],                                         type:'insect',   fac:'wild'},
+jackal_raider:{n:"Jackal Gang Member", hp:28,  a:9,  d:2,  xp:12,  e:ICONS.ENEMY.CONVICT,        loot:["ammo_9mm","switchblade","single_shotgun","cigarette_pack"],type:'human',   fac:'Raiders',       hostile:true},
+viper_gunslinger:{n:"Viper Gunslinger",hp:34,  a:12, d:4,  xp:16,  e:ICONS.ENEMY.VIPER,          loot:["ammo_357","varmint_rifle","leather_armor","cigarette_carton"],type:'human', fac:'Raiders',      hostile:true},
+centaur:      {n:"Centaur",            hp:70,  a:16, d:6,  xp:28,  e:ICONS.ENEMY.GHOUL,          loot:["med_x","dirty_water","scrap"],                           type:'mutant',   fac:'SuperMutants'},
+feral_ghoul_trooper:{n:"Feral Ghoul Trooper",hp:50,a:14,d:4,xp:22, e:ICONS.ENEMY.GLOWING_ONE,    loot:["stimpak","ammo_556","pre_war_money","ncr_armor"],         type:'undead',   fac:'wild'},
+Young_deathclaw:{n:"Young Deathclaw",  hp:120, a:28, d:10, xp:55,  e:ICONS.ENEMY.YOUNG_DEATHCLAW,loot:["stimpak","combat_armor"],                                type:'animal',   fac:'wild'},
+lakelurk:     {n:"Lakelurk",           hp:85,  a:22, d:10, xp:38,  e:ICONS.ENEMY.LAKELURK,       loot:["purified_water","stimpak","pre_war_money"],              type:'creature', fac:'wild'},
+rogue_scavenger:{n:"Rogue Scavenger",  hp:42,  a:12, d:4,  xp:18,  e:ICONS.ENEMY.CONVICT,        loot:["ammo_9mm","duct_tape","damaged_holotape","pre_war_money","targeting_module"],type:'human',fac:'Raiders',hostile:true},
+deathclaw:    {n:"Deathclaw",          hp:200, a:40, d:18, xp:100, e:ICONS.ENEMY.DEATHCLAW,      loot:["super_stimpak","super_stimpak","combat_armor"],boss:1,    type:'animal',   fac:'wild'},
+ncr_trooper:  {n:"NCR Trooper",        hp:45,  a:13, d:6,  xp:14,  e:ICONS.NPC.NCR,              loot:["ammo_556","stimpak","ncr_armor"],                        type:'human',    fac:'NCR'},
 };
 
 // Buildings
@@ -1470,11 +1475,19 @@ function migrate(){
   if(!S.children)S.children=[];
   if(S.bounty===undefined)S.bounty=0;
   if(!S.perks)S.perks=[];
+  if(S.xpPerk===undefined)S.xpPerk=0;
+  if(S.barterPerk===undefined)S.barterPerk=0;
+  if(S.charmPerk===undefined)S.charmPerk=0;
+  if(S.hunterPerk===undefined)S.hunterPerk=false;
+  if(S.scroungerPerk===undefined)S.scroungerPerk=false;
+  if(S.lightStepPerk===undefined)S.lightStepPerk=false;
+  if(S.leaderPerk===undefined)S.leaderPerk=false;
   if(!S.flags)S.flags={};
   if(!S.flags.bountyBoard)S.flags.bountyBoard={};
   if(!S.gear)S.gear={w:null,body:null,head:null};
   if(S.age===undefined)S.age=25;
   if(S.isMale===undefined)S.isMale=true;
+  if(!S.recentEncounters)S.recentEncounters=[];
   if(S.carryCap===undefined)S.carryCap=120;
 }
 
@@ -1703,6 +1716,10 @@ function giveItem(id,count=1,opts={}){
 function atkPow(){let a=S.atk+Math.floor(S.level*.5)+(S.special?Math.floor(S.special[0]*0.8):0);if(S.gear.w){const w=ITEMS[S.gear.w];if(w)a+=w.a||0}return a}
 function defPow(){let d=S.def+Math.floor(S.level*.3)+(S.special?Math.floor(S.special[2]*0.5):0);if(S.gear.body){const a=ITEMS[S.gear.body];if(a)d+=a.d||0}if(S.gear.head){const h=ITEMS[S.gear.head];if(h)d+=h.d||0}return d}
 function xpNeed(l){return Math.floor(50*Math.pow(1.4,l-1))}
+function grantXP(amount){
+  const bonus=S.xpPerk||0;
+  return Math.round(amount*(1+bonus/100));
+}
 function hpPct(h,m){return Math.max(0,Math.min(100,Math.round(h/m*100)))}
 function countItem(id){return S&&S.inv?S.inv.filter(x=>x===id).length:0}
 function getEquippedWeapon(){return S&&S.gear&&S.gear.w?ITEMS[S.gear.w]||null:null}
@@ -1861,16 +1878,18 @@ function doScavenge(){
   const r=R();
 
   if(r<.20*loc.dg){
-    // Combat encounter
     const surs=loc.sur||[];
     const area=surs.length?rndA(surs):null;
     const enPool=area?area.en:['gecko','radroach'];
     const validPool=enPool.filter(e=>ENEMIES[e]);
     if(validPool.length){
-      const cnt=rnd(1,Math.min(2,validPool.length));
-      const enemies=[];for(let i=0;i<cnt;i++)enemies.push(mkEnemy(rndA(validPool)));
-      startCombat(enemies);
-      return;
+      const enemies=buildCohesiveGroup(validPool,rnd(1,Math.min(2,validPool.length)));
+      if(enemies.length){
+        // Scavenge encounters go straight to pre-encounter via a quick overlay
+        $('TO').classList.add('A');
+        preEncounter(enemies,area,0,false);
+        return;
+      }
     }
   }
   if(r<.45){
@@ -1905,20 +1924,633 @@ function doScavenge(){
 }
 
 // ============================================================
+// ENCOUNTER CARD SYSTEM
+// ============================================================
+
+// Each card: {id, icon, title, body, choices:[{label, fn, result}]}
+// fn runs when chosen, result is the text shown in outcome popup.
+// Cards are tagged with location keys, faction keys, or 'generic'.
+
+const ENCOUNTER_CARDS={
+
+// ── GOODSPRINGS ─────────────────────────────────────────────
+Goodsprings:[
+  {id:'gs_powder_threat',icon:'🧨',title:'Powder Ganger Scout',
+   body:'A lone Powder Ganger is watching the road from behind a rock. He hasn\'t spotted you yet.',
+   choices:[
+     {label:'🤫 Sneak past',fn:()=>{log('Slipped past the Powder Ganger scout.','e');advanceTime(1)},result:'You move quietly through the brush. He never sees you.'},
+     {label:'⚔ Take him out',fn:()=>{startCombatCard('powder_ganger')},result:'You close the distance fast.'},
+     {label:'💬 Bluff — you\'re with the gangers',fn:()=>{if((S.special?S.special[3]:5)>=5){S.rep.PowderGangers=(S.rep.PowderGangers||0)+1;log('Bluffed a Powder Ganger scout.','e');return'He buys it and waves you off. +1 Powder Ganger standing.'}else{startCombatCard('powder_ganger');return null}},result:'The bluff lands — he waves you through.'},
+   ]},
+  {id:'gs_settler_help',icon:'👩',title:'Settler in Trouble',
+   body:'A Goodsprings settler is crouched behind a broken fence post, a gecko circling nearby.',
+   choices:[
+     {label:'⚔ Kill the gecko',fn:()=>{const g=rnd(8,18);S.xp+=g;S.karma+=2;S.rep.NCR=(S.rep.NCR||0)+1;log('Helped a Goodsprings settler. +2 karma.','e')},result:`You drop the gecko fast. The settler thanks you. ⭐ XP · ⚖ +2 karma · +1 NCR rep.`},
+     {label:'🚶 Keep moving',fn:()=>{S.karma-=2;log('Left a settler to fend for themselves.','e')},result:'You walk past. Their cry fades behind you. ⚖ -2 karma.'},
+   ]},
+  {id:'gs_water_cache',icon:'💧',title:'Hidden Water Cache',
+   body:'Loose stones near the source look recently disturbed. Something\'s been stashed here.',
+   choices:[
+     {label:'🔍 Dig it up',fn:()=>{const amt=rnd(1,3);for(let i=0;i<amt;i++)giveItem('purified_water');log('Found a hidden water cache near Goodsprings Source.','e')},result:'Purified water. Someone was planning ahead.'},
+     {label:'🚶 Leave it',fn:()=>{},result:'Could belong to someone. You leave it.'},
+   ]},
+  {id:'gs_coyote_pack',icon:'🐺',title:'Coyote Pack',
+   body:'A pack of three coyotes is tearing apart a brahmin carcass on the trail ahead. They notice you.',
+   choices:[
+     {label:'⚔ Fight through',fn:()=>{const dmg=rnd(4,10);S.hp=Math.max(1,S.hp-dmg);const g=rnd(5,12);S.caps+=g;log('Fought through a coyote pack. Took some scratches.','e')},result:`You wade in swinging. Bitten but through. 💰 caps from the brahmin remains.`},
+     {label:'🔥 Fire a warning shot',fn:()=>{if(S.gear.w){log('Fired a warning shot. Coyotes scattered.','e')}else{const dmg=rnd(6,14);S.hp=Math.max(1,S.hp-dmg);log('No weapon — the coyotes pressed in. Took damage.','e')}},result:'The shot scatters them — or they press in if you had nothing to shoot with.'},
+     {label:'🚶 Detour around',fn:()=>{advanceTime(1);log('Took a long detour around the coyote pack.','e')},result:'⏰ +1 hour. Safer though.'},
+   ]},
+],
+
+// ── PRIMM ────────────────────────────────────────────────────
+Primm:[
+  {id:'primm_standoff',icon:'🔫',title:'Highway Standoff',
+   body:'Two convicts are shaking down a caravan driver at gunpoint. The driver catches your eye — desperate.',
+   choices:[
+     {label:'⚔ Jump the convicts',fn:()=>{startCombatCard('convict',2);S.karma+=3;S.rep.NCR=(S.rep.NCR||0)+2},result:'You move fast. The driver owes you one.'},
+     {label:'💰 Bribe them off (20 caps)',fn:()=>{if(S.caps>=20){S.caps-=20;S.karma+=1;log('Paid off convicts harassing a caravan.','e')}else{notify('Not enough caps.')}},result:'They pocket it and walk. Cheaper than a fight.'},
+     {label:'🚶 Not your problem',fn:()=>{S.karma-=3;log('Watched convicts rob a caravan driver. Did nothing.','e')},result:'You walk. The driver\'s shout follows you down the road. ⚖ -3 karma.'},
+   ]},
+  {id:'primm_courier_wreck',icon:'📦',title:'Mojave Express Wreck',
+   body:'A Mojave Express pack brahmin is dead in a ditch, saddlebags split open. Packages everywhere.',
+   choices:[
+     {label:'📦 Loot the packages',fn:()=>{const items=['pre_war_money','ammo_9mm','stimpak','duct_tape'];const p=rndA(items);giveItem(p);S.karma-=1;log('Looted a Mojave Express wreck.','e')},result:'You grab what you can. Somebody paid to deliver this.'},
+     {label:'🔍 Look for a manifest',fn:()=>{S.xp+=8;log('Found a Mojave Express manifest in the wreck. Useful information.','e')},result:'⭐ +8 XP. The manifest has names, addresses, and a delivery schedule.'},
+   ]},
+],
+
+// ── NCRCF / POWDER GANGERS ────────────────────────────────────
+NCRCF:[
+  {id:'ncrcf_escaped',icon:'⛏',title:'Escaped Prisoner',
+   body:'A breathless man in a prison jumpsuit grabs your sleeve. "Please — I\'m not one of them. I was wrongly locked up. I just need to get to Primm."',
+   choices:[
+     {label:'🤝 Help him (give stimpak)',fn:()=>{const si=S.inv.indexOf('stimpak');if(si!==-1){S.inv.splice(si,1);S.karma+=3;S.rep.NCR=(S.rep.NCR||0)+1;log('Helped an escaped prisoner reach safety.','e')}else{notify('No stimpak.')}},result:'You patch him up and point him south. ⚖ +3 karma.'},
+     {label:'💰 Take his caps first (30)',fn:()=>{S.caps+=30;S.karma-=2;log('Took caps from a desperate escaped prisoner.','e')},result:'He empties his pockets. You pocket 30 caps. ⚖ -2 karma.'},
+     {label:'🚶 Not your circus',fn:()=>{log('Left an escaped prisoner to fend for himself.','e')},result:'You keep walking. Not every problem needs solving.'},
+   ]},
+  {id:'ncrcf_cache',icon:'💣',title:'Powder Stash',
+   body:'A loose section of wall has a hollow behind it. Someone stashed supplies here recently.',
+   choices:[
+     {label:'🔍 Take everything',fn:()=>{giveItem('dynamite');giveItem('powder_charge');giveItem('ammo_9mm');log('Looted a Powder Ganger stash.','e')},result:'Dynamite, powder charge, ammo. Useful.'},
+     {label:'💣 Rig a booby trap and leave',fn:()=>{S.karma-=1;S.xp+=10;log('Rigged a Powder Ganger stash as a booby trap.','e')},result:'⭐ +10 XP. Someone is going to have a very bad day.'},
+   ]},
+],
+
+// ── HIDDEN VALLEY / BROTHERHOOD ──────────────────────────────
+HiddenValley:[
+  {id:'hv_patrol',icon:'🛡',title:'Brotherhood Patrol',
+   body:'A two-man Brotherhood of Steel patrol materialises from the scrub, weapons raised. "State your business in the valley."',
+   choices:[
+     {label:'🛡 Cite your Brotherhood standing',fn:()=>{const rep=S.rep.BOS||0;if(rep>=10){S.rep.BOS+=2;log('Brotherhood patrol recognised your standing. +2 rep.','e');return}else{const dmg=rnd(8,18);S.hp=Math.max(1,S.hp-dmg);log('Brotherhood patrol didn\'t buy it. Took a hit.','c')}},result:'Your record speaks for you — or it doesn\'t.'},
+     {label:'📦 Offer sensor module (if carried)',fn:()=>{const si=S.inv.indexOf('sensor_module');if(si!==-1){S.inv.splice(si,1);S.rep.BOS=(S.rep.BOS||0)+4;log('Offered a sensor module to a Brotherhood patrol. +4 BOS rep.','e')}else{notify('No sensor module.')}},result:'They pocket it without a word. +4 Brotherhood standing.'},
+     {label:'🏃 Run',fn:()=>{if(R()<0.5){log('Outran the Brotherhood patrol.','e')}else{const dmg=rnd(12,22);S.hp=Math.max(1,S.hp-dmg);log('Brotherhood patrol opened fire while fleeing.','c')}},result:'You run. Whether they let you go depends on your luck.'},
+   ]},
+  {id:'hv_scavenger_intel',icon:'📡',title:'Scavenger with Intel',
+   body:'A scavenger crouching near the listening post ruins waves you down. "You Brotherhood? I found something in the sand — terminals, holotapes. Worth caps to someone."',
+   choices:[
+     {label:'💰 Buy the intel (25 caps)',fn:()=>{if(S.caps>=25){S.caps-=25;giveItem('damaged_holotape');S.rep.BOS=(S.rep.BOS||0)+1;log('Bought scavenger intel near Hidden Valley.','e')}else{notify('Not enough caps.')}},result:'25 caps. You get a damaged holotape and a Brotherhood nod.'},
+     {label:'💬 Trade info for info',fn:()=>{S.xp+=12;log('Traded wasteland knowledge with a scavenger near Hidden Valley.','e')},result:'⭐ +12 XP. You both learn something.'},
+     {label:'⚔ Take it by force',fn:()=>{startCombatCard('rogue_scavenger');S.karma-=4},result:'You draw first. ⚖ -4 karma.'},
+   ]},
+  {id:'hv_lost_initiate',icon:'🔬',title:'Lost Brotherhood Initiate',
+   body:'A young Brotherhood initiate, separated from his patrol, is pinned down behind a rock by two radscorpions. His power armor is scratched but he\'s still upright.',
+   choices:[
+     {label:'⚔ Help fight the scorpions',fn:()=>{startCombatCard('radscorpion',2);S.rep.BOS=(S.rep.BOS||0)+5;S.karma+=2},result:'You wade in. +5 Brotherhood standing if you win.'},
+     {label:'🏃 Toss him a stimpak and run',fn:()=>{const si=S.inv.indexOf('stimpak');if(si!==-1){S.inv.splice(si,1);S.rep.BOS=(S.rep.BOS||0)+2;log('Threw a stimpak to a pinned Brotherhood initiate.','e')}else{log('No stimpak to throw.','e')}},result:'You throw and run. +2 Brotherhood standing.'},
+     {label:'🚶 Not your fight',fn:()=>{S.rep.BOS=(S.rep.BOS||0)-3;log('Left a Brotherhood initiate to fight alone.','e')},result:'If any Brotherhood saw that — and they did — you\'ll hear about it. -3 BOS rep.'},
+   ]},
+],
+
+// ── FREESIDE / THE STRIP ─────────────────────────────────────
+FreesideN:[
+  {id:'fs_king_shake',icon:'👑',title:'Kings Shakedown',
+   body:'Three Kings members are blocking the alley, hands in pockets. "New face. New face needs to pay the King\'s tax."',
+   choices:[
+     {label:'💰 Pay up (15 caps)',fn:()=>{if(S.caps>=15){S.caps-=15;S.rep.Kings=(S.rep.Kings||0)+1;log('Paid the Kings street tax.','e')}else{notify('Not enough caps.')}},result:'15 caps. They step aside. +1 Kings rep.'},
+     {label:'💬 Talk your way through',fn:()=>{if((S.special?S.special[3]:5)>=6){S.rep.Kings=(S.rep.Kings||0)+2;log('Talked through a Kings shakedown.','e')}else{startCombatCard('freeside_thug',2);S.karma-=1}},result:'Silver tongue or a fight — depends on your Charisma.'},
+     {label:'⚔ Show them what you think of taxes',fn:()=>{startCombatCard('freeside_thug',3);S.karma-=2;S.rep.Kings=(S.rep.Kings||0)-4},result:'Three Kings members hit the ground. -4 Kings rep. ⚖ -2 karma.'},
+   ]},
+  {id:'fs_junkie',icon:'💊',title:'Addicted Drifter',
+   body:'A Freeside drifter grabs your arm. Eyes gone. "I\'ll do anything. Anything. I just need one dose. You got Jet? Psycho? Anything?"',
+   choices:[
+     {label:'💊 Give him Jet (if carried)',fn:()=>{const ji=S.inv.indexOf('jet');if(ji!==-1){S.inv.splice(ji,1);S.karma-=1;log('Gave a Freeside drifter a dose of Jet.','e')}else{notify('No Jet.')}},result:'He snatches it and disappears. Not your proudest moment.'},
+     {label:'💰 Give him 10 caps',fn:()=>{if(S.caps>=10){S.caps-=10;S.karma+=2;log('Gave a Freeside drifter caps for food.','e')}else{notify('Not enough.')}},result:'⚖ +2 karma. Probably won\'t be spent on food. You know that.'},
+     {label:'🚶 Shake him off',fn:()=>{},result:'He stumbles back into the shadows.'},
+   ]},
+],
+
+// ── CAMP MCCARRAN ────────────────────────────────────────────
+CampMcCarran:[
+  {id:'mccarran_deserter',icon:'🪖',title:'NCR Deserter',
+   body:'A soldier in NCR fatigues without insignia pulls you aside. "Don\'t report me. I\'m done with this war. Just need to get south. Please."',
+   choices:[
+     {label:'🚨 Report him to command',fn:()=>{S.rep.NCR=(S.rep.NCR||0)+4;S.karma-=2;log('Reported an NCR deserter to command.','e')},result:'+4 NCR standing. ⚖ -2 karma. He\'s dragged away.'},
+     {label:'🤝 Let him go',fn:()=>{S.karma+=3;log('Let an NCR deserter walk.','e')},result:'⚖ +3 karma. He vanishes south. The war grinds on without him.'},
+     {label:'💰 Take his service rifle first',fn:()=>{giveItem('service_rifle');S.karma-=1;log('Took a deserter\'s rifle before letting him go.','e')},result:'He hands it over. You let him walk. Fair enough.'},
+   ]},
+  {id:'mccarran_intel',icon:'📋',title:'Field Intelligence',
+   body:'A dead NCR scout on the perimeter has a marked map in his jacket. Fiend patrol routes, safe corridors, a stash location.',
+   choices:[
+     {label:'📋 Keep the map',fn:()=>{S.xp+=14;S.rep.NCR=(S.rep.NCR||0)+1;log('Recovered NCR field intelligence from a dead scout.','e')},result:'⭐ +14 XP. Useful data on Fiend movements.'},
+     {label:'💰 Sell it to a merc (35 caps)',fn:()=>{S.caps+=35;S.karma-=2;log('Sold NCR field intel to a black market buyer.','e')},result:'35 caps. Someone else gets the advantage. ⚖ -2 karma.'},
+   ]},
+],
+
+// ── NIPTON / LEGION TERRITORY ────────────────────────────────
+Nipton:[
+  {id:'nipton_survivor',icon:'🔥',title:'Nipton Survivor',
+   body:'A half-burned man crawls from the ruins toward you. "They — they made us draw. The lucky ones got to walk. I drew..." He shows you his hands.',
+   choices:[
+     {label:'💉 Use a stimpak on him',fn:()=>{const si=S.inv.indexOf('stimpak');if(si!==-1){S.inv.splice(si,1);S.karma+=4;log('Treated a Nipton survivor.','e')}else{notify('No stimpak.')}},result:'⚖ +4 karma. He might make it to Primm.'},
+     {label:'🎧 Listen to his story',fn:()=>{S.xp+=10;log('Heard testimony from a Nipton survivor.','e')},result:'⭐ +10 XP. What the Legion did here deserves to be remembered.'},
+     {label:'🚶 You can\'t carry everyone',fn:()=>{},result:'He watches you go. You don\'t look back.'},
+   ]},
+  {id:'nipton_legion_cache',icon:'🦅',title:'Legion Supply Cache',
+   body:'A buried cache with Legion markings — healing powder, coin, a machete wrapped in cloth.',
+   choices:[
+     {label:'💰 Take it all',fn:()=>{giveItem('healing_powder');giveItem('healing_powder');giveItem('legion_coin');giveItem('machete');S.karma-=1;log('Looted a Legion supply cache.','e')},result:'Legion supplies. Every bit helps — or hurts, depending on who\'s watching.'},
+     {label:'💣 Destroy it',fn:()=>{S.karma+=1;S.rep.NCR=(S.rep.NCR||0)+2;log('Destroyed a Legion supply cache.','e')},result:'⚖ +1 karma. +2 NCR rep. One less supply for the march west.'},
+   ]},
+],
+
+// ── NOVAC ────────────────────────────────────────────────────
+Novac:[
+  {id:'novac_ghoul_runner',icon:'☢',title:'REPCONN Ghoul Scout',
+   body:'A glowing ghoul staggers toward the highway from the test site direction — not attacking, moving with purpose. It stops and stares at you.',
+   choices:[
+     {label:'💬 Hold your ground and talk',fn:()=>{S.xp+=10;log('Held ground and communicated with a REPCONN ghoul scout.','e')},result:'⭐ +10 XP. It\'s not feral. It\'s carrying something.'},
+     {label:'⚔ Shoot first',fn:()=>{startCombatCard('glowing_one');S.karma-=2},result:'It was just standing there. ⚖ -2 karma.'},
+   ]},
+  {id:'novac_brahmin_rustlers',icon:'🐄',title:'Brahmin Rustlers',
+   body:'The McBride brahmin have been driven off the road. A pair of jackals are herding them east.',
+   choices:[
+     {label:'⚔ Take back the brahmin',fn:()=>{startCombatCard('jackal_raider',2);const g=rnd(20,40);S.caps+=g;S.karma+=2;log('Recovered stolen brahmin from Jackal rustlers.','e')},result:'Caps reward from the McBrides. ⚖ +2 karma.'},
+     {label:'🚶 Not your beef',fn:()=>{S.karma-=1;log('Left stolen brahmin to the Jackal rustlers.','e')},result:'The McBrides will notice. ⚖ -1 karma.'},
+   ]},
+],
+
+// ── BOULDER CITY ─────────────────────────────────────────────
+BoulderCity:[
+  {id:'bc_khan_tension',icon:'💥',title:'Khan Standoff',
+   body:'A Great Khan and an NCR trooper are squared off in the rubble, hands on weapons. Both turn to you, looking for an edge.',
+   choices:[
+     {label:'🛡 Back the NCR trooper',fn:()=>{S.rep.NCR=(S.rep.NCR||0)+3;S.rep.Khans=(S.rep.Khans||0)-2;S.karma+=1;log('Backed an NCR trooper in a Boulder City standoff.','e')},result:'+3 NCR rep. -2 Khans rep.'},
+     {label:'💬 Talk them both down',fn:()=>{if((S.special?S.special[3]:5)>=5){S.xp+=12;S.karma+=2;log('Defused a Khan/NCR standoff in Boulder City.','e')}else{startCombatCard('great_khan')}},result:'Charisma check. If you have it, both walk away. If not — one of them doesn\'t.'},
+     {label:'🚶 Walk away fast',fn:()=>{advanceTime(1);log('Avoided a Boulder City standoff.','e')},result:'You hear the shot behind you ten seconds later. ⏰ +1 hour detour.'},
+   ]},
+],
+
+// ── CAMP FORLORN HOPE ────────────────────────────────────────
+CampForlornHope:[
+  {id:'cfh_wounded_scout',icon:'🩹',title:'Wounded Scout',
+   body:'An NCR scout is dragging himself back toward camp with a Legion bolt in his shoulder. He won\'t make it alone.',
+   choices:[
+     {label:'💉 Use doctor\'s bag on him',fn:()=>{const db=S.inv.indexOf('doctor_bag');if(db!==-1){S.inv.splice(db,1);S.rep.NCR=(S.rep.NCR||0)+5;S.karma+=3;log('Saved a wounded NCR scout near Forlorn Hope.','e')}else{notify('Need a Doctor\'s Bag.')}},result:'+5 NCR rep. ⚖ +3 karma. He\'ll make it.'},
+     {label:'🛡 Carry him to camp',fn:()=>{advanceTime(2);S.rep.NCR=(S.rep.NCR||0)+3;S.karma+=4;log('Carried a wounded NCR scout back to camp.','e')},result:'⏰ +2 hours. +3 NCR rep. ⚖ +4 karma. Heavy work.'},
+     {label:'🚶 He knew the risks',fn:()=>{S.karma-=3;log('Left a wounded NCR scout near Forlorn Hope.','e')},result:'⚖ -3 karma. The front eats its own.'},
+   ]},
+  {id:'cfh_legion_probe',icon:'🦅',title:'Legion Probe',
+   body:'Three Legion scouts are moving toward the camp perimeter, marking positions. They haven\'t sounded any alarm.',
+   choices:[
+     {label:'⚔ Ambush them',fn:()=>{startCombatCard('legion_scout',2);S.rep.NCR=(S.rep.NCR||0)+4},result:'+4 NCR rep. The probe never reports back.'},
+     {label:'🏃 Run back and warn the camp',fn:()=>{S.rep.NCR=(S.rep.NCR||0)+3;S.xp+=10;log('Warned Camp Forlorn Hope of a Legion probe.','e')},result:'+3 NCR rep. ⭐ +10 XP. The camp goes to alert.'},
+   ]},
+],
+
+// ── HOOVER DAM ───────────────────────────────────────────────
+HooverDam:[
+  {id:'dam_legion_spy',icon:'🦅',title:'Legion Spy',
+   body:'A "civilian" worker near the dam has a Legion coin in his boot and is making very detailed sketches. He hasn\'t noticed you watching.',
+   choices:[
+     {label:'🚨 Report him',fn:()=>{S.rep.NCR=(S.rep.NCR||0)+6;S.karma+=2;S.xp+=15;log('Exposed a Legion spy at Hoover Dam.','e')},result:'+6 NCR rep. ⭐ +15 XP. NCR security takes him away hard.'},
+     {label:'💰 Blackmail him (50 caps)',fn:()=>{if((S.special?S.special[3]:5)>=5){S.caps+=50;S.karma-=2;log('Blackmailed a Legion spy at Hoover Dam.','e')}else{startCombatCard('legion_scout')}},result:'50 caps for your silence. ⚖ -2 karma. He pays.'},
+     {label:'🚶 Not your war',fn:()=>{S.karma-=2;log('Ignored a Legion spy at Hoover Dam.','e')},result:'You walk. Somebody dies for that later. ⚖ -2 karma.'},
+   ]},
+],
+
+// ── HELIOS ONE ───────────────────────────────────────────────
+HeliosOne:[
+  {id:'helios_scavenger',icon:'☀',title:'Solar Scavenger',
+   body:'A scavenger has cracked open a control housing and is pulling out components. NCR energy cells, focusing lenses — valuable stuff.',
+   choices:[
+     {label:'💰 Cut a deal (split the haul)',fn:()=>{giveItem('energy_cell');giveItem('energy_cell');giveItem('sensor_module');log('Split scavenged HELIOS components with a scavenger.','e')},result:'You each walk away with something.'},
+     {label:'🚨 Report to NCR guard',fn:()=>{S.rep.NCR=(S.rep.NCR||0)+2;log('Reported a scavenger stealing HELIOS components.','e')},result:'+2 NCR rep. The scavenger is marched off.'},
+     {label:'⚔ Take the whole haul',fn:()=>{startCombatCard('rogue_scavenger');giveItem('energy_cell');giveItem('energy_cell');giveItem('laser_focusing_lens');S.karma-=3},result:'⚖ -3 karma. You get everything. '},
+   ]},
+  {id:'helios_terminal',icon:'💻',title:'Live Terminal',
+   body:'One of the diagnostic terminals near the service road has unexpected power. Old ARCHIMEDES targeting data is still cached.',
+   choices:[
+     {label:'📖 Study the data',fn:()=>{S.xp+=16;log('Studied ARCHIMEDES targeting data from a live HELIOS terminal.','e')},result:'⭐ +16 XP. You now understand the plant better than most of the guards.'},
+     {label:'💾 Copy it onto a holotape',fn:()=>{const ht=S.inv.indexOf('damaged_holotape');if(ht!==-1){S.inv.splice(ht,1);giveItem('sensor_module');S.xp+=8;log('Copied HELIOS data onto a holotape.','e')}else{notify('Need a holotape.')}},result:'Overwrite the holotape. Sensor module falls out of the housing. ⭐ +8 XP.'},
+   ]},
+],
+
+// ── RED ROCK CANYON / KHANS ──────────────────────────────────
+RedRockCanyon:[
+  {id:'rrc_khan_test',icon:'💥',title:'Khan Proving Ground',
+   body:'A senior Khan stops you on the trail. "You want to move through Great Khan territory, you prove you\'re not soft. One hit. If you\'re standing, you pass."',
+   choices:[
+     {label:'🥊 Take the hit',fn:()=>{const dmg=rnd(10,20);S.hp=Math.max(1,S.hp-dmg);S.rep.Khans=(S.rep.Khans||0)+4;log('Took a Khan proving blow. Passed.','e')},result:`You take it full in the face. He nods. +4 Khans rep. ${rnd(10,20)} damage.`},
+     {label:'💬 Challenge him back instead',fn:()=>{if((S.special?S.special[0]:5)>=7){S.rep.Khans=(S.rep.Khans||0)+6;log('Challenged a Khan back and earned real respect.','e')}else{startCombatCard('great_khan')}},result:'Strength check. If you have it, he laughs and steps aside. If not — you\'re fighting.'},
+     {label:'🚶 Find another route',fn:()=>{advanceTime(2);log('Detoured around the Khan proving ground.','e')},result:'⏰ +2 hours. No rep lost. Not gained either.'},
+   ]},
+],
+
+// ── CINDER GULCH ─────────────────────────────────────────────
+CinderGulch:[
+  {id:'cg_mutant_scout',icon:'🧟',title:'Nightkin Scout',
+   body:'A Nightkin has slipped past the barricades and is crouched behind a ruined wall, watching the settlement. It hasn\'t attacked — it\'s observing.',
+   choices:[
+     {label:'⚔ Drop it before it reports back',fn:()=>{startCombatCard('nightkin');S.rep['None']=(S.rep['None']||0);S.xp+=15},result:'⭐ +15 XP. The settlement is safer tonight.'},
+     {label:'🏃 Alert the watch',fn:()=>{S.rep['CinderGulch']=(S.rep['CinderGulch']||0)+3;S.xp+=10;log('Alerted the Cinder Gulch watch to a Nightkin scout.','e')},result:'⭐ +10 XP. The settlers scramble to the walls. +3 local rep.'},
+   ]},
+  {id:'cg_supply_run',icon:'📦',title:'Supply Runner',
+   body:'A settler is pinned at the edge of the perimeter, carrying medicine back from a scavenging run. A super mutant is between her and the gate.',
+   choices:[
+     {label:'⚔ Fight the mutant',fn:()=>{startCombatCard('super_mutant');const g=rnd(15,30);S.caps+=g;S.karma+=3;log('Fought a super mutant to protect a Cinder Gulch supply runner.','e')},result:'Caps from the grateful settler. ⚖ +3 karma.'},
+     {label:'🔥 Create a distraction',fn:()=>{if(S.gear.w){S.xp+=10;S.karma+=2;log('Created a distraction to draw a super mutant away from a settler.','e')}else{notify('Need a weapon to create a distraction.')}},result:'⭐ +10 XP. ⚖ +2 karma. The mutant chases the noise. She runs.'},
+   ]},
+],
+
+// ── JACOBSTOWN ───────────────────────────────────────────────
+Jacobstown:[
+  {id:'jt_mutant_plea',icon:'🧟',title:'Super Mutant in Pain',
+   body:'A large super mutant is sitting against a pine tree, holding its head. "Jacobstown. Need to reach Jacobstown. Schism hurts." It looks at you without aggression.',
+   choices:[
+     {label:'💉 Give it a stimpak',fn:()=>{const si=S.inv.indexOf('stimpak');if(si!==-1){S.inv.splice(si,1);S.karma+=4;S.xp+=12;log('Helped a distressed super mutant reach Jacobstown.','e')}else{notify('No stimpak.')}},result:'⚖ +4 karma. ⭐ +12 XP. It follows the trail uphill.'},
+     {label:'🚶 Point it north and keep moving',fn:()=>{S.karma+=1;log('Pointed a distressed super mutant toward Jacobstown.','e')},result:'⚖ +1 karma. It nods. You keep moving.'},
+     {label:'⚔ It\'s a super mutant',fn:()=>{startCombatCard('super_mutant');S.karma-=5},result:'⚖ -5 karma. It didn\'t fight back until you struck.'},
+   ]},
+],
+
+// ── NELLIS AFB / BOOMERS ─────────────────────────────────────
+NellisAFB:[
+  {id:'nellis_dud',icon:'💣',title:'Unexploded Shell',
+   body:'A massive unexploded Boomer artillery shell is half-buried in the field south of the fence. A Boomer technician is standing over it, looking worried.',
+   choices:[
+     {label:'🔧 Help defuse it',fn:()=>{if((S.special?S.special[4]:5)>=6){S.rep.Boomers=(S.rep.Boomers||0)+5;S.xp+=14;log('Helped a Boomer technician defuse a dud shell.','e')}else{const dmg=rnd(15,30);S.hp=Math.max(1,S.hp-dmg);log('Fumbled the defuse. Close call.','c')}},result:'Repair check. Success means +5 Boomers rep and ⭐ +14 XP. Failure means pain.'},
+     {label:'🏃 Back away very slowly',fn:()=>{advanceTime(1);log('Backed away from an unexploded Boomer shell.','e')},result:'⏰ +1 hour. You are still alive. That counts.'},
+   ]},
+],
+
+// ── BITTER SPRINGS ───────────────────────────────────────────
+BitterSprings:[
+  {id:'bs_refugee_family',icon:'⛺',title:'Refugee Family',
+   body:'A family at the edge of the camp — two kids, one parent — is sitting outside the supply tent looking hollow. The parent hasn\'t eaten today.',
+   choices:[
+     {label:'🍲 Give them food',fn:()=>{const foods=['cram','gecko_steak','iguana_bits','bighorner_meat','fancy_lad'];const fi=foods.find(f=>S.inv.includes(f));if(fi){const idx=S.inv.indexOf(fi);S.inv.splice(idx,1);S.karma+=4;log('Gave food to a refugee family at Bitter Springs.','e')}else{notify('No food to give.')}},result:'⚖ +4 karma. The kids eat.'},
+     {label:'💰 Leave 20 caps',fn:()=>{if(S.caps>=20){S.caps-=20;S.karma+=3;log('Left caps for a refugee family at Bitter Springs.','e')}else{notify('Not enough caps.')}},result:'⚖ +3 karma. 20 caps on the ground.'},
+     {label:'🚶 The camp has a supply tent',fn:()=>{},result:'You tell yourself the system handles it. Maybe it does.'},
+   ]},
+],
+
+// ── GENERIC (any location) ────────────────────────────────────
+generic:[
+  {id:'gen_wounded_traveller',icon:'🩹',title:'Wounded Traveller',
+   body:'A traveller limping down the road waves you down. Bitten leg, makeshift bandage already soaked through.',
+   choices:[
+     {label:'💉 Use a stimpak',fn:()=>{const si=S.inv.indexOf('stimpak');if(si!==-1){S.inv.splice(si,1);S.karma+=3;const g=rnd(8,18);S.caps+=g;log('Helped a wounded traveller on the road.','e')}else{notify('No stimpak.')}},result:`You patch them up. They press caps into your hand. ⚖ +3 karma.`},
+     {label:'🚶 You\'ve got your own problems',fn:()=>{S.karma-=1},result:'You keep walking. ⚖ -1 karma.'},
+   ]},
+  {id:'gen_dead_merc',icon:'💀',title:'Dead Merc',
+   body:'A mercenary face-down in the dirt. Contract papers still in his jacket. Three caps left. Somebody got here first.',
+   choices:[
+     {label:'🔍 Search the body',fn:()=>{const items=['ammo_9mm','ammo_556','ammo_357','stimpak','dirty_water','scrap'];giveItem(rndA(items));const g=rnd(3,12);S.caps+=g;log('Searched a dead merc on the road.','e')},result:'Some ammo, a few caps. Not much.'},
+     {label:'📋 Read the contract',fn:()=>{S.xp+=8;log('Read a dead merc\'s contract. Somebody paid a lot.','e')},result:'⭐ +8 XP. The mark is someone you\'ve heard of.'},
+   ]},
+  {id:'gen_caravan_ambush',icon:'🐪',title:'Caravan Under Attack',
+   body:'A small caravan — two brahmin, three guards — is pinned down just off the road. Raiders moving in from the east.',
+   choices:[
+     {label:'⚔ Fight off the raiders',fn:()=>{startCombatCard('jackal_raider',2);const g=rnd(20,50);S.caps+=g;S.karma+=3;log('Helped a caravan fight off raiders.','e')},result:'Caps reward from the caravan master. ⚖ +3 karma.'},
+     {label:'💰 Demand payment to help (30 caps)',fn:()=>{S.caps+=30;startCombatCard('jackal_raider',2);S.karma-=1},result:'30 caps. Then you fight anyway. ⚖ -1 karma.'},
+     {label:'🚶 That\'s what the guards are for',fn:()=>{S.karma-=2;log('Walked past a caravan being raided.','e')},result:'⚖ -2 karma. At least you\'re honest about it.'},
+   ]},
+  {id:'gen_abandoned_camp',icon:'🏕',title:'Abandoned Camp',
+   body:'A campsite hastily abandoned — fire still warm, bedroll kicked aside. A half-eaten pack of Fancy Lads on the ground.',
+   choices:[
+     {label:'🔍 Search the camp',fn:()=>{const items=['fancy_lad','sunset_sars','ammo_9mm','bobby_pin','duct_tape','pre_war_money'];giveItem(rndA(items));advanceTime(1);log('Searched an abandoned camp.','e')},result:'⏰ +1 hour. Something useful left behind.'},
+     {label:'🏃 Whoever left in a hurry — keep moving',fn:()=>{},result:'Smart. Things that make people run fast are usually still nearby.'},
+   ]},
+  {id:'gen_radio_signal',icon:'📻',title:'Strange Radio Signal',
+   body:'Your Pip-Boy crackles with a looping signal. Coordinates. A voice — calm, mechanical: "Cache at grid seven. Take only what you need."',
+   choices:[
+     {label:'📍 Follow the coordinates',fn:()=>{advanceTime(2);const items=['stimpak','purified_water','ammo_556','energy_cell','sensor_module'];const picks=2;for(let i=0;i<picks;i++)giveItem(rndA(items));log('Followed a mysterious Pip-Boy radio signal to a supply cache.','e')},result:'⏰ +2 hours. The cache is real. Two items.'},
+     {label:'📻 Log it and ignore it',fn:()=>{S.xp+=6;log('Logged a mysterious Pip-Boy signal. Didn\'t follow it.','e')},result:'⭐ +6 XP. Curiosity noted.'},
+   ]},
+],
+};
+
+// ── ENCOUNTER ENGINE ─────────────────────────────────────────
+
+let _activeEncounter=null;
+
+function rollEncounterCard(locId,area){
+  // Build candidate pool: location-specific first, then generic
+  const locCards=ENCOUNTER_CARDS[locId]||[];
+  const genCards=ENCOUNTER_CARDS.generic||[];
+  // Weight location cards 3:1 over generic
+  const pool=[...locCards,...locCards,...locCards,...genCards];
+  if(!pool.length)return null;
+  // Avoid repeating same card too soon
+  const recent=S.recentEncounters||[];
+  const fresh=pool.filter(c=>!recent.includes(c.id));
+  const pick=rndA(fresh.length?fresh:pool);
+  if(!S.recentEncounters)S.recentEncounters=[];
+  S.recentEncounters.unshift(pick.id);
+  if(S.recentEncounters.length>6)S.recentEncounters.pop();
+  return pick;
+}
+
+function startCombatCard(enemyId,count=1){
+  // Helper used inside encounter choice fns — queues combat that resumes expedition
+  const enemies=[];
+  for(let i=0;i<count;i++){if(ENEMIES[enemyId])enemies.push(mkEnemy(enemyId));}
+  if(enemies.length)startCombat(enemies);
+}
+
+function showEncounterCard(card,area,step){
+  _activeEncounter={card,area,step};
+  $('TS').innerHTML=card.icon;
+  $('TT').innerHTML=`<b style="color:var(--amber)">${card.title}</b><br><span style="font-size:11px;color:var(--muted)">${card.body}</span>`;
+  const cd=$('TC');cd.innerHTML='';
+  card.choices.forEach((ch,i)=>{
+    const btn=el('button','bt','');
+    btn.style.textAlign='left';
+    btn.textContent=ch.label;
+    btn.onclick=()=>resolveEncounterChoice(i);
+    cd.appendChild(btn);
+  });
+  $('TN').style.display='none';
+}
+
+function resolveEncounterChoice(idx){
+  if(!_activeEncounter)return;
+  const {card,area,step}=_activeEncounter;
+  const choice=card.choices[idx];
+  if(!choice)return;
+  // Run the choice function — it may start combat (which will take over the screen)
+  const customResult=choice.fn();
+  // If combat was started, it takes over — set resume state
+  if(combat){
+    combat._expArea=area;
+    combat._expStep=step;
+    _activeEncounter=null;
+    return;
+  }
+  _activeEncounter=null;
+  // Show result then continue expedition
+  const resultText=customResult||choice.result||'Done.';
+  $('TC').innerHTML='';
+  $('TS').innerHTML='✅';
+  $('TT').innerHTML=`<div style="font-size:12px;color:var(--green);margin-bottom:4px"><b>${card.title}</b></div><div style="font-size:11px;color:var(--muted)">${resultText}</div>`;
+  chkLU();save();
+  $('TN').style.display='block';
+  $('TN').onclick=()=>runExpedition(area,step);
+}
+
+// ============================================================
+// ENEMY GROUP BUILDER — ensures ecologically/factionally coherent groups
+// ============================================================
+
+// Factions that are always hostile regardless of player rep
+const ALWAYS_HOSTILE_FACS=new Set(['Raiders','Fiends','PowderGangers','Legion','SuperMutants','Freeside']);
+
+// Faction compatibility: which enemy facs can appear together in one group
+const FAC_GROUPS={
+  wild:      ['wild'],
+  insect:    ['insect','wild'],
+  animal:    ['animal','wild'],
+  undead:    ['undead','wild'],
+  creature:  ['creature','wild'],
+  mutant:    ['mutant'],          // super mutants + nightkin only
+  Raiders:   ['Raiders'],
+  PowderGangers:['PowderGangers'],
+  Legion:    ['Legion'],
+  NCR:       ['NCR'],
+  Fiends:    ['Fiends'],
+  Khans:     ['Khans'],
+  House:     ['House'],
+  SuperMutants:['SuperMutants','mutant'],
+};
+
+function buildCohesiveGroup(pool,count){
+  // Pick anchor enemy first, then only add compatible faction-mates
+  const validPool=pool.filter(id=>ENEMIES[id]);
+  if(!validPool.length)return[];
+  const anchorId=rndA(validPool);
+  const anchorFac=ENEMIES[anchorId]?.fac||'wild';
+  const anchorType=ENEMIES[anchorId]?.type||'wild';
+  const allowed=FAC_GROUPS[anchorFac]||[anchorFac];
+  const compatible=validPool.filter(id=>{
+    const e=ENEMIES[id];if(!e)return false;
+    return allowed.includes(e.fac)||allowed.includes(e.type);
+  });
+  const group=[];
+  for(let i=0;i<count;i++){
+    const pick=rndA(i===0?[anchorId]:compatible);
+    if(ENEMIES[pick])group.push(mkEnemy(pick));
+  }
+  return group;
+}
+
+// ── FACTION HOSTILITY CHECK ────────────────────────────────
+
+function isHostileToPlayer(enemyId){
+  const e=ENEMIES[enemyId];if(!e)return true;
+  if(e.hostile)return true; // explicitly marked always-hostile
+  if(ALWAYS_HOSTILE_FACS.has(e.fac))return true;
+  const fac=e.fac;
+  const rep=S.rep[fac]||0;
+  // Hostile if rep < -20 or fac has no player rep entry and is military
+  if(rep<=-20)return true;
+  return false;
+}
+
+function groupIsHostile(enemies){
+  return enemies.some(en=>isHostileToPlayer(en.id));
+}
+
+// ── PRE-ENCOUNTER SYSTEM ───────────────────────────────────
+
+// Called instead of startCombat — presents interaction options first
+function preEncounter(enemies,area,step,travelMode=false){
+  if(!enemies.length)return;
+
+  const anchor=ENEMIES[enemies[0].id]||{type:'creature',fac:'wild',hostile:true};
+  const hostile=groupIsHostile(enemies);
+  const isAnimal=['animal','insect'].includes(anchor.type);
+  const isUndead=['undead','mutant','robot'].includes(anchor.type);
+  const hasHunterPerk=S.hunterPerk||false;
+  const cha=S.special?S.special[3]:5;
+  const str=S.special?S.special[0]:5;
+  const agi=S.special?S.special[5]:5;
+  const fac=anchor.fac;
+  const facName=FACTIONS[fac]||fac;
+  const rep=S.rep[fac]||0;
+  const enemyLabel=enemies.map(e=>e.name).join(' & ');
+  const hasWeapon=!!S.gear.w;
+
+  // Build choices
+  const choices=[];
+
+  // Always: Fight
+  choices.push({
+    label:'⚔ Fight',
+    style:'bt go',
+    fn:()=>{
+      if(travelMode){startCombat(enemies);combat.postT=tDest}
+      else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+    }
+  });
+
+  // Animals/insects with Hunter perk: Calm Animal
+  if(isAnimal&&hasHunterPerk){
+    choices.push({
+      label:'🐾 Calm animal [Hunter perk]',
+      style:'bt pip',
+      fn:()=>_preEncResolve(`You extend your hand slowly. The ${enemies[0].name} circles once, then retreats. Hunter's instinct.`,area,step,travelMode,true)
+    });
+  }
+
+  // Animals/insects: Scare off (Strength check, no perk needed)
+  if(isAnimal&&!isUndead){
+    choices.push({
+      label:`💪 Scare them off [STR ${str}/6 needed]`,
+      style:'bt',
+      fn:()=>{
+        if(str>=6||R()<0.3){
+          return _preEncResolve(`You stand tall and shout. The creatures scatter.`,area,step,travelMode,true);
+        }else{
+          log('Failed to scare off the creatures.','c');
+          if(travelMode){startCombat(enemies);combat.postT=tDest}
+          else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+        }
+      }
+    });
+  }
+
+  // Non-hostile faction humans: Talk
+  if(!hostile&&!isUndead&&!isAnimal&&anchor.type==='human'){
+    const talkLabel=rep>=20?`💬 Talk to them [${facName}, +${rep} rep]`:`💬 Talk to them [${facName}]`;
+    choices.push({
+      label:talkLabel,
+      style:'bt pip',
+      fn:()=>{
+        const xpGain=rnd(6,12);
+        S.xp+=xpGain;
+        const repGain=R()<0.5?1:0;
+        if(repGain)S.rep[fac]=(S.rep[fac]||0)+1;
+        return _preEncResolve(`They're wary but not aggressive. You exchange words. ${repGain?`+1 ${facName} rep. `:''}⭐ +${xpGain} XP.`,area,step,travelMode,true);
+      }
+    });
+  }
+
+  // Hostile humans with high CHA: Intimidate
+  if(anchor.type==='human'&&!isUndead){
+    choices.push({
+      label:`😠 Intimidate [CHA ${cha}/7 needed]`,
+      style:'bt',
+      fn:()=>{
+        if(cha>=7||R()<(cha*0.08)){
+          S.xp+=rnd(8,14);
+          return _preEncResolve(`You meet their eyes and don't blink. They back down.`,area,step,travelMode,true);
+        }else{
+          log('Intimidation failed.','c');
+          if(travelMode){startCombat(enemies);combat.postT=tDest}
+          else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+        }
+      }
+    });
+  }
+
+  // Hostile humans: Bribe (costs caps)
+  if(anchor.type==='human'&&!isUndead&&hostile){
+    const bribeAmt=Math.max(20,enemies.length*15+S.level*5);
+    choices.push({
+      label:`💰 Bribe them off (${bribeAmt} caps)`,
+      style:'bt',
+      fn:()=>{
+        if(S.caps<bribeAmt){notify('Not enough caps.');return null}
+        S.caps-=bribeAmt;
+        return _preEncResolve(`You slide them the caps. They count it slowly and walk.`,area,step,travelMode,true);
+      }
+    });
+  }
+
+  // Sneak past (Agility check)
+  if(!isUndead){
+    choices.push({
+      label:`🤫 Sneak past [AGI ${agi}/6 needed]`,
+      style:'bt',
+      fn:()=>{
+        if(agi>=6||R()<(agi*0.1)){
+          return _preEncResolve(`You move quietly through the terrain. They never spot you.`,area,step,travelMode,true);
+        }else{
+          log('Sneak attempt spotted.','c');
+          if(travelMode){startCombat(enemies);combat.postT=tDest}
+          else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+        }
+      }
+    });
+  }
+
+  // Always: Retreat/flee
+  choices.push({
+    label:'🏃 Retreat',
+    style:'bt dn',
+    fn:()=>{
+      log('Retreated from '+( area?.n||'the road')+'.','e');
+      if(travelMode){$('TO').classList.remove('A');finTravel()}
+      else{$('TO').classList.remove('A');upAll()}
+    }
+  });
+
+  // Render the pre-encounter screen in the TO overlay
+  $('TS').innerHTML=enemies[0].e||'⚔';
+  const hostile_label=hostile?`<span style="color:var(--red)">HOSTILE</span>`:`<span style="color:var(--amber)">${facName}</span>`;
+  $('TT').innerHTML=`<b>${enemyLabel}</b><br><span style="font-size:10px;color:var(--muted)">${hostile_label} · ${anchor.type}</span>`;
+  const cd=$('TC');cd.innerHTML='';
+  choices.forEach(ch=>{
+    const btn=el('button',ch.style,'');
+    btn.textContent=ch.label;btn.style.textAlign='left';btn.style.marginBottom='2px';
+    btn.onclick=()=>ch.fn();
+    cd.appendChild(btn);
+  });
+  $('TN').style.display='none';
+}
+
+function _preEncResolve(msg,area,step,travelMode,skipCombat){
+  $('TC').innerHTML='';
+  $('TS').innerHTML='✅';
+  $('TT').innerHTML=`<span style="font-size:11px;color:var(--muted)">${msg}</span>`;
+  chkLU();save();
+  if(travelMode){
+    $('TN').style.display='block';$('TN').onclick=()=>travelCont();
+  }else if(area){
+    $('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step);
+  }else{
+    // Scavenge encounter — close overlay and refresh
+    $('TN').style.display='block';$('TN').onclick=()=>{$('TO').classList.remove('A');chkLU();upAll()};
+  }
+  return msg;
+}
+
+// ============================================================
 // EXPLORATION
 // ============================================================
 function explore(idx){
   const loc=LOCS[S.loc];const area=loc?.sur?.[idx];if(!area)return;
   const o=$('TO');o.classList.add('A');
   $('TB').style.width='0%';$('TC').innerHTML='';$('TN').style.display='none';
-  $('TS').textContent=area.e;
+  $('TS').innerHTML=area.e;
   $('TT').innerHTML=`<b>${area.n}</b><br><span style="font-size:11px;color:var(--muted)">${area.d}</span>`;
   setTimeout(()=>runExpedition(area,0),500);
 }
 function runExpedition(area,step){
   const maxSteps=rnd(2,4);
   if(step>=maxSteps){
-    $('TS').textContent=area.e;
+    $('TS').innerHTML=area.e;
     $('TT').innerHTML=`Finished scouting <b>${area.n}</b>.`;
     const cd=$('TC');cd.innerHTML='';
     const cb=el('button','bt go','🔍 Keep exploring');cb.style.textAlign='center';
@@ -1930,28 +2562,29 @@ function runExpedition(area,step){
   advanceTime(1);
   $('TB').style.width=Math.round(((step+1)/maxSteps)*100)+'%';
   const r=R();
-  if(r<.45){
+  const _combatThresh=S.lightStepPerk?0.28:0.45;
+  if(r<_combatThresh){
     const cnt=rnd(1,Math.min(2,area.en.length));
-    const enemies=[];for(let i=0;i<cnt;i++){const eid=rndA(area.en);if(ENEMIES[eid])enemies.push(mkEnemy(eid))}
+    const enemies=buildCohesiveGroup(area.en,cnt);
     if(!enemies.length){$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1);return}
-    $('TS').textContent='⚔';
-    $('TT').innerHTML=`<b>Hostiles!</b> ${enemies.map(e=>e.name).join(' & ')}!`;
-    const cd=$('TC');cd.innerHTML='';
-    const fb=el('button','bt go','⚔ Fight!');fb.style.textAlign='center';
-    fb.onclick=()=>{startCombat(enemies);combat._expArea=area;combat._expStep=step+1};cd.appendChild(fb);
-    const fl=el('button','bt dn','🏃 Retreat');fl.style.textAlign='center';
-    fl.onclick=()=>{log('Retreated from '+area.n+'.','e');$('TO').classList.remove('A');upAll()};cd.appendChild(fl);
-    $('TN').style.display='none';
+    preEncounter(enemies,area,step+1,false);
   } else if(r<.65){
     const li=rndA(area.lt);const it=ITEMS[li];
     if(it){giveItem(li);log('Found '+it.n+' in '+area.n+'.','e');save();
-    $('TS').textContent='✨';$('TT').innerHTML=`Found: <b style="color:var(--green)">${it.e} ${it.n}</b>`;
+    $('TS').innerHTML='✨';
+    $('TT').innerHTML=`<div style="text-align:center"><div style="display:flex;align-items:center;justify-content:center;width:64px;height:64px;background:#0f0f08;border:1px solid #3a3828;border-radius:10px;margin:6px auto">${it.e}</div><b style="color:var(--green);display:block;margin-top:4px">${it.n}</b></div>`;
     $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1)}
   } else {
-    const scenes=["Tracks in the dirt — recent.","The wind shifts. Something watches.","Shell casings litter the ground.","A faded sign: DANGER - MINES","An old campfire, still warm."];
-    $('TS').textContent=rndA(['🏜','💀','🪨','🌵']);
-    $('TT').innerHTML=rndA(scenes);
-    $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1);
+    // 60% chance of encounter card, 40% plain scene flavour
+    const card=R()<0.60?rollEncounterCard(S.loc,area):null;
+    if(card){
+      showEncounterCard(card,area,step+1);
+    }else{
+      const scenes=["Tracks in the dirt — recent.","The wind shifts. Something watches.","Shell casings litter the ground.","A faded sign: DANGER - MINES","An old campfire, still warm."];
+      $('TS').innerHTML=rndA(['🏜','💀','🪨','🌵']);
+      $('TT').innerHTML=rndA(scenes);
+      $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1);
+    }
   }
 }
 function travelCont(){
@@ -2148,7 +2781,7 @@ function lootAllCorpses(){
 }
 function finishCombatLoot(){
   const lootCaps=combat.pendingRewards?.caps||0;
-  const lootXp=combat.pendingRewards?.xp||0;
+  const lootXp=grantXP(combat.pendingRewards?.xp||0);
   const bounty=combat.pendingRewards?.bounty;
   const expArea=combat._expArea;
   const postT=combat.postT;
@@ -2384,19 +3017,140 @@ function endCombat(won,died){
 
   
 // ============================================================
+// PERKS DATA
+// ============================================================
+const PERKS=[
+  // Combat
+  {id:'iron_fist',      name:'Iron Fist',       icon:'👊', cat:'Combat',  desc:'+4 ATK. Your unarmed and melee hits land harder.',              apply:s=>{s.atk+=4},             req:null},
+  {id:'toughness',      name:'Toughness',        icon:'🛡', cat:'Combat',  desc:'+4 DEF. You shrug off hits that would flatten lesser wastelanders.', apply:s=>{s.def+=4},         req:null},
+  {id:'sniper',         name:'Sniper',           icon:'🎯', cat:'Combat',  desc:'+6 ATK. You know how to place a shot.', apply:s=>{s.atk+=6},                                       req:{special:1,min:6}},
+  {id:'commando',       name:'Commando',         icon:'⚔', cat:'Combat',  desc:'+5 ATK, +2 DEF. Fight harder at every range.',                  apply:s=>{s.atk+=5;s.def+=2},     req:{level:4}},
+  {id:'adamantium',     name:'Adamantium Skeleton',icon:'🦴',cat:'Combat', desc:'+6 DEF. Your bones take punishment like old-world steel.',       apply:s=>{s.def+=6},             req:{level:6}},
+  {id:'better_crits',   name:'Better Criticals', icon:'💥', cat:'Combat',  desc:'+8 ATK. You find gaps in every guard.',                         apply:s=>{s.atk+=8},             req:{level:8,special:6,min:7}},
+  // Survival
+  {id:'pack_rat',       name:'Pack Rat',         icon:'🎒', cat:'Survival',desc:'+30kg carry capacity. You move light.',                         apply:s=>{s.carryCap=(s.carryCap||120)+30}, req:null},
+  {id:'life_giver',     name:'Life Giver',       icon:'❤',  cat:'Survival',desc:'+20 max HP. More meat between you and the grave.',              apply:s=>{s.maxHp+=20;s.hp=Math.min(s.hp+20,s.maxHp)}, req:null},
+  {id:'action_boy',     name:'Action Boy',       icon:'⚡', cat:'Survival',desc:'+15 max AP. You move fast and burn hard.',                      apply:s=>{s.maxAp+=15;s.ap=Math.min(s.ap+15,s.maxAp)}, req:null},
+  {id:'endurance',      name:'Rad Resistance',   icon:'☢',  cat:'Survival',desc:'+5 DEF vs hazardous encounters. Tough constitution.',           apply:s=>{s.def+=3;s.maxHp+=10},  req:{special:2,min:6}},
+  {id:'hunter',         name:'Hunter',           icon:'🦎', cat:'Survival',desc:'+3 ATK, creatures drop better loot.',                           apply:s=>{s.atk+=3;s.hunterPerk=true}, req:null},
+  {id:'strong_back',    name:'Strong Back',      icon:'💪', cat:'Survival',desc:'+50kg carry. You haul what others leave behind.',               apply:s=>{s.carryCap=(s.carryCap||120)+50}, req:{level:6,special:0,min:7}},
+  // Charisma / Social
+  {id:'barter',         name:'Barter',           icon:'💰', cat:'Social',  desc:'Buy 10% cheaper. Prices are just opening offers.',              apply:s=>{s.barterPerk=(s.barterPerk||0)+10}, req:null},
+  {id:'smooth_talker',  name:'Smooth Talker',    icon:'😏', cat:'Social',  desc:'+15 affinity gain on all NPC interactions.',                    apply:s=>{s.charmPerk=(s.charmPerk||0)+15}, req:{special:3,min:6}},
+  {id:'local_leader',   name:'Local Leader',     icon:'🏘', cat:'Social',  desc:'Faction rep gains are doubled.',                                apply:s=>{s.leaderPerk=true},    req:{level:6,special:3,min:7}},
+  // Utility
+  {id:'scrounger',      name:'Scrounger',        icon:'🔍', cat:'Utility', desc:'Find ammo more often when scavenging.',                         apply:s=>{s.scroungerPerk=true}, req:null},
+  {id:'comprehension',  name:'Comprehension',    icon:'📖', cat:'Utility', desc:'+10% XP from all sources.',                                     apply:s=>{s.xpPerk=(s.xpPerk||0)+10}, req:null},
+  {id:'educated',       name:'Educated',         icon:'🎓', cat:'Utility', desc:'+15% XP, gain 1 random SPECIAL point.',                        apply:s=>{s.xpPerk=(s.xpPerk||0)+15;s.special[rnd(0,6)]++;}, req:{level:4}},
+  {id:'light_step',     name:'Light Step',       icon:'👣', cat:'Utility', desc:'30% chance to avoid random combat encounters while exploring.', apply:s=>{s.lightStepPerk=true}, req:{special:1,min:6}},
+  {id:'swift_learner',  name:'Swift Learner',    icon:'⭐', cat:'Utility', desc:'+20% XP from kills and quests.',                                apply:s=>{s.xpPerk=(s.xpPerk||0)+20}, req:{level:8}},
+];
+
+// ============================================================
 // LEVEL UP
 // ============================================================
+let _pendingLevelUps=0;
+
 function chkLU(){
+  let levelled=false;
   while(S.xp>=xpNeed(S.level)){
     S.xp-=xpNeed(S.level);S.level++;
     S.maxHp=calcMaxHp();S.hp=S.maxHp;
     S.maxAp=calcMaxAp();S.ap=S.maxAp;
     S.atk++;if(S.level%2===0)S.def++;if(S.level%3===0)S.spd++;
     log('Level up! Now level '+S.level+'.','q');
-    notify('⬆ LEVEL '+S.level+'!');
-    // Offer SPECIAL point
-    if(S.level%2===0)S.special[rnd(0,6)]++;
+    _pendingLevelUps++;
+    levelled=true;
   }
+  if(levelled) showPerkScreen();
+}
+
+function perkOwned(id){return (S.perks||[]).includes(id)}
+
+function perkMeetsReq(p){
+  if(!p.req) return true;
+  if(p.req.level && S.level < p.req.level) return false;
+  if(p.req.special !== undefined && S.special[p.req.special] < p.req.min) return false;
+  return true;
+}
+
+function showPerkScreen(){
+  if(!_pendingLevelUps) return;
+  if(!S.perks) S.perks=[];
+
+  // Pick 3 random unowned perks, weighted toward meetable requirements
+  const pool=PERKS.filter(p=>!perkOwned(p.id));
+  const meetable=pool.filter(p=>perkMeetsReq(p));
+  const locked=pool.filter(p=>!perkMeetsReq(p));
+  // Offer 2 meetable + 1 locked (shown as locked/dim) if possible, else 3 meetable
+  let choices=[];
+  const shuffled=[...meetable].sort(()=>R()-.5);
+  choices=shuffled.slice(0,3);
+  if(choices.length<3 && locked.length){
+    choices=[...choices,...locked.slice(0,3-choices.length)];
+  }
+  if(!choices.length){
+    // No perks left — just give a stat bonus
+    _pendingLevelUps=0;
+    notify('⬆ LEVEL '+S.level+'! Max perks reached.');
+    upSB();save();
+    return;
+  }
+
+  const lvl=S.level-(_pendingLevelUps-1); // Display for current pending level
+  const panel=$('PP');
+  panel.innerHTML=`
+    <div style="text-align:center;margin-bottom:10px">
+      <div style="font-size:32px;margin-bottom:4px">⬆</div>
+      <div style="font-size:17px;font-weight:bold;color:var(--amber);letter-spacing:2px">LEVEL ${S.level}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">Choose a perk — this shapes your build.</div>
+      ${_pendingLevelUps>1?`<div style="font-size:10px;color:var(--green);margin-top:2px">${_pendingLevelUps} level-ups pending</div>`:''}
+    </div>
+    <div style="font-size:9px;color:var(--muted);text-align:center;margin-bottom:8px;letter-spacing:1px">AVAILABLE PERKS</div>
+    ${choices.map(p=>{
+      const ok=perkMeetsReq(p);
+      const reqText=!ok?(p.req?.level?`Req: Level ${p.req.level}`:`Req: ${SPECIAL_NAMES[p.req?.special||0]} ${p.req?.min}+`):'';
+      return `<div class="perk-card${ok?'':' locked'}" onclick="${ok?`pickPerk('${p.id}')`:''}" style="display:flex;align-items:flex-start;gap:10px">
+        <div class="perk-icon">${p.icon}</div>
+        <div style="flex:1">
+          <div class="perk-name">${p.name}</div>
+          <div style="font-size:9px;color:var(--amber2);text-transform:uppercase;margin:1px 0">${p.cat}</div>
+          <div class="perk-desc">${p.desc}</div>
+          ${reqText?`<div class="perk-req">🔒 ${reqText}</div>`:''}
+        </div>
+      </div>`;
+    }).join('')}
+    <button class="bt" style="margin-top:10px;text-align:center;font-size:11px" onclick="skipPerk()">Skip — take +2 ATK, +1 DEF instead</button>`;
+
+  $('PO').classList.add('A');
+  upSB();
+}
+
+function pickPerk(id){
+  const p=PERKS.find(x=>x.id===id);
+  if(!p||!perkMeetsReq(p))return;
+  if(!S.perks)S.perks=[];
+  S.perks.push(id);
+  p.apply(S);
+  log('Perk: '+p.name+' — '+p.desc,'q');
+  _pendingLevelUps--;
+  $('PO').classList.remove('A');
+  // Show result then continue if more pending
+  showResult('Perk Acquired',''+p.icon,
+    [`<b style="color:var(--amber)">${p.name}</b>`, p.desc, '⭐ Level '+S.level],
+    _pendingLevelUps?'Next Level Up':'Continue',
+    _pendingLevelUps?'showPerkScreen()':'upAll()');
+  save();
+}
+
+function skipPerk(){
+  S.atk+=2;S.def+=1;
+  log('Skipped perk — took +2 ATK, +1 DEF.','q');
+  _pendingLevelUps--;
+  $('PO').classList.remove('A');
+  if(_pendingLevelUps) showPerkScreen();
+  else{notify('⬆ LEVEL '+S.level+'!');upAll();}
+  save();
 }
 
 // ============================================================
@@ -2520,7 +3274,7 @@ function npcAct(action,name){
         msg=name+" says yes!";log('Married '+name+'!','q');
       }else{msg="They're not ready.";affChange=-5}break;
   }
-  rel.aff=Math.max(0,Math.min(100,rel.aff+affChange));
+  rel.aff=Math.max(0,Math.min(100,rel.aff+(affChange>0?affChange+Math.floor((S.charmPerk||0)/5):affChange)));
   if(affChange>0&&rel.rel==='stranger')rel.rel='acquaintance';
   if(rel.aff>=30&&rel.rel==='acquaintance')rel.rel='friend';
   if(rel.aff>=60&&rel.rel==='friend')rel.rel='close friend';
@@ -2625,15 +3379,14 @@ function openBld(bId){
   else if(bId==='bos_command'){bldHiddenValleyCommand(body)}
   else if(bId==='bos_armory'){bldHiddenValleyArmory(body)}
   else if(bId==='bos_lab'){bldHiddenValleyLab(body)}
-  else if(bId==='bos_maintenance'){bldHiddenValleyMaintenance(body)}
-  else if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
+  else if(bId==='bos_maintenance'){bldHiddenValleyMaintenance(body)}  else if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
   else if(bId.includes('store')||bId.includes('supply')||bId.includes('ralph')||bId.includes('armory')||bId.includes('quartermaster')){bldShop(body,bId)}
   else if(bId.includes('doc')||bId.includes('med')||bId.includes('fort')||bId.includes('jacobstown_doc')){bldMedical(body)}
   else if(bId.includes('motel')||bId.includes('lodge')||bId.includes('lucky_38')){bldRest(body,bId)}
   else if(bId.includes('casino')||bId.includes('gomorrah')||bId.includes('ultra')||bId.includes('tops')){bldCasino(body,bId)}
   else if(bId.includes('hq')||bId.includes('tent')||bId.includes('office')){bldFaction(body,bId)}
   else if(bId.includes('arena')){bldArena(body)}
-  else if(bId.includes('gas')||bId.includes('lab')){bldWorkshop(body)}
+  else if(bId.includes('gas')||bId.includes('lab')){bldWorkshop(body,bId)}
   else{bldGeneric(body,bId)}
 
   bi.appendChild(body);o.classList.add('A');
@@ -3295,6 +4048,8 @@ function bldCinderGulchGarage(body){
   const routeBtn=el('button','bt pip','📜 Clear the salvage routes');
   routeBtn.onclick=()=>{closeBld();queueCinderGulchQuest('lena_rourke','Scrap Line',22,15)};
   body.appendChild(routeBtn);
+  // Crafting bench
+  bldWorkshop(body,'gulch_garage');
   body.appendChild(el('div','bs2','Workshop Crew'));
   ['lena_rourke','tom_quill'].forEach(id=>addCinderGulchNpcCard(body,id));
 }
@@ -3404,7 +4159,7 @@ function bldFreesideCerulean(body){
 function buildBuyButtons(body,items,bId){
   items.forEach(id=>{
     const it=ITEMS[id];if(!it)return;
-    const price=Math.round(it.p*(1-((S.special?S.special[3]:5)*.02)));
+    const price=Math.max(1,Math.round(it.p*(1-((S.special?S.special[3]:5)*.02)-(S.barterPerk||0)/100)));
     const sb=el('button','bt',`${it.e} ${it.n} — ${price} caps`);
     sb.onclick=()=>{if(S.caps<price){notify('Not enough caps.');return}S.caps-=price;const added=giveItem(id);if(!added){S.caps+=price;return}log('Bought '+it.n+'.','n');openBld(bId)};
     body.appendChild(sb);
@@ -3441,6 +4196,7 @@ function bldGoodspringsGas(body){
   const searchBtn=el('button','bt','🔎 Search the workshop');
   searchBtn.onclick=()=>{advanceTime(1);const pick=rndA(['scrap','wrench','duct_tape','dynamite','ammo_9mm']);giveItem(pick);log('You search the old Goodsprings gas station workshop.','e');closeBld();showResult('Workshop Search','🔎',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
   body.appendChild(searchBtn);
+  bldWorkshop(body,'gas_station');
   body.appendChild(el('div','bs2','Resident'));
   addGoodspringsNpcCard(body,'easy_pete');
 }
@@ -3563,7 +4319,7 @@ function bldShop(body,bId){
   const shopItems=getShopInventory(bId);
   shopItems.forEach(si=>{
     const it=ITEMS[si.id];if(!it)return;
-    const price=Math.round(it.p*(1-((S.special?S.special[3]:5)*.02)));
+    const price=Math.max(1,Math.round(it.p*(1-((S.special?S.special[3]:5)*.02)-(S.barterPerk||0)/100)));
     const sb=el('button','bt',`${it.e} ${it.n} — ${price} caps`);
     sb.onclick=()=>{if(S.caps<price){notify("Not enough caps.");return}S.caps-=price;const added=giveItem(si.id);if(!added){S.caps+=price;return}log('Bought '+it.n+'.','n');openBld(bId)};
     body.appendChild(sb);
@@ -3670,22 +4426,136 @@ function bldArena(body){
   fb.onclick=()=>{closeBld();const e=mkEnemy(rndA(['legion_recruit','convict','fiend','great_khan']));startCombat([e])};
   body.appendChild(fb);
 }
-function bldWorkshop(body){
-  body.appendChild(el('div','bs2','Workshop'));
-  const repairBtn=el('button','bt','🔧 Repair gear (10 caps + scrap)');
+// ============================================================
+// CRAFTING SYSTEM
+// ============================================================
+const RECIPES=[
+  // Medical
+  {id:'r_stimpak',      out:'stimpak',      qty:1, cat:'Medical',
+   mats:[{id:'herbs',qty:2},{id:'duct_tape',qty:1}],
+   desc:'Field-mix stimpak from herbs and tape.'},
+  {id:'r_super_stimpak',out:'super_stimpak', qty:1, cat:'Medical',
+   mats:[{id:'stimpak',qty:2},{id:'wonderglue',qty:1},{id:'sensor_module',qty:1}],
+   desc:'Double-strength stimpak. Requires a sensor module for injection control.'},
+  {id:'r_doctor_bag',   out:'doctor_bag',    qty:1, cat:'Medical',
+   mats:[{id:'stimpak',qty:1},{id:'duct_tape',qty:2},{id:'wonderglue',qty:1}],
+   desc:'Assemble a doctor\'s bag from supplies.'},
+  {id:'r_antivenom',    out:'antivenom',     qty:1, cat:'Medical',
+   mats:[{id:'herbs',qty:3},{id:'purified_water',qty:1}],
+   desc:'Boil herbs into a basic antivenom.'},
+  {id:'r_healing_powder',out:'healing_powder',qty:2,cat:'Medical',
+   mats:[{id:'herbs',qty:4}],
+   desc:'Grind wasteland herbs into healing powder.'},
+  // Ammo
+  {id:'r_ammo_9mm',     out:'ammo_9mm',     qty:5, cat:'Ammo',
+   mats:[{id:'scrap',qty:1},{id:'powder_charge',qty:1}],
+   desc:'Press 5 rounds of 9mm from scrap and powder.'},
+  {id:'r_ammo_556',     out:'ammo_556',     qty:5, cat:'Ammo',
+   mats:[{id:'scrap',qty:2},{id:'powder_charge',qty:1}],
+   desc:'Hand-load 5 rounds of 5.56mm.'},
+  {id:'r_ammo_357',     out:'ammo_357',     qty:4, cat:'Ammo',
+   mats:[{id:'scrap',qty:1},{id:'powder_charge',qty:2}],
+   desc:'Load 4 .357 Magnum rounds from components.'},
+  {id:'r_energy_cell',  out:'energy_cell',  qty:4, cat:'Ammo',
+   mats:[{id:'fission_battery',qty:1},{id:'scrap_electronics',qty:1}],
+   desc:'Tap a fission battery into 4 energy cells.'},
+  // Gear
+  {id:'r_repair_kit',   out:'weapon_repair_kit',qty:1,cat:'Gear',
+   mats:[{id:'scrap',qty:2},{id:'duct_tape',qty:1},{id:'wonderglue',qty:1}],
+   desc:'Pack a field repair kit for weapon maintenance.'},
+  {id:'r_leather_armor',out:'leather_armor', qty:1, cat:'Gear',
+   mats:[{id:'gecko_hide',qty:3},{id:'duct_tape',qty:2}],
+   desc:'Stitch gecko hides into workable leather armor.'},
+  {id:'r_combat_armor', out:'combat_armor',  qty:1, cat:'Gear',
+   mats:[{id:'scrap',qty:4},{id:'wrench',qty:1},{id:'duct_tape',qty:2}],
+   desc:'Hammer scrap metal into a proper combat plate.'},
+  {id:'r_dynamite_x2',  out:'dynamite',     qty:2, cat:'Gear',
+   mats:[{id:'powder_charge',qty:3},{id:'scrap',qty:1}],
+   desc:'Pack powder into 2 sticks of dynamite.'},
+  // Upgrades (advanced — require workbench ownership)
+  {id:'r_sensor_mod',   out:'sensor_module', qty:1, cat:'Advanced',
+   mats:[{id:'scrap_electronics',qty:2},{id:'conductor',qty:1}],
+   desc:'Salvage a working sensor module from electronics.', advanced:true},
+  {id:'r_energy_upgrade',out:'laser_pistol', qty:1, cat:'Advanced',
+   mats:[{id:'laser_focusing_lens',qty:1},{id:'scrap_electronics',qty:2},{id:'energy_cell',qty:3}],
+   desc:'Assemble a functional laser pistol from focusing components.', advanced:true},
+];
+
+function countMat(id){return S.inv?S.inv.filter(x=>x===id).length:0}
+
+function canCraft(recipe,advanced){
+  if(recipe.advanced&&!advanced)return false;
+  return recipe.mats.every(m=>countMat(m.id)>=m.qty);
+}
+
+function doCraft(recipeId,bId){
+  const recipe=RECIPES.find(r=>r.id===recipeId);if(!recipe)return;
+  const hasWorkbench=S.properties.some(p=>p.id==='goodsprings_workshop');
+  if(!canCraft(recipe,hasWorkbench)){notify('Missing materials.');return}
+  // Remove mats
+  recipe.mats.forEach(m=>{
+    let removed=0;
+    for(let i=S.inv.length-1;i>=0&&removed<m.qty;i--){
+      if(S.inv[i]===m.id){S.inv.splice(i,1);removed++;}
+    }
+  });
+  // Give output
+  for(let i=0;i<recipe.qty;i++) giveItem(recipe.out,1,{ignoreLimit:false,silent:false});
+  const out=ITEMS[recipe.out];
+  const label=recipe.qty>1?`${out.e} ${out.n} ×${recipe.qty}`:`${out.e} ${out.n}`;
+  log(`Crafted: ${out.n}${recipe.qty>1?' ×'+recipe.qty:''}.`,'e');
+  advanceTime(1);
+  save();
+  // Re-render the building
+  closeBld();
+  showResult('Crafted!','🔧',[label,'⏰ 1 hour passed'],'Continue','openBld("'+bId+'")');
+}
+
+function bldWorkshop(body,bId){
+  const hasWorkbench=S.properties.some(p=>p.id==='goodsprings_workshop');
+
+  body.appendChild(el('div','bs2','Craft'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Use materials from your inventory to craft items.${hasWorkbench?'':' <span style="color:var(--amber2)">Own the Goodsprings Workshop to unlock Advanced recipes.</span>'}</div>`));
+
+  const cats=[...new Set(RECIPES.map(r=>r.cat))];
+  cats.forEach(cat=>{
+    const inCat=RECIPES.filter(r=>r.cat===cat);
+    // Hide Advanced if no workbench and all locked
+    if(cat==='Advanced'&&!hasWorkbench)return;
+    body.appendChild(el('div','bs2 fade-in',cat));
+    inCat.forEach(recipe=>{
+      if(recipe.advanced&&!hasWorkbench)return;
+      const out=ITEMS[recipe.out];if(!out)return;
+      const canDo=canCraft(recipe,hasWorkbench);
+      const card=el('div','craft-card');
+      const matHtml=recipe.mats.map(m=>{
+        const have=countMat(m.id);
+        const ok=have>=m.qty;
+        const mat=ITEMS[m.id];
+        return `<span class="craft-mat ${ok?'ok':'missing'}">${mat?mat.e:'?'} ${mat?mat.n:m.id} ${have}/${m.qty}</span>`;
+      }).join(' ');
+      card.innerHTML=`<div class="craft-row" style="margin-bottom:5px">
+        <span style="font-size:20px">${out.e}</span>
+        <div style="flex:1"><div style="font-size:12px;font-weight:bold;color:${canDo?'var(--green)':'var(--text)'}">${out.n}${recipe.qty>1?' ×'+recipe.qty:''}</div>
+        <div style="font-size:10px;color:var(--muted)">${recipe.desc}</div></div>
+      </div>
+      <div style="margin-bottom:6px">${matHtml}</div>`;
+      const btn=el('button',canDo?'bt go':'bt',canDo?'🔧 Craft':'🔒 Missing materials');
+      btn.disabled=!canDo;
+      btn.onclick=()=>doCraft(recipe.id,bId);
+      card.appendChild(btn);
+      body.appendChild(card);
+    });
+  });
+
+  // Old repair still useful
+  body.appendChild(el('div','bs2','Repair'));
+  const repairBtn=el('button','bt','🔧 Repair gear (10 caps + Scrap Metal) → +1 ATK');
   repairBtn.onclick=()=>{if(S.caps<10){notify("Not enough caps.");return}
   const si=S.inv.indexOf('scrap');if(si===-1){notify("Need Scrap Metal.");return}
-  S.caps-=10;S.inv.splice(si,1);S.atk+=1;log('Repaired and improved gear. +1 ATK.','e');closeBld();showResult('Repaired','🔧',['⚔ +1 ATK','Used Scrap Metal'],'Continue','upAll()')};
+  S.caps-=10;S.inv.splice(si,1);S.atk+=1;advanceTime(1);log('Repaired gear. +1 ATK.','e');
+  closeBld();showResult('Repaired','🔧',['⚔ +1 ATK','Used Scrap Metal','⏰ 1 hour passed'],'Continue','openBld("'+bId+'")')};
   body.appendChild(repairBtn);
-
-  const craftBtn=el('button','bt','💊 Craft Stimpak (2 herbs + duct tape)');
-  craftBtn.onclick=()=>{const h1=S.inv.indexOf('herbs');if(h1===-1){notify("Need herbs.");return}
-  const h2=S.inv.indexOf('herbs',h1+1);if(h2===-1){notify("Need 2 herbs.");return}
-  const dt=S.inv.indexOf('duct_tape');if(dt===-1){notify("Need Duct Tape.");return}
-  S.inv.splice(Math.max(h1,h2,dt),1);S.inv.splice(Math.min(h1,h2,dt),1);
-  const dtI=S.inv.indexOf('duct_tape');if(dtI!==-1)S.inv.splice(dtI,1);
-  giveItem('stimpak');log('Crafted a Stimpak.','e');notify('💉 Crafted Stimpak!');closeBld();upAll()};
-  body.appendChild(craftBtn);
 }
 function bldGeneric(body,bId){
   body.appendChild(el('div','bs2','Look Around'));
@@ -3913,7 +4783,9 @@ function bldHiddenValleyLab(body){
     const calibrateBtn=el('button','bt','⚡ Calibrate captured energy weapons');
     calibrateBtn.onclick=bosTuneEnergyGear;
     body.appendChild(calibrateBtn);
-  }else body.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">Advanced calibration work unlocks at Brotherhood standing 25.</div>'));
+    // Full crafting bench accessible at BOS lab with rep 25+
+    bldWorkshop(body,'bos_lab');
+  }else body.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted)">Advanced calibration work and the crafting bench unlock at Brotherhood standing 25.</div>'));
   body.appendChild(el('div','bs2','Notable Scribes'));
   ['scribe_ibsen','veronica','elder_mcnamara'].forEach(id=>addHiddenValleyNpcCard(body,id));
 }
@@ -4090,6 +4962,21 @@ function upChar(){
     S.children.forEach(c=>{tab.appendChild(el('div','cd',`👶 ${c.name} — Age ${c.age||0}`))});
   }
 
+  // Perks
+  if(S.perks&&S.perks.length){
+    tab.appendChild(el('div','sh','Perks'));
+    const pg=el('div','cd');
+    pg.innerHTML=S.perks.map(id=>{
+      const p=PERKS.find(x=>x.id===id);
+      if(!p)return'';
+      return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #1a1810">
+        <span style="font-size:18px;width:24px;text-align:center">${p.icon}</span>
+        <div><div style="font-size:11px;font-weight:bold;color:var(--amber)">${p.name}</div>
+        <div style="font-size:10px;color:var(--muted)">${p.desc}</div></div></div>`;
+    }).join('');
+    tab.appendChild(pg);
+  }
+
   // Quests
   const active=S.quests.filter(q=>!q.done);
   if(active.length){
@@ -4204,14 +5091,22 @@ function genTravelEv(days,from,to){
       const enPool=dloc?.sur?.length?rndA(dloc.sur).en:['gecko','bloatfly'];
       const validPool=enPool.filter(e=>ENEMIES[e]);
       if(validPool.length){
-        const cnt=rnd(1,2);const enemies=[];
-        for(let j=0;j<cnt;j++)enemies.push(mkEnemy(rndA(validPool)));
-        evs.push({tp:'combat',e:'⚔',tx:'Hostiles on the road!',enemies,_i:i,_t:total});
+        const cnt=rnd(1,2);
+        const enemies=buildCohesiveGroup(validPool,cnt);
+        if(enemies.length)evs.push({tp:'combat',e:enemies[0].e,tx:'',enemies,_i:i,_t:total});
       }
-    }else if(r<.5){
+    }else if(r<.48){
       const finds=['stimpak','sunset_sars','dirty_water','cram','iguana_bits','ammo_9mm','ammo_10mm','ammo_357','ammo_556','ammo_shells','energy_cell','herbs','scrap','pre_war_money','wonderglue','wrench','scrap_electronics','camera','cigarette_pack','cigarette_carton','silverware','silver_watch','gold_necklace','conductor'];
       const fi=rndA(finds);const it=ITEMS[fi];
       evs.push({tp:'loot',e:'✨',tx:`You spot something: <b style="color:var(--green)">${it?.e} ${it?.n}</b>`,fn:()=>{if(fi&&ITEMS[fi])giveItem(fi);log('Found '+it?.n+' on the road.','e')},_i:i,_t:total});
+    }else if(r<.72){
+      // Encounter card — use destination location for flavour
+      const card=rollEncounterCard(to,null);
+      if(card)evs.push({tp:'encounter',e:card.icon,tx:'',card,_i:i,_t:total});
+      else{
+        const scenes=["The road stretches endlessly.","Heat waves shimmer off the asphalt.","You pass a rusted pre-war car.","A brahmin caravan passes going the other way.","Dust devils spin across the highway.","Radio signals fade in and out."];
+        evs.push({tp:'scene',e:rndA(['🏜','🌵','☀','🛣']),tx:rndA(scenes),_i:i,_t:total});
+      }
     }else{
       const scenes=["The road stretches endlessly.","Heat waves shimmer off the asphalt.","You pass a rusted pre-war car.","A brahmin caravan passes going the other way.","Dust devils spin across the highway.","Radio signals fade in and out."];
       evs.push({tp:'scene',e:rndA(['🏜','🌵','☀','🛣']),tx:rndA(scenes),_i:i,_t:total});
@@ -4223,14 +5118,31 @@ function nextTEv(){
   if(!tQ.length){finTravel();return}
   const ev=tQ.shift();
   $('TB').style.width=Math.round(((ev._i+1)/ev._t)*100)+'%';
-  $('TS').textContent=ev.e;$('TT').innerHTML=ev.tx;$('TC').innerHTML='';$('TN').style.display='none';
+  $('TS').innerHTML=ev.e;$('TT').innerHTML=ev.tx;$('TC').innerHTML='';$('TN').style.display='none';
   if(ev.tp==='combat'){
-    const cd=$('TC');
-    const fb=el('button','bt go','⚔ Fight!');fb.style.textAlign='center';
-    fb.onclick=()=>{startCombat(ev.enemies);combat.postT=tDest};cd.appendChild(fb);
-    const fl=el('button','bt dn','🏃 Try to run');fl.style.textAlign='center';
-    fl.onclick=()=>{if(R()<.5){log('Evaded enemies.','e');$('TN').style.display='block';$('TN').onclick=()=>travelCont()}
-    else{startCombat(ev.enemies);combat.postT=tDest}};cd.appendChild(fl);
+    preEncounter(ev.enemies,null,0,true);
+    return;
+  }
+  if(ev.tp==='encounter'){
+    // Travel encounter card — choices resume travel on resolve
+    const card=ev.card;
+    $('TS').innerHTML=card.icon;
+    $('TT').innerHTML=`<b style="color:var(--amber)">${card.title}</b><br><span style="font-size:11px;color:var(--muted)">${card.body}</span>`;
+    const cd=$('TC');cd.innerHTML='';
+    card.choices.forEach((ch,i)=>{
+      const btn=el('button','bt','');btn.style.textAlign='left';btn.textContent=ch.label;
+      btn.onclick=()=>{
+        const customResult=ch.fn();
+        if(combat){combat.postT=tDest;return}
+        chkLU();save();
+        const resultText=customResult||ch.result||'Done.';
+        $('TC').innerHTML='';
+        $('TS').innerHTML='✅';
+        $('TT').innerHTML=`<div style="font-size:12px;color:var(--green);margin-bottom:4px"><b>${card.title}</b></div><div style="font-size:11px;color:var(--muted)">${resultText}</div>`;
+        $('TN').style.display='block';$('TN').onclick=()=>travelCont();
+      };
+      cd.appendChild(btn);
+    });
     return;
   }
   if(ev.fn)ev.fn();
@@ -4308,8 +5220,8 @@ function payDaily(){
 }
 function completeQuest(q){
   if(q.done)return;q.done=true;
-  S.xp+=q.rx;S.caps+=q.rg;S.questsComplete++;
-  if(q.fac)S.rep[q.fac]=(S.rep[q.fac]||0)+(q.repBonus||5);
+  S.xp+=grantXP(q.rx);S.caps+=q.rg;S.questsComplete++;
+  if(q.fac){const gain=(q.repBonus||5)*(S.leaderPerk?2:1);S.rep[q.fac]=(S.rep[q.fac]||0)+gain;}
   log('Quest complete: '+q.name+' (+'+q.rg+' caps, +'+q.rx+' XP)','q');
   notify('📜 Quest Complete!');chkLU();
 }
