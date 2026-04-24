@@ -258,6 +258,16 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 }
 .bc.big-icon-card{min-height:128px;padding:8px 10px;gap:10px}
 .bc.big-icon-card:active{background:#2a2a1a}
+
+/* Mobile tap/zoom handling */
+html,body,#W,#C,#N,button{touch-action:manipulation}
+#roads-tab .pip-map-wrap,#roads-tab .pip-map-wrap svg,.travel-map-wrap,.travel-map-wrap svg{touch-action:none}
+.travel-map-wrap{position:relative;width:100%;height:260px;background:#0a0a06;border:1px solid #2a2818;border-radius:10px;overflow:hidden;margin:0 0 10px}
+.travel-map-title{position:absolute;left:8px;top:7px;z-index:2;background:rgba(10,10,6,.82);border:1px solid #2a2818;border-radius:5px;padding:4px 7px;font-size:10px;color:var(--amber);letter-spacing:1px;text-transform:uppercase;pointer-events:none}
+.travel-map-zoom{position:absolute;right:7px;top:7px;z-index:3;display:flex;gap:4px}
+.travel-map-zoom button{width:30px;height:30px;min-height:30px;padding:0;background:#18180d;color:var(--amber);border:1px solid #3a3828;border-radius:5px;font-family:'Courier New',monospace;font-weight:bold}
+#TO>div{position:relative}
+#TO #TC,#TO #TT,#TO #TS,#TO .hb,#TO #TN{position:relative;z-index:2}
 </style>
 </head>
 <body>
@@ -356,6 +366,47 @@ function showResult(title,emoji,lines,btnText,btnFn){
 function closeResult(){$('RP').classList.remove('show');$('RBG').classList.remove('show');setTimeout(()=>{$('RP').style.display='none';$('RBG').style.display='none'},200)}
 function openDlg(h){const db=$('DB'),dlg=$('DO');if(!db||!dlg)return;db.innerHTML=h;dlg.classList.add('A')}
 function closeDlg(){const dlg=$('DO');if(dlg)dlg.classList.remove('A')}
+
+// Block accidental double-tap zoom on mobile while preserving custom map zoom.
+(function(){
+  let lastTouchEnd=0;
+  document.addEventListener('touchend',function(e){
+    const map=e.target.closest&&e.target.closest('.pip-map-wrap,.travel-map-wrap');
+    const now=Date.now();
+    if(!map&&now-lastTouchEnd<=320)e.preventDefault();
+    lastTouchEnd=now;
+  },{passive:false});
+  document.addEventListener('dblclick',function(e){
+    if(!(e.target.closest&&e.target.closest('.pip-map-wrap,.travel-map-wrap')))e.preventDefault();
+  },{passive:false});
+})();
+
+function setupMapPanZoom(svg,VW,VH){
+  if(!svg||svg._panZoomReady)return;svg._panZoomReady=true;
+  let vb={x:0,y:0,w:VW,h:VH};
+  try{
+    const raw=(svg.getAttribute('viewBox')||'').trim().split(/\s+/).map(Number);
+    if(raw.length===4&&raw.every(Number.isFinite))vb={x:raw[0],y:raw[1],w:raw[2],h:raw[3]};
+  }catch(e){}
+  const pointers=new Map();let last=null,lastDist=0,lastCenter=null;
+  function clamp(){vb.w=Math.max(VW*.38,Math.min(VW,vb.w));vb.h=Math.max(VH*.38,Math.min(VH,vb.h));vb.x=Math.max(0,Math.min(VW-vb.w,vb.x));vb.y=Math.max(0,Math.min(VH-vb.h,vb.y));}
+  function apply(){clamp();svg.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`)}
+  function svgPt(clientX,clientY){const r=svg.getBoundingClientRect();return {x:vb.x+((clientX-r.left)/Math.max(1,r.width))*vb.w,y:vb.y+((clientY-r.top)/Math.max(1,r.height))*vb.h};}
+  function zoomAt(factor,clientX,clientY){const p=svgPt(clientX,clientY);const nw=vb.w*factor,nh=vb.h*factor;vb.x=p.x-(p.x-vb.x)*(nw/vb.w);vb.y=p.y-(p.y-vb.y)*(nh/vb.h);vb.w=nw;vb.h=nh;apply();}
+  svg.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.deltaY>0?1.12:.88,e.clientX,e.clientY)},{passive:false});
+  svg.addEventListener('pointerdown',e=>{pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});svg.setPointerCapture&&svg.setPointerCapture(e.pointerId);last={x:e.clientX,y:e.clientY};lastDist=0;});
+  svg.addEventListener('pointermove',e=>{
+    if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    const pts=[...pointers.values()];
+    if(pts.length>=2){const a=pts[0],b=pts[1];const dist=Math.hypot(a.x-b.x,a.y-b.y);const cen={x:(a.x+b.x)/2,y:(a.y+b.y)/2};if(lastDist)zoomAt(lastDist/dist,cen.x,cen.y);if(lastCenter){const r=svg.getBoundingClientRect();vb.x-=(cen.x-lastCenter.x)/Math.max(1,r.width)*vb.w;vb.y-=(cen.y-lastCenter.y)/Math.max(1,r.height)*vb.h;apply();}lastDist=dist;lastCenter=cen;}
+    else if(last){const r=svg.getBoundingClientRect();vb.x-=(e.clientX-last.x)/Math.max(1,r.width)*vb.w;vb.y-=(e.clientY-last.y)/Math.max(1,r.height)*vb.h;last={x:e.clientX,y:e.clientY};apply();}
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(type=>svg.addEventListener(type,e=>{pointers.delete(e.pointerId);last=null;lastDist=0;lastCenter=null;}));
+  svg._zoomIn=()=>{const r=svg.getBoundingClientRect();zoomAt(.82,r.left+r.width/2,r.top+r.height/2)};
+  svg._zoomOut=()=>{const r=svg.getBoundingClientRect();zoomAt(1.22,r.left+r.width/2,r.top+r.height/2)};
+  svg._setViewBox=(next)=>{if(!next)return;vb={x:+next.x||0,y:+next.y||0,w:+next.w||VW,h:+next.h||VH};apply();};
+}
+
 
 function getBonusLootPool(locId,area){
   const loc=LOCS[locId];
@@ -5825,39 +5876,54 @@ function sellJunk(){
 // ── PIP-BOY MAP ───────────────────────────────────────────────
 // Geographic coordinates as % of a 400×580 viewBox
 // Based on real FNV Mojave map proportions (south=bottom, east=right)
+let _mapSel=null;
 const MAP_COORDS={
-  // South-west corner — highway entry points
-  MojaveOutpost:   {x:55,  y:530},  // far SW, on the highway
-  Goodsprings:     {x:100, y:468},  // west side, north of outpost
-  NCRCF:           {x:148, y:452},  // north-east of Goodsprings, west of Primm
-  Primm:           {x:175, y:490},  // south-central, east of Goodsprings
-  Sloan:           {x:95,  y:400},  // north of Goodsprings on the highway
-  // South strip — Legion territory and south-east
-  Nipton:          {x:248, y:510},  // south-east, below Novac
-  NelsonCamp:      {x:308, y:480},  // further east, south of Searchlight
-  CampSearchlight: {x:330, y:505},  // south-east corner
-  CottonwoodCove:  {x:345, y:535},  // furthest south-east, Colorado River
-  TheFort:         {x:368, y:448},  // east, across from Hoover Dam
-  // Central Mojave
-  HiddenValley:    {x:200, y:375},  // central, between Goodsprings and Boulder City
-  Novac:           {x:245, y:415},  // central-east, south of Boulder City
-  HeliosOne:       {x:272, y:368},  // between Novac and Boulder City
-  RedRockCanyon:   {x:70,  y:315},  // north-west
-  BoulderCity:     {x:300, y:330},  // east-central, gateway to dam
-  TradingPost188:  {x:272, y:300},  // junction between Boulder and Vegas
-  CampForlornHope: {x:348, y:388},  // south-east, near Colorado
-  HooverDam:       {x:365, y:330},  // far east, dam
-  // Vegas cluster — centre-left
-  CampMcCarran:    {x:195, y:270},  // south of Vegas
-  Westside:        {x:172, y:245},  // just west of strip
-  FreesideN:       {x:198, y:232},  // gate to the strip
-  TheStrip:        {x:215, y:215},  // strip itself
-  CampGolf:        {x:288, y:258},  // east of Vegas, Lake Mead area
-  // North
+  // === FAR WEST ===
+  MojaveOutpost:   {x:42,  y:500},  // SW corner, end of I-15 south
+  Goodsprings:     {x:78,  y:455},  // west, off the main highway
+  Sloan:           {x:82,  y:370},  // north of Goodsprings, highway junction
+  QuarryJunction:  {x:105, y:415},  // south of Sloan, deathclaw highway block
+  RedRockCanyon:   {x:58,  y:290},  // NW, in the mountains
+  Jacobstown:      {x:72,  y:210},  // far NW, mountain peaks
+  CinderGulch:     {x:115, y:165},  // north, above Jacobstown line
+
+  // === CENTRE-SOUTH (I-15 corridor) ===
+  NCRCF:           {x:155, y:430},  // prison, west side of highway above Primm
+  Primm:           {x:175, y:480},  // on I-15, south of Vegas
+  Nipton:          {x:232, y:508},  // SE of Primm, off the main road
+  RangerStationCharlie: {x:195, y:445}, // NCR outpost, south Mojave
+
+  // === CENTRE (Vegas area) ===
+  CampMcCarran:    {x:175, y:295},  // airport, south of Strip
+  GunRunners:      {x:195, y:310},  // south of Freeside on the road to McCarran
+  Westside:        {x:150, y:268},  // west of Strip
+  FreesideN:       {x:175, y:252},  // just outside Strip
+  OldMormonFort:   {x:168, y:244},  // inside Freeside, Followers HQ
+  TheStrip:        {x:195, y:235},  // the Strip itself
+  NorthVegasSquare:{x:188, y:215},  // north of Freeside
+  HiddenValley:    {x:222, y:355},  // east of McCarran, between Vegas and Novac
+  TradingPost188:  {x:248, y:285},  // overpass junction, east of Vegas
+
+  // === CENTRE-EAST ===
+  ElDoradoDryLake: {x:272, y:318},  // dry lake bed, centre map between 188 and Boulder
+  HeliosOne:       {x:255, y:338},  // between 188 and Novac
+  Novac:           {x:250, y:400},  // south-centre, dinosaur town
+  BoulderCity:     {x:298, y:295},  // east of Vegas, dam gateway
+  Vault11:         {x:312, y:320},  // south of Boulder City, famous vault
+  CampGolf:        {x:315, y:250},  // NE of Boulder City, Lake Mead
+  BoulderBeach:    {x:338, y:228},  // Lake Mead shoreline, NE
   NellisAFB:       {x:295, y:190},  // north-east of Vegas
-  BitterSprings:   {x:318, y:148},  // north-east mountains
-  Jacobstown:      {x:88,  y:228},  // north-west mountains
-  CinderGulch:     {x:128, y:175},  // north, above hidden valley line
+  BitterSprings:   {x:330, y:148},  // far north-east, mountains
+
+  // === EAST (Colorado River) ===
+  HooverDam:       {x:352, y:295},  // far east, the dam
+  CampForlornHope: {x:340, y:370},  // SE, near the river
+  NelsonCamp:      {x:305, y:448},  // south-east, Legion area
+  CampSearchlight: {x:320, y:490},  // south-east corner
+  SearchlightAirport:{x:336,y:475}, // near Searchlight, ruined airfield
+  CottonwoodCove:  {x:338, y:522},  // Colorado River, far SE
+  TheFort:         {x:368, y:330},  // across Hoover Dam, Legion HQ
+  LegatesCamp:     {x:368, y:310},  // Legion endgame camp, near the dam east side
 };
 
 const MAP_ICON={
@@ -5888,9 +5954,32 @@ const MAP_ICON={
   TradingPost188:'NVImages/188tradingpostIcon.png',
   CinderGulch:'NVImages/CindergulchIcon.png',
   HooverDam:'NVImages/HooverdamIcon.png',
+  // New locations — using closest available icons
+  QuarryJunction:  'NVImages/SloanIcon.png',
+  GunRunners:      'NVImages/MojaveexpressIcon.png',
+  NorthVegasSquare:'NVImages/FreesideIcon.png',
+  OldMormonFort:   'NVImages/FreesideIcon.png',
+  RangerStationCharlie:'NVImages/MojaveoutpostIcon.png',
+  LegatesCamp:     'NVImages/ThefortIcon.png',
+  BoulderBeach:    'NVImages/CampgolfIcon.png',
+  ElDoradoDryLake: 'NVImages/188tradingpostIcon.png',
+  Vault11:         'NVImages/HiddenvalleyIcon.png',
+  SearchlightAirport:'NVImages/CampsearchlightIcon.png',
 };
 
-let _mapSel=null; // currently tapped location key
+// Metadata for map-only locations (not full game locations in LOCS)
+const MAP_META={
+  QuarryJunction:   {n:'Quarry Junction',    r:'West Mojave',   dg:4, d:'Deathclaws own this stretch of highway.'},
+  GunRunners:       {n:'Gun Runners',        r:'New Vegas',     dg:1, d:'The most reliable weapons dealer in the Mojave.'},
+  NorthVegasSquare: {n:'North Vegas Square', r:'New Vegas',     dg:2, d:'Rough neighbourhood north of Freeside.'},
+  OldMormonFort:    {n:'Old Mormon Fort',    r:'New Vegas',     dg:1, d:'Followers of the Apocalypse operate their clinic here.'},
+  RangerStationCharlie:{n:'Ranger Station Charlie',r:'Mojave South',dg:2,d:'An NCR ranger post watching the southern roads.'},
+  LegatesCamp:      {n:"Legate's Camp",      r:'East Mojave',   dg:4, d:"Caesar's Legate commands the Legion's final assault from here."},
+  BoulderBeach:     {n:'Boulder Beach',      r:'Lake Mead',     dg:2, d:'A pre-war resort on Lake Mead, now a dangerous ruin.'},
+  ElDoradoDryLake:  {n:'El Dorado Dry Lake', r:'Mojave Central',dg:2, d:'A vast dry lake bed used by the Legion as a staging ground.'},
+  Vault11:          {n:'Vault 11',           r:'Lake Mead',     dg:3, d:'A vault with a dark secret. Sacrifice one to save the rest.'},
+  SearchlightAirport:{n:'Searchlight Airport',r:'East Mojave',  dg:3, d:'A radiation-soaked airfield near the ruined NCR town.'},
+};
 
 function mapIsKnown(locId){
   if(locId===S.loc)return true;
@@ -5899,6 +5988,9 @@ function mapIsKnown(locId){
   if(S.visitedLocs&&Array.isArray(S.visitedLocs)&&S.visitedLocs.includes(locId))return true;
   // Directly reachable from current location = known
   if(ROADS[S.loc]&&ROADS[S.loc][locId]!==undefined)return true;
+  // Map-only pins are reference points, not playable destinations yet.
+  // Keep them visible/tappable so they can show info without a travel button.
+  if(MAP_META&&MAP_META[locId])return true;
   // Reachable from any visited loc
   if(S.visitedLocs){
     const vl=Array.isArray(S.visitedLocs)?S.visitedLocs:[...S.visitedLocs];
@@ -5917,8 +6009,7 @@ function upRoads(){
   mapMarkVisited(S.loc);
   const tab=$('roads-tab');if(!S)return;
   tab.innerHTML='';
-  tab.style.padding='0';
-  tab.style.background='#0a0a06';
+  tab.style.cssText='padding:0;background:#0a0a06;display:flex;flex-direction:column;height:calc(100dvh - 52px - 58px - var(--sb))';
 
   // ── Header strip ──────────────────────────────────────────
   const hdr=el('div','');
@@ -5929,54 +6020,156 @@ function upRoads(){
 
   // ── SVG Map ───────────────────────────────────────────────
   const VW=400, VH=580;
-  const mapWrap=el('div','');
-  mapWrap.style.cssText='position:relative;width:100%;overflow:hidden;background:#0a0a06';
+  const mapWrap=el('div','pip-map-wrap');
+  mapWrap.style.cssText='position:relative;width:100%;overflow:hidden;background:#0a0a06;flex:1;min-height:0';
 
   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
   svg.setAttribute('viewBox',`0 0 ${VW} ${VH}`);
   svg.setAttribute('width','100%');
-  svg.style.cssText='display:block;touch-action:pan-y;user-select:none';
+  svg.style.cssText='display:block;touch-action:none;user-select:none';
 
   // Background terrain texture (subtle grid)
   const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
   defs.innerHTML=`
-    <pattern id="mgrid" width="20" height="20" patternUnits="userSpaceOnUse">
-      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a1a0e" stroke-width="0.5"/>
-    </pattern>
     <filter id="glow">
       <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
       <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
-    <filter id="dimglow">
-      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
+    <radialGradient id="vegasglow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4a3c10" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1a1408" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="damglow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1a3020" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1a1408" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mapgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e1c10"/>
+      <stop offset="50%" stop-color="#221e0e"/>
+      <stop offset="100%" stop-color="#2a1e0a"/>
+    </linearGradient>
+    <pattern id="dotgrid" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="8" r="0.7" fill="#3a3018" opacity="0.5"/>
+    </pattern>
     <style>
-      @keyframes mapPulse{0%,100%{opacity:.7;r:14}50%{opacity:1;r:17}}
-      @keyframes mapSpin{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-40}}
-      .loc-pulse{animation:mapPulse 1.8s ease-in-out infinite}
+      @keyframes mapPulse{0%,100%{opacity:.65}50%{opacity:1}}
+      .loc-pulse{animation:mapPulse 2s ease-in-out infinite}
     </style>`;
   svg.appendChild(defs);
 
-  // Terrain background
-  const bgRect=document.createElementNS('http://www.w3.org/2000/svg','rect');
-  bgRect.setAttribute('width',VW);bgRect.setAttribute('height',VH);
-  bgRect.setAttribute('fill','url(#mgrid)');
-  svg.appendChild(bgRect);
+  // Helper to add a path
+  function addPath(d,fill,opacity){
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',d);p.setAttribute('fill',fill);p.setAttribute('opacity',String(opacity));
+    svg.appendChild(p);return p;
+  }
 
-  // Subtle region colour zones
-  const regions=[
-    {x:0,y:0,w:VW,h:VH,fill:'#0c0b07'},         // base
-    {x:280,y:260,w:140,h:160,fill:'#0e0c08'},     // east (dam area)
-    {x:40,y:180,w:160,h:200,fill:'#0b0d08'},      // northwest (green hills)
-    {x:50,y:440,w:200,h:140,fill:'#0d0b07'},      // south desert
-  ];
-  regions.forEach(r=>{
-    const rr=document.createElementNS('http://www.w3.org/2000/svg','rect');
-    rr.setAttribute('x',r.x);rr.setAttribute('y',r.y);
-    rr.setAttribute('width',r.w);rr.setAttribute('height',r.h);
-    rr.setAttribute('fill',r.fill);rr.setAttribute('opacity','0.5');
-    svg.appendChild(rr);
+  // ── Base fill ─────────────────────────────────────────────
+  const bgBase=document.createElementNS('http://www.w3.org/2000/svg','rect');
+  bgBase.setAttribute('width',VW);bgBase.setAttribute('height',VH);
+  bgBase.setAttribute('fill','url(#mapgrad)');
+  svg.appendChild(bgBase);
+
+  // Dot grid overlay
+  const bgDots=document.createElementNS('http://www.w3.org/2000/svg','rect');
+  bgDots.setAttribute('width',VW);bgDots.setAttribute('height',VH);
+  bgDots.setAttribute('fill','url(#dotgrid)');
+  svg.appendChild(bgDots);
+
+  // ── Terrain shapes ────────────────────────────────────────
+
+  // North-west mountain range (Spring Mountains / Jacobstown)
+  addPath('M0,50 Q18,28 40,44 Q58,16 80,36 Q96,10 116,30 Q134,6 152,26 Q164,14 178,30 Q188,20 198,36 L198,130 Q158,118 118,124 Q72,116 32,126 L0,122 Z',
+    '#2e2810',0.9);
+  // Peak snow/highlights
+  addPath('M40,44 Q58,16 80,36 Q64,26 58,34 Z','#4a4020',0.6);
+  addPath('M96,10 Q116,30 104,20 Z','#4a4020',0.55);
+  addPath('M134,6 Q152,26 142,16 Z','#4a4020',0.5);
+
+  // North-east range (Nellis / Bitter Springs highlands)
+  addPath('M255,0 Q275,18 302,8 Q322,0 344,16 Q364,4 400,12 L400,105 Q368,90 338,97 Q306,86 276,100 Q258,92 244,108 L244,72 Q254,52 266,38 Z',
+    '#2a2410',0.85);
+
+  // East cliff wall (Colorado River canyon)
+  addPath('M350,175 Q365,192 378,183 Q390,188 400,180 L400,580 L335,580 Q340,518 344,468 Q348,408 354,368 Q358,328 352,292 Q347,252 352,218 Z',
+    '#252010',0.9);
+
+  // Colorado River channel
+  addPath('M354,258 Q360,288 365,328 Q370,362 364,392 Q358,428 350,462 Q344,498 338,532 L352,532 Q358,498 366,462 Q374,426 378,392 Q382,356 376,318 Q371,282 366,252 Z',
+    '#1a2e22',0.8);
+  // River highlight shimmer
+  addPath('M357,268 Q361,298 364,338 Q367,372 361,402 Q357,432 351,466 L355,466 Q361,432 365,402 Q371,370 368,336 Q365,298 361,268 Z',
+    '#224030',0.5);
+
+  // West desert plain (Goodsprings / Outpost flats)
+  addPath('M0,375 Q28,360 58,374 Q82,357 108,370 Q128,352 152,365 L158,442 Q132,430 102,442 Q72,432 42,444 Q18,436 0,450 Z',
+    '#2a2210',0.7);
+
+  // Central scrubland mesa
+  addPath('M75,330 Q102,314 132,326 Q156,310 182,320 Q208,306 235,318 Q252,306 270,316 L272,378 Q248,366 222,376 Q197,362 172,373 Q146,360 118,370 Q97,358 75,368 Z',
+    '#262010',0.65);
+
+  // NW foothills (Red Rock Canyon area)
+  addPath('M0,238 Q20,220 44,232 Q64,213 88,226 Q106,208 126,222 Q140,210 156,226 L158,292 Q136,280 112,290 Q88,276 62,288 Q38,276 14,286 L0,280 Z',
+    '#28220e',0.75);
+
+  // South desert basin
+  addPath('M145,478 Q182,460 218,470 Q252,456 288,466 Q315,453 348,462 L352,580 L135,580 Z',
+    '#2e2008',0.7);
+
+  // Heat shimmer lines across south basin
+  for(let i=0;i<6;i++){
+    const y=488+i*13;
+    const hp=document.createElementNS('http://www.w3.org/2000/svg','path');
+    const w=i%2===0?3:-3;
+    hp.setAttribute('d',`M${150+i*6},${y} Q${198+w},${y-4} ${238+i*4},${y} Q${272},${y+3} ${308+i*3},${y}`);
+    hp.setAttribute('fill','none');hp.setAttribute('stroke','#3a2c12');
+    hp.setAttribute('stroke-width','0.7');hp.setAttribute('opacity','0.35');
+    svg.appendChild(hp);
+  }
+
+  // Vegas warm glow
+  const vgGlow=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+  vgGlow.setAttribute('cx','188');vgGlow.setAttribute('cy','255');
+  vgGlow.setAttribute('rx','60');vgGlow.setAttribute('ry','45');
+  vgGlow.setAttribute('fill','url(#vegasglow)');
+  svg.appendChild(vgGlow);
+
+  // Dam/river glow
+  const dgGlow=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+  dgGlow.setAttribute('cx','355');dgGlow.setAttribute('cy','308');
+  dgGlow.setAttribute('rx','38');dgGlow.setAttribute('ry','30');
+  dgGlow.setAttribute('fill','url(#damglow)');
+  svg.appendChild(dgGlow);
+
+  // Scrub brush dots
+  [[48,393],[64,416],[92,383],[118,448],[142,408],[166,466],[196,486],
+   [220,453],[242,476],[268,443],[144,343],[172,326],[207,350],[232,333],
+   [262,358],[287,340],[308,320],[320,356],[337,340],[120,296],[97,310],
+   [52,320],[35,355],[75,412],[108,502],[185,530],[228,515]
+  ].forEach(([sx,sy])=>{
+    const sc=document.createElementNS('http://www.w3.org/2000/svg','ellipse');
+    sc.setAttribute('cx',sx);sc.setAttribute('cy',sy);
+    sc.setAttribute('rx',String(2.5+Math.random()*2.5));
+    sc.setAttribute('ry',String(1.2+Math.random()*1.5));
+    sc.setAttribute('fill','#3a3015');sc.setAttribute('opacity','0.55');
+    svg.appendChild(sc);
+  });
+
+  // Topographic contour lines
+  [
+    'M18,308 Q58,293 98,306 Q138,293 178,303 Q213,290 248,300',
+    'M0,418 Q38,406 78,416 Q116,404 153,413 Q183,402 213,410',
+    'M238,388 Q263,376 292,386 Q318,374 346,382',
+    'M28,158 Q63,146 98,156 Q130,144 160,153',
+    'M262,143 Q292,131 322,141 Q352,130 382,138',
+    'M0,470 Q35,460 70,468 Q105,458 138,465',
+  ].forEach(d=>{
+    const cp=document.createElementNS('http://www.w3.org/2000/svg','path');
+    cp.setAttribute('d',d);cp.setAttribute('fill','none');
+    cp.setAttribute('stroke','#3a3015');cp.setAttribute('stroke-width','0.8');
+    cp.setAttribute('opacity','0.3');
+    svg.appendChild(cp);
   });
 
   // ── Road lines ─────────────────────────────────────────────
@@ -6014,7 +6207,7 @@ function upRoads(){
   const HIT_R=18; // tap hitbox radius
 
   Object.entries(MAP_COORDS).forEach(([locId,pos])=>{
-    const loc=LOCS[locId];if(!loc)return;
+    const loc=LOCS[locId]||MAP_META[locId];if(!loc)return;
     const known=mapIsKnown(locId);
     const isCurrent=locId===S.loc;
     const isSelected=_mapSel===locId;
@@ -6023,6 +6216,7 @@ function upRoads(){
 
     const g=document.createElementNS('http://www.w3.org/2000/svg','g');
     g.setAttribute('cursor','pointer');
+    g.setAttribute('pointer-events','all');
 
     if(isCurrent){
       // Pulsing ring for current location
@@ -6108,9 +6302,24 @@ function upRoads(){
     const hit=document.createElementNS('http://www.w3.org/2000/svg','circle');
     hit.setAttribute('cx',pos.x);hit.setAttribute('cy',pos.y);
     hit.setAttribute('r',HIT_R);hit.setAttribute('fill','transparent');
+    hit.setAttribute('pointer-events','all');
     g.appendChild(hit);
 
-    g.addEventListener('click',()=>mapTapLoc(locId));
+    // Handle marker taps directly so the map pan/zoom layer does not swallow pin clicks on mobile.
+    let tapStart=null;
+    g.addEventListener('pointerdown',e=>{
+      e.stopPropagation();
+      tapStart={x:e.clientX,y:e.clientY,id:e.pointerId};
+      g.setPointerCapture&&g.setPointerCapture(e.pointerId);
+    });
+    g.addEventListener('pointerup',e=>{
+      e.stopPropagation();
+      if(tapStart&&Math.hypot(e.clientX-tapStart.x,e.clientY-tapStart.y)<12){
+        mapTapLoc(locId);
+      }
+      tapStart=null;
+    });
+    g.addEventListener('pointercancel',()=>{tapStart=null});
     svg.appendChild(g);
   });
 
@@ -6130,18 +6339,23 @@ function upRoads(){
   sc.textContent='MOJAVE WASTELAND';
   svg.appendChild(sc);
 
-  mapWrap.appendChild(svg);
+  setupMapPanZoom(svg,VW,VH);
+  const zc=el('div','travel-map-zoom','<button type="button" aria-label="Zoom in">+</button><button type="button" aria-label="Zoom out">−</button>');
+  zc.children[0].onclick=()=>svg._zoomIn&&svg._zoomIn();
+  zc.children[1].onclick=()=>svg._zoomOut&&svg._zoomOut();
+  mapWrap.appendChild(svg);mapWrap.appendChild(zc);
   tab.appendChild(mapWrap);
 
   // ── Location detail panel ─────────────────────────────────
   const panel=el('div','');
   panel.id='map-panel';
-  panel.style.cssText='background:#0e0e08;border-top:1px solid #2a2818;padding:10px 12px;min-height:100px';
+  panel.style.cssText='background:#0e0e08;border-top:2px solid #2a2818;padding:8px 12px 10px;flex-shrink:0';
   tab.appendChild(panel);
   _mapRenderPanel(panel);
 }
 
 function mapTapLoc(locId){
+  if(!MAP_COORDS[locId])return;
   _mapSel=(_mapSel===locId)?null:locId;
   upRoads(); // re-render map with new selection
 }
@@ -6151,19 +6365,20 @@ function _mapRenderPanel(panel){
   if(!_mapSel){
     const roads=ROADS[S.loc]||{};
     const reachCount=Object.keys(roads).length;
-    panel.innerHTML=`<div style="font-size:11px;color:var(--muted);text-align:center;padding:12px 0">
-      <div style="color:var(--amber);font-size:12px;font-weight:bold;margin-bottom:4px">📍 ${LOCS[S.loc]?.n||S.loc}</div>
-      <div style="font-size:10px">${reachCount} route${reachCount!==1?'s':''} from here · Tap a location to travel</div>
-      <div style="font-size:10px;color:#3a3828;margin-top:4px">🟡 Reachable  🔴 Dangerous  ◦ Undiscovered</div>
+    panel.innerHTML=`<div style="text-align:center;padding:6px 0">
+      <div style="color:var(--amber);font-size:13px;font-weight:bold;letter-spacing:1px">📍 ${LOCS[S.loc]?.n||S.loc}</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:3px">${reachCount} route${reachCount!==1?'s':''} from here · Tap a location</div>
+      <div style="font-size:9px;color:#3a3828;margin-top:3px">Bright = reachable · Red dot = dangerous · Dim = undiscovered</div>
     </div>`;
     return;
   }
-  const loc=LOCS[_mapSel];
+  const loc=LOCS[_mapSel]||MAP_META[_mapSel];
+  if(!loc){_mapSel=null;_mapRenderPanel(panel);return}
   const known=mapIsKnown(_mapSel);
   if(!known){
-    panel.innerHTML=`<div style="font-size:11px;color:var(--muted);padding:8px 0">
-      <div style="color:#3a3828;font-size:12px;font-weight:bold">? Unknown Location</div>
-      <div style="font-size:10px;margin-top:4px">You haven't discovered this place yet.</div>
+    panel.innerHTML=`<div style="padding:6px 0">
+      <div style="color:var(--muted);font-size:12px;font-weight:bold">? Unknown Location</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">Not yet discovered.</div>
     </div>`;
     return;
   }
@@ -6176,22 +6391,71 @@ function _mapRenderPanel(panel){
   const iconSrc=MAP_ICON[_mapSel];
 
   panel.innerHTML=`
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      ${iconSrc?`<img src="${iconSrc}" style="width:36px;height:36px;object-fit:contain;border:1px solid #2a2818;border-radius:5px;background:#111108;padding:2px;flex-shrink:0">`:''}
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      ${iconSrc?`<img src="${iconSrc}" style="width:32px;height:32px;object-fit:contain;border:1px solid #2a2818;border-radius:5px;background:#111108;padding:2px;flex-shrink:0">`:''}
       <div style="flex:1;min-width:0">
-        <div style="font-size:14px;font-weight:bold;color:${isCurrent?'var(--amber)':'var(--text)'}">${loc.n}${isCurrent?' <span style="font-size:10px;color:var(--amber)">[HERE]</span>':''}</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:1px">${loc.r} · <span style="color:${dgColor}">${dgLabel}</span></div>
+        <div style="font-size:13px;font-weight:bold;color:${isCurrent?'var(--amber)':'var(--text)'}">${loc.n}${isCurrent?' <span style="font-size:9px;color:var(--amber)">[YOU ARE HERE]</span>':''}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:1px">${loc.r} · <span style="color:${dgColor}">${dgLabel}</span>${canTravel?` · ~${travelDays} day${travelDays!==1?'s':''}`:''}</div>
       </div>
-      ${canTravel?`<div style="text-align:right;font-size:10px;color:var(--muted);flex-shrink:0">~${travelDays} day${travelDays!==1?'s':''}</div>`:''}
     </div>
-    <div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:8px;line-height:1.45">${loc.d}</div>
     ${canTravel
-      ? `<button class="bt go" style="text-align:center;margin:0" onclick="mapDoTravel('${_mapSel}',${travelDays})">🗺 Travel to ${loc.n} (~${travelDays} day${travelDays!==1?'s':''})</button>`
+      ? `<button class="bt go" style="text-align:center;margin:0;padding:12px;font-size:13px;font-weight:bold;letter-spacing:1px" onclick="mapDoTravel('${_mapSel}',${travelDays})">🗺 TRAVEL TO ${loc.n.toUpperCase()}</button>`
       : isCurrent
-        ? `<div style="font-size:11px;color:var(--amber);text-align:center;padding:4px 0">You are here</div>`
-        : `<div style="font-size:11px;color:var(--muted);text-align:center;padding:4px 0">No direct route from ${LOCS[S.loc]?.n||'here'}</div>`
+        ? `<div style="font-size:11px;color:var(--amber);text-align:center;padding:8px 0;border:1px solid #3a3018;border-radius:4px;background:#1a1808">📍 Current Location</div>`
+        : `<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0">No direct route — travel via another location</div>`
     }`;
 }
+
+
+let _travelMapState=null;
+function travelRouteViewBox(fc,tc,VW,VH){
+  if(!fc||!tc)return{x:0,y:0,w:VW,h:VH};
+  const pad=58;
+  let x=Math.min(fc.x,tc.x)-pad,y=Math.min(fc.y,tc.y)-pad;
+  let w=Math.abs(tc.x-fc.x)+pad*2,h=Math.abs(tc.y-fc.y)+pad*2;
+  w=Math.max(155,Math.min(VW,w));h=Math.max(225,Math.min(VH,h));
+  x=(fc.x+tc.x)/2-w/2;y=(fc.y+tc.y)/2-h/2;
+  x=Math.max(0,Math.min(VW-w,x));y=Math.max(0,Math.min(VH-h,y));
+  return{x,y,w,h};
+}
+function buildTravelMap(from,to){
+  const box=$('TO')?.querySelector('div');if(!box)return;
+  let wrap=$('LIVE_TRAVEL_MAP');
+  if(!wrap){wrap=el('div','travel-map-wrap','');wrap.id='LIVE_TRAVEL_MAP';box.insertBefore(wrap,box.firstChild);}
+  const fc=MAP_COORDS[from],tc=MAP_COORDS[to];
+  const fromName=LOCS[from]?.n||MAP_META[from]?.n||from,toName=LOCS[to]?.n||MAP_META[to]?.n||to;
+  wrap.innerHTML=`<div class="travel-map-title">${fromName} → ${toName}</div><div class="travel-map-zoom"><button type="button" aria-label="Zoom in">+</button><button type="button" aria-label="Zoom out">−</button></div>`;
+  const VW=400,VH=580;
+  const initialVb=travelRouteViewBox(fc,tc,VW,VH);
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox',`${initialVb.x} ${initialVb.y} ${initialVb.w} ${initialVb.h}`);svg.setAttribute('width','100%');svg.setAttribute('height','100%');
+  svg.style.cssText='display:block;touch-action:none;user-select:none;background:linear-gradient(180deg,#1e1c10,#2a1e0a)';
+  svg.innerHTML=`<defs><pattern id="tmgrid" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="9" cy="9" r=".7" fill="#3a3018" opacity=".55"/></pattern><filter id="routeGlow"><feGaussianBlur stdDeviation="2.5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="400" height="580" fill="url(#tmgrid)"/><path d="M354,258 Q360,288 365,328 Q370,362 364,392 Q358,428 350,462 Q344,498 338,532" fill="none" stroke="#224030" stroke-width="9" opacity=".7"/><ellipse cx="188" cy="255" rx="60" ry="45" fill="#4a3c10" opacity=".14"/>`;
+  if(fc&&tc){
+    const road=document.createElementNS('http://www.w3.org/2000/svg','line');road.setAttribute('x1',fc.x);road.setAttribute('y1',fc.y);road.setAttribute('x2',tc.x);road.setAttribute('y2',tc.y);road.setAttribute('stroke','#c9a230');road.setAttribute('stroke-width','4');road.setAttribute('stroke-dasharray','8 5');road.setAttribute('opacity','.95');road.setAttribute('filter','url(#routeGlow)');svg.appendChild(road);
+    [[from,fc,'#f0c850','START'],[to,tc,'#4aff4a','DEST']].forEach(([id,p,col,tag])=>{
+      const icon=MAP_ICON[id];
+      const halo=document.createElementNS('http://www.w3.org/2000/svg','circle');halo.setAttribute('cx',p.x);halo.setAttribute('cy',p.y);halo.setAttribute('r','18');halo.setAttribute('fill',col);halo.setAttribute('opacity','.18');svg.appendChild(halo);
+      if(icon){const im=document.createElementNS('http://www.w3.org/2000/svg','image');im.setAttribute('href',icon);im.setAttribute('x',p.x-15);im.setAttribute('y',p.y-15);im.setAttribute('width','30');im.setAttribute('height','30');svg.appendChild(im);} 
+      const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);c.setAttribute('r','8');c.setAttribute('fill',col);c.setAttribute('stroke','#0a0a06');c.setAttribute('stroke-width','2');svg.appendChild(c);
+      const label=document.createElementNS('http://www.w3.org/2000/svg','text');label.setAttribute('x',p.x);label.setAttribute('y',p.y+27);label.setAttribute('text-anchor','middle');label.setAttribute('font-size','8');label.setAttribute('font-family','Courier New');label.setAttribute('fill',col);label.textContent=tag;svg.appendChild(label);
+    });
+    const marker=document.createElementNS('http://www.w3.org/2000/svg','image');marker.id='LIVE_TRAVEL_PLAYER';marker.setAttribute('href','NVImages/CharIcon.png');marker.setAttribute('width','34');marker.setAttribute('height','34');marker.setAttribute('x',fc.x-17);marker.setAttribute('y',fc.y-17);svg.appendChild(marker);
+  }
+  wrap.appendChild(svg);
+  const buttons=wrap.querySelectorAll('.travel-map-zoom button');setupMapPanZoom(svg,VW,VH);
+  buttons[0].onclick=()=>svg._zoomIn&&svg._zoomIn();buttons[1].onclick=()=>svg._zoomOut&&svg._zoomOut();
+  _travelMapState={from,to,total:1,done:0};
+}
+function updateTravelMapProgress(done,total){
+  const st=_travelMapState;if(!st)return;
+  st.done=done;st.total=Math.max(1,total||st.total||1);
+  const fc=MAP_COORDS[st.from],tc=MAP_COORDS[st.to],mk=$('LIVE_TRAVEL_PLAYER');if(!fc||!tc||!mk)return;
+  const p=Math.max(0,Math.min(1,st.done/st.total));
+  const x=fc.x+(tc.x-fc.x)*p,y=fc.y+(tc.y-fc.y)*p;
+  mk.setAttribute('x',x-17);mk.setAttribute('y',y-17);
+}
+function clearTravelMap(){const w=$('LIVE_TRAVEL_MAP');if(w)w.remove();_travelMapState=null;}
 
 function mapDoTravel(dest,days){
   _mapSel=null;
@@ -6259,6 +6523,8 @@ function _beginTravelForce(dest,days){
   tDest=dest;
   tQ=genTravelEv(days,S.loc,dest);
   $('TO').classList.add('A');$('TB').style.width='0%';$('TC').innerHTML='';$('TN').style.display='none';
+  buildTravelMap(S.loc,dest);
+  updateTravelMapProgress(0,Math.max(1,tQ.length));
   nextTEv();
 }
 function genTravelEv(days,from,to){
@@ -6296,6 +6562,7 @@ function genTravelEv(days,from,to){
 function nextTEv(){
   if(!tQ.length){finTravel();return}
   const ev=tQ.shift();
+  updateTravelMapProgress(ev._i+1,ev._t);
   $('TB').style.width=Math.round(((ev._i+1)/ev._t)*100)+'%';
   $('TS').innerHTML=ev.e;$('TT').innerHTML=ev.tx;$('TC').innerHTML='';$('TN').style.display='none';
   if(ev.tp==='combat'){
@@ -6344,6 +6611,7 @@ function finTravel(){
   refreshActiveTab();
   save();
   $('TO').classList.remove('A');
+  clearTravelMap();
 }
 
 // ============================================================
