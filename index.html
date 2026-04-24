@@ -1136,7 +1136,7 @@ function addGoodspringsNpcCard(body,id){
   const npc=GOODSPRINGS_NPCS[id];if(!npc)return;
   const ex=gsNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openGoodspringsNPC(id);
   body.appendChild(nc);
 }
@@ -1247,7 +1247,7 @@ function openGoodspringsNPC(id){
   gsRefreshState();
   const npc=GOODSPRINGS_NPCS[id];if(!npc)return;
   const rel=gsNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div><div class="npc-line">"${npc.line}"</div>`;
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div><div class="npc-line">"${npc.line}"</div>`;
   if(id==='trudy'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Trudy','🍺',['Trudy says Goodsprings stays alive because people here still step up when trouble walks in armed.','She makes it clear the town has no interest in being pushed around by Powder Gangers or drifters.'],'Continue','upAll()')">🍺 Ask about Goodsprings</button>`;
     if(gsGhostActive()&&!hasFlag('gs_ghost_trudy'))h+=`<button class="bt pip" onclick="gsRecruitGhost('trudy','Trudy',['Trudy agrees to stand with Ringo and talk the locals into backing the fight.','The saloon will not roll over for Joe Cobb.'])">🤝 Ask Trudy to rally the town</button>`;
@@ -1432,7 +1432,7 @@ function addHiddenValleyNpcCard(body,id){
   const npc=HIDDEN_VALLEY_NPCS[id];if(!npc)return;
   const ex=hvNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openHiddenValleyNPC(id);
   body.appendChild(nc);
 }
@@ -1581,7 +1581,7 @@ function openHiddenValleyNPC(id,topic='root'){
   hvRefreshState();
   const npc=HIDDEN_VALLEY_NPCS[id]; if(!npc)return;
   const rel=hvNpcRel(id);
-  const title=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>`;
+  const title=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>`;
   let h=title;
   const back=`<button class="bt" onclick="openHiddenValleyNPC('${id}','root')">↩ Back</button><button class="bt dn" onclick="closeDlg()">Walk away</button>`;
   if(topic==='root'){
@@ -4064,7 +4064,7 @@ function addNamedNpcCard(body,id){
   const npc=PRIMM_NPCS[id];if(!npc)return;
   const ex=namedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openPrimmNPC(id);
   body.appendChild(nc);
 }
@@ -4076,7 +4076,7 @@ function queueNamedQuest(id,prefix,capBonus=10,xpBonus=5){
 function openPrimmNPC(id){
   const npc=PRIMM_NPCS[id];if(!npc)return;
   const rel=namedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
 
@@ -4120,7 +4120,7 @@ function addNovacNpcCard(body,id){
   const npc=NOVAC_NPCS[id];if(!npc)return;
   const ex=novacNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openNovacNPC(id);
   body.appendChild(nc);
 }
@@ -4182,7 +4182,7 @@ function finishBooneQuest(){
 function openNovacNPC(id){
   const npc=NOVAC_NPCS[id];if(!npc)return;
   const rel=novacNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='cliff_briscoe'){
@@ -4307,7 +4307,7 @@ function addCampGolfNpcCard(body,id){
   const npc=CAMP_GOLF_NPCS[id];if(!npc)return;
   const ex=campGolfNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openCampGolfNPC(id);
   body.appendChild(nc);
 }
@@ -4319,7 +4319,7 @@ function queueCampGolfQuest(id,prefix,capBonus=16,xpBonus=10){
 function openCampGolfNPC(id){
   const npc=CAMP_GOLF_NPCS[id];if(!npc)return;
   const rel=campGolfNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='chief_hanlon'){
@@ -4413,7 +4413,7 @@ function addBitterSpringsNpcCard(body,id){
   const npc=BITTER_SPRINGS_NPCS[id];if(!npc)return;
   const ex=bitterSpringsNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openBitterSpringsNPC(id);
   body.appendChild(nc);
 }
@@ -4425,7 +4425,7 @@ function queueBitterSpringsQuest(id,prefix,capBonus=16,xpBonus=10){
 function openBitterSpringsNPC(id){
   const npc=BITTER_SPRINGS_NPCS[id];if(!npc)return;
   const rel=bitterSpringsNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
 
@@ -4516,7 +4516,7 @@ function addNcrcfNpcCard(body,id){
   const npc=NCRCF_NPCS[id];if(!npc)return;
   const ex=ncrcfNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openNcrcfNPC(id);
   body.appendChild(nc);
 }
@@ -4528,7 +4528,7 @@ function queueNcrcfQuest(id,prefix,capBonus=16,xpBonus=10){
 function openNcrcfNPC(id){
   const npc=NCRCF_NPCS[id];if(!npc)return;
   const rel=ncrcfNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='eddie'){
@@ -4618,7 +4618,7 @@ function addHeliosNpcCard(body,id){
   const npc=HELIOS_NPCS[id];if(!npc)return;
   const ex=heliosNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openHeliosNPC(id);
   body.appendChild(nc);
 }
@@ -4630,7 +4630,7 @@ function queueHeliosQuest(id,prefix,capBonus=18,xpBonus=12){
 function openHeliosNPC(id){
   const npc=HELIOS_NPCS[id];if(!npc)return;
   const rel=heliosNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='lt_haggerty'){
@@ -4719,7 +4719,7 @@ function addCinderGulchNpcCard(body,id){
   const npc=CINDER_GULCH_NPCS[id];if(!npc)return;
   const ex=cinderGulchNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openCinderGulchNPC(id);
   body.appendChild(nc);
 }
@@ -4734,7 +4734,7 @@ function queueCinderGulchQuest(id,prefix,capBonus=20,xpBonus=14){
 function openCinderGulchNPC(id){
   const npc=CINDER_GULCH_NPCS[id];if(!npc)return;
   const rel=cinderGulchNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='harlan_voss'){
@@ -4804,7 +4804,7 @@ function addFreesideNpcCard(body,id){
   const npc=FREESIDE_NPCS[id];if(!npc)return;
   const ex=freesideNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openFreesideNPC(id);
   body.appendChild(nc);
 }
@@ -4816,7 +4816,7 @@ function queueFreesideQuest(id,prefix,capBonus=12,xpBonus=8){
 function openFreesideNPC(id){
   const npc=FREESIDE_NPCS[id];if(!npc)return;
   const rel=freesideNamedNpcRel(id);
-  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(npc.icon||(npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
+  let h=`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(inferNpcIcon(npc),28)}</span><span style="color:var(--amber)">${npc.name}</span></h3>
   <div style="font-size:10px;color:var(--muted);margin-bottom:6px">${npc.role}${npc.age?` · Age ${npc.age}`:''}${rel?` · ${rel.rel}`:''}</div>
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='james_garret'){
