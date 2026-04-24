@@ -65,12 +65,14 @@ align-items:center;z-index:200;padding:12px;overflow-y:auto}
 #CP{background:var(--panel);border:1px solid var(--amber2);border-radius:8px;padding:10px;
 width:96%;max-width:400px;max-height:92vh;overflow-y:auto}
 /* Building overlay */
-#BO{position:fixed;inset:0;background:var(--bg);z-index:150;display:none;flex-direction:column}
+#BO{position:fixed;inset:0;background:var(--bg);z-index:150;display:none;flex-direction:column;overflow:hidden}
 #BO.A{display:flex}
+#BI{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 .bh{display:flex;align-items:center;gap:8px;padding:calc(var(--st)+8px) 10px 8px;min-height:52px;
 background:#141408;border-bottom:1px solid #2a2818;flex-shrink:0;z-index:10}
+.bh img,.bh svg{width:28px!important;height:28px!important;max-width:28px!important;max-height:28px!important;object-fit:contain!important;display:inline-block!important;vertical-align:middle!important}
 .bb{font-size:22px;color:var(--amber);cursor:pointer;padding:8px 12px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
-.bp{padding:10px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;padding-bottom:calc(20px + var(--sb))}
+.bp{padding:10px;overflow-y:auto;flex:1 1 auto;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(96px + var(--sb))}
 .bs2{color:var(--amber2);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
 padding:3px 0;margin:10px 0 4px;border-bottom:1px solid #2a2818}
 .ba{font-size:11px;color:var(--muted);font-style:italic;padding:6px 0;text-align:center;
@@ -221,6 +223,9 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 .craft-mat.ok{border-color:#2a4a18;color:var(--green)}
 .craft-mat.missing{border-color:#4a1818;color:var(--red)}
 
+.craft-out-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.craft-out-icon img,.craft-out-icon svg,.craft-mat img,.craft-mat svg{width:20px!important;height:20px!important;max-width:20px!important;max-height:20px!important;object-fit:contain!important;display:inline-block!important;vertical-align:middle!important}
+
 /* Encounter/icon image size safety */
 #TS{display:flex;align-items:center;justify-content:center;min-height:74px;text-align:center}
 #TS img,#TS svg,#TS .icon-wrap{
@@ -245,19 +250,19 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 /* Bigger clickable map-card icons (buildings, surroundings, travel routes).
    Does not affect the main location header icon. */
 .card-icon-lg{
-  width:118px!important;height:118px!important;min-width:118px!important;
+  width:62px!important;height:62px!important;min-width:62px!important;
   display:flex!important;align-items:center!important;justify-content:center!important;
-  background:#111108;border:1px solid #2a2818;border-radius:10px;
-  overflow:hidden;font-size:88px!important;line-height:1!important;
+  background:#111108;border:1px solid #2a2818;border-radius:8px;
+  overflow:hidden;font-size:42px!important;line-height:1!important;
 }
 .card-icon-lg .icon-wrap,
 .card-icon-lg img,
 .card-icon-lg svg{
-  width:108px!important;height:108px!important;
-  max-width:108px!important;max-height:108px!important;
+  width:54px!important;height:54px!important;
+  max-width:54px!important;max-height:54px!important;
   object-fit:contain!important;display:block!important;margin:0 auto!important;
 }
-.bc.big-icon-card{min-height:128px;padding:8px 10px;gap:10px}
+.bc.big-icon-card{min-height:78px;padding:8px 10px;gap:10px}
 .bc.big-icon-card:active{background:#2a2a1a}
 
 /* Mobile tap/zoom handling */
@@ -887,7 +892,12 @@ function renderIcon(icon,size=28){
 }
 
 // Helper: create an NPC image icon string from a filename in NVImages/
-function npcImg(filename){return `<img src="NVImages/${filename}" style="width:200%;height:200%;object-fit:contain;display:block;">`}
+function npcImg(filename,...fallbacks){
+  const chain=[filename,...fallbacks].filter(Boolean).map(f=>'NVImages/'+f);
+  const esc=v=>String(v).replace(/'/g,'&#39;');
+  const onerr=chain.length>1?`this.onerror=${chain.length>2?`function(){this.src='${esc(chain[2])}';this.onerror=function(){this.style.display='none';this.parentNode&&this.parentNode.insertAdjacentHTML('beforeend','?');}}`:`function(){this.style.display='none';this.parentNode&&this.parentNode.insertAdjacentHTML('beforeend','?');}`};this.src='${esc(chain[1])}'`:`this.onerror=null;this.style.display='none';this.parentNode&&this.parentNode.insertAdjacentHTML('beforeend','?')`;
+  return `<img src="${chain[0]}" onerror="${onerr}" style="width:100%;height:100%;object-fit:contain;display:block;">`;
+}
 
 // ── Centralised NPC icon registry ───────────────────────────
 // To update ANY named NPC's icon, just change the entry here.
@@ -895,13 +905,13 @@ function npcImg(filename){return `<img src="NVImages/${filename}" style="width:2
 // NPCs not listed here fall back to their data dict icon, then inferNpcIcon().
 const NPC_ICON={
   // ── Goodsprings ──
-  'Trudy':             ICONS.NPC.GOODSPRINGS_TRUDY,
-  'Sunny Smiles':      ICONS.NPC.GOODSPRINGS_SUNNYSMILES,
-  'Doc Mitchell':      ICONS.NPC.GOODSPRINGS_DOCMITCHELL,
-  'Chet':              ICONS.NPC.GOODSPRINGS_CHET,
-  'Easy Pete':         ICONS.NPC.GOODSPRINGS_EASYPETE,
-  'Victor':            ICONS.NPC.SECURITRON,
-  'Ringo':             ICONS.NPC.GOODSPRINGS_RINGO,
+  'Trudy':             npcImg('TrudyIcon.png','Trudyicon.png','trudyIcon.png'),
+  'Sunny Smiles':      npcImg('SunnysmilesIcon.png','SunnySmilesIcon.png','SunnySmiles.png'),
+  'Doc Mitchell':      npcImg('DocmitchellIcon.png','DocMitchellIcon.png','DocMitchell.png'),
+  'Chet':              npcImg('ChetIcon.png','Cheticon.png','Chet.png'),
+  'Easy Pete':         npcImg('EasypeteIcon.png','EasyPeteIcon.png','EasyPete.png'),
+  'Victor':            npcImg('VictorIcon.png','SecuritronIcon.png','SecruitronIcon.png'),
+  'Ringo':             npcImg('RingoIcon.png','Ringoicon.png','Ringo.png'),
   // ── Primm ──
   'Johnson Nash':      ICONS.NPC.JOHNSON_NASH,
   'Ruby Nash':         ICONS.NPC.COOK,
@@ -5551,7 +5561,7 @@ function bldWorkshop(body,bId){
         return `<span class="craft-mat ${ok?'ok':'missing'}">${mat?mat.e:'?'} ${mat?mat.n:m.id} ${have}/${m.qty}</span>`;
       }).join(' ');
       card.innerHTML=`<div class="craft-row" style="margin-bottom:5px">
-        <span style="font-size:20px">${out.e}</span>
+        <span class="craft-out-icon">${renderIcon(out.e,24)}</span>
         <div style="flex:1"><div style="font-size:12px;font-weight:bold;color:${canDo?'var(--green)':'var(--text)'}">${out.n}${recipe.qty>1?' ×'+recipe.qty:''}</div>
         <div style="font-size:10px;color:var(--muted)">${recipe.desc}</div></div>
       </div>
