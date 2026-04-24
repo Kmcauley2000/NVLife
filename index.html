@@ -211,6 +211,24 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
   max-width:28px!important;max-height:28px!important;
   object-fit:contain!important;display:inline-block!important;vertical-align:middle!important
 }
+
+/* Bigger clickable map-card icons (buildings, surroundings, travel routes).
+   Does not affect the main location header icon. */
+.card-icon-lg{
+  width:118px!important;height:118px!important;min-width:118px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  background:#111108;border:1px solid #2a2818;border-radius:10px;
+  overflow:hidden;font-size:88px!important;line-height:1!important;
+}
+.card-icon-lg .icon-wrap,
+.card-icon-lg img,
+.card-icon-lg svg{
+  width:108px!important;height:108px!important;
+  max-width:108px!important;max-height:108px!important;
+  object-fit:contain!important;display:block!important;margin:0 auto!important;
+}
+.bc.big-icon-card{min-height:128px;padding:8px 10px;gap:10px}
+.bc.big-icon-card:active{background:#2a2a1a}
 </style>
 </head>
 <body>
@@ -510,22 +528,22 @@ psycho:{n:"Psycho",t:"chem",e:'<img src="NVImages/PsychoIcon.png" style="width:1
 med_x:{n:"Med-X",t:"chem",e:"💊",p:50,w:0,buff:{dr:15}},
 stealth_boy:{n:"Stealth Boy",t:"chem",e:"👻",p:100,w:0,rare:1},
 // Weapons
-pistol_9mm:{n:"9mm Pistol",t:"w",e:'<img src="NVImages/9mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:8,p:50,w:2,ammo:"ammo_9mm"},
-pistol_10mm:{n:"10mm Pistol",t:"w",e:'<img src="NVImages/10mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:12,p:80,w:3,ammo:"ammo_10mm"},
-revolver_357:{n:".357 Magnum Revolver",t:"w",e:'<img src="NVImages/357magnumrevolverIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:16,p:140,w:3,ammo:"ammo_357"},
-varmint_rifle:{n:"Varmint Rifle",t:"w",e:'<img src="NVImages/VarmintrifleIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:14,p:60,w:5.5,ammo:"ammo_556"},
+pistol_9mm:{n:"9mm Pistol",t:"w",e:'<img src="NVImages/9mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:16,p:50,w:2,ammo:"ammo_9mm"},
+pistol_10mm:{n:"10mm Pistol",t:"w",e:'<img src="NVImages/10mmpistolIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:22,p:80,w:3,ammo:"ammo_10mm"},
+revolver_357:{n:".357 Magnum Revolver",t:"w",e:'<img src="NVImages/357magnumrevolverIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:26,p:140,w:3,ammo:"ammo_357"},
+varmint_rifle:{n:"Varmint Rifle",t:"w",e:'<img src="NVImages/VarmintrifleIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:18,p:60,w:5.5,ammo:"ammo_556"},
 service_rifle:{n:"Service Rifle",t:"w",e:'<img src="NVImages/ServicerifleIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:24,p:220,w:6,ammo:"ammo_556"},
 assault_carbine:{n:"Assault Carbine",t:"w",e:'<img src="NVImages/AssaultcarbineIcon.png" style="width:25%;height:25%;object-fit:contain;display:block;">',a:32,p:420,w:6.5,ammo:"ammo_556",rare:1},
 hunting_rifle:{n:"Hunting Rifle",t:"w",e:"🔫",a:25,p:200,w:6,ammo:"ammo_308"},
 sniper_rifle:{n:"Sniper Rifle",t:"w",e:"🔫",a:40,p:520,w:8,ammo:"ammo_308",rare:1},
 caravan_shotgun:{n:"Caravan Shotgun",t:"w",e:"🔫",a:20,p:170,w:4.5,ammo:"ammo_shells"},
 combat_shotgun:{n:"Combat Shotgun",t:"w",e:"🔫",a:30,p:300,w:7.5,ammo:"ammo_shells",rare:1},
-laser_pistol:{n:"Laser Pistol",t:"w",e:"⚡",a:18,p:120,w:2,ammo:"energy_cell"},
-laser_rifle:{n:"Laser Rifle",t:"w",e:"⚡",a:28,p:260,w:5,ammo:"energy_cell"},
+laser_pistol:{n:"Laser Pistol",t:"w",e:"⚡",a:12,p:120,w:2,ammo:"energy_cell"},
+laser_rifle:{n:"Laser Rifle",t:"w",e:"⚡",a:22,p:260,w:5,ammo:"energy_cell"},
 plasma_rifle:{n:"Plasma Rifle",t:"w",e:"⚡",a:35,p:400,w:8,ammo:"energy_cell",rare:1},
-machete:{n:"Machete",t:"w",e:"🔪",a:10,p:30,w:3},
-combat_knife:{n:"Combat Knife",t:"w",e:"🗡",a:7,p:25,w:1},
-switchblade:{n:"Switchblade",t:"w",e:"🔪",a:4,p:10,w:1},
+machete:{n:"Machete",t:"w",e:"🔪",a:11,p:30,w:3},
+combat_knife:{n:"Combat Knife",t:"w",e:"🗡",a:15,p:25,w:1},
+switchblade:{n:"Switchblade",t:"w",e:"🔪",a:7,p:10,w:1},
 power_fist:{n:"Power Fist",t:"w",e:"👊",a:28,p:250,w:6,rare:1},
 thermic_lance:{n:"Thermic Lance",t:"w",e:"🔱",a:40,p:500,w:12,rare:2},
 maria:{n:"Maria",t:"w",e:"🔫",a:22,p:600,desc:"Benny's gun. 9mm, gold-plated.",w:2,ammo:"ammo_9mm",rare:2},
@@ -665,41 +683,42 @@ function renderIcon(icon,size=28){
 // DATA - ENEMIES
 // ============================================================
 const ENEMIES={
-gecko:        {n:"Gecko",              hp:20,  a:4,  d:0,  xp:8,   e:ICONS.ENEMY.GECKO,          loot:["gecko_hide","gecko_steak"],                              type:'animal',   fac:'wild'},
-bloatfly:     {n:"Bloatfly",           hp:15,  a:3,  d:0,  xp:5,   e:ICONS.ENEMY.BLOATFLY,       loot:["herbs"],                                                type:'insect',   fac:'wild'},
-mantis:       {n:"Giant Mantis",       hp:25,  a:6,  d:1,  xp:10,  e:ICONS.ENEMY.MANTIS,         loot:["scrap"],                                                type:'insect',   fac:'wild'},
-radroach:     {n:"Radroach",           hp:10,  a:2,  d:0,  xp:3,   e:ICONS.ENEMY.RADROACH,       loot:["herbs"],                                                type:'insect',   fac:'wild'},
-radscorpion:  {n:"Radscorpion",        hp:60,  a:15, d:5,  xp:25,  e:ICONS.ENEMY.RADSCORPION,    loot:["antivenom","stimpak"],                                   type:'insect',   fac:'wild'},
-cazador:      {n:"Cazador",            hp:45,  a:18, d:3,  xp:30,  e:ICONS.ENEMY.CAZADOR,        loot:["antivenom","stimpak"],                                   type:'insect',   fac:'wild'},
-nightstalker: {n:"Night Stalker",      hp:40,  a:12, d:4,  xp:20,  e:ICONS.ENEMY.NIGHTSTALKER,   loot:["stimpak","herbs"],                                       type:'animal',   fac:'wild'},
-nightkin:     {n:"Nightkin",           hp:100, a:25, d:12, xp:60,  e:ICONS.ENEMY.NIGHTKIN,       loot:["stealth_boy","super_stimpak"],                           type:'mutant',   fac:'SuperMutants'},
-feral_ghoul:  {n:"Feral Ghoul",        hp:35,  a:10, d:2,  xp:15,  e:ICONS.ENEMY.GHOUL,          loot:["stimpak","pre_war_money"],                               type:'undead',   fac:'wild'},
-convict:      {n:"Escaped Convict",    hp:30,  a:8,  d:3,  xp:12,  e:ICONS.ENEMY.CONVICT,        loot:["ammo_9mm","switchblade","sunset_sars"],                   type:'human',    fac:'PowderGangers', hostile:true},
-bison_convict_boss:{n:"Bison Steve Convict Boss",hp:48,a:13,d:5,xp:24,e:ICONS.ENEMY.CONVICT,loot:["pistol_10mm","ammo_10mm","pre_war_money","primm_sheriff_papers"],type:'human',fac:'PowderGangers',hostile:true},
-powder_ganger:{n:"Powder Ganger",      hp:35,  a:10, d:4,  xp:15,  e:ICONS.ENEMY.POWDER_GANGER,  loot:["dynamite","ammo_9mm","stimpak"],                         type:'human',    fac:'PowderGangers', hostile:true},
-joe_cobb:     {n:"Joe Cobb",            hp:55,  a:14, d:5,  xp:28,  e:ICONS.ENEMY.POWDER_GANGER,  loot:["dynamite","pistol_9mm","ammo_9mm","powder_charge"], type:'human', fac:'PowderGangers', hostile:true},
-freeside_thug:{n:"Freeside Thug",      hp:30,  a:7,  d:3,  xp:10,  e:ICONS.ENEMY.FREESIDE_THUG,  loot:["switchblade","jet","pre_war_money"],                     type:'human',    fac:'Freeside',      hostile:true},
-fiend:        {n:"Fiend",              hp:40,  a:14, d:5,  xp:20,  e:ICONS.ENEMY.FIEND,          loot:["jet","psycho","ammo_9mm","ammo_10mm","combat_knife","pistol_10mm"], type:'human', fac:'Fiends', hostile:true},
-legion_recruit:  {n:"Legion Recruit",  hp:40,  a:12, d:6,  xp:18,  e:ICONS.ENEMY.LEGION,         loot:["machete","healing_powder","legion_coin"],                type:'human',    fac:'Legion',        hostile:true},
-legion_veteran:  {n:"Legion Veteran",  hp:70,  a:20, d:10, xp:35,  e:ICONS.ENEMY.LEGION,         loot:["thermic_lance","super_stimpak","legion_coin"],           type:'human',    fac:'Legion',        hostile:true},
-legion_centurion:{n:"Legion Centurion",hp:120, a:28, d:15, xp:60,  e:ICONS.ENEMY.LEGION_ELITE,   loot:["thermic_lance","super_stimpak","power_fist","legion_coin"],type:'human',  fac:'Legion',        hostile:true},
-legion_scout:    {n:"Legion Scout",    hp:35,  a:11, d:5,  xp:15,  e:ICONS.ENEMY.LEGION_SCOUT,   loot:["machete","healing_powder","legion_coin"],                type:'human',    fac:'Legion',        hostile:true},
-great_khan:   {n:"Great Khan",         hp:45,  a:13, d:6,  xp:18,  e:ICONS.ENEMY.KHAN,           loot:["ammo_9mm","ammo_357","jet","stimpak","revolver_357"],     type:'human',    fac:'Khans'},
-securitron:   {n:"Securitron",         hp:80,  a:22, d:14, xp:40,  e:ICONS.ENEMY.SECURITRON,     loot:["energy_cell","sensor_module","scrap"],                   type:'robot',    fac:'House'},
-super_mutant: {n:"Super Mutant",       hp:95,  a:24, d:11, xp:45,  e:ICONS.ENEMY.SUPER_MUTANT,   loot:["ammo_556","scrap","stimpak","cowboy_repeater"],           type:'mutant',   fac:'SuperMutants',  hostile:true},
-glowing_one:  {n:"Glowing One",        hp:65,  a:17, d:5,  xp:30,  e:ICONS.ENEMY.GLOWING_ONE,    loot:["doctor_bag","med_x","pre_war_money","stimpak"],           type:'undead',   fac:'wild'},
-bark_scorpion:{n:"Bark Scorpion",      hp:24,  a:6,  d:1,  xp:9,   e:ICONS.ENEMY.BARK_SCORPION,  loot:["antivenom","herbs"],                                     type:'insect',   fac:'wild'},
-giant_rat:    {n:"Giant Rat",          hp:18,  a:5,  d:0,  xp:7,   e:ICONS.ENEMY.RAT,            loot:["dirty_water","cram"],                                    type:'animal',   fac:'wild'},
-giant_ant:    {n:"Giant Ant",          hp:26,  a:7,  d:1,  xp:10,  e:ICONS.ENEMY.ANT,            loot:["herbs","scrap"],                                         type:'insect',   fac:'wild'},
-jackal_raider:{n:"Jackal Gang Member", hp:28,  a:9,  d:2,  xp:12,  e:ICONS.ENEMY.CONVICT,        loot:["ammo_9mm","switchblade","single_shotgun","cigarette_pack"],type:'human',   fac:'Raiders',       hostile:true},
-viper_gunslinger:{n:"Viper Gunslinger",hp:34,  a:12, d:4,  xp:16,  e:ICONS.ENEMY.VIPER,          loot:["ammo_357","varmint_rifle","leather_armor","cigarette_carton"],type:'human', fac:'Raiders',      hostile:true},
-centaur:      {n:"Centaur",            hp:70,  a:16, d:6,  xp:28,  e:ICONS.ENEMY.GHOUL,          loot:["med_x","dirty_water","scrap"],                           type:'mutant',   fac:'SuperMutants'},
-feral_ghoul_trooper:{n:"Feral Ghoul Trooper",hp:50,a:14,d:4,xp:22, e:ICONS.ENEMY.GLOWING_ONE,    loot:["stimpak","ammo_556","pre_war_money","ncr_armor"],         type:'undead',   fac:'wild'},
-Young_deathclaw:{n:"Young Deathclaw",  hp:120, a:28, d:10, xp:55,  e:ICONS.ENEMY.YOUNG_DEATHCLAW,loot:["stimpak","combat_armor"],                                type:'animal',   fac:'wild'},
-lakelurk:     {n:"Lakelurk",           hp:85,  a:22, d:10, xp:38,  e:ICONS.ENEMY.LAKELURK,       loot:["purified_water","stimpak","pre_war_money"],              type:'creature', fac:'wild'},
-rogue_scavenger:{n:"Rogue Scavenger",  hp:42,  a:12, d:4,  xp:18,  e:ICONS.ENEMY.CONVICT,        loot:["ammo_9mm","duct_tape","damaged_holotape","pre_war_money","targeting_module"],type:'human',fac:'Raiders',hostile:true},
-deathclaw:    {n:"Deathclaw",          hp:200, a:40, d:18, xp:100, e:ICONS.ENEMY.DEATHCLAW,      loot:["super_stimpak","super_stimpak","combat_armor"],boss:1,    type:'animal',   fac:'wild'},
-ncr_trooper:  {n:"NCR Trooper",        hp:45,  a:13, d:6,  xp:14,  e:ICONS.NPC.NCR,              loot:["ammo_556","stimpak","ncr_armor"],                        type:'human',    fac:'NCR'},
+// Stats use Fallout: New Vegas normal-difficulty style values: HP, attack damage and DT.
+gecko:{n:"Gecko",hp:25,a:10,d:0,xp:20,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_steak"],type:'animal',fac:'wild'},
+bloatfly:{n:"Bloatfly",hp:15,a:8,d:0,xp:10,e:ICONS.ENEMY.BLOATFLY,loot:["herbs"],type:'insect',fac:'wild'},
+mantis:{n:"Giant Mantis",hp:30,a:12,d:0,xp:25,e:ICONS.ENEMY.MANTIS,loot:["scrap"],type:'insect',fac:'wild'},
+radroach:{n:"Radroach",hp:10,a:5,d:0,xp:5,e:ICONS.ENEMY.RADROACH,loot:["herbs"],type:'insect',fac:'wild'},
+radscorpion:{n:"Radscorpion",hp:75,a:18,d:5,xp:50,e:ICONS.ENEMY.RADSCORPION,loot:["antivenom","stimpak"],type:'insect',fac:'wild'},
+cazador:{n:"Cazador",hp:80,a:35,d:0,xp:75,e:ICONS.ENEMY.CAZADOR,loot:["antivenom","stimpak"],type:'insect',fac:'wild'},
+nightstalker:{n:"Night Stalker",hp:80,a:25,d:2,xp:60,e:ICONS.ENEMY.NIGHTSTALKER,loot:["stimpak","herbs"],type:'animal',fac:'wild'},
+nightkin:{n:"Nightkin",hp:180,a:45,d:0,xp:125,e:ICONS.ENEMY.NIGHTKIN,loot:["stealth_boy","super_stimpak"],type:'mutant',fac:'SuperMutants'},
+feral_ghoul:{n:"Feral Ghoul",hp:45,a:16,d:0,xp:35,e:ICONS.ENEMY.GHOUL,loot:["stimpak","pre_war_money"],type:'undead',fac:'wild'},
+convict:{n:"Escaped Convict",hp:55,a:18,d:2,xp:35,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","switchblade","sunset_sars"],type:'human',fac:'PowderGangers',hostile:true},
+bison_convict_boss:{n:"Bison Steve Convict Boss",hp:85,a:25,d:4,xp:75,e:ICONS.ENEMY.CONVICT,loot:["pistol_10mm","ammo_10mm","pre_war_money","primm_sheriff_papers"],type:'human',fac:'PowderGangers',hostile:true},
+powder_ganger:{n:"Powder Ganger",hp:60,a:22,d:2,xp:45,e:ICONS.ENEMY.POWDER_GANGER,loot:["dynamite","ammo_9mm","stimpak"],type:'human',fac:'PowderGangers',hostile:true},
+joe_cobb:{n:"Joe Cobb",hp:90,a:28,d:4,xp:90,e:ICONS.ENEMY.POWDER_GANGER,loot:["dynamite","pistol_9mm","ammo_9mm","powder_charge"],type:'human',fac:'PowderGangers',hostile:true},
+freeside_thug:{n:"Freeside Thug",hp:55,a:16,d:1,xp:30,e:ICONS.ENEMY.FREESIDE_THUG,loot:["switchblade","jet","pre_war_money"],type:'human',fac:'Freeside',hostile:true},
+fiend:{n:"Fiend",hp:70,a:28,d:3,xp:55,e:ICONS.ENEMY.FIEND,loot:["jet","psycho","ammo_9mm","ammo_10mm","combat_knife","pistol_10mm"],type:'human',fac:'Fiends',hostile:true},
+legion_recruit:{n:"Legion Recruit",hp:65,a:24,d:3,xp:50,e:ICONS.ENEMY.LEGION,loot:["machete","healing_powder","legion_coin"],type:'human',fac:'Legion',hostile:true},
+legion_veteran:{n:"Legion Veteran",hp:120,a:40,d:8,xp:100,e:ICONS.ENEMY.LEGION,loot:["thermic_lance","super_stimpak","legion_coin"],type:'human',fac:'Legion',hostile:true},
+legion_centurion:{n:"Legion Centurion",hp:180,a:55,d:12,xp:175,e:ICONS.ENEMY.LEGION_ELITE,loot:["thermic_lance","super_stimpak","power_fist","legion_coin"],type:'human',fac:'Legion',hostile:true},
+legion_scout:{n:"Legion Scout",hp:60,a:24,d:2,xp:45,e:ICONS.ENEMY.LEGION_SCOUT,loot:["machete","healing_powder","legion_coin"],type:'human',fac:'Legion',hostile:true},
+great_khan:{n:"Great Khan",hp:85,a:28,d:4,xp:70,e:ICONS.ENEMY.KHAN,loot:["ammo_9mm","ammo_357","jet","stimpak","revolver_357"],type:'human',fac:'Khans'},
+securitron:{n:"Securitron",hp:150,a:45,d:12,xp:125,e:ICONS.ENEMY.SECURITRON,loot:["energy_cell","sensor_module","scrap"],type:'robot',fac:'House'},
+super_mutant:{n:"Super Mutant",hp:180,a:45,d:0,xp:125,e:ICONS.ENEMY.SUPER_MUTANT,loot:["ammo_556","scrap","stimpak","cowboy_repeater"],type:'mutant',fac:'SuperMutants',hostile:true},
+glowing_one:{n:"Glowing One",hp:110,a:35,d:0,xp:90,e:ICONS.ENEMY.GLOWING_ONE,loot:["doctor_bag","med_x","pre_war_money","stimpak"],type:'undead',fac:'wild'},
+bark_scorpion:{n:"Bark Scorpion",hp:30,a:10,d:1,xp:25,e:ICONS.ENEMY.BARK_SCORPION,loot:["antivenom","herbs"],type:'insect',fac:'wild'},
+giant_rat:{n:"Giant Rat",hp:20,a:8,d:0,xp:15,e:ICONS.ENEMY.RAT,loot:["dirty_water","cram"],type:'animal',fac:'wild'},
+giant_ant:{n:"Giant Ant",hp:35,a:12,d:0,xp:25,e:ICONS.ENEMY.ANT,loot:["herbs","scrap"],type:'insect',fac:'wild'},
+jackal_raider:{n:"Jackal Gang Member",hp:55,a:20,d:1,xp:40,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","switchblade","single_shotgun","cigarette_pack"],type:'human',fac:'Raiders',hostile:true},
+viper_gunslinger:{n:"Viper Gunslinger",hp:65,a:26,d:2,xp:50,e:ICONS.ENEMY.VIPER,loot:["ammo_357","varmint_rifle","leather_armor","cigarette_carton"],type:'human',fac:'Raiders',hostile:true},
+centaur:{n:"Centaur",hp:100,a:30,d:0,xp:80,e:ICONS.ENEMY.GHOUL,loot:["med_x","dirty_water","scrap"],type:'mutant',fac:'SuperMutants'},
+feral_ghoul_trooper:{n:"Feral Ghoul Trooper",hp:75,a:25,d:3,xp:65,e:ICONS.ENEMY.GLOWING_ONE,loot:["stimpak","ammo_556","pre_war_money","ncr_armor"],type:'undead',fac:'wild'},
+young_deathclaw:{n:"Young Deathclaw",hp:250,a:40,d:15,xp:150,e:ICONS.ENEMY.YOUNG_DEATHCLAW,loot:["stimpak","combat_armor"],type:'animal',fac:'wild'},
+lakelurk:{n:"Lakelurk",hp:125,a:35,d:4,xp:100,e:ICONS.ENEMY.LAKELURK,loot:["purified_water","stimpak","pre_war_money"],type:'creature',fac:'wild'},
+rogue_scavenger:{n:"Rogue Scavenger",hp:65,a:22,d:2,xp:45,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","duct_tape","damaged_holotape","pre_war_money","targeting_module"],type:'human',fac:'Raiders',hostile:true},
+deathclaw:{n:"Deathclaw",hp:500,a:125,d:15,xp:250,e:ICONS.ENEMY.DEATHCLAW,loot:["super_stimpak","super_stimpak","combat_armor"],boss:1,type:'animal',fac:'wild'},
+ncr_trooper:{n:"NCR Trooper",hp:75,a:28,d:4,xp:45,e:ICONS.NPC.NCR,loot:["ammo_556","stimpak","ncr_armor"],type:'human',fac:'NCR'},
 };
 
 // Buildings
@@ -1382,6 +1401,13 @@ const BACKGROUNDS=[
 
 const SPECIAL_LABELS=['S','P','E','C','I','A','L'];
 const SPECIAL_NAMES=['Strength','Perception','Endurance','Charisma','Intelligence','Agility','Luck'];
+const FNV_NORMAL={playerDamage:1,enemyDamage:1,minDamageMult:.2};
+function fnvDTDamage(base,dt,mult=1){base=Math.max(1,Math.round(base));dt=Math.max(0,Math.round(dt||0));const raw=Math.max(base-dt,Math.ceil(base*FNV_NORMAL.minDamageMult));return Math.max(1,Math.round(raw*mult));}
+function calcCarryCap(){return 150+((S&&S.special)?S.special[0]:5)*10+(S&&S.bonusCarry?S.bonusCarry:0)}
+function calcMeleeBonus(){return Math.max(0,Math.floor((((S&&S.special)?S.special[0]:5)-5)/2))}
+function calcCritChance(){return Math.max(1,((S&&S.special)?S.special[6]:5)+(S&&S.critBonus?S.critBonus:0))/100}
+function calcPerkDue(level){return level>1&&level%2===0}
+function syncFNVStats(healFull=false){if(!S)return;const hpRatio=S.maxHp?S.hp/S.maxHp:1;S.maxHp=calcMaxHp();S.maxAp=calcMaxAp();S.carryCap=calcCarryCap();S.hp=healFull?S.maxHp:Math.max(1,Math.min(S.maxHp,Math.round(S.maxHp*hpRatio)));S.ap=Math.min(S.maxAp,S.ap||S.maxAp)}
 const START_PRESETS=[
 {id:'balanced',n:'Balanced',d:'Steady all-round start.',special:[5,5,5,5,5,5,5]},
 {id:'gunslinger',n:'Gunslinger',d:'High agility and luck for fast shots.',special:[4,6,4,4,5,8,7]},
@@ -1409,7 +1435,7 @@ let _dbPromise=null;
 let _slotCursor=0;
 let _lastSerialized='';
 
-const BASE={name:"Courier",hp:80,maxHp:80,ap:60,maxAp:60,xp:0,level:1,caps:30,
+const BASE={name:"Courier",hp:200,maxHp:200,ap:80,maxAp:80,xp:0,level:1,caps:30,
 special:[5,5,5,5,5,5,5],perks:[],
 atk:5,def:3,spd:4,loc:"Goodsprings",
 gear:{w:null,body:null,head:null},inv:[],quests:[],
@@ -1428,7 +1454,7 @@ fame:0,bounty:0,
 scavengeCount:0,capsEarned:0,killCount:0,questsComplete:0,
 settlements:[],army:{soldiers:0,quality:1,morale:50,max:0},
 flags:{},
-carryCap:120,
+carryCap:200,bonusCarry:0,critBonus:0,
 };
 
 function serializeSave(){try{return JSON.stringify(S)}catch(e){return null}}
@@ -1611,6 +1637,11 @@ async function requestPersistentStorage(){
 }
 function migrate(){
   if(!S.special)S.special=[5,5,5,5,5,5,5];
+  if(S.bonusCarry===undefined)S.bonusCarry=0;
+  if(S.critBonus===undefined)S.critBonus=0;
+  if(S.gunBonus===undefined)S.gunBonus=0;
+  if(S.meleeBonus===undefined)S.meleeBonus=0;
+  if(S.flatXpBonus===undefined)S.flatXpBonus=0;
   if(!S.companions)S.companions=[];
   if(!S.properties)S.properties=[];
   const legacyProps=new Set(['Abandoned Shack','Safehouse','Workshop','Trading Post','Fortified Compound']);
@@ -1640,8 +1671,9 @@ function migrate(){
   if(S.age===undefined)S.age=25;
   if(S.isMale===undefined)S.isMale=true;
   if(!S.recentEncounters)S.recentEncounters=[];
-  if(S.carryCap===undefined)S.carryCap=120;
+  S.carryCap=calcCarryCap();
   if(!S.lastScavengeTick)S.lastScavengeTick=null;
+  syncFNVStats(false);
 }
 
 
@@ -1721,8 +1753,7 @@ function quickStart(){
   S.loc=bg.loc;S.inv=clone(bg.items);
   if(bg.fac&&S.rep&&S.rep[bg.fac]!==undefined)S.rep[bg.fac]=Math.max(S.rep[bg.fac],12);
   if(bg.fac==='Boomers')setFlag('ally_boomers_start',true);
-  S.maxHp=calcMaxHp();S.hp=S.maxHp;
-  S.maxAp=calcMaxAp();S.ap=S.maxAp;
+  syncFNVStats(true);
   closeDlg();
   log(S.name+' — '+bg.n+'.','q');
   log(bg.d,'e');
@@ -1823,14 +1854,14 @@ function finishCustom(){
 // ============================================================
 // STAT HELPERS
 // ============================================================
-function calcMaxHp(){return 60+S.level*8+(S.special?S.special[2]*6:0)}
-function calcMaxAp(){return 50+(S.special?S.special[5]*3:0)+S.level*2}
+function calcMaxHp(){return 100+((S&&S.special)?S.special[2]:5)*20+Math.max(0,((S&&S.level)||1)-1)*5}
+function calcMaxAp(){return 65+((S&&S.special)?S.special[5]:5)*3}
 function itemWeight(id){
   const it=ITEMS[id];
   return it&&typeof it.w==='number'?it.w:0;
 }
 function carryCapacity(){
-  return (S&&typeof S.carryCap==='number')?S.carryCap:120;
+  return calcCarryCap();
 }
 function currentCarryWeight(){
   if(!S)return 0;
@@ -1866,12 +1897,12 @@ function giveItem(id,count=1,opts={}){
   }
   return added;
 }
-function atkPow(){let a=S.atk+Math.floor(S.level*.5)+(S.special?Math.floor(S.special[0]*0.8):0);if(S.gear.w){const w=ITEMS[S.gear.w];if(w)a+=w.a||0}return a}
-function defPow(){let d=S.def+Math.floor(S.level*.3)+(S.special?Math.floor(S.special[2]*0.5):0);if(S.gear.body){const a=ITEMS[S.gear.body];if(a)d+=a.d||0}if(S.gear.head){const h=ITEMS[S.gear.head];if(h)d+=h.d||0}return d}
-function xpNeed(l){return Math.floor(50*Math.pow(1.4,l-1))}
+function atkPow(){const w=getEquippedWeapon&&getEquippedWeapon();let a=w?(w.a||1):(1+Math.max(0,Math.floor(((S.special?S.special[0]:5)-5)/2)));a+=S.atk||0;return Math.max(1,Math.round(a))}
+function defPow(){let d=S.def||0;if(S.gear.body){const a=ITEMS[S.gear.body];if(a)d+=a.d||0}if(S.gear.head){const h=ITEMS[S.gear.head];if(h)d+=h.d||0}return Math.max(0,Math.round(d))}
+function xpNeed(l){return Math.floor(200*l)}
 function grantXP(amount){
   const bonus=S.xpPerk||0;
-  return Math.round(amount*(1+bonus/100));
+  return Math.max(0,Math.round(amount*(1+bonus/100))+(S.flatXpBonus||0));
 }
 function hpPct(h,m){return Math.max(0,Math.min(100,Math.round(h/m*100)))}
 function countItem(id){return S&&S.inv?S.inv.filter(x=>x===id).length:0}
@@ -1879,22 +1910,23 @@ function getEquippedWeapon(){return S&&S.gear&&S.gear.w?ITEMS[S.gear.w]||null:nu
 function getEquippedWeaponAmmoId(){const w=getEquippedWeapon();return w&&w.ammo?w.ammo:null}
 function getEquippedWeaponAmmoCount(){const ammoId=getEquippedWeaponAmmoId();return ammoId?countItem(ammoId):0}
 function getCombatAttackProfile(consumeAmmo){
-  let a=S.atk+Math.floor(S.level*.5)+(S.special?Math.floor(S.special[0]*0.8):0);
   const w=getEquippedWeapon();
-  if(!w)return{atk:a,weapon:null,ammoId:null,ammoName:'',hadAmmo:true,gun:false,usedAmmo:false};
+  const baseUnarmed=1+Math.max(0,Math.floor(((S.special?S.special[0]:5)-5)/2))+(S.unarmedBonus||0);
+  if(!w)return{atk:baseUnarmed,weapon:null,ammoId:null,ammoName:'',hadAmmo:true,gun:false,usedAmmo:false};
+  let a=w.a||1;
   if(!w.ammo){
-    a+=w.a||0;
-    return{atk:a,weapon:w,ammoId:null,ammoName:'',hadAmmo:true,gun:false,usedAmmo:false};
+    a+=calcMeleeBonus()+(S.meleeBonus||0);
+    return{atk:Math.max(1,a),weapon:w,ammoId:null,ammoName:'',hadAmmo:true,gun:false,usedAmmo:false};
   }
   const ammoId=w.ammo;
   const ammoIdx=S.inv.indexOf(ammoId);
   const ammoName=ITEMS[ammoId]?.n||'ammo';
   if(ammoIdx!==-1){
     if(consumeAmmo)S.inv.splice(ammoIdx,1);
-    a+=w.a||0;
-    return{atk:a,weapon:w,ammoId,ammoName,hadAmmo:true,gun:true,usedAmmo:!!consumeAmmo};
+    a+=S.gunBonus||0;
+    return{atk:Math.max(1,a),weapon:w,ammoId,ammoName,hadAmmo:true,gun:true,usedAmmo:!!consumeAmmo};
   }
-  return{atk:Math.max(1,a+Math.max(1,Math.floor((w.a||0)*0.2))),weapon:w,ammoId,ammoName,hadAmmo:false,gun:true,usedAmmo:false};
+  return{atk:baseUnarmed,weapon:w,ammoId,ammoName,hadAmmo:false,gun:true,usedAmmo:false};
 }
 function hasFlag(k){return !!(S&&S.flags&&S.flags[k])}
 function setFlag(k,v=true){if(!S.flags)S.flags={};S.flags[k]=v;save()}
@@ -1983,8 +2015,8 @@ function upWorld(){
   const surs=loc.sur||[];
   if(surs.length){
     surs.forEach((s,i)=>{
-      const sc=el('div','bc');
-      sc.innerHTML=`<div style="font-size:24px">${s.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${s.n}</div><div style="font-size:10px;color:var(--muted)">${s.d}</div></div><div style="color:var(--muted)">›</div>`;
+      const sc=el('div','bc big-icon-card');
+      sc.innerHTML=`<div class="card-icon-lg">${s.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${s.n}</div><div style="font-size:10px;color:var(--muted)">${s.d}</div></div><div style="color:var(--muted)">›</div>`;
       sc.onclick=()=>explore(i);
       tab.appendChild(sc);
     });
@@ -1993,15 +2025,15 @@ function upWorld(){
   // Buildings
   tab.appendChild(el('div','sh','Locations'));
   if(S.loc==='HiddenValley'&&!hvHasAccess()){
-    const door=el('div','bc');
-    door.innerHTML=`<div style="font-size:22px">🚪</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Hidden Valley Bunker Door</div><div style="font-size:10px;color:var(--muted)">Use the intercom to earn Brotherhood access.</div></div><div style="color:var(--muted)">›</div>`;
+    const door=el('div','bc big-icon-card');
+    door.innerHTML=`<div class="card-icon-lg">🚪</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Hidden Valley Bunker Door</div><div style="font-size:10px;color:var(--muted)">Use the intercom to earn Brotherhood access.</div></div><div style="color:var(--muted)">›</div>`;
     door.onclick=()=>openHiddenValleyEntry();
     tab.appendChild(door);
   }else{
     (loc.b||[]).forEach(bId=>{
       const b=BLDS[bId];if(!b)return;
-      const bc2=el('div','bc');
-      bc2.innerHTML=`<div style="font-size:22px">${b.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${b.n}</div></div><div style="color:var(--muted)">›</div>`;
+      const bc2=el('div','bc big-icon-card');
+      bc2.innerHTML=`<div class="card-icon-lg">${b.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${b.n}</div></div><div style="color:var(--muted)">›</div>`;
       bc2.onclick=()=>openBld(bId);
       tab.appendChild(bc2);
     });
@@ -2464,18 +2496,21 @@ function resolveEncounterChoice(idx){
   if(combat){
     combat._expArea=area;
     combat._expStep=step;
+    combat._encTitle=card.title;
+    combat._encResult=customResult||choice.result||'The encounter is resolved.';
     _activeEncounter=null;
     return;
   }
   _activeEncounter=null;
-  // Show result then continue expedition
+  // Show a clear result popup, then continue expedition
   const resultText=customResult||choice.result||'Done.';
   $('TC').innerHTML='';
   $('TS').innerHTML='✅';
   $('TT').innerHTML=`<div style="font-size:12px;color:var(--green);margin-bottom:4px"><b>${card.title}</b></div><div style="font-size:11px;color:var(--muted)">${resultText}</div>`;
   chkLU();save();
-  $('TN').style.display='block';
-  $('TN').onclick=()=>runExpedition(area,step);
+  window._activeOutcomeArea=area;
+  window._activeOutcomeStep=step;
+  showResult(card.title,'✅',[resultText],'Continue','runExpedition(_activeOutcomeArea,_activeOutcomeStep)');
 }
 
 // ============================================================
@@ -2775,9 +2810,8 @@ function travelCont(){
 // ENEMY FACTORY
 // ============================================================
 function mkEnemy(id){
-  const e=ENEMIES[id];if(!e)return{name:"Gecko",hp:20,maxHp:20,a:4,d:0,xp:8,e:"🦎",loot:[]};
-  const lvlBonus=Math.max(0,S.level-3);
-  return{name:e.n,hp:e.hp+lvlBonus*3,maxHp:e.hp+lvlBonus*3,a:e.a+Math.floor(lvlBonus*.5),d:e.d+Math.floor(lvlBonus*.3),xp:e.xp,e:e.e,loot:clone(e.loot),id};
+  const e=ENEMIES[id];if(!e)return{name:"Gecko",hp:25,maxHp:25,a:10,d:0,xp:20,e:"🦎",loot:[],id:"gecko"};
+  return{name:e.n,hp:e.hp,maxHp:e.hp,a:e.a,d:e.d,xp:e.xp,e:e.e,loot:clone(e.loot),id};
 }
 
 // ============================================================
@@ -2976,6 +3010,10 @@ function finishCombatLoot(){
 
   const lines=[`⭐ +${lootXp} XP`];
   if(lootCaps>0)lines.push(`💰 +${lootCaps} combat reward caps`);
+  if(combat._encTitle||combat._encResult){
+    if(combat._encTitle)lines.push('📌 '+combat._encTitle);
+    if(combat._encResult)lines.push(String(combat._encResult));
+  }
 
   if(bounty){
     const bonusCaps=rnd(bounty.caps[0],bounty.caps[1]);
@@ -3081,7 +3119,7 @@ function combatAction(act){
   switch(act){
     case 'attack':{
       const attack=getCombatAttackProfile(true);
-      const dmg=Math.max(1,attack.atk-Math.floor(target.d*.5)+rnd(-2,3));
+      const dmg=fnvDTDamage(attack.atk+rnd(-1,1),target.d,FNV_NORMAL.playerDamage);
       target.hp=Math.max(0,target.hp-dmg);
       if(attack.gun&&attack.hadAmmo){
         combat.log.push(`You fire ${attack.weapon.n} and deal ${dmg} damage to ${target.name}.`);
@@ -3110,9 +3148,9 @@ function combatAction(act){
         return;
       }
       S.ap-=20;
-      const crit=R()<(.15+S.special[6]*.02);
-      const mult=crit?2.5:1.8;
-      const dmg=Math.max(1,Math.round((attack.atk-Math.floor(target.d*.3))*mult)+rnd(0,5));
+      const crit=R()<calcCritChance();
+      const mult=crit?2:1.5;
+      const dmg=fnvDTDamage(Math.round(attack.atk*mult)+rnd(0,2),target.d,FNV_NORMAL.playerDamage);
       target.hp=Math.max(0,target.hp-dmg);
       if(attack.gun)combat.log.push(`V.A.T.S.! ${crit?'CRITICAL! ':''}${dmg} damage to ${target.name} with ${attack.weapon.n}!`);
       else combat.log.push(`V.A.T.S.! ${crit?'CRITICAL! ':''}${dmg} damage to ${target.name}!`);
@@ -3147,7 +3185,7 @@ function combatAction(act){
   if(!survivors.length){endCombat(true);return}
 
   survivors.forEach(en=>{
-    const eDmg=Math.max(1,en.a-Math.floor(defPow()*.4)+rnd(-2,2));
+    const eDmg=fnvDTDamage(en.a+rnd(-1,1),defPow(),FNV_NORMAL.enemyDamage);
     S.hp=Math.max(0,S.hp-eDmg);
     combat.log.push(`${en.name} deals ${eDmg} damage to you.`);
   });
@@ -3199,7 +3237,6 @@ function endCombat(won,died){
   combat.pendingRewards={xp:totalXp,caps:totalCaps,bounty:combat.bountyTarget||null};
   combat.corpses=corpses;
   combat.lootPhase=true;
-  chkLU();
   renderCombat();
   return;
 }
@@ -3211,30 +3248,23 @@ function endCombat(won,died){
 // PERKS DATA
 // ============================================================
 const PERKS=[
-  // Combat
-  {id:'iron_fist',      name:'Iron Fist',       icon:'👊', cat:'Combat',  desc:'+4 ATK. Your unarmed and melee hits land harder.',              apply:s=>{s.atk+=4},             req:null},
-  {id:'toughness',      name:'Toughness',        icon:'🛡', cat:'Combat',  desc:'+4 DEF. You shrug off hits that would flatten lesser wastelanders.', apply:s=>{s.def+=4},         req:null},
-  {id:'sniper',         name:'Sniper',           icon:'🎯', cat:'Combat',  desc:'+6 ATK. You know how to place a shot.', apply:s=>{s.atk+=6},                                       req:{special:1,min:6}},
-  {id:'commando',       name:'Commando',         icon:'⚔', cat:'Combat',  desc:'+5 ATK, +2 DEF. Fight harder at every range.',                  apply:s=>{s.atk+=5;s.def+=2},     req:{level:4}},
-  {id:'adamantium',     name:'Adamantium Skeleton',icon:'🦴',cat:'Combat', desc:'+6 DEF. Your bones take punishment like old-world steel.',       apply:s=>{s.def+=6},             req:{level:6}},
-  {id:'better_crits',   name:'Better Criticals', icon:'💥', cat:'Combat',  desc:'+8 ATK. You find gaps in every guard.',                         apply:s=>{s.atk+=8},             req:{level:8,special:6,min:7}},
-  // Survival
-  {id:'pack_rat',       name:'Pack Rat',         icon:'🎒', cat:'Survival',desc:'+30kg carry capacity. You move light.',                         apply:s=>{s.carryCap=(s.carryCap||120)+30}, req:null},
-  {id:'life_giver',     name:'Life Giver',       icon:'❤',  cat:'Survival',desc:'+20 max HP. More meat between you and the grave.',              apply:s=>{s.maxHp+=20;s.hp=Math.min(s.hp+20,s.maxHp)}, req:null},
-  {id:'action_boy',     name:'Action Boy',       icon:'⚡', cat:'Survival',desc:'+15 max AP. You move fast and burn hard.',                      apply:s=>{s.maxAp+=15;s.ap=Math.min(s.ap+15,s.maxAp)}, req:null},
-  {id:'endurance',      name:'Rad Resistance',   icon:'☢',  cat:'Survival',desc:'+5 DEF vs hazardous encounters. Tough constitution.',           apply:s=>{s.def+=3;s.maxHp+=10},  req:{special:2,min:6}},
-  {id:'hunter',         name:'Hunter',           icon:'🦎', cat:'Survival',desc:'+3 ATK, creatures drop better loot.',                           apply:s=>{s.atk+=3;s.hunterPerk=true}, req:null},
-  {id:'strong_back',    name:'Strong Back',      icon:'💪', cat:'Survival',desc:'+50kg carry. You haul what others leave behind.',               apply:s=>{s.carryCap=(s.carryCap||120)+50}, req:{level:6,special:0,min:7}},
-  // Charisma / Social
-  {id:'barter',         name:'Barter',           icon:'💰', cat:'Social',  desc:'Buy 10% cheaper. Prices are just opening offers.',              apply:s=>{s.barterPerk=(s.barterPerk||0)+10}, req:null},
-  {id:'smooth_talker',  name:'Smooth Talker',    icon:'😏', cat:'Social',  desc:'+15 affinity gain on all NPC interactions.',                    apply:s=>{s.charmPerk=(s.charmPerk||0)+15}, req:{special:3,min:6}},
-  {id:'local_leader',   name:'Local Leader',     icon:'🏘', cat:'Social',  desc:'Faction rep gains are doubled.',                                apply:s=>{s.leaderPerk=true},    req:{level:6,special:3,min:7}},
-  // Utility
-  {id:'scrounger',      name:'Scrounger',        icon:'🔍', cat:'Utility', desc:'Find ammo more often when scavenging.',                         apply:s=>{s.scroungerPerk=true}, req:null},
-  {id:'comprehension',  name:'Comprehension',    icon:'📖', cat:'Utility', desc:'+10% XP from all sources.',                                     apply:s=>{s.xpPerk=(s.xpPerk||0)+10}, req:null},
-  {id:'educated',       name:'Educated',         icon:'🎓', cat:'Utility', desc:'+15% XP, gain 1 random SPECIAL point.',                        apply:s=>{s.xpPerk=(s.xpPerk||0)+15;s.special[rnd(0,6)]++;}, req:{level:4}},
-  {id:'light_step',     name:'Light Step',       icon:'👣', cat:'Utility', desc:'30% chance to avoid random combat encounters while exploring.', apply:s=>{s.lightStepPerk=true}, req:{special:1,min:6}},
-  {id:'swift_learner',  name:'Swift Learner',    icon:'⭐', cat:'Utility', desc:'+20% XP from kills and quests.',                                apply:s=>{s.xpPerk=(s.xpPerk||0)+20}, req:{level:8}},
+  {id:'toughness',name:'Toughness',icon:'🛡',cat:'Combat',desc:'+3 DT. Same role as New Vegas Toughness.',apply:s=>{s.def=(s.def||0)+3},req:{level:6,special:2,min:5}},
+  {id:'toughness_2',name:'Toughness II',icon:'🛡',cat:'Combat',desc:'+3 more DT. Heavy armour starts to matter.',apply:s=>{s.def=(s.def||0)+3},req:{level:12,special:2,min:5,perk:'toughness'}},
+  {id:'commando',name:'Commando',icon:'⚔',cat:'Combat',desc:'+3 gun damage. Better control with rifles and automatics.',apply:s=>{s.gunBonus=(s.gunBonus||0)+3},req:{level:8}},
+  {id:'cowboy',name:'Cowboy',icon:'🤠',cat:'Combat',desc:'+3 damage with simple wasteland weapons.',apply:s=>{s.gunBonus=(s.gunBonus||0)+2;s.meleeBonus=(s.meleeBonus||0)+1},req:{level:8}},
+  {id:'better_crits',name:'Better Criticals',icon:'💥',cat:'Combat',desc:'+5% critical chance. Luck builds hit harder.',apply:s=>{s.critBonus=(s.critBonus||0)+5},req:{level:16,special:6,min:6}},
+  {id:'piercing_strike',name:'Piercing Strike',icon:'🗡',cat:'Combat',desc:'+4 melee damage. Helps blades punch through DT.',apply:s=>{s.meleeBonus=(s.meleeBonus||0)+4},req:{level:12}},
+  {id:'life_giver',name:'Life Giver',icon:'❤',cat:'Survival',desc:'+30 max HP, matching the New Vegas perk style.',apply:s=>{s.maxHp+=30;s.hp=Math.min(s.hp+30,s.maxHp)},req:{level:12,special:2,min:6}},
+  {id:'action_boy',name:'Action Boy',icon:'⚡',cat:'Survival',desc:'+15 max AP.',apply:s=>{s.maxAp+=15;s.ap=Math.min(s.ap+15,s.maxAp)},req:{level:16,special:5,min:6}},
+  {id:'hunter',name:'Hunter',icon:'🦎',cat:'Survival',desc:'Creatures drop better loot. No flat damage bloat.',apply:s=>{s.hunterPerk=true},req:{level:2}},
+  {id:'pack_rat',name:'Pack Rat',icon:'🎒',cat:'Survival',desc:'+25 carry. Keeps looting useful without breaking combat.',apply:s=>{s.bonusCarry=(s.bonusCarry||0)+25;s.carryCap=calcCarryCap()},req:{level:8,special:4,min:5}},
+  {id:'strong_back',name:'Strong Back',icon:'💪',cat:'Survival',desc:'+50 carry weight, like New Vegas.',apply:s=>{s.bonusCarry=(s.bonusCarry||0)+50;s.carryCap=calcCarryCap()},req:{level:8,special:0,min:5}},
+  {id:'barter',name:'Barter',icon:'💰',cat:'Social',desc:'Buy 10% cheaper. Prices are just opening offers.',apply:s=>{s.barterPerk=(s.barterPerk||0)+10},req:{level:4}},
+  {id:'smooth_talker',name:'Smooth Talker',icon:'😏',cat:'Social',desc:'+15 affinity gain on NPC interactions.',apply:s=>{s.charmPerk=(s.charmPerk||0)+15},req:{level:4,special:3,min:6}},
+  {id:'local_leader',name:'Local Leader',icon:'🏘',cat:'Social',desc:'Faction rep gains are doubled.',apply:s=>{s.leaderPerk=true},req:{level:10,special:3,min:7}},
+  {id:'scrounger',name:'Scrounger',icon:'🔍',cat:'Utility',desc:'Find ammo more often when scavenging.',apply:s=>{s.scroungerPerk=true},req:{level:4}},
+  {id:'educated',name:'Educated',icon:'🎓',cat:'Utility',desc:'+2 XP from events and kills.',apply:s=>{s.flatXpBonus=(s.flatXpBonus||0)+2},req:{level:4,special:4,min:4}},
+  {id:'light_step',name:'Light Step',icon:'👣',cat:'Utility',desc:'30% chance to avoid random combat encounters while exploring.',apply:s=>{s.lightStepPerk=true},req:{level:14,special:5,min:6}},
 ];
 
 // ============================================================
@@ -3246,14 +3276,13 @@ function chkLU(){
   let levelled=false;
   while(S.xp>=xpNeed(S.level)){
     S.xp-=xpNeed(S.level);S.level++;
-    S.maxHp=calcMaxHp();S.hp=S.maxHp;
-    S.maxAp=calcMaxAp();S.ap=S.maxAp;
-    S.atk++;if(S.level%2===0)S.def++;if(S.level%3===0)S.spd++;
-    log('Level up! Now level '+S.level+'.','q');
-    _pendingLevelUps++;
+    syncFNVStats(true);
+    log('Level up! Now level '+S.level+'. HP +5 from New Vegas levelling.','q');
+    if(calcPerkDue(S.level))_pendingLevelUps++;
     levelled=true;
   }
-  if(levelled) showPerkScreen();
+  if(_pendingLevelUps) showPerkScreen();
+  else if(levelled) upSB();
 }
 
 function perkOwned(id){return (S.perks||[]).includes(id)}
@@ -3262,6 +3291,7 @@ function perkMeetsReq(p){
   if(!p.req) return true;
   if(p.req.level && S.level < p.req.level) return false;
   if(p.req.special !== undefined && S.special[p.req.special] < p.req.min) return false;
+  if(p.req.perk && !perkOwned(p.req.perk)) return false;
   return true;
 }
 
@@ -3294,13 +3324,13 @@ function showPerkScreen(){
     <div style="text-align:center;margin-bottom:10px">
       <div style="font-size:32px;margin-bottom:4px">⬆</div>
       <div style="font-size:17px;font-weight:bold;color:var(--amber);letter-spacing:2px">LEVEL ${S.level}</div>
-      <div style="font-size:10px;color:var(--muted);margin-top:2px">Choose a perk — this shapes your build.</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">Perks arrive every 2 levels, closer to New Vegas pacing.</div>
       ${_pendingLevelUps>1?`<div style="font-size:10px;color:var(--green);margin-top:2px">${_pendingLevelUps} level-ups pending</div>`:''}
     </div>
     <div style="font-size:9px;color:var(--muted);text-align:center;margin-bottom:8px;letter-spacing:1px">AVAILABLE PERKS</div>
     ${choices.map(p=>{
       const ok=perkMeetsReq(p);
-      const reqText=!ok?(p.req?.level?`Req: Level ${p.req.level}`:`Req: ${SPECIAL_NAMES[p.req?.special||0]} ${p.req?.min}+`):'';
+      const reqText=!ok?(p.req?.perk?`Req: ${PERKS.find(x=>x.id===p.req.perk)?.name||p.req.perk}`:(p.req?.level&&S.level<p.req.level?`Req: Level ${p.req.level}`:`Req: ${SPECIAL_NAMES[p.req?.special||0]} ${p.req?.min}+`)):'';
       return `<div class="perk-card${ok?'':' locked'}" onclick="${ok?`pickPerk('${p.id}')`:''}" style="display:flex;align-items:flex-start;gap:10px">
         <div class="perk-icon">${p.icon}</div>
         <div style="flex:1">
@@ -3311,7 +3341,7 @@ function showPerkScreen(){
         </div>
       </div>`;
     }).join('')}
-    <button class="bt" style="margin-top:10px;text-align:center;font-size:11px" onclick="skipPerk()">Skip — take +2 ATK, +1 DEF instead</button>`;
+    <button class="bt" style="margin-top:10px;text-align:center;font-size:11px" onclick="skipPerk()">Skip — bank +50 XP instead</button>`;
 
   $('PO').classList.add('A');
   upSB();
@@ -3335,8 +3365,8 @@ function pickPerk(id){
 }
 
 function skipPerk(){
-  S.atk+=2;S.def+=1;
-  log('Skipped perk — took +2 ATK, +1 DEF.','q');
+  S.xp+=50;
+  log('Skipped perk — banked +50 XP.','q');
   _pendingLevelUps--;
   $('PO').classList.remove('A');
   if(_pendingLevelUps) showPerkScreen();
@@ -5428,8 +5458,8 @@ function upRoads(){
   Object.entries(roads).forEach(([dest,days])=>{
     const loc=LOCS[dest];if(!loc)return;
     const dgColor=loc.dg>=4?'var(--red)':loc.dg>=2?'var(--amber2)':'var(--muted)';
-    const dc=el('div','bc');
-    dc.innerHTML=`<div style="font-size:28px">${loc.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:13px">${loc.n}</div><div style="font-size:10px;color:var(--muted)">${loc.r} · ~${days} day${days>1?'s':''} · <span style="color:${dgColor}">${'☠'.repeat(loc.dg)||'Safe'}</span></div><div style="font-size:10px;color:var(--muted);font-style:italic">${loc.d.substring(0,50)}${loc.d.length>50?'...':''}</div></div><div style="color:var(--muted)">›</div>`;
+    const dc=el('div','bc big-icon-card');
+    dc.innerHTML=`<div class="card-icon-lg">${loc.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:13px">${loc.n}</div><div style="font-size:10px;color:var(--muted)">${loc.r} · ~${days} day${days>1?'s':''} · <span style="color:${dgColor}">${'☠'.repeat(loc.dg)||'Safe'}</span></div><div style="font-size:10px;color:var(--muted);font-style:italic">${loc.d.substring(0,50)}${loc.d.length>50?'...':''}</div></div><div style="color:var(--muted)">›</div>`;
     dc.onclick=()=>beginTravel(dest,days);
     tab.appendChild(dc);
   });
@@ -5491,13 +5521,18 @@ function nextTEv(){
       const btn=el('button','bt','');btn.style.textAlign='left';btn.textContent=ch.label;
       btn.onclick=()=>{
         const customResult=ch.fn();
-        if(combat){combat.postT=tDest;return}
+        if(combat){
+          combat.postT=tDest;
+          combat._encTitle=card.title;
+          combat._encResult=customResult||ch.result||'The road encounter is resolved.';
+          return;
+        }
         chkLU();save();
         const resultText=customResult||ch.result||'Done.';
         $('TC').innerHTML='';
         $('TS').innerHTML='✅';
         $('TT').innerHTML=`<div style="font-size:12px;color:var(--green);margin-bottom:4px"><b>${card.title}</b></div><div style="font-size:11px;color:var(--muted)">${resultText}</div>`;
-        $('TN').style.display='block';$('TN').onclick=()=>travelCont();
+        showResult(card.title,'✅',[resultText],'Continue','travelCont()');
       };
       cd.appendChild(btn);
     });
