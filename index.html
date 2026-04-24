@@ -30,6 +30,7 @@ border-bottom:1px solid #3a3418;text-transform:uppercase}
 pointer-events:none;z-index:999;
 background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px)}
 #C{padding:8px 10px;padding-bottom:calc(86px + var(--sb))}
+#roads-tab.T.A{margin:-8px -10px;padding-bottom:calc(86px + var(--sb))}
 .T{display:none}.T.A{display:block}
 #N{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
 background:linear-gradient(0deg,#0e0e06,#1a1a0e);display:flex;
@@ -105,6 +106,30 @@ opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--ambe
 #NF.show{opacity:1}
 /* Log */
 .log-group{margin:4px 0;border:1px solid #2a2818;border-radius:4px;overflow:hidden}
+/* Trade overlay */
+#TRADE{position:fixed;inset:0;background:var(--bg);z-index:155;display:none;flex-direction:column}
+#TRADE.A{display:flex}
+#TRADE-HEAD{background:#141408;border-bottom:2px solid var(--amber2);padding:calc(var(--st)+10px) 10px 0;flex:0 0 auto}
+#TRADE-TABS{display:flex;border-bottom:1px solid #2a2818}
+#TRADE-TABS button{flex:1;padding:8px 4px;background:none;border:none;font-family:'Courier New',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+#TRADE-TABS button.active{color:var(--amber);border-bottom-color:var(--amber)}
+#TRADE-CATS{display:flex;gap:4px;padding:6px 10px;overflow-x:auto;background:#0e0e08;flex:0 0 auto;border-bottom:1px solid #1a1810}
+#TRADE-CATS::-webkit-scrollbar{display:none}
+#TRADE-CATS button{white-space:nowrap;padding:4px 10px;background:#1a1a10;color:var(--muted);border:1px solid #2a2818;border-radius:12px;font-family:'Courier New',monospace;font-size:10px;cursor:pointer;flex-shrink:0}
+#TRADE-CATS button.active{background:#2a2a14;color:var(--amber);border-color:var(--amber2)}
+#TRADE-BODY{flex:1;overflow-y:auto;padding:6px 8px 100px}
+#TRADE-FOOTER{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,#0e0e06,#141408);border-top:1px solid var(--amber2);padding:8px 12px calc(8px + var(--sb));display:flex;align-items:center;gap:8px;z-index:5}
+.tr-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border:1px solid #2a2818;border-radius:6px;margin:4px 0;cursor:pointer;min-height:56px;transition:border-color .15s}
+.tr-item:active{background:#2a2a18;border-color:var(--amber2)}
+.tr-item.selected{border-color:var(--amber);background:#252510}
+.tr-icon{width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:#111108;border:1px solid #1a1810;border-radius:5px;flex:0 0 auto;overflow:hidden}
+.tr-icon img,.tr-icon svg{width:30px!important;height:30px!important;max-width:30px!important;max-height:30px!important;object-fit:contain!important;display:block!important}
+.tr-qty{display:flex;align-items:center;gap:5px;margin-top:8px;flex-wrap:wrap}
+.tr-qty button{padding:6px 10px;background:#1a1a10;color:var(--amber);border:1px solid #2a2818;border-radius:4px;font-family:'Courier New',monospace;font-size:12px;cursor:pointer;min-height:38px;min-width:42px;text-align:center}
+.tr-qty button:active{transform:scale(.95)}
+.tr-confirm{flex:1;padding:12px;background:#1a2a10;color:var(--green);border:1px solid #2a3a18;border-radius:4px;font-family:'Courier New',monospace;font-size:13px;font-weight:bold;cursor:pointer;text-align:center;min-height:46px;letter-spacing:1px}
+.tr-confirm:disabled{opacity:.35;cursor:not-allowed;background:#1a1a10;border-color:#2a2818}
+.tr-confirm.sell{background:#2a1810;color:var(--amber2);border-color:#3a2818}
 .log-header{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;
 background:var(--panel2);cursor:pointer;font-size:12px;min-height:44px}
 .log-header:active{background:#1a1a12}
@@ -256,6 +281,45 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 <button onclick="switchTab('log')" id="nb-log"><i><img src="NVImages/LogIcon.png" style="width:26px;height:26px;object-fit:contain;display:block;margin:0 auto"></i>Log</button>
 </div>
 <div id="BO"><div id="BI"></div></div>
+<div id="TRADE">
+  <div id="TRADE-HEAD">
+    <div style="display:flex;align-items:center;gap:8px;padding-bottom:8px">
+      <div class="bb" onclick="closeTrade()" style="font-size:20px">‹</div>
+      <div style="flex:1">
+        <div id="TRADE-TITLE" style="font-size:14px;font-weight:bold;color:var(--amber);letter-spacing:1px"></div>
+        <div id="TRADE-CAPS" style="font-size:11px;color:var(--muted);margin-top:1px"></div>
+      </div>
+    </div>
+    <div id="TRADE-TABS">
+      <button id="TRADE-TAB-BUY" class="active" onclick="tradeSetTab('buy')">⬇ Buy</button>
+      <button id="TRADE-TAB-SELL" onclick="tradeSetTab('sell')">⬆ Sell</button>
+    </div>
+  </div>
+  <div id="TRADE-CATS"></div>
+  <div id="TRADE-BODY"></div>
+  <div id="TRADE-FOOTER">
+    <div id="TRADE-SEL-INFO" style="flex:1;font-size:11px;color:var(--muted)">Select an item</div>
+    <div id="TRADE-QTY-WRAP" style="display:none;flex-direction:column;width:100%">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div id="TRADE-SEL-NAME" style="font-size:12px;font-weight:bold;color:var(--amber)"></div>
+        <div id="TRADE-SEL-PRICE" style="font-size:12px;color:var(--muted)"></div>
+      </div>
+      <div class="tr-qty">
+        <span style="font-size:11px;color:var(--muted)">Qty:</span>
+        <button onclick="tradeQty(1)">+1</button>
+        <button onclick="tradeQty(5)">+5</button>
+        <button onclick="tradeQty(10)">+10</button>
+        <button onclick="tradeQtyMax()" style="color:var(--green);border-color:#2a3a18">MAX</button>
+        <button onclick="tradeQty(-1)" style="color:var(--red);border-color:#3a1818">−1</button>
+        <div style="margin-left:auto;font-size:14px;font-weight:bold;color:var(--amber);min-width:32px;text-align:right" id="TRADE-QTY-NUM">1</div>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:8px;align-items:center">
+        <div style="font-size:11px;color:var(--muted)">Total: <span id="TRADE-TOTAL" style="color:var(--amber);font-weight:bold"></span></div>
+        <button id="TRADE-DO-BTN" class="tr-confirm" onclick="tradeExecute()">BUY</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="TO">
 <div>
 <div style="text-align:center;font-size:48px;margin:20px 0" id="TS">🏜</div>
@@ -1494,7 +1558,7 @@ buildingNpcs:{},
 properties:[],
 age:25,isMale:true,
 // World
-worldEvents:[],lastWorldTick:0,
+worldEvents:[],lastWorldTick:0,visitedLocs:[],
 fame:0,bounty:0,
 // Progression
 scavengeCount:0,capsEarned:0,killCount:0,questsComplete:0,
@@ -1697,6 +1761,7 @@ function migrate(){
   if(!S.hours)S.hours=8;
   if(!S.ap)S.ap=60;if(!S.maxAp)S.maxAp=60;
   if(!S.worldEvents)S.worldEvents=[];
+  if(!S.visitedLocs)S.visitedLocs=[S.loc||'Goodsprings'];
   if(!S.relationships)S.relationships=[];
   if(!S.localContacts)S.localContacts={};
   if(!S.buildingNpcs)S.buildingNpcs={};
@@ -4576,14 +4641,13 @@ function bldFreesideCerulean(body){
   addFreesideNpcCard(body,'loyal');
 }
 
-function buildBuyButtons(body,items,bId){
-  items.forEach(id=>{
-    const it=ITEMS[id];if(!it)return;
-    const price=Math.max(1,Math.round(it.p*(1-((S.special?S.special[3]:5)*.02)-(S.barterPerk||0)/100)));
-    const sb=el('button','bt',`${it.e} ${it.n} — ${price} caps`);
-    sb.onclick=()=>{if(S.caps<price){notify('Not enough caps.');return}S.caps-=price;const added=giveItem(id);if(!added){S.caps+=price;return}log('Bought '+it.n+'.','n');openBld(bId)};
-    body.appendChild(sb);
-  });
+// buildBuyButtons: opens the trade overlay
+function buildBuyButtons(body,itemIds,bId){
+  const merchantName=_tradeGetMerchantName(bId);
+  const btn=el('button','bt go','🛒 Trade with '+merchantName);
+  btn.style.textAlign='center';
+  btn.onclick=()=>openTrade(itemIds,bId,merchantName);
+  body.appendChild(btn);
 }
 
 function bldGoodspringsSaloon(body){
@@ -4635,9 +4699,8 @@ function goodspringsDocTreatment(){
   showResult('Doc Mitchell','💉',['❤ Full HP restored','⚡ AP restored','⏰ 1 hour passed',`💰 -${cost} caps`],'Continue','upAll()');
 }
 function openGoodspringsTrade(){
-  const body=el('div','');
-  buildBuyButtons(body,['stimpak','purified_water','sunset_sars','ammo_9mm','ammo_10mm','ammo_357','pistol_9mm','varmint_rifle','bobby_pin','duct_tape'],'general_store');
-  openDlg(`<h3 style="display:flex;align-items:center;gap:8px"><span>${renderIcon(GOODSPRINGS_NPCS.chet.icon||ICONS.NPC.MERCHANT,28)}</span><span style="color:var(--amber)">Chet's Stock</span></h3><div style="font-size:10px;color:var(--muted);margin-bottom:8px">Chet unlocks the shelves and lets you look over the practical stuff.</div>${body.innerHTML}<button class="bt" onclick="closeDlg()">Done</button>`);
+  const ids=['stimpak','purified_water','sunset_sars','ammo_9mm','ammo_10mm','ammo_357','pistol_9mm','varmint_rifle','bobby_pin','duct_tape'];
+  openTrade(ids,'general_store',"Chet's Store");
 }
 function bldGoodspringsDoc(body){
   body.appendChild(el('div','bs2',"Doc Mitchell's House"));
@@ -4753,30 +4816,236 @@ function bldBar(body,bId){
   });
 }
 function bldShop(body,bId){
-  body.appendChild(el('div','bs2','Buy'));
   const shopItems=getShopInventory(bId);
-  shopItems.forEach(si=>{
-    const it=ITEMS[si.id];if(!it)return;
-    const price=Math.max(1,Math.round(it.p*(1-((S.special?S.special[3]:5)*.02)-(S.barterPerk||0)/100)));
-    const sb=el('button','bt',`${it.e} ${it.n} — ${price} caps`);
-    sb.onclick=()=>{if(S.caps<price){notify("Not enough caps.");return}S.caps-=price;const added=giveItem(si.id);if(!added){S.caps+=price;return}log('Bought '+it.n+'.','n');openBld(bId)};
-    body.appendChild(sb);
-  });
-
-  body.appendChild(el('div','bs2','Sell'));
-  if(S.inv.length){
-    const seen={};
-    S.inv.forEach((iid,idx)=>{
-      if(seen[iid])return;seen[iid]=true;
-      const it=ITEMS[iid];if(!it)return;
-      const cnt=S.inv.filter(x=>x===iid).length;
-      const price=Math.max(1,Math.floor(it.p*.5));
-      const sellBtn=el('button','bt',`${it.e} ${it.n}${cnt>1?' ('+cnt+')':''} — ${price} caps`);
-      sellBtn.onclick=()=>{const i=S.inv.indexOf(iid);if(i!==-1){S.inv.splice(i,1);S.caps+=price;log('Sold '+it.n+'.','n');openBld(bId)}};
-      body.appendChild(sellBtn);
-    });
-  }else{body.appendChild(el('div','','<div style="font-size:11px;color:var(--muted)">Nothing to sell.</div>'))}
+  const ids=shopItems.map(s=>s.id);
+  const merchantName=_tradeGetMerchantName(bId);
+  const btn=el('button','bt go','🛒 Trade with '+merchantName);
+  btn.style.textAlign='center';
+  btn.onclick=()=>openTrade(ids,bId,merchantName);
+  body.appendChild(btn);
 }
+// ============================================================
+// TRADE SYSTEM
+// ============================================================
+const TRADE_CATS={
+  all:  {label:'All',     filter:()=>true},
+  weap: {label:'Weapons', filter:it=>it.t==='w'},
+  armor:{label:'Armor',   filter:it=>it.t==='a'},
+  ammo: {label:'Ammo',    filter:it=>it.t==='ammo'},
+  aid:  {label:'Aid',     filter:it=>it.t==='c'},
+  misc: {label:'Misc',    filter:it=>it.t==='m'},
+};
+let _tradeState={mode:'buy',shopId:null,merchantName:'',stockIds:[],selId:null,qty:1,cat:'all'};
+
+function _tradeGetMerchantName(bId){
+  if(bId.includes('khan'))return 'Khan Trader';
+  if(bId.includes('armory'))return 'Brotherhood Quartermaster';
+  if(bId.includes('bos'))return 'Brotherhood Stock';
+  if(bId.includes('legion'))return 'Legion Trader';
+  if(bId.includes('med')||bId.includes('clinic'))return 'Medical Supplies';
+  if(bId.includes('ralph'))return "Mick & Ralph's";
+  if(bId.includes('silver_rush'))return 'Silver Rush';
+  if(bId.includes('supply'))return 'General Supplies';
+  if(bId.includes('general_store'))return "Chet's Store";
+  if(bId.includes('express'))return 'Mojave Express';
+  if(bId.includes('dino'))return 'Dino Bite Shop';
+  return 'Merchant';
+}
+
+function barterBuyPrice(baseP){
+  const cha=S.special?S.special[3]:5;
+  return Math.max(1,Math.round(baseP*Math.max(0.6,1-(cha*.015)-(S.barterPerk||0)/100)));
+}
+function barterSellPrice(baseP){
+  const cha=S.special?S.special[3]:5;
+  return Math.max(1,Math.floor(baseP*Math.min(0.7,0.42+(cha*.012)+(S.barterPerk||0)/200)));
+}
+
+function openTrade(stockIds,shopId,merchantName){
+  _tradeState={mode:'buy',shopId:shopId||null,merchantName:merchantName||'Merchant',
+    stockIds:stockIds||[],selId:null,qty:1,cat:'all'};
+  $('TRADE-TITLE').textContent=(merchantName||'Trade').toUpperCase();
+  $('TRADE').classList.add('A');
+  $('TRADE-TAB-BUY').classList.add('active');
+  $('TRADE-TAB-SELL').classList.remove('active');
+  tradeRender();
+}
+function closeTrade(){
+  $('TRADE').classList.remove('A');
+  _tradeState.selId=null;
+  if(_tradeState.shopId)openBld(_tradeState.shopId);
+  else upAll();
+}
+function tradeSetTab(mode){
+  _tradeState.mode=mode;_tradeState.selId=null;_tradeState.qty=1;_tradeState.cat='all';
+  $('TRADE-TAB-BUY').classList.toggle('active',mode==='buy');
+  $('TRADE-TAB-SELL').classList.toggle('active',mode==='sell');
+  tradeRender();
+}
+function tradeCat(cat){
+  _tradeState.cat=cat;_tradeState.selId=null;_tradeState.qty=1;
+  tradeRenderCats();tradeRenderItems();tradeRenderFooter();
+}
+function tradeSelect(id){
+  _tradeState.selId=(_tradeState.selId===id)?null:id;
+  _tradeState.qty=1;
+  tradeRenderItems();tradeRenderFooter();
+}
+function tradeQty(delta){
+  const st=_tradeState;if(!st.selId)return;
+  const it=ITEMS[st.selId];if(!it)return;
+  const cap=st.mode==='buy'
+    ?Math.floor((S.caps||0)/barterBuyPrice(it.p))
+    :S.inv.filter(x=>x===st.selId).length;
+  st.qty=Math.max(1,Math.min(Math.max(cap,1),(st.qty||1)+delta));
+  tradeRenderFooter();
+}
+function tradeQtyMax(){
+  const st=_tradeState;if(!st.selId)return;
+  const it=ITEMS[st.selId];if(!it)return;
+  const cap=st.mode==='buy'
+    ?Math.floor((S.caps||0)/barterBuyPrice(it.p))
+    :S.inv.filter(x=>x===st.selId).length;
+  st.qty=Math.max(1,cap);
+  tradeRenderFooter();
+}
+function tradeExecute(){
+  const st=_tradeState;if(!st.selId||!st.qty)return;
+  const it=ITEMS[st.selId];if(!it)return;
+  if(st.mode==='buy'){
+    const unit=barterBuyPrice(it.p);
+    const total=unit*st.qty;
+    if((S.caps||0)<total){notify('Not enough caps.');return}
+    S.caps-=total;
+    let got=0;
+    for(let i=0;i<st.qty;i++){if(giveItem(st.selId))got++;else{S.caps+=unit*(st.qty-i);break}}
+    if(got>0)log('Bought '+got+'× '+it.n+' ('+total+' caps).','n');
+    notify('⬇ '+it.n+' ×'+got);
+  } else {
+    const unit=barterSellPrice(it.p);
+    const have=S.inv.filter(x=>x===st.selId).length;
+    const n=Math.min(st.qty,have);
+    if(!n){notify('Not in inventory.');return}
+    for(let i=0;i<n;i++){const ix=S.inv.indexOf(st.selId);if(ix!==-1)S.inv.splice(ix,1)}
+    const total=unit*n;S.caps+=total;S.capsEarned=(S.capsEarned||0)+total;
+    log('Sold '+n+'× '+it.n+' ('+total+' caps).','n');
+    notify('⬆ '+it.n+' ×'+n+' +'+total+'c');
+  }
+  st.qty=1;save();
+  tradeRenderCaps();tradeRenderCats();tradeRenderItems();tradeRenderFooter();upSB();
+}
+function tradeRender(){
+  tradeRenderCaps();tradeRenderCats();tradeRenderItems();tradeRenderFooter();
+}
+function tradeRenderCaps(){
+  $('TRADE-CAPS').textContent='💰 '+S.caps+' caps  ·  🎒 '+S.inv.length+' items';
+}
+function tradeRenderCats(){
+  const cats=$('TRADE-CATS');cats.innerHTML='';
+  const st=_tradeState;
+  const src=st.mode==='buy'
+    ?[...new Set(st.stockIds)].map(id=>ITEMS[id]).filter(Boolean)
+    :[...new Set(S.inv)].map(id=>ITEMS[id]).filter(Boolean);
+  Object.entries(TRADE_CATS).forEach(([key,cfg])=>{
+    const n=src.filter(cfg.filter).length;
+    if(n===0&&key!=='all')return;
+    const b=document.createElement('button');
+    b.textContent=cfg.label+(key!=='all'?' ('+n+')':'');
+    if(st.cat===key)b.classList.add('active');
+    b.onclick=()=>tradeCat(key);
+    cats.appendChild(b);
+  });
+}
+function tradeRenderItems(){
+  const body=$('TRADE-BODY');body.innerHTML='';
+  const st=_tradeState;
+  const cf=TRADE_CATS[st.cat]?.filter||TRADE_CATS.all.filter;
+  if(st.mode==='buy'){
+    const seen=new Set();
+    const rows=st.stockIds
+      .map(id=>({id,it:ITEMS[id]}))
+      .filter(x=>x.it&&!seen.has(x.id)&&seen.add(x.id)&&cf(x.it));
+    if(!rows.length){body.innerHTML='<div style="padding:20px;text-align:center;font-size:11px;color:var(--muted)">Nothing here.</div>';return}
+    rows.forEach(({id,it})=>{
+      const price=barterBuyPrice(it.p);
+      const canAfford=(S.caps||0)>=price;
+      const sel=st.selId===id;
+      const row=document.createElement('div');
+      row.className='tr-item'+(sel?' selected':'');
+      row.innerHTML=`<div class="tr-icon">${renderIcon(it.e,30)}</div>
+        <div style="flex:1;min-width:0;line-height:1.3">
+          <div style="font-size:12px;font-weight:bold;color:${canAfford?'var(--text)':'var(--muted)'}">${it.n}</div>
+          <div style="font-size:10px;color:var(--muted)">${_tradeDesc(it)}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;margin-left:6px">
+          <div style="font-size:13px;font-weight:bold;color:${canAfford?'var(--amber)':'var(--red)'}">${price}c</div>
+          <div style="font-size:9px;color:#4a4838">${(it.w||0)>0?it.w+'kg':''}</div>
+        </div>`;
+      row.onclick=()=>tradeSelect(id);
+      body.appendChild(row);
+    });
+  } else {
+    const counts={};S.inv.forEach(id=>{counts[id]=(counts[id]||0)+1});
+    const rows=Object.entries(counts)
+      .map(([id,cnt])=>({id,it:ITEMS[id],cnt}))
+      .filter(x=>x.it&&cf(x.it))
+      .sort((a,b)=>b.it.p-a.it.p);
+    if(!rows.length){body.innerHTML='<div style="padding:20px;text-align:center;font-size:11px;color:var(--muted)">Nothing to sell.</div>';return}
+    rows.forEach(({id,it,cnt})=>{
+      const price=barterSellPrice(it.p);
+      const sel=st.selId===id;
+      const row=document.createElement('div');
+      row.className='tr-item'+(sel?' selected':'');
+      row.innerHTML=`<div class="tr-icon">${renderIcon(it.e,30)}</div>
+        <div style="flex:1;min-width:0;line-height:1.3">
+          <div style="font-size:12px;font-weight:bold;color:var(--text)">${it.n}</div>
+          <div style="font-size:10px;color:var(--muted)">${_tradeDesc(it)}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;margin-left:6px">
+          <div style="font-size:13px;font-weight:bold;color:var(--amber2)">${price}c</div>
+          <div style="font-size:10px;color:var(--muted)">×${cnt}</div>
+        </div>`;
+      row.onclick=()=>tradeSelect(id);
+      body.appendChild(row);
+    });
+  }
+}
+function _tradeDesc(it){
+  if(it.t==='w'){const ammoN=it.ammo?ITEMS[it.ammo]?.n||'Ammo':'';return 'ATK +'+it.a+(ammoN?' · '+ammoN:'');}
+  if(it.t==='a')return 'DEF +'+it.d+' · '+(it.slot==='head'?'Head':'Body');
+  if(it.t==='c')return it.hp?'+'+it.hp+' HP'+(it.desc?' · '+it.desc:''):it.desc||'Consumable';
+  if(it.t==='ammo')return 'Ammunition';
+  return it.desc||it.t||'';
+}
+function tradeRenderFooter(){
+  const st=_tradeState;
+  const qw=$('TRADE-QTY-WRAP'),info=$('TRADE-SEL-INFO');
+  tradeRenderCaps();
+  if(!st.selId){
+    qw.style.display='none';info.style.display='';
+    info.textContent='Tap an item to select it';
+    return;
+  }
+  const it=ITEMS[st.selId];if(!it){qw.style.display='none';return}
+  qw.style.display='flex';qw.style.flexDirection='column';
+  info.style.display='none';
+  $('TRADE-SEL-NAME').textContent=it.n;
+  const unit=st.mode==='buy'?barterBuyPrice(it.p):barterSellPrice(it.p);
+  const inInv=S.inv.filter(x=>x===st.selId).length;
+  $('TRADE-SEL-PRICE').textContent=(st.mode==='buy'?'Cost: '+unit+'c · Owned: '+inInv:'Value: '+unit+'c · Have: '+inInv);
+  // Clamp qty
+  const maxQ=st.mode==='buy'?Math.max(1,Math.floor((S.caps||0)/unit)):Math.max(1,inInv);
+  if((st.qty||1)>maxQ)st.qty=maxQ;
+  $('TRADE-QTY-NUM').textContent=st.qty||1;
+  $('TRADE-TOTAL').textContent=((st.qty||1)*unit)+'c';
+  const btn=$('TRADE-DO-BTN');
+  const qty=st.qty||1;
+  btn.textContent=(st.mode==='buy'?'BUY':'SELL')+' ×'+qty+' — '+qty*unit+'c';
+  btn.className='tr-confirm'+(st.mode==='sell'?' sell':'');
+  const ok=st.mode==='buy'?(S.caps||0)>=unit:inInv>0;
+  btn.disabled=!ok;
+}
+
 function getShopInventory(bId){
   const general=[{id:'stimpak'},{id:'purified_water'},{id:'dirty_water'},{id:'sunset_sars'},{id:'cram'},{id:'iguana_bits'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'duct_tape'},{id:'bobby_pin'},{id:'wonderglue'},{id:'wrench'},{id:'camera'},{id:'cigarette_pack'}];
   const guns=[{id:'pistol_9mm'},{id:'pistol_10mm'},{id:'revolver_357'},{id:'cowboy_repeater'},{id:'trail_carbine'},{id:'smg_9mm'},{id:'varmint_rifle'},{id:'service_rifle'},{id:'single_shotgun'},{id:'caravan_shotgun'},{id:'ammo_556'},{id:'ammo_308'},{id:'ammo_shells'},{id:'ammo_9mm'},{id:'ammo_10mm'},{id:'ammo_357'},{id:'combat_knife'},{id:'tire_iron'},{id:'reinforced_leather_armor'},{id:'metal_helmet'}];
@@ -5553,19 +5822,380 @@ function sellJunk(){
 // ============================================================
 // TRAVEL TAB
 // ============================================================
+// ── PIP-BOY MAP ───────────────────────────────────────────────
+// Geographic coordinates as % of a 400×580 viewBox
+// Based on real FNV Mojave map proportions (south=bottom, east=right)
+const MAP_COORDS={
+  // South-west corner — highway entry points
+  MojaveOutpost:   {x:55,  y:530},  // far SW, on the highway
+  Goodsprings:     {x:100, y:468},  // west side, north of outpost
+  NCRCF:           {x:148, y:452},  // north-east of Goodsprings, west of Primm
+  Primm:           {x:175, y:490},  // south-central, east of Goodsprings
+  Sloan:           {x:95,  y:400},  // north of Goodsprings on the highway
+  // South strip — Legion territory and south-east
+  Nipton:          {x:248, y:510},  // south-east, below Novac
+  NelsonCamp:      {x:308, y:480},  // further east, south of Searchlight
+  CampSearchlight: {x:330, y:505},  // south-east corner
+  CottonwoodCove:  {x:345, y:535},  // furthest south-east, Colorado River
+  TheFort:         {x:368, y:448},  // east, across from Hoover Dam
+  // Central Mojave
+  HiddenValley:    {x:200, y:375},  // central, between Goodsprings and Boulder City
+  Novac:           {x:245, y:415},  // central-east, south of Boulder City
+  HeliosOne:       {x:272, y:368},  // between Novac and Boulder City
+  RedRockCanyon:   {x:70,  y:315},  // north-west
+  BoulderCity:     {x:300, y:330},  // east-central, gateway to dam
+  TradingPost188:  {x:272, y:300},  // junction between Boulder and Vegas
+  CampForlornHope: {x:348, y:388},  // south-east, near Colorado
+  HooverDam:       {x:365, y:330},  // far east, dam
+  // Vegas cluster — centre-left
+  CampMcCarran:    {x:195, y:270},  // south of Vegas
+  Westside:        {x:172, y:245},  // just west of strip
+  FreesideN:       {x:198, y:232},  // gate to the strip
+  TheStrip:        {x:215, y:215},  // strip itself
+  CampGolf:        {x:288, y:258},  // east of Vegas, Lake Mead area
+  // North
+  NellisAFB:       {x:295, y:190},  // north-east of Vegas
+  BitterSprings:   {x:318, y:148},  // north-east mountains
+  Jacobstown:      {x:88,  y:228},  // north-west mountains
+  CinderGulch:     {x:128, y:175},  // north, above hidden valley line
+};
+
+const MAP_ICON={
+  Goodsprings:'NVImages/GoodspringsIcon.png',
+  Primm:'NVImages/PrimmIcon.png',
+  Nipton:'NVImages/NiptonIcon.png',
+  Novac:'NVImages/NovacIcon.png',
+  BoulderCity:'NVImages/BouldercityIcon.png',
+  FreesideN:'NVImages/FreesideIcon.png',
+  TheStrip:'NVImages/ThestripIcon.png',
+  CampMcCarran:'NVImages/CampmccarranIcon.png',
+  HiddenValley:'NVImages/HiddenvalleyIcon.png',
+  Jacobstown:'NVImages/JacobstownIcon.png',
+  RedRockCanyon:'NVImages/RedrockcanyonIcon.png',
+  NelsonCamp:'NVImages/NelsoncampIcon.png',
+  TheFort:'NVImages/ThefortIcon.png',
+  CampSearchlight:'NVImages/CampsearchlightIcon.png',
+  CottonwoodCove:'NVImages/CottonwoodcoveIcon.png',
+  Sloan:'NVImages/SloanIcon.png',
+  MojaveOutpost:'NVImages/MojaveoutpostIcon.png',
+  Westside:'NVImages/WestsideIcon.png',
+  NellisAFB:'NVImages/NellisairforcebaseIcon.png',
+  CampGolf:'NVImages/CampgolfIcon.png',
+  BitterSprings:'NVImages/BitterspringsIcon.png',
+  NCRCF:'NVImages/NcrcorrectionalfacilityIcon.png',
+  HeliosOne:'NVImages/HeliosoneIcon.png',
+  CampForlornHope:'NVImages/CampforlornehopeIcon.png',
+  TradingPost188:'NVImages/188tradingpostIcon.png',
+  CinderGulch:'NVImages/CindergulchIcon.png',
+  HooverDam:'NVImages/HooverdamIcon.png',
+};
+
+let _mapSel=null; // currently tapped location key
+
+function mapIsKnown(locId){
+  if(locId===S.loc)return true;
+  if(S.visitedLocs&&S.visitedLocs.has&&S.visitedLocs.has(locId))return true;
+  // Visited = stored as array in save
+  if(S.visitedLocs&&Array.isArray(S.visitedLocs)&&S.visitedLocs.includes(locId))return true;
+  // Directly reachable from current location = known
+  if(ROADS[S.loc]&&ROADS[S.loc][locId]!==undefined)return true;
+  // Reachable from any visited loc
+  if(S.visitedLocs){
+    const vl=Array.isArray(S.visitedLocs)?S.visitedLocs:[...S.visitedLocs];
+    for(const v of vl){if(ROADS[v]&&ROADS[v][locId]!==undefined)return true}
+  }
+  return false;
+}
+
+function mapMarkVisited(locId){
+  if(!S.visitedLocs)S.visitedLocs=[];
+  if(!S.visitedLocs.includes(locId))S.visitedLocs.push(locId);
+}
+
 function upRoads(){
-  const tab=$('roads-tab');if(!S)return;tab.innerHTML='';
-  tab.appendChild(el('div','sh','Travel from '+LOCS[S.loc]?.n));
-  const roads=ROADS[S.loc]||{};
-  if(!Object.keys(roads).length){tab.appendChild(el('div','cd','No known routes.'));return}
-  Object.entries(roads).forEach(([dest,days])=>{
-    const loc=LOCS[dest];if(!loc)return;
-    const dgColor=loc.dg>=4?'var(--red)':loc.dg>=2?'var(--amber2)':'var(--muted)';
-    const dc=el('div','bc big-icon-card');
-    dc.innerHTML=`<div class="card-icon-lg">${loc.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:13px">${loc.n}</div><div style="font-size:10px;color:var(--muted)">${loc.r} · ~${days} day${days>1?'s':''} · <span style="color:${dgColor}">${'☠'.repeat(loc.dg)||'Safe'}</span></div><div style="font-size:10px;color:var(--muted);font-style:italic">${loc.d.substring(0,50)}${loc.d.length>50?'...':''}</div></div><div style="color:var(--muted)">›</div>`;
-    dc.onclick=()=>beginTravel(dest,days);
-    tab.appendChild(dc);
+  // Mark current location as visited
+  mapMarkVisited(S.loc);
+  const tab=$('roads-tab');if(!S)return;
+  tab.innerHTML='';
+  tab.style.padding='0';
+  tab.style.background='#0a0a06';
+
+  // ── Header strip ──────────────────────────────────────────
+  const hdr=el('div','');
+  hdr.style.cssText='background:#0e0e08;border-bottom:1px solid #2a2818;padding:8px 12px 6px;display:flex;align-items:center;justify-content:space-between';
+  hdr.innerHTML=`<div style="font-size:11px;color:var(--amber);letter-spacing:2px;text-transform:uppercase">📍 ${LOCS[S.loc]?.n||S.loc}</div>
+    <div style="font-size:10px;color:var(--muted)">${LOCS[S.loc]?.r||'Mojave'}</div>`;
+  tab.appendChild(hdr);
+
+  // ── SVG Map ───────────────────────────────────────────────
+  const VW=400, VH=580;
+  const mapWrap=el('div','');
+  mapWrap.style.cssText='position:relative;width:100%;overflow:hidden;background:#0a0a06';
+
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox',`0 0 ${VW} ${VH}`);
+  svg.setAttribute('width','100%');
+  svg.style.cssText='display:block;touch-action:pan-y;user-select:none';
+
+  // Background terrain texture (subtle grid)
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML=`
+    <pattern id="mgrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1a1a0e" stroke-width="0.5"/>
+    </pattern>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="dimglow">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      @keyframes mapPulse{0%,100%{opacity:.7;r:14}50%{opacity:1;r:17}}
+      @keyframes mapSpin{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-40}}
+      .loc-pulse{animation:mapPulse 1.8s ease-in-out infinite}
+    </style>`;
+  svg.appendChild(defs);
+
+  // Terrain background
+  const bgRect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+  bgRect.setAttribute('width',VW);bgRect.setAttribute('height',VH);
+  bgRect.setAttribute('fill','url(#mgrid)');
+  svg.appendChild(bgRect);
+
+  // Subtle region colour zones
+  const regions=[
+    {x:0,y:0,w:VW,h:VH,fill:'#0c0b07'},         // base
+    {x:280,y:260,w:140,h:160,fill:'#0e0c08'},     // east (dam area)
+    {x:40,y:180,w:160,h:200,fill:'#0b0d08'},      // northwest (green hills)
+    {x:50,y:440,w:200,h:140,fill:'#0d0b07'},      // south desert
+  ];
+  regions.forEach(r=>{
+    const rr=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rr.setAttribute('x',r.x);rr.setAttribute('y',r.y);
+    rr.setAttribute('width',r.w);rr.setAttribute('height',r.h);
+    rr.setAttribute('fill',r.fill);rr.setAttribute('opacity','0.5');
+    svg.appendChild(rr);
   });
+
+  // ── Road lines ─────────────────────────────────────────────
+  const drawnRoads=new Set();
+  Object.entries(ROADS).forEach(([from,dests])=>{
+    const fc=MAP_COORDS[from];if(!fc)return;
+    Object.entries(dests).forEach(([to,days])=>{
+      const tc=MAP_COORDS[to];if(!tc)return;
+      const key=[from,to].sort().join('-');
+      if(drawnRoads.has(key))return;
+      drawnRoads.add(key);
+      const knownFrom=mapIsKnown(from),knownTo=mapIsKnown(to);
+      const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',fc.x);line.setAttribute('y1',fc.y);
+      line.setAttribute('x2',tc.x);line.setAttribute('y2',tc.y);
+      if(knownFrom&&knownTo){
+        // Colour by travel days
+        const col=days>=3?'#3a2818':days>=2?'#2a2a14':'#1e2a14';
+        line.setAttribute('stroke',col);
+        line.setAttribute('stroke-width','1.5');
+        line.setAttribute('stroke-dasharray','4 3');
+        line.setAttribute('opacity','0.85');
+      } else {
+        line.setAttribute('stroke','#1a1810');
+        line.setAttribute('stroke-width','1');
+        line.setAttribute('stroke-dasharray','2 4');
+        line.setAttribute('opacity','0.35');
+      }
+      svg.appendChild(line);
+    });
+  });
+
+  // ── Location markers ───────────────────────────────────────
+  const IMG_SIZE=22;
+  const HIT_R=18; // tap hitbox radius
+
+  Object.entries(MAP_COORDS).forEach(([locId,pos])=>{
+    const loc=LOCS[locId];if(!loc)return;
+    const known=mapIsKnown(locId);
+    const isCurrent=locId===S.loc;
+    const isSelected=_mapSel===locId;
+    const iconSrc=MAP_ICON[locId];
+    const reachable=ROADS[S.loc]&&ROADS[S.loc][locId]!==undefined;
+
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('cursor','pointer');
+
+    if(isCurrent){
+      // Pulsing ring for current location
+      const pulse=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      pulse.setAttribute('cx',pos.x);pulse.setAttribute('cy',pos.y);
+      pulse.setAttribute('r','16');pulse.setAttribute('fill','none');
+      pulse.setAttribute('stroke','#f0c850');pulse.setAttribute('stroke-width','1.5');
+      pulse.setAttribute('opacity','0.6');pulse.setAttribute('class','loc-pulse');
+      g.appendChild(pulse);
+    }
+
+    if(isSelected){
+      // Selection ring
+      const selRing=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      selRing.setAttribute('cx',pos.x);selRing.setAttribute('cy',pos.y);
+      selRing.setAttribute('r','18');selRing.setAttribute('fill','none');
+      selRing.setAttribute('stroke','#f0c850');selRing.setAttribute('stroke-width','2');
+      selRing.setAttribute('stroke-dasharray','5 3');
+      g.appendChild(selRing);
+    }
+
+    if(known&&iconSrc){
+      // Background circle
+      const bg=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      bg.setAttribute('cx',pos.x);bg.setAttribute('cy',pos.y);bg.setAttribute('r','13');
+      const dgFill=loc.dg>=4?'#2a0e0e':loc.dg>=3?'#1e1408':loc.dg>=2?'#141408':'#0e1408';
+      bg.setAttribute('fill',dgFill);
+      const bStroke=isCurrent?'#f0c850':isSelected?'#c9a230':reachable?'#3a4820':'#1e1e12';
+      bg.setAttribute('stroke',bStroke);bg.setAttribute('stroke-width',isCurrent?'2':'1.2');
+      g.appendChild(bg);
+
+      // Location icon image
+      const img=document.createElementNS('http://www.w3.org/2000/svg','image');
+      img.setAttribute('href',iconSrc);
+      img.setAttribute('x',pos.x-IMG_SIZE/2);img.setAttribute('y',pos.y-IMG_SIZE/2);
+      img.setAttribute('width',IMG_SIZE);img.setAttribute('height',IMG_SIZE);
+      img.setAttribute('preserveAspectRatio','xMidYMid meet');
+      if(!isCurrent&&!reachable)img.setAttribute('opacity','0.55');
+      g.appendChild(img);
+
+      // Danger skulls (top-right dot)
+      if(loc.dg>=4){
+        const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+        dot.setAttribute('cx',pos.x+9);dot.setAttribute('cy',pos.y-9);
+        dot.setAttribute('r','4');dot.setAttribute('fill','#cc3333');
+        g.appendChild(dot);
+        const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+        t.setAttribute('x',pos.x+9);t.setAttribute('y',pos.y-6);
+        t.setAttribute('text-anchor','middle');t.setAttribute('font-size','5');
+        t.setAttribute('fill','#fff');t.textContent='☠';
+        g.appendChild(t);
+      } else if(loc.dg>=2){
+        const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+        dot.setAttribute('cx',pos.x+9);dot.setAttribute('cy',pos.y-9);
+        dot.setAttribute('r','3.5');dot.setAttribute('fill','#c9a230');
+        g.appendChild(dot);
+      }
+
+      // Location label
+      const label=document.createElementNS('http://www.w3.org/2000/svg','text');
+      label.setAttribute('x',pos.x);label.setAttribute('y',pos.y+22);
+      label.setAttribute('text-anchor','middle');
+      label.setAttribute('font-size','7.5');
+      label.setAttribute('font-family','Courier New, monospace');
+      label.setAttribute('fill',isCurrent?'#f0c850':reachable?'#b8b488':'#5a5840');
+      label.setAttribute('letter-spacing','0.5');
+      // Shorten long names
+      const shortName=loc.n.replace('Camp ','').replace('NCR ','').replace(' Correctional Facility','');
+      label.textContent=shortName.length>14?shortName.substring(0,13)+'…':shortName;
+      g.appendChild(label);
+
+    } else if(!known){
+      // Unknown — dim dot
+      const unk=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      unk.setAttribute('cx',pos.x);unk.setAttribute('cy',pos.y);
+      unk.setAttribute('r','5');unk.setAttribute('fill','#1a1810');
+      unk.setAttribute('stroke','#2a2818');unk.setAttribute('stroke-width','1');
+      unk.setAttribute('opacity','0.5');
+      g.appendChild(unk);
+    }
+
+    // Invisible hit target
+    const hit=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    hit.setAttribute('cx',pos.x);hit.setAttribute('cy',pos.y);
+    hit.setAttribute('r',HIT_R);hit.setAttribute('fill','transparent');
+    g.appendChild(hit);
+
+    g.addEventListener('click',()=>mapTapLoc(locId));
+    svg.appendChild(g);
+  });
+
+  // Compass rose (bottom-left)
+  const cr=document.createElementNS('http://www.w3.org/2000/svg','text');
+  cr.setAttribute('x','18');cr.setAttribute('y','568');
+  cr.setAttribute('font-size','9');cr.setAttribute('fill','#3a3828');
+  cr.setAttribute('font-family','Courier New');
+  cr.textContent='N↑';
+  svg.appendChild(cr);
+
+  // Scale label
+  const sc=document.createElementNS('http://www.w3.org/2000/svg','text');
+  sc.setAttribute('x','380');sc.setAttribute('y','568');
+  sc.setAttribute('font-size','7');sc.setAttribute('fill','#2a2818');
+  sc.setAttribute('text-anchor','end');sc.setAttribute('font-family','Courier New');
+  sc.textContent='MOJAVE WASTELAND';
+  svg.appendChild(sc);
+
+  mapWrap.appendChild(svg);
+  tab.appendChild(mapWrap);
+
+  // ── Location detail panel ─────────────────────────────────
+  const panel=el('div','');
+  panel.id='map-panel';
+  panel.style.cssText='background:#0e0e08;border-top:1px solid #2a2818;padding:10px 12px;min-height:100px';
+  tab.appendChild(panel);
+  _mapRenderPanel(panel);
+}
+
+function mapTapLoc(locId){
+  _mapSel=(_mapSel===locId)?null:locId;
+  upRoads(); // re-render map with new selection
+}
+
+function _mapRenderPanel(panel){
+  if(!panel)return;
+  if(!_mapSel){
+    const roads=ROADS[S.loc]||{};
+    const reachCount=Object.keys(roads).length;
+    panel.innerHTML=`<div style="font-size:11px;color:var(--muted);text-align:center;padding:12px 0">
+      <div style="color:var(--amber);font-size:12px;font-weight:bold;margin-bottom:4px">📍 ${LOCS[S.loc]?.n||S.loc}</div>
+      <div style="font-size:10px">${reachCount} route${reachCount!==1?'s':''} from here · Tap a location to travel</div>
+      <div style="font-size:10px;color:#3a3828;margin-top:4px">🟡 Reachable  🔴 Dangerous  ◦ Undiscovered</div>
+    </div>`;
+    return;
+  }
+  const loc=LOCS[_mapSel];
+  const known=mapIsKnown(_mapSel);
+  if(!known){
+    panel.innerHTML=`<div style="font-size:11px;color:var(--muted);padding:8px 0">
+      <div style="color:#3a3828;font-size:12px;font-weight:bold">? Unknown Location</div>
+      <div style="font-size:10px;margin-top:4px">You haven't discovered this place yet.</div>
+    </div>`;
+    return;
+  }
+  if(!loc){panel.innerHTML='';return}
+  const isCurrent=_mapSel===S.loc;
+  const travelDays=ROADS[S.loc]?.[_mapSel];
+  const canTravel=!isCurrent&&travelDays!==undefined;
+  const dgColor=loc.dg>=4?'var(--red)':loc.dg>=3?'#cc6633':loc.dg>=2?'var(--amber2)':'var(--green)';
+  const dgLabel=['Safe','Safe','Dangerous','Very Dangerous','Extremely Dangerous'][Math.min(4,loc.dg)];
+  const iconSrc=MAP_ICON[_mapSel];
+
+  panel.innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      ${iconSrc?`<img src="${iconSrc}" style="width:36px;height:36px;object-fit:contain;border:1px solid #2a2818;border-radius:5px;background:#111108;padding:2px;flex-shrink:0">`:''}
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:bold;color:${isCurrent?'var(--amber)':'var(--text)'}">${loc.n}${isCurrent?' <span style="font-size:10px;color:var(--amber)">[HERE]</span>':''}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:1px">${loc.r} · <span style="color:${dgColor}">${dgLabel}</span></div>
+      </div>
+      ${canTravel?`<div style="text-align:right;font-size:10px;color:var(--muted);flex-shrink:0">~${travelDays} day${travelDays!==1?'s':''}</div>`:''}
+    </div>
+    <div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:8px;line-height:1.45">${loc.d}</div>
+    ${canTravel
+      ? `<button class="bt go" style="text-align:center;margin:0" onclick="mapDoTravel('${_mapSel}',${travelDays})">🗺 Travel to ${loc.n} (~${travelDays} day${travelDays!==1?'s':''})</button>`
+      : isCurrent
+        ? `<div style="font-size:11px;color:var(--amber);text-align:center;padding:4px 0">You are here</div>`
+        : `<div style="font-size:11px;color:var(--muted);text-align:center;padding:4px 0">No direct route from ${LOCS[S.loc]?.n||'here'}</div>`
+    }`;
+}
+
+function mapDoTravel(dest,days){
+  _mapSel=null;
+  beginTravel(dest,days);
 }
 function beginTravel(dest,days){
   if(combat)return;
@@ -5706,6 +6336,7 @@ function finTravel(){
   if(tDest){
     S.loc=tDest;S.days++;S.hours=8;
     payDaily();
+    mapMarkVisited(S.loc);
     log('Arrived at '+LOCS[S.loc]?.n+'.','q');
   }
   tDest=null;tQ=[];
