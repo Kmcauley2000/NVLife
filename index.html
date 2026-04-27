@@ -61,14 +61,14 @@ border:1px solid #2a2818;border-radius:5px;margin:4px 0;cursor:pointer;min-heigh
 .bc:active{background:#2a2a1a}
 /* Overlays */
 #CO{position:fixed;inset:0;background:rgba(5,5,2,.9);display:none;justify-content:center;
-align-items:center;z-index:200;padding:12px;overflow-y:auto}
+align-items:center;z-index:200;padding:calc(env(safe-area-inset-top,12px) + 8px) 12px calc(env(safe-area-inset-bottom,8px) + 8px);overflow-y:auto}
 #CP{background:var(--panel);border:1px solid var(--amber2);border-radius:8px;padding:10px;
 width:96%;max-width:400px;max-height:92vh;overflow-y:auto}
 /* Building overlay */
 #BO{position:fixed;inset:0;background:var(--bg);z-index:150;display:none;flex-direction:column;overflow:hidden}
 #BO.A{display:flex}
-#BI{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden}
-.bh{display:flex;align-items:center;gap:8px;padding:calc(var(--st)+12px) 10px 8px;min-height:56px;
+#BI{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top,0px)}
+.bh{display:flex;align-items:center;gap:8px;padding:14px 10px 8px;min-height:52px;
 background:#141408;border-bottom:1px solid #2a2818;flex-shrink:0;z-index:10}
 .bh img,.bh svg{width:28px!important;height:28px!important;max-width:28px!important;max-height:28px!important;object-fit:contain!important;display:inline-block!important;vertical-align:middle!important}
 .bb{font-size:22px;color:var(--amber);cursor:pointer;padding:10px 14px;min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:rgba(240,200,80,0.15)}
@@ -3752,14 +3752,39 @@ function renderCombat(){
   const hp=hpPct(S.hp,S.maxHp);
   const ap=hpPct(S.ap,S.maxAp);
 
-
-  let enemyHtml=alive.map((en)=>`<div class="combat-panel ${en.hitAnim==='crit'?'enemy-crit':(en.hitAnim?'enemy-hit':'')}" style="margin:2px 0;padding:6px;position:relative">
+  // Group identical enemies for cleaner display
+  let enemyHtml='';
+  const grouped=[];
+  alive.forEach(en=>{
+    const existing=grouped.find(g=>g.name===en.name&&g.icon===en.e);
+    if(existing){existing.members.push(en)}
+    else{grouped.push({name:en.name,icon:en.e,members:[en]})}
+  });
+  enemyHtml=grouped.map(g=>{
+    if(g.members.length===1){
+      const en=g.members[0];
+      return `<div class="combat-panel ${en.hitAnim==='crit'?'enemy-crit':(en.hitAnim?'enemy-hit':'')}" style="margin:2px 0;padding:6px;position:relative">
   ${en.hitAnim==='crit'?'<div class="crit-float">CRIT!</div>':''}
   <div style="display:flex;align-items:center;gap:8px">
   <div style="font-size:28px">${renderIcon(en.e,28)}</div>
   <div style="flex:1"><div style="font-weight:bold;font-size:12px;color:var(--red)">${en.name}</div>
   <div class="hb"><div class="hf cr" style="width:${hpPct(en.hp,en.maxHp)}%"></div></div>
-  <div style="font-size:9px;color:var(--muted)">HP ${en.hp}/${en.maxHp} · ATK ${en.a}${S.livingAnatomy?' · DT '+en.d:''}</div></div></div></div>`).join('');
+  <div style="font-size:9px;color:var(--muted)">HP ${en.hp}/${en.maxHp} · ATK ${en.a}${S.livingAnatomy?' · DT '+en.d:''}</div></div></div></div>`;
+    }else{
+      // Multiple identical enemies — show as group
+      const totalHp=g.members.reduce((s,en)=>s+en.hp,0);
+      const totalMaxHp=g.members.reduce((s,en)=>s+en.maxHp,0);
+      const anyHit=g.members.some(en=>en.hitAnim);
+      const anyCrit=g.members.some(en=>en.hitAnim==='crit');
+      return `<div class="combat-panel ${anyCrit?'enemy-crit':(anyHit?'enemy-hit':'')}" style="margin:2px 0;padding:6px;position:relative">
+  ${anyCrit?'<div class="crit-float">CRIT!</div>':''}
+  <div style="display:flex;align-items:center;gap:8px">
+  <div style="font-size:28px">${renderIcon(g.icon,28)}</div>
+  <div style="flex:1"><div style="font-weight:bold;font-size:12px;color:var(--red)">${g.members.length}× ${g.name}</div>
+  <div style="display:flex;gap:3px;margin:2px 0">${g.members.map(en=>`<div style="flex:1"><div class="hb"><div class="hf cr" style="width:${hpPct(en.hp,en.maxHp)}%"></div></div><div style="font-size:8px;color:var(--muted);text-align:center">${en.hp}</div></div>`).join('')}</div>
+  <div style="font-size:9px;color:var(--muted)">Total HP ${totalHp}/${totalMaxHp} · ATK ${g.members[0].a}${S.livingAnatomy?' · DT '+g.members[0].d:''}</div></div></div></div>`;
+    }
+  }).join('');
 
   panel.innerHTML=`<div style="text-align:center;font-size:10px;color:var(--amber);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">⚔ COMBAT · Turn ${combat.turn+1} ⚔</div>
   ${enemyHtml}
@@ -3835,9 +3860,9 @@ function openCombatInventory(mode='all'){
   <button class="bt" onclick="renderCombat()">Back to fight</button>`;
 }
 function combatEquipItem(id){
-  if(!combat)return;
-  const idx=S.inv.indexOf(id);if(idx===-1){notify('Item not found.');return}
-  const it=ITEMS[id];if(!it||it.t!=='w')return;
+  if(!combat){renderCombat();return}
+  const idx=S.inv.indexOf(id);if(idx===-1){notify('Item not found.');renderCombat();return}
+  const it=ITEMS[id];if(!it||it.t!=='w'){renderCombat();return}
   if(S.gear.w)giveItem(S.gear.w,1,{ignoreLimit:true,silent:true});
   S.gear.w=id;S.inv.splice(idx,1);
   let msg=`Equipped ${it.n}.`;
@@ -3845,9 +3870,9 @@ function combatEquipItem(id){
   combat.log.push(msg);notify('Equipped '+it.n);save();renderCombat();
 }
 function combatUseItem(id){
-  if(!combat)return;
-  const idx=S.inv.indexOf(id);if(idx===-1){notify('Item not found.');return}
-  const it=ITEMS[id];if(!it)return;
+  if(!combat){renderCombat();return}
+  const idx=S.inv.indexOf(id);if(idx===-1){notify('Item not found.');renderCombat();return}
+  const it=ITEMS[id];if(!it){renderCombat();return}
   let lines=[];
   let totalHeal=0;
   if(it.hp){
@@ -3862,25 +3887,10 @@ function combatUseItem(id){
   if(it.buff&&it.buff.ap){let apGain=it.buff.ap;if(S.chemResistant)apGain+=10;S.ap=Math.min(S.maxAp,S.ap+apGain);lines.push('+'+apGain+' AP')}
   if(it.buff&&it.buff.dmg){lines.push('+'+it.buff.dmg+' DMG')}
   if(it.buff&&it.buff.dr){lines.push('+'+it.buff.dr+' DR')}
-  S.inv.splice(idx,1);combat.log.push(`Used ${it.n}${lines.length?' ('+lines.join(', ')+')':''}.`);
+  S.inv.splice(idx,1);
+  combat.log.push(`Used ${it.n}${lines.length?' ('+lines.join(', ')+')':''}.`);
   notify(totalHeal>0?'Used '+it.n+' +'+totalHeal+' HP':'Used '+it.n);
-
-  // Enemies get a turn after using an item
-  const survivors=combat.enemies.filter(en=>en.hp>0);
-  if(survivors.length){
-    if(S.radChild&&S.hp<S.maxHp){S.hp=Math.min(S.maxHp,S.hp+3);combat.log.push('Rad Child: +3 HP regen.')}
-    survivors.forEach(en=>{
-      const eDmg=fnvDTDamage(en.a+rnd(-1,1),defPow(),FNV_NORMAL.enemyDamage);
-      S.hp=Math.max(0,S.hp-eDmg);
-      combat.log.push(`${en.name} deals ${eDmg} damage to you.`);
-    });
-    if(S.hp<=0){
-      combat.log.push('You are critically wounded!');
-      endCombat(false,true);
-      return;
-    }
-  }
-  combat.turn++;
+  // Using items is a FREE action — no enemy turn, no turn increment
   upSB();save();renderCombat();
 }
   
@@ -3956,10 +3966,21 @@ function combatAction(act){
   const survivors=combat.enemies.filter(en=>en.hp>0);
   if(!survivors.length){endCombat(true);return}
 
+  // Rad Child regen
+  if(S.radChild&&S.hp<S.maxHp){S.hp=Math.min(S.maxHp,S.hp+3);combat.log.push('Rad Child: +3 HP regen.')}
+
+  // Enemy turn — group identical enemies in log
+  const atkGroups={};
   survivors.forEach(en=>{
     const eDmg=fnvDTDamage(en.a+rnd(-1,1),defPow(),FNV_NORMAL.enemyDamage);
     S.hp=Math.max(0,S.hp-eDmg);
-    combat.log.push(`${en.name} deals ${eDmg} damage to you.`);
+    if(!atkGroups[en.name])atkGroups[en.name]={count:0,totalDmg:0};
+    atkGroups[en.name].count++;
+    atkGroups[en.name].totalDmg+=eDmg;
+  });
+  Object.entries(atkGroups).forEach(([name,g])=>{
+    if(g.count>1)combat.log.push(`${g.count}× ${name} deal ${g.totalDmg} total damage.`);
+    else combat.log.push(`${name} deals ${g.totalDmg} damage.`);
   });
 
   if(S.hp<=0){combat.log.push('You are critically wounded!');endCombat(false,true);return}
@@ -3967,7 +3988,7 @@ function combatAction(act){
   renderCombat();
 }
 function endCombat(won,died){
-  if(!combat)return;
+  if(!combat){$('CO').style.display='none';return}
   const expArea=combat._expArea;
   const expStep=combat._expStep;
   const postT=combat.postT;
