@@ -68,10 +68,10 @@ width:96%;max-width:400px;max-height:92vh;overflow-y:auto}
 #BO{position:fixed;inset:0;background:var(--bg);z-index:150;display:none;flex-direction:column;overflow:hidden}
 #BO.A{display:flex}
 #BI{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden}
-.bh{display:flex;align-items:center;gap:8px;padding:calc(var(--st)+8px) 10px 8px;min-height:52px;
+.bh{display:flex;align-items:center;gap:8px;padding:calc(var(--st)+12px) 10px 8px;min-height:56px;
 background:#141408;border-bottom:1px solid #2a2818;flex-shrink:0;z-index:10}
 .bh img,.bh svg{width:28px!important;height:28px!important;max-width:28px!important;max-height:28px!important;object-fit:contain!important;display:inline-block!important;vertical-align:middle!important}
-.bb{font-size:22px;color:var(--amber);cursor:pointer;padding:8px 12px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
+.bb{font-size:22px;color:var(--amber);cursor:pointer;padding:10px 14px;min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:rgba(240,200,80,0.15)}
 .bp{padding:10px;overflow-y:auto;flex:1 1 auto;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:calc(96px + var(--sb))}
 .bs2{color:var(--amber2);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
 padding:3px 0;margin:10px 0 4px;border-bottom:1px solid #2a2818}
@@ -3639,6 +3639,11 @@ function finishCombatLoot(){
   }
   if(questComplete==='gs_ghost_town_gunfight')gsFinishGhostQuest(lines);
 
+  // Check deep quest combat hooks
+  if(checkPostCombatQuestHooks()){
+    $('CO').style.display='none';combat=null;chkLU();save();return;
+  }
+
   const pendingWEId=combat._pendingWEId;
   const pendingWEResult=combat._pendingWEResult;
 
@@ -3692,7 +3697,7 @@ function playerHitDamage(attack,target,vats=false){
   return {crit,dmg:fnvDTDamage(Math.round(attack.atk*mult)+variance+bonus,target.d,FNV_NORMAL.playerDamage)};
 }
 function renderCombat(){
-  if(!combat)return;
+  if(!combat){$('CO').style.display='none';return}
   const o=$('CO');o.style.display='flex';
   const panel=$('CP');
   if(combat.lootPhase){
@@ -3827,31 +3832,36 @@ function combatUseItem(id){
   const idx=S.inv.indexOf(id);if(idx===-1){notify('Item not found.');return}
   const it=ITEMS[id];if(!it)return;
   let lines=[];
+  let totalHeal=0;
   if(it.hp){
     let heal=it.hp;
-    // Triage: +25% healing from medical items (stimpak, super_stimpak, doctor_bag, healing_powder, antivenom)
     if(S.triagePerk&&(id==='stimpak'||id==='super_stimpak'||id==='doctor_bag'||id==='healing_powder'||id==='antivenom')){heal=Math.round(heal*1.25)}
-    // Lead Belly: +50% healing from food/drink
     if(S.leadBelly&&(id==='nuka_cola'||id==='sunset_sars'||id==='fancy_lad'||id==='cram'||id==='iguana_bits'||id==='gecko_steak'||id==='bighorner_meat'||id==='purified_water'||id==='dirty_water')){heal=Math.round(heal*1.5)}
-    S.hp=Math.min(S.maxHp,S.hp+heal);lines.push('+'+heal+' HP');
+    const before=S.hp;
+    S.hp=Math.min(S.maxHp,S.hp+heal);
+    totalHeal=S.hp-before;
+    lines.push('+'+totalHeal+' HP ('+S.hp+'/'+S.maxHp+')');
   }
   if(it.buff&&it.buff.ap){let apGain=it.buff.ap;if(S.chemResistant)apGain+=10;S.ap=Math.min(S.maxAp,S.ap+apGain);lines.push('+'+apGain+' AP')}
   if(it.buff&&it.buff.dmg){lines.push('+'+it.buff.dmg+' DMG')}
   if(it.buff&&it.buff.dr){lines.push('+'+it.buff.dr+' DR')}
   S.inv.splice(idx,1);combat.log.push(`Used ${it.n}${lines.length?' ('+lines.join(', ')+')':''}.`);
-  notify('Used '+it.n);
+  notify(totalHeal>0?'Used '+it.n+' +'+totalHeal+' HP':'Used '+it.n);
 
   // Enemies get a turn after using an item
   const survivors=combat.enemies.filter(en=>en.hp>0);
   if(survivors.length){
-    // Rad Child: heal per turn
     if(S.radChild&&S.hp<S.maxHp){S.hp=Math.min(S.maxHp,S.hp+3);combat.log.push('Rad Child: +3 HP regen.')}
     survivors.forEach(en=>{
       const eDmg=fnvDTDamage(en.a+rnd(-1,1),defPow(),FNV_NORMAL.enemyDamage);
       S.hp=Math.max(0,S.hp-eDmg);
       combat.log.push(`${en.name} deals ${eDmg} damage to you.`);
     });
-    if(S.hp<=0){combat.log.push('You are critically wounded!');endCombat(false,true);return}
+    if(S.hp<=0){
+      combat.log.push('You are critically wounded!');
+      endCombat(false,true);
+      return;
+    }
   }
   combat.turn++;
   upSB();save();renderCombat();
@@ -4225,6 +4235,410 @@ function skipPerk(){
 }
 
 // ============================================================
+// DEEP QUESTS — 5 multi-step narrative questlines
+// ============================================================
+
+// ── Quest 1: "Come Fly With Me" (Novac / REPCONN) ──────────
+// Manny Vargas points you to REPCONN. Ghouls want to launch rockets.
+// Choice: help them launch, sabotage, or kill the nightkin leader.
+function cfwmQuest(){return (S.quests||[]).find(q=>q.id==='novac_come_fly')||null}
+function cfwmActive(){const q=cfwmQuest();return !!(q&&!q.done)}
+function cfwmDone(){const q=cfwmQuest();return !!(q&&q.done)}
+function cfwmRefresh(){
+  const q=cfwmQuest();if(!q||q.done)return;
+  const s=S.flags.cfwm_stage||0;
+  if(s===0)q.progText='Travel to REPCONN Test Site and investigate the ghoul activity.';
+  if(s===1)q.progText='Clear the basement of nightkin. Davison wants a shipment of Stealth Boys.';
+  if(s===2)q.progText='Decide: help the ghouls launch, sabotage the rockets, or negotiate with Davison.';
+  if(s===3)q.progText='Return to Manny Vargas in Novac with news.';
+}
+function cfwmStart(){
+  if(cfwmDone()){closeDlg();showResult('Manny Vargas','🎯',['The REPCONN business is already settled.'],'Continue','upAll()');return}
+  if(cfwmActive()){cfwmRefresh();closeDlg();showResult('Come Fly With Me','📜',[cfwmQuest().progText],'Continue','upAll()');return}
+  S.quests.push({id:'novac_come_fly',name:'Come Fly With Me',desc:'Manny says ghouls at REPCONN are building rockets. Something about the Great Journey. Nightkin are in the basement.',t:'custom',progText:'Travel to REPCONN Test Site and investigate.',rg:200,rx:120,fac:'Novac',repBonus:8,giver:'Manny Vargas',done:false});
+  S.flags.cfwm_stage=0;
+  log('Accepted: Come Fly With Me','q');notify('📜 Quest accepted!');
+  closeDlg();showResult('New Quest!','📜',['<b>Come Fly With Me</b>','Manny says the ghouls at REPCONN have been building something in the upper levels. Nightkin are in the basement, and the whole place is dangerous.','He asks you to clear it out — or at least figure out what they want.','Travel to REPCONN Test Site near Novac.'],'Continue','upAll()');
+}
+function cfwmEnterRepconn(){
+  if(!cfwmActive())return;
+  const s=S.flags.cfwm_stage||0;
+  if(s===0){
+    S.flags.cfwm_stage=1;cfwmRefresh();
+    closeBld();
+    const enemies=[mkEnemy('feral_ghoul'),mkEnemy('feral_ghoul'),mkEnemy('nightkin')];
+    combat={enemies,turn:0,log:['The REPCONN basement is crawling with nightkin and feral ghouls.','A massive Super Mutant called Davison guards the lower level.']};
+    renderCombat();
+  }else if(s===1){
+    S.flags.cfwm_stage=2;cfwmRefresh();
+    let h='<h3 style="color:var(--amber)">REPCONN Test Site — Upper Level</h3>';
+    h+='<div class="npc-line">"The bright one speaks! Jason Bright\'s followers have built rockets in the launch bay. They want to fly to a promised land. The nightkin leader Davison is holed up below, hunting for Stealth Boys."</div>';
+    h+='<div style="font-size:10px;color:var(--muted);margin:8px 0">Jason Bright, a glowing ghoul in robes, approaches you with calm certainty. Behind him, ghouls in jumpsuits work on pre-war rockets.</div>';
+    h+='<button class="bt go" onclick="cfwmChoose(\'launch\')">🚀 Help the ghouls launch their rockets</button>';
+    h+='<button class="bt pip" onclick="cfwmChoose(\'sabotage\')">💥 Sabotage the rockets — they\'ll never fly</button>';
+    h+='<button class="bt" onclick="cfwmChoose(\'negotiate\')">🤝 Negotiate with Davison — trade Stealth Boys for peace</button>';
+    h+='<button class="bt dn" onclick="closeDlg()">Leave for now</button>';
+    openDlg(h);
+  }else{
+    cfwmShowStage();
+  }
+}
+function cfwmChoose(choice){
+  S.flags.cfwm_choice=choice;
+  S.flags.cfwm_stage=3;cfwmRefresh();
+  closeDlg();
+  if(choice==='launch'){
+    giveItem('energy_cell',3,{ignoreLimit:true});
+    showResult('Rockets Away','🚀',['You help Jason Bright calibrate the rockets. The ghouls file aboard in silence, faces lit with faith.','The rockets shake the building as they launch into the desert sky, trailing fire.','Jason Bright whispers "Thank you, wanderer" before the hatch seals.','🔋 Energy Cell ×3','Return to Manny Vargas.'],'Continue','upAll()');
+  }else if(choice==='sabotage'){
+    giveItem('scrap_electronics',3,{ignoreLimit:true});giveItem('sensor_module',1,{ignoreLimit:true});
+    S.karma=(S.karma||0)-5;
+    showResult('Grounded','💥',['You pull the fuel injector couplings and cross the ignition wires. The rockets will never fire.','The ghouls don\'t notice — they\'re too busy praying.','You strip salvage from the dead rockets on your way out.','⚙ Scrap Electronics ×3, Sensor Module','⚖ -5 Karma','Return to Manny Vargas.'],'Continue','upAll()');
+  }else{
+    giveItem('stealth_boy',1,{ignoreLimit:true});
+    showResult('Truce','🤝',['You trade words and a Stealth Boy with Davison. The nightkin leader agrees to leave REPCONN if his people get what they came for.','Davison vanishes into the dark with his nightkin. Jason Bright\'s ghouls launch without interference.','🫥 Stealth Boy','Return to Manny Vargas.'],'Continue','upAll()');
+  }
+}
+function cfwmTurnIn(){
+  const q=cfwmQuest();if(!q||q.done)return;
+  if((S.flags.cfwm_stage||0)<3){closeDlg();showResult('Manny Vargas','🎯',['Manny says you need to deal with the REPCONN situation first.'],'Continue','upAll()');return}
+  const choice=S.flags.cfwm_choice||'launch';
+  completeQuest(q);
+  const lines=[];
+  if(choice==='launch'){lines.push('Manny nods slowly. "They actually flew? Guess the desert\'s stranger than I thought."');lines.push('"REPCONN\'s clear. That\'s what matters. Novac owes you."');S.karma=(S.karma||0)+3}
+  else if(choice==='sabotage'){lines.push('Manny shrugs. "Dead rockets, quiet building. Works for me."');lines.push('"Could\'ve been cleaner, but the road\'s safer. Here."')}
+  else{lines.push('Manny looks impressed. "You talked down a nightkin? That takes steel."');lines.push('"REPCONN\'s clear and nobody extra died. Best outcome I could ask for."');S.karma=(S.karma||0)+5}
+  lines.push('💰 +200 caps · ⭐ +120 XP');
+  closeDlg();showResult('Come Fly With Me Complete','🚀',lines,'Continue','upAll()');
+}
+function cfwmShowStage(){
+  const s=S.flags.cfwm_stage||0;
+  closeDlg();showResult('Come Fly With Me','📜',[cfwmQuest().progText],'Continue','upAll()');
+}
+
+// ── Quest 2: "The King's Gambit" (Freeside) ─────────────────
+// The King has a problem: NCR is muscling into Freeside. Investigate,
+// pick a side, broker peace, or play both.
+function kgQuest(){return (S.quests||[]).find(q=>q.id==='freeside_kings_gambit')||null}
+function kgActive(){const q=kgQuest();return !!(q&&!q.done)}
+function kgDone(){const q=kgQuest();return !!(q&&q.done)}
+function kgRefresh(){
+  const q=kgQuest();if(!q||q.done)return;
+  const s=S.flags.kg_stage||0;
+  if(s===0)q.progText='Talk to Pacer about the NCR soldiers causing trouble near the Wrangler.';
+  if(s===1)q.progText='Find the NCR envoy at the Old Mormon Fort and hear their side.';
+  if(s===2)q.progText='Return to The King with your recommendation.';
+}
+function kgStart(){
+  if(kgDone()){closeDlg();showResult('The King','👑',['The King says the Freeside situation is handled.'],'Continue','upAll()');return}
+  if(kgActive()){kgRefresh();closeDlg();showResult("The King's Gambit",'📜',[kgQuest().progText],'Continue','upAll()');return}
+  S.quests.push({id:'freeside_kings_gambit',name:"The King's Gambit",desc:'The King wants you to investigate NCR soldiers causing trouble in Freeside. Talk to both sides before choosing.',t:'custom',progText:'Talk to Pacer about the NCR soldiers near the Wrangler.',rg:175,rx:100,fac:'Freeside',repBonus:10,giver:'The King',done:false});
+  S.flags.kg_stage=0;
+  log("Accepted: The King's Gambit",'q');notify('📜 Quest accepted!');
+  closeDlg();showResult('New Quest!','📜',["<b>The King's Gambit</b>",'The King leans back and adjusts his collar. "NCR troopers are throwing weight around near the Wrangler. Pacer says they roughed up two of our boys."','He wants you to find out what happened. "Get the truth. Don\'t start a war — unless they already did."','Talk to Pacer first.'],'Continue','upAll()');
+}
+function kgTalkPacer(){
+  if(!kgActive()||S.flags.kg_stage!==0){closeDlg();return}
+  S.flags.kg_stage=1;kgRefresh();
+  closeDlg();showResult('Pacer','😤',['Pacer is barely keeping his temper. "Two of our runners got jumped near the Wrangler. NCR patrol said they were loitering. Loitering. In our own streets."','He cracks his knuckles. "The boys who got hit are scared to talk. That\'s not how Freeside works."','Pacer wants blood, but The King told him to wait. "Find their envoy at the Old Mormon Fort. And don\'t believe a word they say."','Find the NCR envoy at the Old Mormon Fort.'],'Continue','upAll()');
+}
+function kgTalkEnvoy(){
+  if(!kgActive()||S.flags.kg_stage!==1){closeDlg();return}
+  S.flags.kg_stage=2;kgRefresh();
+  closeDlg();showResult('NCR Envoy — Lieutenant Monroe','📋',['A tired-looking NCR lieutenant stands near the supply tent. She straightens when she sees you.','Monroe: "Those Kings runners were selling chems to off-duty troopers. My patrol confiscated the product and told them to move on. That\'s it. Nobody got \'roughed up.\'"','She pulls out a small logbook. "I have patrol reports. Names, times, inventory seized. Jet and Psycho. You can read it yourself."','She hesitates. "Look — Freeside is starving. Half our supplies get stolen between the gate and the Fort. We\'re not the enemy. But Pacer wants a fight because fighting is the only thing he understands."','Return to The King with your recommendation.'],'Continue','upAll()');
+}
+function kgDecide(choice){
+  if(!kgActive()||S.flags.kg_stage!==2)return;
+  const q=kgQuest();
+  S.flags.kg_choice=choice;
+  completeQuest(q);
+  closeDlg();
+  if(choice==='kings'){
+    S.rep.Kings=(S.rep.Kings||0)+8;S.rep.NCR=(S.rep.NCR||0)-5;
+    S.karma=(S.karma||0)-2;
+    giveItem('switchblade',1,{ignoreLimit:true});giveItem('combat_knife',1,{ignoreLimit:true});
+    showResult("The King's Gambit Complete",'👑',['The King smiles cold. "Freeside takes care of its own."','Pacer gets the green light. NCR patrols pull back from the east side.','The streets belong to the Kings again — for now.','👑 +8 Kings rep · 🐻 -5 NCR rep · ⚖ -2 Karma','🗡 Combat Knife, Switchblade','💰 +175 caps · ⭐ +100 XP'],'Continue','upAll()');
+  }else if(choice==='ncr'){
+    S.rep.NCR=(S.rep.NCR||0)+8;S.rep.Kings=(S.rep.Kings||0)-5;
+    giveItem('ncr_armor',1,{ignoreLimit:true});giveItem('stimpak',2,{ignoreLimit:true});
+    showResult("The King's Gambit Complete",'🐻',['You tell The King the truth: his runners were dealing, not loitering.','The King is quiet for a long time. "I don\'t like it. But I trust you told it straight."','Pacer storms out. NCR supplies start reaching the Fort again.','🐻 +8 NCR rep · 👑 -5 Kings rep','🪖 NCR Armor, Stimpak ×2','💰 +175 caps · ⭐ +100 XP'],'Continue','upAll()');
+  }else{
+    S.rep.NCR=(S.rep.NCR||0)+4;S.rep.Kings=(S.rep.Kings||0)+4;
+    S.karma=(S.karma||0)+5;
+    giveItem('stimpak',2,{ignoreLimit:true});giveItem('pre_war_money',3,{ignoreLimit:true});
+    showResult("The King's Gambit Complete",'🤝',['You lay it out: the runners dealt chems, and the patrol overreacted. Both sides screwed up.','The King drums his fingers. "A truce. I hate truces." He pauses. "But I hate funerals more."','Monroe agrees to route patrols around Kings turf. The King agrees to shut down the chem runners.','Nobody gets everything, everybody gets enough.','🐻 +4 NCR · 👑 +4 Kings · ⚖ +5 Karma','💉 Stimpak ×2, Pre-War Money ×3','💰 +175 caps · ⭐ +100 XP'],'Continue','upAll()');
+  }
+}
+
+// ── Quest 3: "Bitter Harvest" (Camp McCarran) ───────────────
+// NCR has a spy in their ranks leaking troop positions to the Legion.
+// Investigate three suspects, interrogate, make the call.
+function bhQuest(){return (S.quests||[]).find(q=>q.id==='mccarran_bitter_harvest')||null}
+function bhActive(){const q=bhQuest();return !!(q&&!q.done)}
+function bhDone(){const q=bhQuest();return !!(q&&q.done)}
+function bhRefresh(){
+  const q=bhQuest();if(!q||q.done)return;
+  const s=S.flags.bh_stage||0;
+  const ev=S.flags.bh_evidence||0;
+  if(s===0)q.progText='Investigate the three suspects: Corporal Sterling, Sergeant Contreras, Private Crenshaw.';
+  if(s===1)q.progText=`Evidence gathered: ${ev}/2. Keep investigating or make your accusation.`;
+  if(s===2)q.progText='Confront the spy or report to Colonel Hsu.';
+}
+function bhStart(){
+  if(bhDone()){closeDlg();showResult('Colonel Hsu','📋',['The spy situation is resolved.'],'Continue','upAll()');return}
+  if(bhActive()){bhRefresh();closeDlg();showResult('Bitter Harvest','📜',[bhQuest().progText],'Continue','upAll()');return}
+  S.quests.push({id:'mccarran_bitter_harvest',name:'Bitter Harvest',desc:'Colonel Hsu suspects a spy in Camp McCarran is feeding Legion intel. Three soldiers had access to the leaked patrol routes.',t:'custom',progText:'Investigate the three suspects.',rg:250,rx:150,fac:'NCR',repBonus:12,giver:'Colonel Hsu',done:false});
+  S.flags.bh_stage=0;S.flags.bh_evidence=0;S.flags.bh_suspects={};
+  log('Accepted: Bitter Harvest','q');notify('📜 Quest accepted!');
+  closeDlg();showResult('New Quest!','📜',['<b>Bitter Harvest</b>','Colonel Hsu stands behind his desk, voice low. "Three patrols ambushed in two weeks. Someone in this camp is feeding the Legion our routes."','He slides a folder across the desk. Three names.','<b>Corporal Sterling</b> — quartermaster. Access to all supply route schedules.','<b>Sergeant Contreras</b> — supply officer. Runs a side business nobody talks about.','<b>Private Crenshaw</b> — radio operator. Handles encrypted comms.','Investigate each suspect. Find the mole.'],'Continue','upAll()');
+}
+function bhInvestigate(suspect){
+  if(!bhActive())return;
+  if(S.flags.bh_suspects[suspect]){closeDlg();showResult('Already Investigated','🔍',['You\'ve already looked into this suspect.'],'Continue','upAll()');return}
+  S.flags.bh_suspects[suspect]=true;
+  S.flags.bh_evidence=(S.flags.bh_evidence||0)+1;
+  if(S.flags.bh_evidence>=2)S.flags.bh_stage=2;
+  else S.flags.bh_stage=1;
+  bhRefresh();advanceTime(2);
+  closeDlg();
+  if(suspect==='sterling'){
+    showResult('Investigating Sterling','🔍',['Sterling\'s quarters are meticulous. Every ledger balanced, every form filed.','But under his footlocker you find a note: "Package left at dead drop, mile marker 7. Next schedule due Thursday."','The handwriting doesn\'t match Sterling\'s logs. Someone planted this — or Sterling is very careful.','⏰ 2 hours passed'],'Continue','upAll()');
+  }else if(suspect==='contreras'){
+    showResult('Investigating Contreras','🔍',['Contreras has a private stash of goods in a locked cage behind the supply depot. Chems, ammo, a few guns — definitely black market.','When confronted, he doesn\'t flinch. "I sell surplus to locals. That\'s capitalism, not treason."','He points out his side business has no connection to patrol schedules. "I move product. I don\'t move information."','⏰ 2 hours passed'],'Continue','upAll()');
+  }else{
+    showResult('Investigating Crenshaw','🔍',['Crenshaw\'s radio logs show something odd: three transmissions at 0300 on nights before each ambush, routed through an unregistered frequency.','When you find her, she\'s nervous. Her hands shake. "I just relay what I\'m told to relay."','Pressed harder, she admits someone gave her sealed messages to transmit. "A sergeant. I never opened them. I didn\'t ask."','She describes Contreras\' build — but the timing doesn\'t match his alibi.','⏰ 2 hours passed'],'Continue','upAll()');
+  }
+}
+function bhAccuse(suspect){
+  if(!bhActive()||(S.flags.bh_evidence||0)<2)return;
+  const q=bhQuest();
+  closeDlg();
+  // Crenshaw is the unwitting accomplice, but Sterling is the real spy
+  if(suspect==='sterling'){
+    completeQuest(q);S.karma=(S.karma||0)+5;
+    giveItem('service_rifle',1,{ignoreLimit:true});giveItem('ammo_556',5,{ignoreLimit:true});
+    showResult('Bitter Harvest Complete','🎖',['You present your evidence to Colonel Hsu. The planted note, the timing, the frequency logs — it all points to Sterling.','MPs arrest Corporal Sterling at his desk. He doesn\'t resist. "The Bull always wins," he whispers. "You just delayed it."','Hsu shakes your hand. "You saved lives today. NCR remembers."','🔫 Service Rifle, 5.56mm ×5','⚖ +5 Karma','💰 +250 caps · ⭐ +150 XP'],'Continue','upAll()');
+  }else if(suspect==='contreras'){
+    completeQuest(q);S.karma=(S.karma||0)-3;
+    giveItem('ammo_556',5,{ignoreLimit:true});
+    showResult('Bitter Harvest Complete','⚠',['You accuse Contreras. He\'s arrested, his stash confiscated.','But three days later, another patrol is ambushed.','Hsu sends word: "Wrong man. We found the real leak — Sterling. But Contreras is already in a stockade."','The mission is technically complete, but the taste is bitter.','⚖ -3 Karma','💰 +250 caps · ⭐ +150 XP'],'Continue','upAll()');
+  }else{
+    completeQuest(q);
+    giveItem('ammo_556',3,{ignoreLimit:true});
+    showResult('Bitter Harvest Complete','📋',['You accuse Crenshaw. She breaks down immediately and confesses to transmitting messages — but insists she didn\'t know what they contained.','MPs arrest her. She gives up Sterling\'s name under questioning, and he\'s caught trying to leave camp.','Hsu nods. "We got them both. But Crenshaw was just scared. Remember that."','💰 +250 caps · ⭐ +150 XP'],'Continue','upAll()');
+  }
+}
+
+// ── Quest 4: "The Debt" (Freeside) ──────────────────────────
+// James Garret needs you to collect three debts. Each debtor has a story.
+// Collect by force, forgive, or find creative solutions.
+function tdQuest(){return (S.quests||[]).find(q=>q.id==='freeside_the_debt')||null}
+function tdActive(){const q=tdQuest();return !!(q&&!q.done)}
+function tdDone(){const q=tdQuest();return !!(q&&q.done)}
+function tdRefresh(){
+  const q=tdQuest();if(!q||q.done)return;
+  const c=(S.flags.td_collected||0);
+  q.progText=`Debts resolved: ${c}/3. ${c<3?'Find the remaining debtors in Freeside.':'Return to James Garret.'}`;
+}
+function tdStart(){
+  if(tdDone()){closeDlg();showResult('James Garret','🎲',['All debts settled.'],'Continue','upAll()');return}
+  if(tdActive()){tdRefresh();closeDlg();showResult('The Debt','📜',[tdQuest().progText],'Continue','upAll()');return}
+  S.quests.push({id:'freeside_the_debt',name:'The Debt',desc:'James Garret needs three gambling debts collected. Each debtor has a reason they can\'t pay.',t:'custom',progText:'Debts resolved: 0/3.',rg:180,rx:90,fac:'Freeside',repBonus:6,giver:'James Garret',done:false});
+  S.flags.td_collected=0;S.flags.td_debtors={};
+  log('Accepted: The Debt','q');notify('📜 Quest accepted!');
+  closeDlg();showResult('New Quest!','📜',['<b>The Debt</b>','James slides three IOUs across the bar. "People gamble at the Wrangler, they lose, they promise to pay. Then they don\'t."','<b>Marco</b> — a caravan guard who blew three months\' pay on bad hands. Lives near the east gate.','<b>Esperanza</b> — a water seller who gambled to pay for medicine for her son. Near the Old Mormon Fort.','<b>Dixon</b> — a chem dealer who thinks nobody can touch him. Hangs around the south alley.','Collect the debts. How you do it is your business.'],'Continue','upAll()');
+}
+function tdCollect(debtor,method){
+  if(!tdActive()||S.flags.td_debtors[debtor])return;
+  S.flags.td_debtors[debtor]=method;
+  S.flags.td_collected=(S.flags.td_collected||0)+1;
+  tdRefresh();advanceTime(1);
+  closeDlg();
+  if(debtor==='marco'){
+    if(method==='force'){
+      S.karma=(S.karma||0)-2;
+      showResult('Marco — Collected','👊',['Marco flinches when you show him the IOU. He\'s broke — caravan work dried up.','You take his last weapon, a battered pistol, as collateral.','He\'ll remember this. Not fondly.','⚖ -2 Karma · ⏰ 1 hour'],'Continue','upAll()');
+    }else if(method==='work'){
+      S.karma=(S.karma||0)+2;
+      showResult('Marco — Work It Off','🤝',['You tell Marco he can work off the debt running supplies for the Garrets.','He looks relieved. "That\'s — yeah, I can do that. Better than getting my teeth kicked in."','He shakes your hand. Hard.','⚖ +2 Karma · ⏰ 1 hour'],'Continue','upAll()');
+    }else{
+      S.caps-=40;S.karma=(S.karma||0)+3;
+      showResult('Marco — Paid Off','💰',['You pay Marco\'s debt out of pocket. 40 caps.','He stares at you. "Why?" You shrug. He doesn\'t forget.','💰 -40 caps · ⚖ +3 Karma · ⏰ 1 hour'],'Continue','upAll()');
+    }
+  }else if(debtor==='esperanza'){
+    if(method==='force'){
+      S.karma=(S.karma||0)-5;
+      showResult('Esperanza — Collected','👊',['Esperanza is thin, tired, and desperate. Her son coughs in the next room.','She gambled to afford medicine. She lost.','You take the caps anyway. The boy watches from the doorway.','⚖ -5 Karma · ⏰ 1 hour'],'Continue','upAll()');
+    }else if(method==='medicine'){
+      S.karma=(S.karma||0)+5;
+      const si=S.inv.indexOf('stimpak');if(si!==-1)S.inv.splice(si,1);
+      showResult('Esperanza — Medicine','💉',['You hand Esperanza a stimpak for her son and tell James the debt is forgiven.','She cries. The boy\'s breathing eases within the hour.','Used 1 Stimpak · ⚖ +5 Karma · ⏰ 1 hour'],'Continue','upAll()');
+    }else{
+      S.karma=(S.karma||0)+3;
+      showResult('Esperanza — Julie Farkas','⚕',['You send Esperanza to Julie Farkas at the Old Mormon Fort. The Followers will treat her son for free.','The debt gets written off as charity. James won\'t be happy, but the boy will live.','⚖ +3 Karma · ⏰ 1 hour'],'Continue','upAll()');
+    }
+  }else{
+    if(method==='force'){
+      const enemies=[mkEnemy('freeside_thug'),mkEnemy('freeside_thug')];
+      combat={enemies,turn:0,log:['Dixon laughs in your face. His bodyguards step forward.','Time to collect the hard way.']};
+      S.flags.td_dixon_fight=true;
+      renderCombat();return;
+    }else if(method==='deal'){
+      giveItem('jet',2,{ignoreLimit:true});
+      showResult('Dixon — Deal','🧪',['Dixon grins. "Tell James I\'ll pay — in product. Two hits of Jet, top shelf."','He hands over the chems. James won\'t like it, but a debt\'s a debt.','🧪 Jet ×2 · ⏰ 1 hour'],'Continue','upAll()');
+    }else{
+      S.karma=(S.karma||0)+2;
+      showResult('Dixon — Reported','👮',['You tip off the Kings about Dixon\'s dealing. Pacer pays a visit.','Dixon pays the Garrets within the hour. He won\'t be a problem anymore.','⚖ +2 Karma · ⏰ 1 hour'],'Continue','upAll()');
+    }
+  }
+  if(S.flags.td_collected>=3&&!S.flags.td_turnin_ready){S.flags.td_turnin_ready=true}
+}
+function tdTurnIn(){
+  const q=tdQuest();if(!q||q.done||(S.flags.td_collected||0)<3)return;
+  completeQuest(q);
+  const methods=S.flags.td_debtors||{};
+  const kind=Object.values(methods).filter(m=>m!=='force').length;
+  closeDlg();
+  if(kind>=2){
+    S.karma=(S.karma||0)+3;
+    showResult('The Debt Complete','💰',['James counts the take and reads your notes. "You went soft on some of them."','He pauses. "But they\'re all settled. And word gets around that the Wrangler collects — one way or another."','He slides extra caps across the bar. "For doing it clean."','⚖ +3 Karma','💰 +180 caps · ⭐ +90 XP'],'Continue','upAll()');
+  }else{
+    showResult('The Debt Complete','💰',['James counts the caps. "All three settled. I don\'t care how."','He pours you a drink. "Freeside respects results. So do I."','💰 +180 caps · ⭐ +90 XP'],'Continue','upAll()');
+  }
+}
+
+// ── Quest 5: "All Along the Watchtower" (Camp Golf) ─────────
+// Chief Hanlon's rangers found a Legion staging camp. Plan an ambush,
+// train the Misfits, and execute a tactical strike.
+function awQuest(){return (S.quests||[]).find(q=>q.id==='golf_watchtower')||null}
+function awActive(){const q=awQuest();return !!(q&&!q.done)}
+function awDone(){const q=awQuest();return !!(q&&q.done)}
+function awRefresh(){
+  const q=awQuest();if(!q||q.done)return;
+  const s=S.flags.aw_stage||0;
+  const trained=S.flags.aw_trained||0;
+  if(s===0)q.progText=`Train the Misfits for the strike (${trained}/3 sessions). Or skip training and attack now.`;
+  if(s===1)q.progText='Choose your approach: frontal assault, night raid, or sniper overwatch.';
+  if(s===2)q.progText='Return to Chief Hanlon with the results.';
+}
+function awStart(){
+  if(awDone()){closeDlg();showResult('Chief Hanlon','🪖',['The watchtower operation is complete.'],'Continue','upAll()');return}
+  if(awActive()){awRefresh();closeDlg();showResult('All Along the Watchtower','📜',[awQuest().progText],'Continue','upAll()');return}
+  S.quests.push({id:'golf_watchtower',name:'All Along the Watchtower',desc:'Chief Hanlon needs a Legion staging camp destroyed. Train the Misfits squad or go in alone.',t:'custom',progText:'Train the Misfits for the strike (0/3 sessions).',rg:300,rx:175,fac:'NCR',repBonus:15,giver:'Chief Hanlon',done:false});
+  S.flags.aw_stage=0;S.flags.aw_trained=0;
+  log('Accepted: All Along the Watchtower','q');notify('📜 Quest accepted!');
+  closeDlg();showResult('New Quest!','📜',['<b>All Along the Watchtower</b>','Chief Hanlon spreads a map across the table. "Ranger recon spotted a Legion staging camp east of the hills. Six to ten soldiers. A centurion."','He taps Camp Golf. "The Misfits are the only squad I can spare. They\'re green, sloppy, and half of them can\'t shoot straight."','He meets your eyes. "Train them. Or go alone. Either way, that camp needs to burn before they hit the dam."','Train the Misfits (3 sessions) or launch the strike when ready.'],'Continue','upAll()');
+}
+function awTrain(){
+  if(!awActive()||(S.flags.aw_stage||0)>=1)return;
+  S.flags.aw_trained=(S.flags.aw_trained||0)+1;
+  const t=S.flags.aw_trained;
+  advanceTime(3);S.xp+=grantXP(15);
+  closeDlg();
+  if(t===1){
+    showResult('Training: Marksmanship','🎯',['You run the Misfits through target drills until O\'Hanrahan stops flinching at his own rifle.','Razz is a natural shot. The others need work.','⭐ +15 XP · ⏰ 3 hours · Training 1/3'],'Continue','chkLU();upAll()');
+  }else if(t===2){
+    showResult('Training: Tactics','🗺',['You teach them bounding overwatch, fields of fire, and how not to bunch up like idiots.','McCredie watches from the doorway. He almost smiles.','⭐ +15 XP · ⏰ 3 hours · Training 2/3'],'Continue','chkLU();upAll()');
+  }else{
+    S.flags.aw_stage=1;awRefresh();
+    showResult('Training: Night Movement','🌙',['Final session. You take them out after dark and run low-visibility patrol drills.','By the end, they move like soldiers instead of tourists.','McCredie salutes you — the first time he\'s saluted anyone in months.','⭐ +15 XP · ⏰ 3 hours · Training complete — choose your assault plan.'],'Continue','chkLU();upAll()');
+  }
+}
+function awLaunchStrike(approach){
+  if(!awActive())return;
+  S.flags.aw_stage=2;S.flags.aw_approach=approach;awRefresh();
+  closeDlg();
+  const trained=(S.flags.aw_trained||0)>=3;
+  let enemies;
+  if(approach==='frontal'){
+    enemies=[mkEnemy('legion_veteran'),mkEnemy('legion_recruit'),mkEnemy('legion_recruit'),mkEnemy('legion_recruit')];
+    if(!trained)enemies.push(mkEnemy('legion_veteran'));
+  }else if(approach==='night'){
+    enemies=[mkEnemy('legion_recruit'),mkEnemy('legion_recruit'),mkEnemy('legion_scout')];
+    if(!trained)enemies.push(mkEnemy('legion_recruit'));
+  }else{
+    enemies=[mkEnemy('legion_veteran'),mkEnemy('legion_recruit')];
+    if(!trained)enemies.push(mkEnemy('legion_recruit'),mkEnemy('legion_scout'));
+  }
+  const logs=['You approach the Legion staging camp.'];
+  if(trained)logs.push('The Misfits move in formation, covering each other. Training paid off.');
+  else logs.push('The Misfits stumble forward. Without proper training, this will be harder.');
+  if(approach==='frontal')logs.push('Frontal assault! Weapons hot!');
+  else if(approach==='night')logs.push('Night raid. You hit them in the dark while they sleep.');
+  else logs.push('Sniper overwatch. You pick targets from the ridge.');
+  combat={enemies,turn:0,log:logs};
+  renderCombat();
+}
+function awTurnIn(){
+  const q=awQuest();if(!q||q.done||(S.flags.aw_stage||0)<2)return;
+  const trained=(S.flags.aw_trained||0)>=3;
+  completeQuest(q);
+  giveItem('hunting_rifle',1,{ignoreLimit:true});giveItem('ammo_308',5,{ignoreLimit:true});
+  closeDlg();
+  if(trained){
+    S.karma=(S.karma||0)+5;
+    showResult('All Along the Watchtower Complete','🎖',['Hanlon reads the after-action report. Every Misfit made it back.','He shakes your hand — the grip of a man who has buried too many rangers.','<i>"You turned those kids into soldiers. NCR won\'t forget that."</i>','McCredie buys you a drink and doesn\'t say a word. He doesn\'t need to.','🔫 Hunting Rifle, .308 ×5','⚖ +5 Karma','💰 +300 caps · ⭐ +175 XP'],'Continue','upAll()');
+  }else{
+    showResult('All Along the Watchtower Complete','🎖',['The camp is destroyed, but two Misfits took serious wounds.','Hanlon nods. "Mission complete. But those soldiers paid for what training should have covered."','He hands you the payment. The envelope feels heavy.','🔫 Hunting Rifle, .308 ×5','💰 +300 caps · ⭐ +175 XP'],'Continue','upAll()');
+  }
+}
+
+// ── Quest step renderer for tracker ──
+function buildQuestSteps(steps){
+  return `<div style="margin:4px 0 2px;padding-left:4px">${steps.map((s,i)=>{
+    const isActive=!s.done&&(i===0||steps[i-1].done);
+    return `<div style="display:flex;align-items:flex-start;gap:6px;padding:2px 0;font-size:10px;${s.done?'opacity:0.5':''}">
+      <span style="flex-shrink:0;width:14px;text-align:center;color:${s.done?'var(--green)':isActive?'var(--amber)':'var(--muted)'}">${s.done?'✓':isActive?'►':'○'}</span>
+      <span style="color:${s.done?'var(--green)':isActive?'var(--text)':'var(--muted)'};${isActive?'font-weight:bold':''}">${s.text}</span>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ── Debt Collector UI ──
+function openDebtCollector(){
+  if(!tdActive())return;
+  let h='<h3 style="color:var(--amber)">Collect a Debt</h3>';
+  h+='<div style="font-size:10px;color:var(--muted);margin-bottom:8px">Choose a debtor to visit.</div>';
+  if(!S.flags.td_debtors.marco){
+    h+='<div class="cd" style="margin-bottom:6px"><div style="font-weight:bold;font-size:12px">👤 Marco — Broke Caravan Guard</div><div style="font-size:10px;color:var(--muted);margin:4px 0">Blew three months\' pay on bad hands. Caravan work dried up.</div>';
+    h+='<button class="bt" onclick="tdCollect(\'marco\',\'force\')">👊 Demand payment by force</button>';
+    h+='<button class="bt pip" onclick="tdCollect(\'marco\',\'work\')">🤝 Let him work it off for the Garrets</button>';
+    h+='<button class="bt go" onclick="if(S.caps<40){notify(\'Need 40 caps.\');return}tdCollect(\'marco\',\'pay\')">💰 Pay his 40-cap debt yourself</button></div>';
+  }else{h+='<div class="cd" style="opacity:0.4"><div style="font-weight:bold;font-size:12px">✓ Marco — Settled</div></div>'}
+  if(!S.flags.td_debtors.esperanza){
+    h+='<div class="cd" style="margin-bottom:6px"><div style="font-weight:bold;font-size:12px">👩 Esperanza — Water Seller</div><div style="font-size:10px;color:var(--muted);margin:4px 0">Gambled to buy medicine for her sick son. Lost everything.</div>';
+    h+='<button class="bt" onclick="tdCollect(\'esperanza\',\'force\')">👊 Take the caps anyway</button>';
+    const hasStim=S.inv.includes("stimpak");
+    h+=`<button class="bt pip" onclick="if(!S.inv.includes('stimpak')){notify('Need a Stimpak.');return}tdCollect('esperanza','medicine')" ${hasStim?'':'disabled'}>💉 Give her a Stimpak for her son</button>`;
+    h+='<button class="bt go" onclick="tdCollect(\'esperanza\',\'farkas\')">⚕ Send her to Julie Farkas</button></div>';
+  }else{h+='<div class="cd" style="opacity:0.4"><div style="font-weight:bold;font-size:12px">✓ Esperanza — Settled</div></div>'}
+  if(!S.flags.td_debtors.dixon){
+    h+='<div class="cd" style="margin-bottom:6px"><div style="font-weight:bold;font-size:12px">😈 Dixon — Chem Dealer</div><div style="font-size:10px;color:var(--muted);margin:4px 0">Thinks nobody can touch him. Has bodyguards.</div>';
+    h+='<button class="bt" onclick="closeDlg();tdCollect(\'dixon\',\'force\')">👊 Collect by force (fight)</button>';
+    h+='<button class="bt pip" onclick="tdCollect(\'dixon\',\'deal\')">🧪 Accept chems as payment</button>';
+    h+='<button class="bt go" onclick="tdCollect(\'dixon\',\'report\')">👮 Tip off the Kings about his dealing</button></div>';
+  }else{h+='<div class="cd" style="opacity:0.4"><div style="font-weight:bold;font-size:12px">✓ Dixon — Settled</div></div>'}
+  h+='<button class="bt dn" onclick="closeDlg()">Back</button>';
+  openDlg(h);
+}
+
+// ── REPCONN quest hook for expeditions ──
+// After winning combat in REPCONN area while quest is active, trigger next stage
+function checkPostCombatQuestHooks(){
+  if(cfwmActive()&&(S.flags.cfwm_stage||0)<=1){
+    cfwmEnterRepconn();return true;
+  }
+  if(tdActive()&&S.flags.td_dixon_fight){
+    S.flags.td_dixon_fight=false;
+    S.flags.td_debtors.dixon='force';S.flags.td_collected=(S.flags.td_collected||0)+1;
+    tdRefresh();S.karma=(S.karma||0)-1;
+    showResult('Dixon — Collected','👊',['Dixon\'s bodyguards are down. He coughs up the caps immediately.','He won\'t forget this.','⚖ -1 Karma'],'Continue','upAll()');
+    return true;
+  }
+  return false;
+}
+
+// ============================================================
 // NPC SYSTEM (BitLife style from GoT + Goodsprings dialogue)
 // ============================================================
 function getNpcRolePool(ctx={}){
@@ -4454,7 +4868,8 @@ function openBld(bId){
   else if(bId==='bos_command'){bldHiddenValleyCommand(body)}
   else if(bId==='bos_armory'){bldHiddenValleyArmory(body)}
   else if(bId==='bos_lab'){bldHiddenValleyLab(body)}
-  else if(bId==='bos_maintenance'){bldHiddenValleyMaintenance(body)}  else if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
+  else if(bId==='bos_maintenance'){bldHiddenValleyMaintenance(body)}
+  else if(bId==='mccarran_hq'){bldMcCarranHQ(body)}  else if(bId.includes('saloon')||bId.includes('bar')||bId.includes('wrangler')){bldBar(body,bId)}
   else if(bId.includes('store')||bId.includes('supply')||bId.includes('ralph')||bId.includes('armory')||bId.includes('quartermaster')){bldShop(body,bId)}
   else if(bId.includes('doc')||bId.includes('med')||bId.includes('fort')||bId.includes('jacobstown_doc')){bldMedical(body)}
   else if(bId.includes('motel')||bId.includes('lodge')||bId.includes('lucky_38')){bldRest(body,bId)}
@@ -4599,6 +5014,9 @@ function openNovacNPC(id){
     h+=`<button class="bt" onclick="closeDlg();showResult('Cliff Briscoe','🔫',['Cliff points out that his best gun stays locked up unless the buyer has caps.','He says Novac survives because travelers always need ammo, rooms, and souvenirs.'],'Continue','upAll()')">🔫 Ask about his best gear</button>`;
   }else if(id==='manny_vargas'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Manny Vargas','🎯',['Manny says REPCONN is still crawling with trouble and the road south never stays quiet for long.','He respects anyone willing to do the dangerous jobs nobody else wants.'],'Continue','upAll()')">🎯 Ask about local threats</button>`;
+    if(!cfwmDone()&&!cfwmActive())h+=`<button class="bt pip" onclick="cfwmStart()">🚀 Ask about the ghouls at REPCONN</button>`;
+    if(cfwmActive()&&(S.flags.cfwm_stage||0)>=3)h+=`<button class="bt go" onclick="cfwmTurnIn()">📜 Report on REPCONN</button>`;
+    if(cfwmActive()&&(S.flags.cfwm_stage||0)<3)h+=`<button class="bt pip" onclick="cfwmShowStage()">📜 Review Come Fly With Me</button>`;
     h+=`<button class="bt pip" onclick="queueNovacQuest('manny_vargas','Novac Watch',15,10)">📜 Ask for lookout work</button>`;
   }else if(id==='craig_boone'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Boone','🔭',['Boone keeps his answers short. He watches the highway and remembers every caravan that passes.','You get the impression he trusts scopes more than people.'],'Continue','upAll()')">🔭 Ask about the road</button>`;
@@ -4645,6 +5063,12 @@ function bldNovacDino(body){
   body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The Dino Bite sells souvenirs, ammo, and the sort of guns a traveler in Novac quickly learns to appreciate.</div>`));
   body.appendChild(el('div','bs2','Buy'));
   buildBuyButtons(body,[{id:'sunset_sars',qty:4},{id:'nuka_cola',qty:3},{id:'stimpak',qty:3},{id:'ammo_9mm',qty:8},{id:'ammo_357',qty:5},{id:'ammo_556',qty:4},{id:'cowboy_repeater',qty:1},{id:'varmint_rifle',qty:1}], 'dino_bite');
+  // REPCONN quest access
+  if(cfwmActive()&&(S.flags.cfwm_stage||0)<=2){
+    const repBtn=el('button','bt pip','☢ Travel to REPCONN Test Site');
+    repBtn.onclick=()=>{closeBld();cfwmEnterRepconn()};
+    body.appendChild(repBtn);
+  }
   const lookoutBtn=el('button','bt','🔭 Climb to the dinosaur mouth');
   lookoutBtn.onclick=()=>{advanceTime(1);const seen=rndA(['A caravan crawling up the highway.','Dust plumes from something dangerous moving near the road.','Nothing but sun-bleached emptiness and old wrecks.']);log('You take watch from Dinky the T-Rex.','e');closeBld();showResult('Dinky Watch','🦖',[seen,'⏰ 1 hour passed'],'Continue','upAll()')};
   body.appendChild(lookoutBtn);
@@ -4733,10 +5157,24 @@ function openCampGolfNPC(id){
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='chief_hanlon'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Chief Hanlon','🪖',['Hanlon speaks about the war around Hoover Dam like a man who has already seen too much of it.','He sizes up whether you are the kind of courier who notices the bigger picture.'],'Continue','upAll()')">🪖 Ask about the war</button>`;
+    if(!awDone()&&!awActive())h+=`<button class="bt pip" onclick="awStart()">📜 "Any operations that need doing?"</button>`;
+    if(awActive()&&(S.flags.aw_stage||0)>=2)h+=`<button class="bt go" onclick="awTurnIn()">📜 Report on the watchtower strike</button>`;
+    if(awActive()&&(S.flags.aw_stage||0)<2)h+=`<button class="bt pip" onclick="awRefresh();closeDlg();showResult('All Along the Watchtower','📜',[awQuest().progText],'Continue','upAll()')">📜 Review the watchtower mission</button>`;
     h+=`<button class="bt pip" onclick="queueCampGolfQuest('chief_hanlon','Ranger Detail',22,14)">📜 Ask for ranger work</button>`;
     h+=`<button class="bt" onclick="closeDlg();openNPCInteraction(CAMP_GOLF_NPCS['chief_hanlon'],S.relationships.find(r=>r.name===CAMP_GOLF_NPCS['chief_hanlon'].name))">💬 Talk</button>`;
   }else if(id==='sergeant_mccredie'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Sergeant McCredie','📋',['McCredie says Camp Golf was meant to turn recruits into soldiers, but the Misfits make that harder than the Legion ever could.','He still refuses to give up on them.'],'Continue','upAll()')">📋 Ask about the Misfits</button>`;
+    if(awActive()&&(S.flags.aw_stage||0)===0&&(S.flags.aw_trained||0)<3)h+=`<button class="bt go" onclick="awTrain()">🎯 Train the Misfits (session ${(S.flags.aw_trained||0)+1}/3)</button>`;
+    if(awActive()&&(S.flags.aw_stage||0)>=1&&(S.flags.aw_stage||0)<2){
+      h+=`<div style="font-size:10px;color:var(--amber);margin:6px 0">Training complete. Choose your assault plan:</div>`;
+      h+=`<button class="bt" onclick="closeDlg();awLaunchStrike('frontal')">⚔ Frontal assault — hit them head on</button>`;
+      h+=`<button class="bt pip" onclick="closeDlg();awLaunchStrike('night')">🌙 Night raid — strike while they sleep</button>`;
+      h+=`<button class="bt" onclick="closeDlg();awLaunchStrike('sniper')">🔭 Sniper overwatch — pick them off from the ridge</button>`;
+    }
+    if(awActive()&&(S.flags.aw_stage||0)===0&&(S.flags.aw_trained||0)>=1){
+      h+=`<div style="font-size:10px;color:var(--muted);margin:4px 0">Or skip training and launch now (harder fight):</div>`;
+      h+=`<button class="bt dn" onclick="S.flags.aw_stage=1;awRefresh();closeDlg();let h2='<h3 style=\\'color:var(--amber)\\'>Choose Assault Plan</h3><button class=\\'bt\\' onclick=\\'closeDlg();awLaunchStrike(\\\"frontal\\\")\\'>⚔ Frontal assault</button><button class=\\'bt pip\\' onclick=\\'closeDlg();awLaunchStrike(\\\"night\\\")\\'>🌙 Night raid</button><button class=\\'bt\\' onclick=\\'closeDlg();awLaunchStrike(\\\"sniper\\\")\\'>🔭 Sniper overwatch</button>';openDlg(h2)">⚠ Skip training — launch the strike now</button>`;
+    }
     h+=`<button class="bt pip" onclick="queueCampGolfQuest('sergeant_mccredie','Camp Golf Patrol',18,12)">📜 Volunteer for patrol duty</button>`;
   }else if(id==='private_ohanrahan'){
     h+=`<button class="bt" onclick="closeDlg();showResult("Private O'Hanrahan",'😟',["O'Hanrahan admits fear comes easier than courage, especially when the camp keeps talking about the Dam.",'He appreciates anyone who does not laugh about it.'],'Continue','upAll()')">😟 Talk morale</button>`;
@@ -5230,6 +5668,14 @@ function openFreesideNPC(id){
   <div class="npc-line">"${npc.line}"</div>`;
   if(id==='james_garret'){
     h+=`<button class="bt go" onclick="closeDlg();openBld('atomic_wrangler')">🎲 Use the Wrangler floor</button>`;
+    if(!tdDone()&&!tdActive())h+=`<button class="bt pip" onclick="tdStart()">📜 "I hear you've got debts that need collecting..."</button>`;
+    if(tdActive()&&(S.flags.td_collected||0)>=3)h+=`<button class="bt go" onclick="tdTurnIn()">💰 Turn in collected debts</button>`;
+    if(tdActive()&&(S.flags.td_collected||0)<3){
+      h+=`<button class="bt pip" onclick="let h2='<h3 style=\\'color:var(--amber)\\'>Collect a Debt</h3>';h2+='<div style=\\'font-size:10px;color:var(--muted);margin:8px 0\\'>Who do you want to visit?</div>';`;
+      h+=`if(!S.flags.td_debtors.marco)h2+='<button class=\\'bt\\' onclick=\\\\'let h3=\\\"<h3>Marco — Caravan Guard</h3><div class=npc-line>Marco is broke. Caravan work dried up after raids on the road.</div><button class=bt onclick=tdCollect(\\\\\\\\\\\"marco\\\\\\\\\\\",\\\\\\\\\\\"force\\\\\\\\\\\")>👊 Demand payment</button><button class=bt onclick=tdCollect(\\\\\\\\\\\"marco\\\\\\\\\\\",\\\\\\\\\\\"work\\\\\\\\\\\")>🤝 Let him work it off</button><button class=bt onclick=tdCollect(\\\\\\\\\\\"marco\\\\\\\\\\\",\\\\\\\\\\\"pay\\\\\\\\\\\")>💰 Pay his debt (40 caps)</button><button class=bt-dn onclick=closeDlg()>Leave</button>\\\";closeDlg();openDlg(h3)\\\\'>👤 Marco (caravan guard)</button>';`;
+      // This is getting too complex with escaping. Let me use a cleaner approach.
+      h+=`closeDlg();openDebtCollector()">📜 Go collect a debt</button>`;
+    }
     h+=`<button class="bt pip" onclick="queueFreesideQuest('james_garret','Wrangler Work',18,10)">📜 Ask for paid work</button>`;
   }else if(id==='francine_garret'){
     h+=`<button class="bt go" onclick="if(S.caps<7){notify('Not enough caps.');return}S.caps-=7;S.hp=Math.min(S.maxHp,S.hp+12);S.ap=Math.min(S.maxAp,S.ap+10);advanceTime(1);log('Francine serves you a stiff Freeside drink.','e');closeDlg();showResult('Atomic Wrangler','🍸',['❤ +12 HP','⚡ +10 AP','⏰ 1 hour passed'],'Continue','upAll()')">🍸 Buy a stiff drink (7 caps)</button>`;
@@ -5240,9 +5686,15 @@ function openFreesideNPC(id){
     h+=`<button class="bt go" onclick="if(S.caps<10){notify('Not enough caps.');return}S.caps-=10;advanceTime(1);const safe=R()<0.7;if(safe){S.xp+=8;log('Orris walks you safely through a rough stretch of Freeside.','e');closeDlg();showResult('Street Escort','🗡',['⭐ +8 XP','No one dares try you while Orris is nearby.','⏰ 1 hour passed'],'Continue','chkLU();upAll()')}else{closeDlg();startCombat([mkEnemy('freeside_thug'),mkEnemy('freeside_thug')])}">🗡 Hire Orris (10 caps)</button>`;
   }else if(id==='the_king'){
     h+=`<button class="bt" onclick="closeDlg();showResult('The King','👑',['The King says Freeside belongs to the people holding it together, not the rich lights over the gate.','He watches strangers carefully, but respects nerve.'],'Continue','upAll()')">👑 Ask about Freeside</button>`;
+    if(!kgDone()&&!kgActive())h+=`<button class="bt pip" onclick="kgStart()">📜 "Heard there's trouble with NCR soldiers..."</button>`;
+    if(kgActive()&&(S.flags.kg_stage||0)>=2){
+      h+=`<button class="bt go" onclick="let h2='<h3 style=\\'color:var(--amber)\\'>The King\\'s Decision</h3>';h2+='<div style=\\'font-size:10px;color:var(--muted);margin:8px 0\\'>The King leans forward. \\'So what\\'s the verdict?\\'</div>';h2+='<button class=\\'bt\\' onclick=\\'kgDecide(\\\"kings\\\")\\'>👑 Back the Kings — NCR started it</button>';h2+='<button class=\\'bt\\' onclick=\\'kgDecide(\\\"ncr\\\")\\'>🐻 Tell the truth — Kings were dealing</button>';h2+='<button class=\\'bt go\\' onclick=\\'kgDecide(\\\"peace\\\")\\'>🤝 Broker a truce — both sides screwed up</button>';h2+='<button class=\\'bt dn\\' onclick=\\'closeDlg()\\'>Not yet</button>';closeDlg();openDlg(h2)">📜 Report on the NCR situation</button>`;
+    }
+    if(kgActive()&&(S.flags.kg_stage||0)<2)h+=`<button class="bt pip" onclick="kgRefresh();closeDlg();showResult('The King\\'s Gambit','📜',[kgQuest().progText],'Continue','upAll()')">📜 Review The King's Gambit</button>`;
     h+=`<button class="bt pip" onclick="queueFreesideQuest('the_king','Kings Favor',20,12)">📜 Ask for Kings work</button>`;
   }else if(id==='pacer'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Pacer','🧥',['Pacer makes it clear that the Kings do not appreciate troublemakers or tourists pretending to own the place.'],'Continue','upAll()')">🧥 Size him up</button>`;
+    if(kgActive()&&(S.flags.kg_stage||0)===0)h+=`<button class="bt pip" onclick="kgTalkPacer()">📜 Ask about the NCR trouble</button>`;
   }else if(id==='rex'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Rex','🐕',['Rex sniffs your hand, circles once, and settles back down without taking his eyes off the room.','Even at rest, he feels like a weapon with a heartbeat.'],'Continue','upAll()')">🐕 Spend a minute with Rex</button>`;
   }else if(id==='mick'){
@@ -5251,6 +5703,7 @@ function openFreesideNPC(id){
     h+=`<button class="bt" onclick="if(S.caps<60){notify('Need 60 caps.');return}S.caps-=60;const pick=rndA(['maria','combat_armor','doctor_bag','super_stimpak']);const added=giveItem(pick);if(!added){S.caps+=60;return}log('Ralph sells you something from under the counter.','e');closeDlg();showResult('Under the Counter','🧰',[ITEMS[pick].e+' '+ITEMS[pick].n,'Ralph never asks where you heard about the hidden stock.'],'Continue','upAll()')">🧰 Ask about under-counter stock (60 caps)</button>`;
   }else if(id==='julie_farkas'){
     h+=`<button class="bt go" onclick="closeDlg();openBld('old_mormon_fort')">⚕️ Get medical help</button>`;
+    if(kgActive()&&(S.flags.kg_stage||0)===1)h+=`<button class="bt pip" onclick="kgTalkEnvoy()">📋 Find the NCR envoy at the Fort</button>`;
     h+=`<button class="bt pip" onclick="queueFreesideQuest('julie_farkas','Followers Aid',16,12)">📜 Volunteer for aid work</button>`;
   }else if(id==='major_kieran'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Major Kieran','📘',['Kieran explains that keeping the Old Mormon Fort running is mostly logistics, patience, and surviving one shortage after another.'],'Continue','upAll()')">📘 Ask about the Followers</button>`;
@@ -5543,6 +5996,52 @@ function bldPrimmBison(body){
   }
   body.appendChild(el('div','bs2','Notable People'));
   addNamedNpcCard(body,'deputy_beagle');
+}
+
+function bldMcCarranHQ(body){
+  body.appendChild(el('div','bs2','Command Center'));
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Maps, radios, and exhausted officers. Colonel Hsu runs the Mojave campaign from this room.</div>`));
+
+  // Colonel Hsu
+  const hsuCard=el('div','cd');
+  hsuCard.style.cursor='pointer';
+  hsuCard.innerHTML=`<div style="display:flex;align-items:center;gap:8px">
+    <div style="font-size:24px">${renderIcon(ICONS.NPC.NCR_COMMAND,24)}</div>
+    <div style="flex:1"><div style="font-weight:bold;font-size:12px;color:var(--amber)">Colonel Hsu</div>
+    <div style="font-size:10px;color:var(--muted)">NCR commanding officer · Camp McCarran</div>
+    <div style="font-size:9px;color:var(--amber)">TAP TO TALK${!bhDone()&&!bhActive()?' · 📜 Quest available':bhActive()?' · 📜 Quest active':''}</div></div></div>`;
+  hsuCard.onclick=()=>{
+    closeBld();
+    let h='<h3 style="display:flex;align-items:center;gap:8px"><span>'+renderIcon(ICONS.NPC.NCR_COMMAND,28)+'</span><span style="color:var(--amber)">Colonel Hsu</span></h3>';
+    h+='<div style="font-size:10px;color:var(--muted);margin-bottom:6px">NCR commanding officer</div>';
+    h+='<div class="npc-line">"The Mojave doesn\'t give you time to think. You make the call or it makes one for you."</div>';
+    h+='<button class="bt" onclick="closeDlg();showResult(\'Colonel Hsu\',\'📋\',[\'Hsu says the NCR is stretched thin across the Mojave. Fiends to the west, Legion to the east, and not enough soldiers for either.\',\'He trusts results over rank.\'],\'Continue\',\'upAll()\')">📋 Ask about the war effort</button>';
+    if(!bhDone()&&!bhActive())h+='<button class="bt pip" onclick="bhStart()">📜 "Colonel, I heard about the ambushed patrols..."</button>';
+    if(bhActive()&&(S.flags.bh_evidence||0)>=2){
+      h+='<div style="font-size:10px;color:var(--amber);margin:8px 0">You have enough evidence. Accuse:</div>';
+      h+='<button class="bt" onclick="bhAccuse(\'sterling\')">🎖 Corporal Sterling — the planted note, the timing</button>';
+      h+='<button class="bt" onclick="bhAccuse(\'contreras\')">📦 Sergeant Contreras — the black market operation</button>';
+      h+='<button class="bt" onclick="bhAccuse(\'crenshaw\')">📡 Private Crenshaw — the unauthorized transmissions</button>';
+    }
+    if(bhActive()&&(S.flags.bh_evidence||0)<2){
+      h+='<div style="font-size:10px;color:var(--muted);margin:8px 0">Investigate suspects around camp:</div>';
+      if(!S.flags.bh_suspects?.sterling)h+='<button class="bt pip" onclick="bhInvestigate(\'sterling\')">🔍 Search Corporal Sterling\'s quarters</button>';
+      if(!S.flags.bh_suspects?.contreras)h+='<button class="bt pip" onclick="bhInvestigate(\'contreras\')">🔍 Investigate Sergeant Contreras\' supply depot</button>';
+      if(!S.flags.bh_suspects?.crenshaw)h+='<button class="bt pip" onclick="bhInvestigate(\'crenshaw\')">🔍 Check Private Crenshaw\'s radio logs</button>';
+    }
+    h+='<button class="bt dn" onclick="closeDlg()">Walk away</button>';
+    openDlg(h);
+  };
+  body.appendChild(hsuCard);
+
+  // Briefing board
+  const briefBtn=el('button','bt','📋 Check the mission briefing board');
+  briefBtn.onclick=()=>{advanceTime(1);S.xp+=grantXP(5);closeBld();showResult('Briefing Board','📋',['NCR patrol routes, supply schedules, and threat assessments.','You pick up useful intel about the region.','⭐ +5 XP · ⏰ 1 hour'],'Continue','chkLU();upAll()')};
+  body.appendChild(briefBtn);
+
+  const restBtn=el('button','bt go','🛏 Use the barracks (8 hours)');
+  restBtn.onclick=()=>{S.hp=S.maxHp;S.ap=S.maxAp;S.days++;S.hours=8;payDaily();log('You sleep in the Camp McCarran barracks.','e');closeBld();showResult('Rested','🛏',['❤ Full HP/AP','📅 Day '+S.days],'Continue','upAll()')};
+  body.appendChild(restBtn);
 }
 
 function bldBar(body,bId){
@@ -6567,21 +7066,144 @@ function upChar(){
   });
   tab.appendChild(perkWrap);
 
-  // ── Active Quests ──
+  // ── Quest Tracker ──
   const active=S.quests.filter(q=>!q.done);
-  if(active.length){
-    tab.appendChild(el('div','sh','Active Quests'));
-    active.forEach(q=>{
-      let progPct=0,progText='';
-      if(q.t==='kill'){const kd=q.kd||0;progPct=Math.min(100,Math.round(kd/q.kc*100));progText=`${kd}/${q.kc} killed`}
-      else if(q.t==='fetch'){const fd=q.fd||0;progPct=Math.min(100,Math.round(fd/q.fc*100));progText=`${fd}/${q.fc} collected`}
-      else if(q.t==='explore'){const ed=q.ed||0;progPct=Math.min(100,Math.round(ed/q.ec*100));progText=`${ed}/${q.ec} areas`}
-      else{progText=q.progText||'In progress'}
-      tab.appendChild(el('div','qc',`<div style="font-weight:bold;font-size:12px">📜 ${q.name}</div>
-      <div style="font-size:10px;color:var(--muted);margin:2px 0">${q.desc}</div>
-      ${progPct>0?`<div class="hb" style="margin:4px 0"><div class="hf g" style="width:${progPct}%"></div></div>`:''}
-      <div style="font-size:10px;color:var(--green);">${progText} · 💰 ${q.rg} · ⭐ ${q.rx}</div>`));
-    });
+  const completed=S.quests.filter(q=>q.done);
+  tab.appendChild(el('div','sh',`Quests (${active.length} active${completed.length?' · '+completed.length+' done':''})`));
+
+  if(active.length||completed.length){
+    const qtWrap=el('div','');
+
+    // ── Active Quests ──
+    if(active.length){
+      const aqHdr=el('div','');
+      aqHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a3a1a;border-radius:6px 6px 0 0;cursor:pointer';
+      aqHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--green);letter-spacing:1px">📜 ACTIVE (${active.length})</span><span style="font-size:10px;color:var(--muted)">tap to toggle</span>`;
+      const aqBody=el('div','');
+      aqBody.style.cssText='background:var(--panel2);border:1px solid #2a3a1a;border-top:none;border-radius:0 0 6px 6px;padding:6px;display:block';
+
+      aqBody.innerHTML=active.map(q=>{
+        // Build step-by-step for deep quests
+        let steps='';
+        let locHint='';
+        if(q.id==='novac_come_fly'){
+          const s=S.flags.cfwm_stage||0;
+          steps=buildQuestSteps([
+            {text:'Travel to REPCONN Test Site',done:s>=1},
+            {text:'Clear the nightkin in the basement',done:s>=2},
+            {text:'Decide the fate of the ghouls',done:s>=3},
+            {text:'Report to Manny Vargas in Novac',done:q.done}
+          ]);
+          locHint=s<1?'Novac → Dino Bite → REPCONN':s<3?'REPCONN Test Site (Novac → Dino Bite)':'Novac → Dino Bite → Manny Vargas';
+        }else if(q.id==='freeside_kings_gambit'){
+          const s=S.flags.kg_stage||0;
+          steps=buildQuestSteps([
+            {text:'Talk to Pacer about the NCR trouble',done:s>=1},
+            {text:'Find the NCR envoy at the Old Mormon Fort',done:s>=2},
+            {text:'Return to The King with your recommendation',done:q.done}
+          ]);
+          locHint=s===0?'Freeside → Kings HQ → Pacer':s===1?'Freeside → Old Mormon Fort → Julie Farkas':'Freeside → Kings HQ → The King';
+        }else if(q.id==='mccarran_bitter_harvest'){
+          const ev=S.flags.bh_evidence||0;
+          const sus=S.flags.bh_suspects||{};
+          steps=buildQuestSteps([
+            {text:'Investigate Corporal Sterling',done:!!sus.sterling},
+            {text:'Investigate Sergeant Contreras',done:!!sus.contreras},
+            {text:'Investigate Private Crenshaw',done:!!sus.crenshaw},
+            {text:`Make your accusation (${ev}/2 evidence needed)`,done:q.done}
+          ]);
+          locHint='Camp McCarran → McCarran HQ → Colonel Hsu';
+        }else if(q.id==='freeside_the_debt'){
+          const d=S.flags.td_debtors||{};
+          const c=S.flags.td_collected||0;
+          steps=buildQuestSteps([
+            {text:'Collect from Marco (caravan guard)',done:!!d.marco},
+            {text:'Collect from Esperanza (water seller)',done:!!d.esperanza},
+            {text:'Collect from Dixon (chem dealer)',done:!!d.dixon},
+            {text:'Return to James Garret',done:q.done}
+          ]);
+          locHint=c<3?'Freeside → Atomic Wrangler → James Garret → Go collect':'Freeside → Atomic Wrangler → James Garret';
+        }else if(q.id==='golf_watchtower'){
+          const s=S.flags.aw_stage||0;
+          const t=S.flags.aw_trained||0;
+          steps=buildQuestSteps([
+            {text:`Train the Misfits (${t}/3 sessions)`,done:t>=3||s>=1},
+            {text:'Choose assault plan',done:s>=2},
+            {text:'Destroy the Legion camp',done:s>=2},
+            {text:'Report to Chief Hanlon',done:q.done}
+          ]);
+          locHint=s===0?'Camp Golf → Golf Command → Sgt. McCredie (train) or skip':s<2?'Camp Golf → Golf Command → Sgt. McCredie (choose plan)':'Camp Golf → Golf Command → Chief Hanlon';
+        }else if(q.id==='novac_one_for_my_baby'){
+          steps=buildQuestSteps([
+            {text:'Search motel office records',done:hasFlag('boone_bill_found')},
+            {text:'Confront or present evidence',done:hasFlag('boone_culprit_exposed')},
+            {text:'Return to Boone',done:q.done}
+          ]);
+          locHint=!hasFlag('boone_bill_found')?'Novac → Motel → Search records':'Novac → Dino Bite → Boone';
+        }else if(q.id==='gs_ghost_town_gunfight'){
+          const n=typeof gsGhostCount==='function'?gsGhostCount():0;
+          steps=buildQuestSteps([
+            {text:`Recruit townsfolk (${n}/4)`,done:n>=4||hasFlag('gs_ghost_fight_started')},
+            {text:'Start the fight at the saloon',done:hasFlag('gs_ghost_fight_started')},
+            {text:'Defeat Joe Cobb',done:q.done}
+          ]);
+          locHint='Goodsprings → Talk to NPCs → Saloon';
+        }
+
+        // Generic progress for non-deep quests
+        let progPct=0,progText='';
+        if(q.t==='kill'){const kd=q.kd||0;progPct=Math.min(100,Math.round(kd/q.kc*100));progText=`${kd}/${q.kc} killed`}
+        else if(q.t==='fetch'){const fd=q.fd||0;progPct=Math.min(100,Math.round(fd/q.fc*100));progText=`${fd}/${q.fc} collected`}
+        else if(q.t==='explore'){const ed=q.ed||0;progPct=Math.min(100,Math.round(ed/q.ec*100));progText=`${ed}/${q.ec} areas`}
+        else if(!steps){progText=q.progText||'In progress'}
+
+        return `<div style="padding:8px 4px;border-bottom:1px solid #1a2a1a">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+            <span style="font-size:14px">📜</span>
+            <span style="font-size:12px;font-weight:bold;color:var(--amber)">${q.name}</span>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;line-height:1.4">${q.desc}</div>
+          ${steps||''}
+          ${!steps&&progPct>0?`<div class="hb" style="margin:4px 0"><div class="hf g" style="width:${progPct}%"></div></div>`:''}
+          ${!steps&&progText?`<div style="font-size:10px;color:var(--green)">${progText}</div>`:''}
+          ${locHint?`<div style="font-size:9px;color:var(--amber2);margin-top:4px;display:flex;align-items:center;gap:4px"><span>📍</span> ${locHint}</div>`:''}
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">${q.giver?'From: '+q.giver+' · ':''}💰 ${q.rg} caps · ⭐ ${q.rx} XP</div>
+        </div>`;
+      }).join('');
+
+      let aqOpen=true;
+      aqHdr.onclick=()=>{aqOpen=!aqOpen;aqBody.style.display=aqOpen?'block':'none'};
+      qtWrap.appendChild(aqHdr);
+      qtWrap.appendChild(aqBody);
+    }else{
+      qtWrap.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0;font-style:italic">No active quests. Talk to NPCs to find work.</div>'));
+    }
+
+    // ── Completed Quests ──
+    if(completed.length){
+      const cqHdr=el('div','');
+      cqHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a2818;border-radius:6px 6px 0 0;cursor:pointer;margin-top:8px';
+      cqHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--muted);letter-spacing:1px">✓ COMPLETED (${completed.length})</span><span style="font-size:10px;color:var(--muted)">tap to view</span>`;
+      const cqBody=el('div','');
+      cqBody.style.cssText='background:var(--panel2);border:1px solid #2a2818;border-top:none;border-radius:0 0 6px 6px;padding:6px;display:none';
+      cqBody.innerHTML=completed.map(q=>`<div style="padding:4px;border-bottom:1px solid #1a1810;opacity:0.6">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:11px;color:var(--green)">✓</span>
+          <span style="font-size:11px;font-weight:bold;color:var(--green)">${q.name}</span>
+          <span style="font-size:9px;color:var(--muted);margin-left:auto">💰 ${q.rg} · ⭐ ${q.rx}</span>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-top:2px">${q.desc}</div>
+      </div>`).join('');
+
+      let cqOpen=false;
+      cqHdr.onclick=()=>{cqOpen=!cqOpen;cqBody.style.display=cqOpen?'block':'none'};
+      qtWrap.appendChild(cqHdr);
+      qtWrap.appendChild(cqBody);
+    }
+
+    tab.appendChild(qtWrap);
+  }else{
+    tab.appendChild(el('div','cd','<div style="font-size:11px;color:var(--muted);text-align:center;padding:8px 0;font-style:italic">No quests yet. Explore and talk to NPCs to find work.</div>'));
   }
 
   // ── Faction & Settlement Standings ──
