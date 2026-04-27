@@ -112,8 +112,10 @@ opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--ambe
 /* Trade overlay */
 #TRADE{position:fixed;inset:0;background:var(--bg);z-index:155;display:none;flex-direction:column;overflow:hidden;overscroll-behavior:contain}
 #TRADE.A{display:flex}
-#TRADE-HEAD{background:#141408;border-bottom:2px solid var(--amber2);padding:calc(var(--st)+8px) 10px 0;flex:0 0 auto;position:relative;z-index:210}
-.trade-topbar{display:flex;align-items:center;gap:8px;padding-bottom:8px}
+/* Adjust trade header padding to mirror the building overlay header. We remove the top padding here and move it into the topbar so the back button sits lower on the screen, making it easy to tap on mobile devices. */
+#TRADE-HEAD{background:#141408;border-bottom:2px solid var(--amber2);flex:0 0 auto;position:relative;z-index:210}
+/* The trade topbar now includes the safe area inset and extra vertical padding similar to the building overlay header. This ensures the back button is positioned lower and more accessible on devices like the iPhone. */
+.trade-topbar{display:flex;align-items:center;gap:8px;padding:calc(var(--st) + 14px) 10px 8px;min-height:52px}
 .trade-back{font-size:22px;color:var(--amber);cursor:pointer;padding:10px 14px;min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;font-family:'Courier New',monospace;touch-action:manipulation;-webkit-tap-highlight-color:rgba(240,200,80,.15)}
 .trade-back:active{background:#2a2a18;transform:scale(.96)}
 #TRADE-TABS{display:flex;border-bottom:1px solid #2a2818}
@@ -125,8 +127,8 @@ opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--ambe
 #TRADE-CATS button.active{background:#2a2a14;color:var(--amber);border-color:var(--amber2)}
 #TRADE-BODY{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 8px 150px;min-height:0;overscroll-behavior:contain}
 #TRADE-FOOTER{position:fixed;bottom:0;left:50%;right:auto;transform:translateX(-50%);width:100%;max-width:430px;background:linear-gradient(0deg,#0e0e06,#141408);border-top:1px solid var(--amber2);padding:8px 12px calc(8px + var(--sb));display:flex;align-items:center;gap:8px;z-index:220}
-#TRADE-LOW-BACK{position:fixed;left:50%;bottom:calc(70px + var(--sb));transform:translateX(-50%);width:calc(100% - 24px);max-width:406px;z-index:230;padding:12px;background:#2a2a18;color:var(--amber);border:1px solid var(--amber2);border-radius:6px;font-family:'Courier New',monospace;font-size:13px;text-align:center;min-height:46px;box-shadow:0 0 18px rgba(0,0,0,.45);touch-action:manipulation}
-#TRADE-LOW-BACK:active{transform:translateX(-50%) scale(.98);filter:brightness(1.1)}
+/* Previously a separate lower back button for the trade screen; removed in favour of the top back button */
+#TRADE-LOW-BACK{display:none}
 .tr-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border:1px solid #2a2818;border-radius:6px;margin:4px 0;cursor:pointer;min-height:56px;transition:border-color .15s}
 .tr-item:active{background:#2a2a18;border-color:var(--amber2)}
 .tr-item.selected{border-color:var(--amber);background:#252510}
@@ -315,7 +317,7 @@ html,body,#W,#C,#N,button{touch-action:manipulation}
 </div>
 <div id="BO"><div id="BI"></div></div>
 <div id="TRADE">
-  <button id="TRADE-LOW-BACK" onclick="closeTrade()" type="button">← Back to building</button>
+  <!-- Removed the separate lower back button to rely solely on the top back button -->
   <div id="TRADE-HEAD">
     <div class="trade-topbar">
       <button class="trade-back" onclick="closeTrade()" aria-label="Back" type="button">‹</button>
