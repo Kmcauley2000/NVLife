@@ -110,9 +110,9 @@ opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--ambe
 /* Log */
 .log-group{margin:4px 0;border:1px solid #2a2818;border-radius:4px;overflow:hidden}
 /* Trade overlay */
-#TRADE{position:fixed;inset:0;background:var(--bg);z-index:155;display:none;flex-direction:column}
+#TRADE{position:fixed;inset:0;background:var(--bg);z-index:155;display:none;flex-direction:column;overflow:hidden;overscroll-behavior:contain}
 #TRADE.A{display:flex}
-#TRADE-HEAD{background:#141408;border-bottom:2px solid var(--amber2);padding:calc(var(--st)+24px) 10px 0;flex:0 0 auto}
+#TRADE-HEAD{background:#141408;border-bottom:2px solid var(--amber2);padding:calc(var(--st)+8px) 10px 0;flex:0 0 auto;position:relative;z-index:210}
 .trade-topbar{display:flex;align-items:center;gap:8px;padding-bottom:8px}
 .trade-back{font-size:22px;color:var(--amber);cursor:pointer;padding:10px 14px;min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;font-family:'Courier New',monospace;touch-action:manipulation;-webkit-tap-highlight-color:rgba(240,200,80,.15)}
 .trade-back:active{background:#2a2a18;transform:scale(.96)}
@@ -123,8 +123,10 @@ opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--ambe
 #TRADE-CATS::-webkit-scrollbar{display:none}
 #TRADE-CATS button{white-space:nowrap;padding:4px 10px;background:#1a1a10;color:var(--muted);border:1px solid #2a2818;border-radius:12px;font-family:'Courier New',monospace;font-size:10px;cursor:pointer;flex-shrink:0}
 #TRADE-CATS button.active{background:#2a2a14;color:var(--amber);border-color:var(--amber2)}
-#TRADE-BODY{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 8px 100px;min-height:0}
-#TRADE-FOOTER{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(0deg,#0e0e06,#141408);border-top:1px solid var(--amber2);padding:8px 12px calc(8px + var(--sb));display:flex;align-items:center;gap:8px;z-index:160}
+#TRADE-BODY{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 8px 150px;min-height:0;overscroll-behavior:contain}
+#TRADE-FOOTER{position:fixed;bottom:0;left:50%;right:auto;transform:translateX(-50%);width:100%;max-width:430px;background:linear-gradient(0deg,#0e0e06,#141408);border-top:1px solid var(--amber2);padding:8px 12px calc(8px + var(--sb));display:flex;align-items:center;gap:8px;z-index:220}
+#TRADE-LOW-BACK{position:fixed;left:50%;bottom:calc(70px + var(--sb));transform:translateX(-50%);width:calc(100% - 24px);max-width:406px;z-index:230;padding:12px;background:#2a2a18;color:var(--amber);border:1px solid var(--amber2);border-radius:6px;font-family:'Courier New',monospace;font-size:13px;text-align:center;min-height:46px;box-shadow:0 0 18px rgba(0,0,0,.45);touch-action:manipulation}
+#TRADE-LOW-BACK:active{transform:translateX(-50%) scale(.98);filter:brightness(1.1)}
 .tr-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border:1px solid #2a2818;border-radius:6px;margin:4px 0;cursor:pointer;min-height:56px;transition:border-color .15s}
 .tr-item:active{background:#2a2a18;border-color:var(--amber2)}
 .tr-item.selected{border-color:var(--amber);background:#252510}
@@ -313,6 +315,7 @@ html,body,#W,#C,#N,button{touch-action:manipulation}
 </div>
 <div id="BO"><div id="BI"></div></div>
 <div id="TRADE">
+  <button id="TRADE-LOW-BACK" onclick="closeTrade()" type="button">← Back to building</button>
   <div id="TRADE-HEAD">
     <div class="trade-topbar">
       <button class="trade-back" onclick="closeTrade()" aria-label="Back" type="button">‹</button>
@@ -6548,6 +6551,7 @@ function barterSellPrice(baseP){
 }
 
 function openTrade(stockDef,shopId,merchantName){
+  closeDlg();
   const stock=getShopStock(shopId||'_tmp_'+Date.now(),stockDef);
   _tradeState={mode:'buy',shopId:shopId||null,merchantName:merchantName||'Merchant',
     stock:stock,selId:null,qty:1,cat:'all'};
@@ -6555,11 +6559,15 @@ function openTrade(stockDef,shopId,merchantName){
   $('TRADE').classList.add('A');
   $('TRADE-TAB-BUY').classList.add('active');
   $('TRADE-TAB-SELL').classList.remove('active');
+  const tb=$('TRADE-BODY');if(tb)tb.scrollTop=0;
+  try{window.scrollTo(0,0)}catch(e){}
   tradeRender();
 }
 function closeTrade(){
-  $('TRADE').classList.remove('A');
+  const tr=$('TRADE');if(tr)tr.classList.remove('A');
   _tradeState.selId=null;
+  _tradeState.qty=1;
+  const tb=$('TRADE-BODY');if(tb)tb.scrollTop=0;
   if(_tradeState.shopId)openBld(_tradeState.shopId);
   else upAll();
 }
