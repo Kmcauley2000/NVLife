@@ -110,9 +110,12 @@ opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--ambe
 /* Log */
 .log-group{margin:4px 0;border:1px solid #2a2818;border-radius:4px;overflow:hidden}
 /* Trade overlay */
-#TRADE{position:fixed;inset:0;background:var(--bg);z-index:155;display:none;flex-direction:column}
+#TRADE{position:fixed;inset:0;background:var(--bg);z-index:155;display:none;flex-direction:column;max-width:430px;margin:0 auto;left:0;right:0}
 #TRADE.A{display:flex}
-#TRADE-HEAD{background:#141408;border-bottom:2px solid var(--amber2);padding:calc(var(--st)+8px) 10px 0;flex:0 0 auto}
+#TRADE-HEAD{background:#141408;border-bottom:2px solid var(--amber2);padding:calc(var(--st)+18px) 10px 0;flex:0 0 auto}
+.trade-topbar{display:flex;align-items:center;gap:8px;padding-bottom:10px;min-height:64px}
+.trade-back{font-size:24px;color:var(--amber);cursor:pointer;padding:12px 16px;min-width:56px;min-height:56px;display:flex;align-items:center;justify-content:center;background:#1a1a10;border:1px solid #2a2818;border-radius:8px;touch-action:manipulation}
+.trade-back:active{background:#2a2a18;transform:scale(.96)}
 #TRADE-TABS{display:flex;border-bottom:1px solid #2a2818}
 #TRADE-TABS button{flex:1;padding:8px 4px;background:none;border:none;font-family:'Courier New',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
 #TRADE-TABS button.active{color:var(--amber);border-bottom-color:var(--amber)}
@@ -120,8 +123,8 @@ opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--ambe
 #TRADE-CATS::-webkit-scrollbar{display:none}
 #TRADE-CATS button{white-space:nowrap;padding:4px 10px;background:#1a1a10;color:var(--muted);border:1px solid #2a2818;border-radius:12px;font-family:'Courier New',monospace;font-size:10px;cursor:pointer;flex-shrink:0}
 #TRADE-CATS button.active{background:#2a2a14;color:var(--amber);border-color:var(--amber2)}
-#TRADE-BODY{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 8px 100px}
-#TRADE-FOOTER{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(0deg,#0e0e06,#141408);border-top:1px solid var(--amber2);padding:8px 12px calc(8px + var(--sb));display:flex;align-items:center;gap:8px;z-index:160}
+#TRADE-BODY{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 8px calc(170px + var(--sb));min-height:0}
+#TRADE-FOOTER{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:linear-gradient(0deg,#0e0e06,#141408);border-top:1px solid var(--amber2);padding:8px 12px calc(10px + var(--sb));display:flex;align-items:center;gap:8px;z-index:160;flex-wrap:wrap}
 .tr-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border:1px solid #2a2818;border-radius:6px;margin:4px 0;cursor:pointer;min-height:56px;transition:border-color .15s}
 .tr-item:active{background:#2a2a18;border-color:var(--amber2)}
 .tr-item.selected{border-color:var(--amber);background:#252510}
@@ -311,9 +314,9 @@ html,body,#W,#C,#N,button{touch-action:manipulation}
 <div id="BO"><div id="BI"></div></div>
 <div id="TRADE">
   <div id="TRADE-HEAD">
-    <div style="display:flex;align-items:center;gap:8px;padding-bottom:8px">
-      <div class="bb" onclick="closeTrade()" style="font-size:20px">‹</div>
-      <div style="flex:1">
+    <div class="trade-topbar">
+      <button class="trade-back" onclick="closeTrade()" aria-label="Back" type="button">‹</button>
+      <div style="flex:1;min-width:0">
         <div id="TRADE-TITLE" style="font-size:14px;font-weight:bold;color:var(--amber);letter-spacing:1px"></div>
         <div id="TRADE-CAPS" style="font-size:11px;color:var(--muted);margin-top:1px"></div>
       </div>
@@ -326,8 +329,9 @@ html,body,#W,#C,#N,button{touch-action:manipulation}
   <div id="TRADE-CATS"></div>
   <div id="TRADE-BODY"></div>
   <div id="TRADE-FOOTER">
+    <button class="bt sm" onclick="closeTrade()" style="min-width:70px;text-align:center">Back</button>
     <div id="TRADE-SEL-INFO" style="flex:1;font-size:11px;color:var(--muted)">Select an item</div>
-    <div id="TRADE-QTY-WRAP" style="display:none;flex-direction:column;width:100%">
+    <div id="TRADE-QTY-WRAP" style="display:none;flex-direction:column;width:100%;flex-basis:100%">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <div id="TRADE-SEL-NAME" style="font-size:12px;font-weight:bold;color:var(--amber)"></div>
         <div id="TRADE-SEL-PRICE" style="font-size:12px;color:var(--muted)"></div>
@@ -537,19 +541,19 @@ const LOCS={
 Goodsprings:{n:"Goodsprings",r:"Mojave South",d:"A quiet frontier town. Clean water, honest people.",e:'<img src="NVImages/GoodspringsIcon.png" style="width:80px;height:80px;object-fit:contain;">',t:"town",
   b:["saloon","general_store","gas_station","doc_house","caravan_stop"],dg:1,fac:"Goodsprings",
   sur:[{n:"Goodsprings Cemetery",e:'<img src="NVImages/GoodspringscemeteryIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Where they left you for dead. Bloatflies, shallow graves, old casings, and grave goods make it feel different from the rest of town.",en:["bloatfly","bloatfly","gecko","bark_scorpion"],lt:["ammo_9mm","stimpak","sunset_sars","pre_war_money","bobby_pin"]},
-  {n:"Goodsprings Source",e:'<img src="NVImages/GoodspringswatersourceIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Fresh water. Geckos and bark scorpions come for the same reason people do.",en:["gecko","gecko","gecko","bark_scorpion"],lt:["purified_water","gecko_hide","herbs","gecko_steak","antivenom"]},
-  {n:"Abandoned Schoolhouse",e:'<img src="NVImages/GoodspringsabandonedschoolhouseIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Old desks, busted terminals, mantis nests, roaches, and forgotten starter gear.",en:["mantis","mantis","radroach","giant_rat"],lt:["scrap","duct_tape","ammo_9mm","bobby_pin","schoolhouse_pad","patched_vault_jacket"]}]},
+  {n:"Goodsprings Source",e:'<img src="NVImages/GoodspringswatersourceIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Fresh water. Geckos and bark scorpions come for the same reason people do.",en:["gecko","green_gecko","gecko_hunter","bark_scorpion","mole_rat"],lt:["purified_water","gecko_hide","herbs","gecko_steak","gecko_stew","antivenom"]},
+  {n:"Abandoned Schoolhouse",e:'<img src="NVImages/GoodspringsabandonedschoolhouseIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Old desks, busted terminals, mantis nests, roaches, and forgotten starter gear.",en:["mantis","mantis","radroach","giant_rat","mole_rat"],lt:["scrap","duct_tape","ammo_9mm","bobby_pin","tin_can","coffee_mug","schoolhouse_pad","patched_vault_jacket"]}]},
 Primm:{n:"Primm",r:"Mojave South",d:"A border town overrun by convicts.",e:'<img src="NVImages/PrimmIcon.png" style="width:90px;height:90px;object-fit:contain;">',t:"town",           
   b:["vikki_vance","mojave_express","sheriff_office","bison_steve"],dg:2,fac:"Primm",
-  sur:[{n:"Highway 93",e:'<img src="NVImages/Highway93Icon.png" style="width:40%;height:40%;object-fit:contain;display:block;">',d:"Convicts patrol the road.",en:["convict","convict","jackal_raider","jackal_raider"],lt:["pistol_10mm","revolver_357","leather_armor","stimpak","ammo_10mm","ammo_357"]},
-  {n:"NCRCF Perimeter",e:'<img src="NVImages/NcrcfperimeterIcon.png" style="width:50%;height:50%;object-fit:contain;display:block;">',d:"The prison is close. Dangerous.",en:["powder_ganger","powder_ganger","convict","jackal_raider"],lt:["dynamite","powder_charge","ammo_9mm"]}]},
+  sur:[{n:"Highway 93",e:'<img src="NVImages/Highway93Icon.png" style="width:40%;height:40%;object-fit:contain;display:block;">',d:"Convicts patrol the road.",en:["convict","escaped_convict","jackal_raider","jackal_veteran","powder_ganger_leader"],lt:["pistol_10mm","revolver_357","leather_armor","stimpak","ammo_10mm","ammo_357","lead_pipe"]},
+  {n:"NCRCF Perimeter",e:'<img src="NVImages/NcrcfperimeterIcon.png" style="width:50%;height:50%;object-fit:contain;display:block;">',d:"The prison is close. Dangerous.",en:["powder_ganger","powder_ganger_leader","convict","escaped_convict","jackal_raider"],lt:["dynamite","powder_charge","ammo_9mm","straight_razor"]}]},
 Nipton:{n:"Nipton",r:"Mojave South",d:"A town destroyed by the Legion as an example.",e:'<img src="NVImages/NiptonIcon.png" style="width:120px;height:120px;object-fit:contain;">',t:"ruins",
   b:["nipton_hall"],dg:3,fac:"Legion",
   sur:[{n:"Nipton Road",e:"🛤",d:"Legion holds the road. Vermin picked through whatever they left.",en:["legion_recruit","legion_recruit","legion_scout"],lt:["machete","healing_powder","legion_coin","revolver_357","ammo_357"]},
   {n:"Burned Houses",e:"🏚",d:"Ash and ruin. Scavengeable. Scavengers picked through after the Legion.",en:["radroach","giant_rat","rogue_scavenger"],lt:["pre_war_money","scrap","duct_tape"]}]},
 Novac:{n:"Novac",r:"Mojave Central",d:"A motel town with a giant dinosaur.",e:'<img src="NVImages/NovacIcon.png" alt="Novac Dino" style="width:120px;height:120px;object-fit:contain;">',t:"town",
   b:["dino_bite","motel","mcbride_house","ranger_bungalow","no_bark_shack"],dg:2,fac:"Novac",
-  sur:[{n:"REPCONN Test Site",e:"☢",d:"Ghouls and nightkin. Extremely dangerous.",en:["feral_ghoul","feral_ghoul","nightkin"],lt:["energy_cell","laser_rifle","stealth_boy","stimpak","sensor_module"]},
+  sur:[{n:"REPCONN Test Site",e:"☢",d:"Ghouls and nightkin. Extremely dangerous.",en:["feral_ghoul","feral_ghoul_roamer","feral_ghoul_reaver","nightkin","nightkin_master"],lt:["energy_cell","laser_rifle","stealth_boy","stimpak","sensor_module","microfusion_cell"]},
   {n:"Highway Patrol",e:"🛣",d:"Legion scouts on the road south, and something worse in the brush.",en:["legion_recruit","legion_scout","jackal_raider"],lt:["antivenom","machete","stimpak"]}]},
 BoulderCity:{n:"Boulder City",r:"Mojave Central",d:"NCR memorial site. Tense standoff with Khans.",e:'<img src="NVImages/BouldercityIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"town",
   b:["boulder_bar","ncr_memorial"],dg:2,fac:"BoulderCity",
@@ -566,46 +570,46 @@ CampMcCarran:{n:"Camp McCarran",r:"New Vegas",d:"NCR's main base of operations i
   sur:[{n:"Fiend Territory",e:"☠",d:"Psycho-addled raiders everywhere.",en:["fiend","fiend","fiend","centaur"],lt:["jet","psycho","ammo_556","combat_knife"]}]},
 HiddenValley:{n:"Hidden Valley",r:"Mojave Central",d:"Brotherhood of Steel bunker, hidden underground.",e:'<img src="NVImages/HiddenvalleyIcon.png" alt="Hidden Valley" style="width:70px;height:70px;object-fit:contain;">',t:"bunker",
   b:["bos_command","bos_armory","bos_lab","bos_maintenance"],dg:1,fac:"BOS",
-  sur:[{n:"Valley Patrols",e:"🏜",d:"Scorpions in the sand.",en:["bark_scorpion","radscorpion","radscorpion"],lt:["sensor_module","energy_cell","scrap","laser_focusing_lens"]},
-  {n:"Ventilation Trench",e:"🕳",d:"A sand-choked service trench feeding bunker ventilation. Vermin, ants, and scavengers keep sniffing around it.",en:["bark_scorpion","giant_ant","rogue_scavenger"],lt:["duct_tape","servo_motor","damaged_holotape","ammo_9mm"]},
-  {n:"Listening Post Ruins",e:"📡",d:"A ruined Brotherhood observation point above the valley, now picked over by scavengers and pests.",en:["rogue_scavenger","rogue_scavenger","radscorpion","giant_ant"],lt:["scribe_data_slate","targeting_module","energy_cell","power_armor_parts"]}]},
+  sur:[{n:"Valley Patrols",e:"🏜",d:"Scorpions in the sand.",en:["bark_scorpion","radscorpion","radscorpion","bos_knight","bos_paladin"],lt:["sensor_module","energy_cell","scrap","laser_focusing_lens","microfusion_cell","bos_holotape"]},
+  {n:"Ventilation Trench",e:"🕳",d:"A sand-choked service trench feeding bunker ventilation. Vermin, ants, and scavengers keep sniffing around it.",en:["bark_scorpion","giant_ant","rogue_scavenger","protectron"],lt:["duct_tape","servo_motor","damaged_holotape","ammo_9mm","pilot_light"]},
+  {n:"Listening Post Ruins",e:"📡",d:"A ruined Brotherhood observation point above the valley, now picked over by scavengers and pests.",en:["rogue_scavenger","rogue_scavenger","radscorpion","giant_ant","mr_gutsy"],lt:["scribe_data_slate","targeting_module","energy_cell","power_armor_parts","microfusion_cell"]}]},
 Jacobstown:{n:"Jacobstown",r:"Mojave North",d:"A refuge for super mutants trying to live peacefully.",e:'<img src="NVImages/JacobstownIcon.png" alt="Hidden Valley" style="width:60px;height:60px;object-fit:contain;">',t:"settlement",
   b:["jacobstown_lodge","jacobstown_doc"],dg:2,fac:"Jacobstown",
-  sur:[{n:"Mountain Trails",e:"⛰",d:"Cazadores and nightstalkers.",en:["cazador","nightstalker","nightstalker"],lt:["antivenom","stimpak","bighorner_meat"]}]},
+  sur:[{n:"Mountain Trails",e:"⛰",d:"Cazadores and nightstalkers.",en:["cazador","nightstalker","nightstalker","bighorner","bighorner_bull","yao_guai"],lt:["antivenom","stimpak","bighorner_meat","desert_salad"]}]},
 RedRockCanyon:{n:"Red Rock Canyon",r:"West Mojave",d:"Home of the Great Khans. Harsh, hidden, and dangerous.",e:'<img src="NVImages/RedrockcanyonIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"camp",
   b:["khan_bar","khan_supply","khan_hq"],dg:2,fac:"Khans",
-  sur:[{n:"Canyon Pass",e:"🪨",d:"Narrow trails watched by Khan lookouts.",en:["great_khan","great_khan","cazador","bark_scorpion"],lt:["ammo_9mm","jet","stimpak","scrap"]},
-  {n:"Drug Lab Caves",e:"🧪",d:"Chem fumes and hidden caches. Khans don't like visitors.",en:["great_khan","great_khan","great_khan"],lt:["jet","psycho","stimpak","pre_war_money"]}]},
+  sur:[{n:"Canyon Pass",e:"🪨",d:"Narrow trails watched by Khan lookouts.",en:["great_khan","khan_warrior","cazador","bark_scorpion","golden_gecko"],lt:["ammo_9mm","jet","stimpak","scrap","straight_razor"]},
+  {n:"Drug Lab Caves",e:"🧪",d:"Chem fumes and hidden caches. Khans don't like visitors.",en:["great_khan","khan_warrior","khan_warrior"],lt:["jet","psycho","turbo","steady","stimpak","pre_war_money"]}]},
 NelsonCamp:{n:"Nelson",r:"Mojave South",d:"A town captured by Caesar's Legion.",e:'<img src="NVImages/NelsoncampIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"camp",
   b:["legion_tent"],dg:3,fac:"Legion",
-  sur:[{n:"Nelson Approach",e:"🏜",d:"Legion territory. Very dangerous.",en:["legion_veteran","legion_recruit","legion_recruit"],lt:["machete","thermic_lance","healing_powder","legion_coin"]}]},
+  sur:[{n:"Nelson Approach",e:"🏜",d:"Legion territory. Very dangerous.",en:["legion_veteran","legion_recruit","legion_decanus","legion_assassin"],lt:["machete","throwing_spear","thermic_lance","healing_powder","legion_coin"]}]},
 TheFort:{n:"The Fort",r:"East Mojave",d:"Caesar's main camp. The heart of the Legion.",e:'<img src="NVImages/ThefortIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"fortress",
   b:["caesars_tent","legion_arena","legion_supply"],dg:3,fac:"Legion",
-  sur:[{n:"Fortification Hill",e:"⛰",d:"Heavily guarded.",en:["legion_centurion","legion_veteran"],lt:["super_stimpak","thermic_lance","legion_coin","power_fist"]}]},
+  sur:[{n:"Fortification Hill",e:"⛰",d:"Heavily guarded.",en:["legion_centurion","legion_veteran","legion_decanus","legion_assassin"],lt:["super_stimpak","thermic_lance","legion_coin","power_fist","ballistic_fist"]}]},
 CampSearchlight:{n:"Camp Searchlight",r:"East Mojave",d:"A ruined NCR town choked with radiation, ash, and restless dead.",e:'<img src="NVImages/CampsearchlightIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"ruins",
   b:["searchlight_bar","searchlight_supply","searchlight_med"],dg:3,fac:"NCR",
-  sur:[{n:"Searchlight Fire Station",e:"🚒",d:"Collapsed NCR gear, scorched walls, and glowing dust.",en:["feral_ghoul","feral_ghoul","feral_ghoul_trooper","radscorpion"],lt:["stimpak","ammo_556","scrap","ncr_armor"]},
-  {n:"Church Basement",e:"⛪",d:"A dark shelter full of old supplies and lingering danger.",en:["feral_ghoul","feral_ghoul","feral_ghoul_trooper","glowing_one"],lt:["med_x","super_stimpak","pre_war_money","energy_cell"]}]},
+  sur:[{n:"Searchlight Fire Station",e:"🚒",d:"Collapsed NCR gear, scorched walls, and glowing dust.",en:["feral_ghoul","feral_ghoul_roamer","feral_ghoul_reaver","feral_ghoul_trooper","radscorpion"],lt:["stimpak","ammo_556","scrap","ncr_armor","fixer"]},
+  {n:"Church Basement",e:"⛪",d:"A dark shelter full of old supplies and lingering danger.",en:["feral_ghoul","feral_ghoul_roamer","feral_ghoul_reaver","feral_ghoul_trooper","glowing_one"],lt:["med_x","super_stimpak","pre_war_money","energy_cell","hydra"]}]},
 CottonwoodCove:{n:"Cottonwood Cove",r:"East Mojave",d:"A Legion-controlled river port hidden below the cliffs.",e:'<img src="NVImages/CottonwoodcoveIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"camp",
   b:["cove_bar","cove_supply","cove_tent"],dg:3,fac:"Legion",
   sur:[{n:"Slave Pens",e:"⛓",d:"Crude cages, watchfires, and brutal Legion discipline.",en:["legion_recruit","legion_recruit","legion_veteran"],lt:["healing_powder","legion_coin","machete","stimpak"]},
   {n:"Riverside Cliffs",e:"🪨",d:"Steep rocks above the Colorado, watched by scouts.",en:["legion_scout","legion_scout","lakelurk","cazador"],lt:["ammo_357","pre_war_money","healing_powder","antivenom"]}]},
 Sloan:{n:"Sloan",r:"West Mojave",d:"A quarry settlement on edge, with deathclaws stalking the worksites.",e:'<img src="NVImages/SloanIcon.png" alt="Hidden Valley" style="width:80px;height:80px;object-fit:contain;">',t:"settlement",
   b:["sloan_bar","sloan_supply","sloan_office"],dg:3,fac:"Sloan",
-  sur:[{n:"Quarry Entrance",e:"🪨",d:"Heavy machinery, scattered supplies, and signs of recent attacks.",en:["deathclaw","young_deathclaw","radscorpion"],lt:["ammo_556","scrap","stimpak","combat_armor"]},
-  {n:"Worker Barracks",e:"🛏",d:"Miners' bunks, old lockers, and emergency caches.",en:["gecko","radroach","mantis","bark_scorpion"],lt:["sunset_sars","duct_tape","stimpak","ammo_9mm"]}]},
+  sur:[{n:"Quarry Entrance",e:"🪨",d:"Heavy machinery, scattered supplies, and signs of recent attacks.",en:["deathclaw","young_deathclaw","radscorpion","sentry_bot"],lt:["ammo_556","ammo_50","scrap","stimpak","combat_armor","anti_materiel"]},
+  {n:"Worker Barracks",e:"🛏",d:"Miners' bunks, old lockers, and emergency caches.",en:["gecko","fire_gecko","golden_gecko","radroach","mantis","bark_scorpion","mole_rat"],lt:["sunset_sars","duct_tape","stimpak","ammo_9mm","gecko_stew"]}]},
 MojaveOutpost:{n:"Mojave Outpost",r:"Mojave South",d:"A dusty NCR checkpoint guarding the long highway south.",e:'<img src="NVImages/MojaveoutpostIcon.png" style="width:90px;height:90px;object-fit:contain;">',t:"outpost",
   b:["outpost_bar","outpost_supply","outpost_office"],dg:1,fac:"NCR",
-  sur:[{n:"Highway Checkpoint",e:'<img src="NVImages/MojaveoutposthighwaycheckpointIcon.png" style="width:50%;height:50%;object-fit:contain;display:block;">',d:"Sandbags, roadblocks, and patrols watching the southern road.",en:["convict","jackal_raider","gecko","bark_scorpion"],lt:["ammo_556","stimpak","sunset_sars","scrap"]},
-  {n:"Rocky Pass",e:'<img src="NVImages/MojaveoutpostrockypassIcon.png" style="width:40%;height:40%;object-fit:contain;display:block;">',d:"A windswept cut through the hills where ambushers sometimes wait.",en:["viper_gunslinger","jackal_raider","powder_ganger","gecko"],lt:["ammo_9mm","duct_tape","pre_war_money","varmint_rifle"]}]},
+  sur:[{n:"Highway Checkpoint",e:'<img src="NVImages/MojaveoutposthighwaycheckpointIcon.png" style="width:50%;height:50%;object-fit:contain;display:block;">',d:"Sandbags, roadblocks, and patrols watching the southern road.",en:["convict","escaped_convict","jackal_raider","jackal_veteran","gecko","green_gecko","bark_scorpion"],lt:["ammo_556","stimpak","sunset_sars","scrap"]},
+  {n:"Rocky Pass",e:'<img src="NVImages/MojaveoutpostrockypassIcon.png" style="width:40%;height:40%;object-fit:contain;display:block;">',d:"A windswept cut through the hills where ambushers sometimes wait.",en:["viper_gunslinger","viper_leader","jackal_raider","jackal_veteran","powder_ganger","gecko","green_gecko"],lt:["ammo_9mm","duct_tape","pre_war_money","varmint_rifle"]}]},
 Westside:{n:"Westside",r:"New Vegas",d:"A rough independent neighborhood surviving just beyond the city lights.",e:'<img src="NVImages/WestsideIcon.png" alt="Hidden Valley" style="width:100px;height:100px;object-fit:contain;">',t:"district",
   b:["westside_bar","westside_supply","westside_lodge"],dg:2,fac:"Westside",
-  sur:[{n:"Westside Streets",e:"🛣",d:"Narrow lanes, locals keeping watch, and trouble after dark.",en:["freeside_thug","freeside_thug","giant_rat","fiend"],lt:["switchblade","stimpak","nuka_cola","pre_war_money"]},
-  {n:"Community Gardens",e:"🌿",d:"A rare patch of green fenced off from scavengers and raiders.",en:["giant_rat","gecko","mantis","radroach"],lt:["herbs","purified_water","duct_tape","fancy_lad"]}]},
+  sur:[{n:"Westside Streets",e:"🛣",d:"Narrow lanes, locals keeping watch, and trouble after dark.",en:["freeside_thug","freeside_thug","giant_rat","fiend","fiend_leader","raider_leader"],lt:["switchblade","stimpak","nuka_cola","pre_war_money","brass_knuckles"]},
+  {n:"Community Gardens",e:"🌿",d:"A rare patch of green fenced off from scavengers and raiders.",en:["giant_rat","mole_rat","gecko","green_gecko","mantis","radroach"],lt:["herbs","purified_water","duct_tape","fancy_lad","desert_salad"]}]},
 NellisAFB:{n:"Nellis AFB",r:"East Mojave",d:"A fortified air base ringed with artillery and old world wreckage.",e:'<img src="NVImages/NellisairforcebaseIcon.png" style="width:50px;height:50px;object-fit:contain;">',t:"base",
   b:["nellis_bar","nellis_supply","nellis_med"],dg:3,fac:"Boomers",
-  sur:[{n:"Runway Wreckage",e:"🛩",d:"Twisted aircraft parts and unexploded ordnance litter the ground.",en:["giant_ant","radscorpion","cazador"],lt:["scrap","sensor_module","energy_cell","ammo_556"]},
-  {n:"Array Station",e:"📡",d:"A communications site full of salvage and dangerous pests.",en:["giant_ant","radscorpion","nightstalker","mantis"],lt:["sensor_module","stimpak","pre_war_money","energy_cell"]}]},
+  sur:[{n:"Runway Wreckage",e:"🛩",d:"Twisted aircraft parts and unexploded ordnance litter the ground.",en:["giant_ant","radscorpion","cazador","protectron","mr_gutsy"],lt:["scrap","sensor_module","energy_cell","microfusion_cell","ammo_556"]},
+  {n:"Array Station",e:"📡",d:"A communications site full of salvage and dangerous pests.",en:["giant_ant","radscorpion","nightstalker","mantis","protectron","sentry_bot"],lt:["sensor_module","stimpak","pre_war_money","energy_cell"]}]},
 CampGolf:{n:"Camp Golf",r:"Lake Mead",d:"An NCR training camp built around a ruined lakeside resort on Lake Mead.",e:'<img src="NVImages/CampgolfIcon.png" style="width:100px;height:100px;object-fit:contain;">',t:"base",
   b:["golf_resort","golf_barracks","golf_command","golf_clinic"],dg:2,fac:"NCR",
   sur:[{n:"Driving Range",e:"🏌️",d:"Battered targets, dried fairway grass, and NCR recruits drilling under the sun.",en:["giant_ant","gecko","mantis","radscorpion"],lt:["ammo_556","stimpak","scrap","sunset_sars"]},
@@ -3044,8 +3048,69 @@ Goodsprings_Schoolhouse:[
    choices:[fightChoice('⚔ Pull the panel and fight',['radroach','radroach'],'You clear the nest and salvage electronics.',()=>giveItem('scrap_electronics')),{label:'🔧 Leave the panel closed',fn:()=>{S.xp+=4;log('Marked a dangerous school terminal for later.','e')},result:'⭐ +4 XP. You mark it and move on.'}]},
 ],
 
-// ── GENERIC (any location) ────────────────────────────────────
+// ── NEW CONTENT WIRING: late-game creatures, mutants, robots and factions ──
+Jacobstown:[
+  {id:'jacob_bighorner_herd',icon:'🐂',title:'Bighorner Herd',
+   body:'A bighorner herd blocks the mountain trail. The bull lowers its head and paws at the dust.',
+   choices:[fightChoice('⚔ Fight the herd',['bighorner','bighorner_bull'],'The trail clears and you carve useful meat from the herd.',()=>{giveItem('bighorner_meat');giveItem('bighorner_meat')})]},
+  {id:'jacob_yao_guai',icon:'🐻',title:'Yao Guai in the Pines',
+   body:'A diseased, hulking bear-shape crashes between the trees, claws scraping stone.',
+   choices:[fightChoice('⚔ Fight the yao guai',['yao_guai'],'The monster finally drops. The mountains go quiet.')]},
+  {id:'jacob_mutant_brute',icon:'🧟',title:'Mutant Brute Patrol',
+   body:'A huge super mutant brute and a nightkin master argue over a broken radio in the snow-dust.',
+   choices:[fightChoice('⚔ Fight the mutants',['super_mutant_brute','nightkin_master'],'The mutants are down. Their gear is battered but useful.',()=>giveItem('microfusion_cell'))]},
+],
+
+Sloan:[
+  {id:'sloan_fire_gecko',icon:'🦎',title:'Fire Geckos in the Quarry',
+   body:'Heat shimmer rolls off the rocks. Fire geckos snap between the machinery.',
+   choices:[fightChoice('⚔ Fight the fire geckos',['fire_gecko','fire_gecko'],'You clear a hot path through the quarry.',()=>giveItem('gecko_stew'))]},
+  {id:'sloan_sentry_bot',icon:'🤖',title:'Buried Sentry Bot',
+   body:'A half-buried security robot wakes under the quarry dust. Old targeting lights blink red.',
+   choices:[fightChoice('⚔ Fight the sentry bot',['sentry_bot'],'The sentry bot collapses into a pile of salvage.',()=>{giveItem('sensor_module');giveItem('energy_cell')})]},
+],
+
+HiddenValley:[
+  {id:'hv_robot_probe',icon:'🤖',title:'Old World Security Probe',
+   body:'A Protectron and a Mr. Gutsy stumble out of a sealed service tunnel, still following ancient orders.',
+   choices:[fightChoice('⚔ Scrap the robots',['protectron','mr_gutsy'],'You strip the machines for Brotherhood-grade parts.',()=>{giveItem('scrap_electronics');giveItem('microfusion_cell')})]},
+  {id:'hv_bos_hardliners',icon:'🛡',title:'Brotherhood Hardliners',
+   body:'A Brotherhood knight and paladin challenge your right to walk near the bunker.',
+   choices:[fightChoice('⚔ Stand your ground',['bos_knight','bos_paladin'],'The hardliners are beaten back. That will be remembered.')]},
+],
+
+CampMcCarran:[
+  {id:'mccarran_ranger_patrol',icon:'🪖',title:'Ranger Patrol Under Fire',
+   body:'An NCR Ranger and heavy trooper are pinned by Fiends near a ruined overpass.',
+   choices:[fightChoice('⚔ Help the NCR patrol',['fiend','fiend_leader'],'The Ranger nods once. NCR does not forget help.',()=>{S.rep.NCR=(S.rep.NCR||0)+3;giveItem('ammo_556')})]},
+],
+
+RedRockCanyon:[
+  {id:'rr_khan_war_party',icon:'🪶',title:'Khan War Party',
+   body:'Khan warriors return from a raid, chems bright in their eyes and weapons loose in hand.',
+   choices:[fightChoice('⚔ Fight the war party',['khan_warrior','khan_warrior'],'The canyon echoes after the fight.',()=>giveItem('turbo'))]},
+],
+
+NCRCF:[
+  {id:'ncrcf_boss_patrol',icon:'🧨',title:'Powder Ganger Boss Patrol',
+   body:'A Powder Ganger boss leads escaped convicts through the prison perimeter, looking for easy victims.',
+   choices:[fightChoice('⚔ Fight the boss patrol',['powder_ganger_leader','escaped_convict','escaped_convict'],'The boss drops with a satchel of explosives.',()=>giveItem('dynamite'))]},
+],
+
 generic:[
+  {id:'gen_gecko_variants',icon:'🦎',title:'Gecko Hunting Ground',
+   body:'The ground is scratched with fresh tracks. Green and golden geckos move between the rocks.',
+   choices:[fightChoice('⚔ Hunt the geckos',['green_gecko','golden_gecko','gecko_hunter'],'You skin the geckos and pack the meat.',()=>{giveItem('gecko_hide');giveItem('gecko_steak')})]},
+  {id:'gen_molerat_nest',icon:'🐀',title:'Mole Rat Nest',
+   body:'Loose dirt caves inward and mole rats spill from the tunnel mouth.',
+   choices:[fightChoice('⚔ Fight the mole rats',['mole_rat','mole_rat','mole_rat'],'The nest is cleared.',()=>giveItem('tin_can'))]},
+  {id:'gen_raider_chain',icon:'☠',title:'Raider Chain Gang',
+   body:'A raider leader, Jackal veteran, and Viper leader are arguing over a stolen pack.',
+   choices:[fightChoice('⚔ Hit them first',['raider_leader','jackal_veteran','viper_leader'],'The raider bosses are down. Their pack is yours.',()=>{giveItem('ammo_9mm');giveItem('straight_razor')})]},
+  {id:'gen_ghoul_roamers',icon:'☢',title:'Roaming Ghoul Pack',
+   body:'A pack of rotting ghouls shambles out of the ruins, one of them moving far too fast.',
+   choices:[fightChoice('⚔ Fight the ghouls',['feral_ghoul_roamer','feral_ghoul_roamer','feral_ghoul_reaver'],'You survive the ghoul rush.',()=>giveItem('fixer'))]},
+
   {id:'gen_wounded_traveller',icon:'🩹',title:'Wounded Traveller',
    body:'A traveller limping down the road waves you down. Bitten leg, makeshift bandage already soaked through.',
    choices:[
@@ -3280,13 +3345,22 @@ function maybeUpgradePatrolPool(pool){
   if(S.loc==='Goodsprings'||S.loc==='Primm'||S.loc==='MojaveOutpost')return pool;
   const out=pool.slice();
   if(danger>=3&&R()<0.25){
-    if(out.includes('legion_recruit'))out.push('legion_veteran');
-    if(out.includes('fiend'))out.push('fiend','centaur');
-    if(out.includes('feral_ghoul'))out.push('glowing_one');
+    if(out.includes('legion_recruit'))out.push('legion_veteran','legion_decanus','legion_assassin');
+    if(out.includes('ncr_trooper'))out.push('ncr_ranger','ncr_heavy_trooper');
+    if(out.includes('powder_ganger'))out.push('powder_ganger_leader','escaped_convict');
+    if(out.includes('great_khan'))out.push('khan_warrior');
+    if(out.includes('fiend'))out.push('fiend','fiend_leader','centaur');
+    if(out.includes('jackal_raider'))out.push('jackal_veteran','raider_leader');
+    if(out.includes('viper_gunslinger'))out.push('viper_leader','raider_leader');
+    if(out.includes('feral_ghoul'))out.push('feral_ghoul_roamer','feral_ghoul_reaver','glowing_one');
+    if(out.includes('gecko'))out.push('green_gecko','golden_gecko','fire_gecko','gecko_hunter');
+    if(out.includes('giant_rat'))out.push('mole_rat');
     if(out.includes('radscorpion'))out.push('cazador');
-    if(out.includes('super_mutant'))out.push('nightkin');
+    if(out.includes('super_mutant'))out.push('super_mutant_brute','nightkin','nightkin_master');
+    if(out.includes('bos_knight'))out.push('bos_paladin');
+    if(out.includes('protectron'))out.push('mr_gutsy','sentry_bot');
   }
-  if(S.loc==='MojaveTunnels')out.push('nightkin','glowing_one','super_mutant','deathclaw');
+  if(S.loc==='MojaveTunnels')out.push('nightkin','nightkin_master','super_mutant','super_mutant_brute','glowing_one','feral_ghoul_reaver','deathclaw','sentry_bot');
   return out;
 }
 function buildCohesiveGroup(pool,count){
@@ -6699,6 +6773,7 @@ function getShopInventory(bId){
     {id:'cowboy_repeater',qty:1},{id:'trail_carbine',qty:1},{id:'varmint_rifle',qty:2},
     {id:'service_rifle',qty:1},{id:'hunting_rifle',qty:1},{id:'marksman_carbine',qty:1},
     {id:'assault_carbine',qty:1},{id:'sniper_rifle',qty:1},
+    {id:'brush_gun',qty:1},{id:'anti_materiel',qty:1},{id:'grenade_rifle',qty:1},
     // Shotguns
     {id:'single_shotgun',qty:1},{id:'caravan_shotgun',qty:1},{id:'combat_shotgun',qty:1},
     {id:'riot_shotgun',qty:1},
@@ -6706,15 +6781,17 @@ function getShopInventory(bId){
     {id:'smg_9mm',qty:1},
     // Melee
     {id:'combat_knife',qty:2},{id:'machete',qty:1},{id:'fire_axe',qty:1},
+    {id:'chainsaw',qty:1},{id:'ballistic_fist',qty:1},{id:'oh_baby',qty:1},
+    {id:'cleaver',qty:1},{id:'straight_razor',qty:1},
     {id:'tire_iron',qty:1},{id:'lead_pipe',qty:1},{id:'brass_knuckles',qty:1},
     // Armor
-    {id:'leather_armor',qty:1},{id:'reinforced_leather_armor',qty:1},{id:'gecko_leather',qty:1},
+    {id:'leather_armor',qty:1},{id:'reinforced_leather_armor',qty:1},{id:'leather_armor_rl',qty:1},{id:'gecko_leather',qty:1},
     {id:'metal_armor',qty:1},{id:'combat_armor',qty:1},{id:'metal_helmet',qty:1},
     {id:'combat_helmet',qty:1},{id:'prospector_hat',qty:1},{id:'raider_armor',qty:1},
     // Ammo (large stock)
     {id:'ammo_9mm',qty:20},{id:'ammo_10mm',qty:15},{id:'ammo_357',qty:12},
     {id:'ammo_556',qty:12},{id:'ammo_308',qty:8},{id:'ammo_shells',qty:10},
-    {id:'ammo_45_70',qty:4},{id:'ammo_50',qty:2},
+    {id:'ammo_45_70',qty:8},{id:'ammo_50',qty:4},{id:'ammo_40mm',qty:4},
     // Repair
     {id:'weapon_repair_kit',qty:2},{id:'duct_tape',qty:3},{id:'wonderglue',qty:2},
   ];
@@ -6731,10 +6808,10 @@ function getShopInventory(bId){
   // ── Legion Supply ──
   const legion=[
     {id:'machete',qty:3},{id:'throwing_spear',qty:3},{id:'combat_knife',qty:2},
-    {id:'cleaver',qty:1},{id:'fire_axe',qty:1},{id:'thermic_lance',qty:1},
+    {id:'cleaver',qty:2},{id:'fire_axe',qty:1},{id:'ballistic_fist',qty:1},{id:'chainsaw',qty:1},{id:'thermic_lance',qty:1},
     {id:'healing_powder',qty:8},{id:'antivenom',qty:4},{id:'hydra',qty:2},
     {id:'weapon_binding_ritual',qty:3},{id:'dirty_water',qty:5},
-    {id:'legion_centurion_armor',qty:1},{id:'legion_coin',qty:5},
+    {id:'legion_centurion_armor',qty:1},{id:'raider_armor',qty:1},{id:'legion_coin',qty:5},
     {id:'silverware',qty:3},{id:'dog_tags',qty:2},
   ];
 
@@ -6777,10 +6854,12 @@ function getShopInventory(bId){
   // ── NCR Quartermaster ──
   const ncr=[
     {id:'service_rifle',qty:2},{id:'hunting_rifle',qty:1},{id:'marksman_carbine',qty:1},
-    {id:'combat_shotgun',qty:1},{id:'pistol_9mm',qty:2},{id:'combat_knife',qty:2},
-    {id:'ammo_556',qty:15},{id:'ammo_9mm',qty:15},{id:'ammo_308',qty:8},
-    {id:'ammo_shells',qty:6},{id:'ncr_armor',qty:1},
+    {id:'brush_gun',qty:1},{id:'sniper_rifle',qty:1},{id:'anti_materiel',qty:1},
+    {id:'combat_shotgun',qty:1},{id:'riot_shotgun',qty:1},{id:'pistol_9mm',qty:2},{id:'combat_knife',qty:2},
+    {id:'ammo_556',qty:20},{id:'ammo_9mm',qty:15},{id:'ammo_308',qty:10},
+    {id:'ammo_shells',qty:8},{id:'ammo_45_70',qty:6},{id:'ammo_50',qty:3},{id:'ncr_armor',qty:1},
     {id:'combat_armor',qty:1},{id:'combat_helmet',qty:1},{id:'riot_gear',qty:1},
+    {id:'ncr_ranger_combat',qty:1},{id:'ncr_salvaged_pa',qty:1},{id:'first_recon_beret',qty:1},{id:'authority_glasses',qty:1},
     {id:'stimpak',qty:5},{id:'doctor_bag',qty:2},{id:'purified_water',qty:5},
     {id:'weapon_repair_kit',qty:2},{id:'ncr_dogtags',qty:3},
   ];
