@@ -110,11 +110,11 @@ opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--ambe
 /* Log */
 .log-group{margin:4px 0;border:1px solid #2a2818;border-radius:4px;overflow:hidden}
 /* Trade overlay */
-#TRADE{position:fixed;inset:0;background:var(--bg);z-index:155;display:none;flex-direction:column;max-width:430px;margin:0 auto;left:0;right:0}
+#TRADE{position:fixed;inset:0;background:var(--bg);z-index:155;display:none;flex-direction:column}
 #TRADE.A{display:flex}
-#TRADE-HEAD{background:#141408;border-bottom:2px solid var(--amber2);padding:calc(var(--st)+18px) 10px 0;flex:0 0 auto}
-.trade-topbar{display:flex;align-items:center;gap:8px;padding-bottom:10px;min-height:64px}
-.trade-back{font-size:24px;color:var(--amber);cursor:pointer;padding:12px 16px;min-width:56px;min-height:56px;display:flex;align-items:center;justify-content:center;background:#1a1a10;border:1px solid #2a2818;border-radius:8px;touch-action:manipulation}
+#TRADE-HEAD{background:#141408;border-bottom:2px solid var(--amber2);padding:calc(var(--st)+24px) 10px 0;flex:0 0 auto}
+.trade-topbar{display:flex;align-items:center;gap:8px;padding-bottom:8px}
+.trade-back{font-size:22px;color:var(--amber);cursor:pointer;padding:10px 14px;min-width:48px;min-height:48px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;font-family:'Courier New',monospace;touch-action:manipulation;-webkit-tap-highlight-color:rgba(240,200,80,.15)}
 .trade-back:active{background:#2a2a18;transform:scale(.96)}
 #TRADE-TABS{display:flex;border-bottom:1px solid #2a2818}
 #TRADE-TABS button{flex:1;padding:8px 4px;background:none;border:none;font-family:'Courier New',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
@@ -123,8 +123,8 @@ opacity:0;transition:opacity .3s;pointer-events:none;border:1px solid var(--ambe
 #TRADE-CATS::-webkit-scrollbar{display:none}
 #TRADE-CATS button{white-space:nowrap;padding:4px 10px;background:#1a1a10;color:var(--muted);border:1px solid #2a2818;border-radius:12px;font-family:'Courier New',monospace;font-size:10px;cursor:pointer;flex-shrink:0}
 #TRADE-CATS button.active{background:#2a2a14;color:var(--amber);border-color:var(--amber2)}
-#TRADE-BODY{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 8px calc(170px + var(--sb));min-height:0}
-#TRADE-FOOTER{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:linear-gradient(0deg,#0e0e06,#141408);border-top:1px solid var(--amber2);padding:8px 12px calc(10px + var(--sb));display:flex;align-items:center;gap:8px;z-index:160;flex-wrap:wrap}
+#TRADE-BODY{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:6px 8px 100px;min-height:0}
+#TRADE-FOOTER{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(0deg,#0e0e06,#141408);border-top:1px solid var(--amber2);padding:8px 12px calc(8px + var(--sb));display:flex;align-items:center;gap:8px;z-index:160}
 .tr-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border:1px solid #2a2818;border-radius:6px;margin:4px 0;cursor:pointer;min-height:56px;transition:border-color .15s}
 .tr-item:active{background:#2a2a18;border-color:var(--amber2)}
 .tr-item.selected{border-color:var(--amber);background:#252510}
@@ -329,9 +329,8 @@ html,body,#W,#C,#N,button{touch-action:manipulation}
   <div id="TRADE-CATS"></div>
   <div id="TRADE-BODY"></div>
   <div id="TRADE-FOOTER">
-    <button class="bt sm" onclick="closeTrade()" style="min-width:70px;text-align:center">Back</button>
     <div id="TRADE-SEL-INFO" style="flex:1;font-size:11px;color:var(--muted)">Select an item</div>
-    <div id="TRADE-QTY-WRAP" style="display:none;flex-direction:column;width:100%;flex-basis:100%">
+    <div id="TRADE-QTY-WRAP" style="display:none;flex-direction:column;width:100%">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <div id="TRADE-SEL-NAME" style="font-size:12px;font-weight:bold;color:var(--amber)"></div>
         <div id="TRADE-SEL-PRICE" style="font-size:12px;color:var(--muted)"></div>
@@ -1167,7 +1166,7 @@ rogue_scavenger:{n:"Rogue Scavenger",hp:65,a:22,d:2,xp:45,e:ICONS.ENEMY.CONVICT,
 deathclaw:{n:"Deathclaw",hp:500,a:125,d:15,xp:250,e:ICONS.ENEMY.DEATHCLAW,loot:["deathclaw_hand","deathclaw_hand","super_stimpak","super_stimpak","combat_armor"],boss:1,type:'animal',fac:'wild'},
 ncr_trooper:{n:"NCR Trooper",hp:75,a:28,d:4,xp:45,e:ICONS.NPC.NCR,loot:["ammo_556","ammo_556","stimpak","ncr_armor","dog_tags","purified_water"],type:'human',fac:'NCR'},
 // ── New Creatures ──
-bighorner:{n:"Bighorner",hp:55,a:10,d:3,xp:18,e: '<img src="NVImages/BighornerIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">', loot:["bighorner_meat","bighorner_meat","gecko_hide"],type:'animal',fac:'wild'},
+bighorner:{n:"Bighorner",hp:55,a:10,d:3,xp:18,e:'<img src="NVImages/BighornerIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',loot:["bighorner_meat","bighorner_meat","gecko_hide"],type:'animal',fac:'wild'},
 bighorner_bull:{n:"Bighorner Bull",hp:90,a:16,d:5,xp:30,e:'<img src="NVImages/BighornerbullIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',loot:["bighorner_meat","bighorner_meat","bighorner_meat"],type:'animal',fac:'wild'},
 fire_gecko:{n:"Fire Gecko",hp:45,a:10,d:2,xp:20,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_steak","gecko_steak"],type:'animal',fac:'wild'},
 golden_gecko:{n:"Golden Gecko",hp:55,a:12,d:3,xp:25,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_hide","gecko_steak","pre_war_money"],type:'animal',fac:'wild'},
@@ -1177,7 +1176,7 @@ mole_rat:{n:"Mole Rat",hp:18,a:4,d:0,xp:8,e:'<img src="NVImages/MoleratIcon.png"
 yao_guai:{n:"Yao Guai",hp:120,a:22,d:6,xp:45,e:'<img src="NVImages/YaoguaiIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',loot:["bighorner_meat","stimpak"],type:'animal',fac:'wild'},
 gecko_hunter:{n:"Gecko Hunter",hp:40,a:8,d:2,xp:16,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_steak"],type:'animal',fac:'wild'},
 // ── New Ghouls ──
-feral_ghoul_reaver:{n:"Feral Ghoul Reaver",hp:85,a:18,d:4,xp:35,e:'<img src="NVImages/FeralghoulreaverIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',loot:["irradiated_blood","stimpak","pre_war_money"],type:'undead',fac:'undead'},
+feral_ghoul_reaver:{n:"Feral Ghoul Reaver",hp:85,a:18,d:4,xp:35,e:'<img src="NVImages/FeralghoulreaverIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">', loot:["irradiated_blood","stimpak","pre_war_money"],type:'undead',fac:'undead'},
 feral_ghoul_roamer:{n:"Feral Ghoul Roamer",hp:50,a:12,d:2,xp:22,e:ICONS.ENEMY.GHOUL,loot:["irradiated_blood","dirty_water"],type:'undead',fac:'undead'},
 // ── New Human Enemies ──
 ncr_ranger:{n:"NCR Ranger",hp:80,a:18,d:10,xp:42,e:ICONS.ENEMY.NCR_RANGER||ICONS.NPC.NCR_RANGER,loot:["service_rifle","ammo_556","stimpak","ncr_dogtags"],type:'human',fac:'NCR'},
