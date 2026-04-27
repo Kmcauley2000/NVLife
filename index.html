@@ -1344,6 +1344,14 @@ function gsCompleteQuest(id){
   S.xp+=(q.rx||0);S.caps+=(q.rg||0);S.questsComplete=(S.questsComplete||0)+1;
   log('Quest complete: '+q.name+' (+'+(q.rg||0)+' caps, +'+(q.rx||0)+' XP)','q');
   notify('📜 Quest Complete!');
+  // Special rewards for certain quests
+  // Schoolhouse Sweep quest rewards: give items automatically upon completion
+  if(id==='gs_schoolhouse_clear' && !q._rewarded){
+    // Provide the same loot Doc Mitchell would have given
+    giveItem('stimpak');
+    giveItem('ammo_9mm');
+    q._rewarded=true;
+  }
   chkLU();queueSave();
 }
 
@@ -1419,7 +1427,11 @@ function gsRefreshState(){
   const q2=gsFindQuest('gs_schoolhouse_clear');
   if(q2&&!q2.done){
     const mantis=gsKillSince(q2.ks,'mantis');
+    // When the player has killed enough mantises, immediately complete the quest.
     if(mantis>=2){
+      // Automatically complete the Schoolhouse Sweep quest rather than requiring manual turn-in.
+      gsCompleteQuest('gs_schoolhouse_clear');
+      // Update progress text to reflect completion.
       q2.ready=true;
       q2.progText='Return to Doc Mitchell and tell him the abandoned schoolhouse is cleared.';
     }else{
