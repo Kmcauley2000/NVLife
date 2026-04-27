@@ -247,22 +247,34 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
   object-fit:contain!important;display:inline-block!important;vertical-align:middle!important
 }
 
-/* Bigger clickable map-card icons (buildings, surroundings, travel routes).
-   Does not affect the main location header icon. */
+/* Map-card icons. Building cards are intentionally larger than crafting/loot icons. */
 .card-icon-lg{
-  width:62px!important;height:62px!important;min-width:62px!important;
+  width:70px!important;height:70px!important;min-width:70px!important;
   display:flex!important;align-items:center!important;justify-content:center!important;
   background:#111108;border:1px solid #2a2818;border-radius:8px;
-  overflow:hidden;font-size:42px!important;line-height:1!important;
+  overflow:hidden;font-size:48px!important;line-height:1!important;
 }
 .card-icon-lg .icon-wrap,
 .card-icon-lg img,
 .card-icon-lg svg{
-  width:54px!important;height:54px!important;
-  max-width:54px!important;max-height:54px!important;
+  width:62px!important;height:62px!important;
+  max-width:62px!important;max-height:62px!important;
   object-fit:contain!important;display:block!important;margin:0 auto!important;
 }
-.bc.big-icon-card{min-height:78px;padding:8px 10px;gap:10px}
+.building-icon-lg{
+  width:112px!important;height:112px!important;min-width:112px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  background:#111108;border:1px solid #2a2818;border-radius:10px;
+  overflow:hidden;font-size:78px!important;line-height:1!important;
+}
+.building-icon-lg .icon-wrap,
+.building-icon-lg img,
+.building-icon-lg svg{
+  width:102px!important;height:102px!important;
+  max-width:102px!important;max-height:102px!important;
+  object-fit:contain!important;display:block!important;margin:0 auto!important;
+}
+.bc.big-icon-card{min-height:126px;padding:8px 10px;gap:10px}
 .bc.big-icon-card:active{background:#2a2a1a}
 
 /* Mobile tap/zoom handling */
@@ -523,10 +535,10 @@ function confirmNewGame(){
 // ============================================================
 const LOCS={
 Goodsprings:{n:"Goodsprings",r:"Mojave South",d:"A quiet frontier town. Clean water, honest people.",e:'<img src="NVImages/GoodspringsIcon.png" style="width:80px;height:80px;object-fit:contain;">',t:"town",
-  b:["saloon","general_store","gas_station","doc_house"],dg:1,fac:"Goodsprings",
-  sur:[{n:"Goodsprings Cemetery",e:'<img src="NVImages/GoodspringscemeteryIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Where they left you for dead.",en:["gecko","gecko","bloatfly"],lt:["ammo_9mm","stimpak","sunset_sars"]},
-  {n:"Goodsprings Source",e:'<img src="NVImages/GoodspringswatersourceIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Fresh water. Geckos lurk nearby.",en:["gecko","gecko","mantis","radroach"],lt:["purified_water","gecko_hide","herbs"]},
-  {n:"Abandoned Schoolhouse",e:'<img src="NVImages/GoodspringsabandonedschoolhouseIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Giant mantises nest inside.",en:["radroach","giant_rat","mantis"],lt:["scrap","duct_tape","ammo_9mm","bobby_pin"]}]},
+  b:["saloon","general_store","gas_station","doc_house","caravan_stop"],dg:1,fac:"Goodsprings",
+  sur:[{n:"Goodsprings Cemetery",e:'<img src="NVImages/GoodspringscemeteryIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Where they left you for dead. Bloatflies, shallow graves, old casings, and grave goods make it feel different from the rest of town.",en:["bloatfly","bloatfly","gecko","bark_scorpion"],lt:["ammo_9mm","stimpak","sunset_sars","pre_war_money","bobby_pin"]},
+  {n:"Goodsprings Source",e:'<img src="NVImages/GoodspringswatersourceIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Fresh water. Geckos and bark scorpions come for the same reason people do.",en:["gecko","gecko","gecko","bark_scorpion"],lt:["purified_water","gecko_hide","herbs","gecko_steak","antivenom"]},
+  {n:"Abandoned Schoolhouse",e:'<img src="NVImages/GoodspringsabandonedschoolhouseIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',d:"Old desks, busted terminals, mantis nests, roaches, and forgotten starter gear.",en:["mantis","mantis","radroach","giant_rat"],lt:["scrap","duct_tape","ammo_9mm","bobby_pin","schoolhouse_pad","patched_vault_jacket"]}]},
 Primm:{n:"Primm",r:"Mojave South",d:"A border town overrun by convicts.",e:'<img src="NVImages/PrimmIcon.png" style="width:90px;height:90px;object-fit:contain;">',t:"town",           
   b:["vikki_vance","mojave_express","sheriff_office","bison_steve"],dg:2,fac:"Primm",
   sur:[{n:"Highway 93",e:'<img src="NVImages/Highway93Icon.png" style="width:40%;height:40%;object-fit:contain;display:block;">',d:"Convicts patrol the road.",en:["convict","convict","jackal_raider","jackal_raider"],lt:["pistol_10mm","revolver_357","leather_armor","stimpak","ammo_10mm","ammo_357"]},
@@ -755,6 +767,10 @@ metal_armor:{n:"Metal Armor",t:"a",e:"🛡",d:14,p:1100,w:25,slot:"body",rare:1}
 combat_armor:{n:"Combat Armor",t:"a",e:"🛡",d:18,p:6500,w:20,slot:"body",rare:1},
 power_armor:{n:"T-45d Power Armor",t:"a",e:"🤖",d:28,p:4500,w:45,slot:"body",rare:2},
 headwrap:{n:"Head Wrap",t:"a",e:"🪖",d:1,p:6,w:1,slot:"head"},
+patched_vault_jacket:{n:"Patched Vault Jacket",t:"a",e:"🧥",d:3,p:35,w:4,slot:"body",desc:"Cheap early protection patched together from old vault cloth and leather scraps."},
+settler_utility_vest:{n:"Settler Utility Vest",t:"a",e:"🦺",d:4,p:55,w:6,slot:"body",desc:"Light Goodsprings starter armour with pockets for ammo and tools."},
+prospector_hat:{n:"Prospector Hat",t:"a",e:"🤠",d:1,p:15,w:1,slot:"head",desc:"Not much protection, but it keeps the Mojave sun out of your eyes."},
+schoolhouse_pad:{n:"Schoolhouse Desk Pad",t:"m",e:"📓",p:8,w:1,desc:"Old classroom junk. Chet might still buy it."},
 combat_helmet:{n:"Combat Helmet",t:"a",e:"🪖",d:4,p:100,w:3,slot:"head"},
 boones_beret:{n:"1st Recon Beret",t:"a",e:"🎖",d:2,p:40,w:0.1,slot:"head",rare:2,desc:"Boone's old 1st Recon beret. Light, lucky, and hard-earned."},
 boones_varmint_rifle:{n:"Boone's Scoped Varmint Rifle",t:"w",e:"🔭",a:13,p:220,w:5.5,ammo:"ammo_556",rare:2,desc:"A carefully maintained rifle from Craig Boone."},
@@ -865,26 +881,57 @@ const ICONS={
     DEATHCLAW: '<img src="NVImages/DeathclawIcon.png" style="width:150%;height:150%;object-fit:contain;display:block;">', 
     YOUNG_DEATHCLAW:'<img src="NVImages/YoungdeathclawIcon.png" alt="Young Deathclaw">' 
   },
+  // ── NPC Icons ──────────────────────────────────────────────
+  // Same pattern as ICONS.ENEMY — just change the src path to swap any icon.
+  // For image icons: '<img src="NVImages/YourFile.png" style="width:200%;height:200%;object-fit:contain;display:block;">'
+  // For emoji icons: just use the emoji string, e.g. "👨"
   NPC:{
-    MALE:"👨",FEMALE:"👩",CIVILIAN:"👤",MERCHANT:"💰",COOK:"🍲",SECURITRON:'<img src="NVImages/SecruitronIcon.png" style="width:150%;height:150%;object-fit:contain;display:block;">',
-    LAW:"👮",
-    NCR:'<img src="NVImages/NCRTrooper1.png" alt="NCR Trooper" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    NCR_RANGER:'<img src="NVImages/NCRRanger1.png" alt="NCR Ranger" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    NCR_COMMAND:"📋",NCR_MEDIC:"⚕️",NCR_SCOUT:"🔭",FOLLOWERS:"⚕️",KINGS:"👑",WRANGLER:"🎲",CYBERDOG:"🐕",
-    POWDER_GANGER:"💥",POWDER_TRADER:"💰",PRISONER:"⭐",BOOMERS:"🛩",RANCHER:"🐄",DOCTOR:"⚕️",MECHANIC:"🔧",
-    BOS:'<img src="NVImages/BOS Icon.png" alt="Brotherhood">',
-    BOS_SCRIBE:"🔬",TOWN:"🏘",ENTERTAINER:"🎤",
-    DINO:'<img src="NVImages/NovacIcon.png" alt="Novac Dino">',
-    PILOT:"🛩",MOTEL:"🧾", 
-    PRIMM_SLIM:'<img src="NVImages/PrimmslimIcon.png" alt="Primm Slim" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    EDE:'<img src="NVImages/EDEIcon.png" alt="ED-E" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    JOHNSON_NASH:'<img src="NVImages/JohnsonnashIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    GOODSPRINGS_TRUDY:'<img src="NVImages/TrudyIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    GOODSPRINGS_SUNNYSMILES:'<img src="NVImages/SunnysmilesIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    GOODSPRINGS_DOCMITCHELL:'<img src="NVImages/DocmitchellIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    GOODSPRINGS_CHET:'<img src="NVImages/ChetIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    GOODSPRINGS_RINGO:'<img src="NVImages/RingoIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    GOODSPRINGS_EASYPETE:'<img src="NVImages/EasypeteIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    // ── Generic role icons ──
+    MALE:           "👨",
+    FEMALE:         "👩",
+    CIVILIAN:       "👤",
+    MERCHANT:       "💰",
+    COOK:           "🍲",
+    LAW:            "👮",
+    DOCTOR:         "⚕️",
+    MECHANIC:       "🔧",
+    RANCHER:        "🐄",
+    ENTERTAINER:    "🎤",
+    PILOT:          "🛩",
+    TOWN:           "🏘",
+    MOTEL:          "🧾",
+    WRANGLER:       "🎲",
+    CYBERDOG:       "🐕",
+    PRISONER:       "⭐",
+
+    // ── Faction generic icons ──
+    SECURITRON:     '<img src="NVImages/SecruitronIcon.png" style="width:150%;height:150%;object-fit:contain;display:block;">',
+    NCR:            '<img src="NVImages/NCRTrooper1.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    NCR_RANGER:     '<img src="NVImages/NCRRanger1.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    NCR_COMMAND:    "📋",
+    NCR_MEDIC:      "⚕️",
+    NCR_SCOUT:      "🔭",
+    BOS:            '<img src="NVImages/BOS Icon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    BOS_SCRIBE:     "🔬",
+    FOLLOWERS:      "⚕️",
+    KINGS:          "👑",
+    POWDER_GANGER:  "💥",
+    POWDER_TRADER:  "💰",
+    BOOMERS:        "🛩",
+
+    // ── Named NPC icons ──────────────────────────────────────
+    // To change a named NPC's look, just swap the image path here.
+    TRUDY:          '<img src="NVImages/TrudyIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    SUNNY_SMILES:   '<img src="NVImages/SunnysmilesIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    DOC_MITCHELL:   '<img src="NVImages/DocmitchellIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    CHET:           '<img src="NVImages/ChetIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    EASY_PETE:      '<img src="NVImages/EasypeteIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    VICTOR:         '<img src="NVImages/VictorIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    RINGO:          '<img src="NVImages/RingoIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    JOHNSON_NASH:   '<img src="NVImages/JohnsonnashIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    PRIMM_SLIM:     '<img src="NVImages/PrimmslimIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    EDE:            '<img src="NVImages/EDEIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    DINO:           '<img src="NVImages/NovacIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
   }
 };
 function renderIcon(icon,size=28){
@@ -892,93 +939,102 @@ function renderIcon(icon,size=28){
 }
 
 // Helper: create an NPC image icon string from a filename in NVImages/
+function imgFallback(img){
+  try{
+    const rest=(img.dataset.fallbacks||'').split('|').filter(Boolean);
+    const next=rest.shift();
+    if(next){img.dataset.fallbacks=rest.join('|');img.src=next;return}
+    img.onerror=null;img.style.display='none';
+    if(img.parentNode&&!img.parentNode.querySelector('.img-fallback-mark'))img.parentNode.insertAdjacentHTML('beforeend','<span class="img-fallback-mark">?</span>');
+  }catch(e){}
+}
 function npcImg(filename,...fallbacks){
   const chain=[filename,...fallbacks].filter(Boolean).map(f=>'NVImages/'+f);
-  const esc=v=>String(v).replace(/'/g,'&#39;');
-  const onerr=chain.length>1?`this.onerror=${chain.length>2?`function(){this.src='${esc(chain[2])}';this.onerror=function(){this.style.display='none';this.parentNode&&this.parentNode.insertAdjacentHTML('beforeend','?');}}`:`function(){this.style.display='none';this.parentNode&&this.parentNode.insertAdjacentHTML('beforeend','?');}`};this.src='${esc(chain[1])}'`:`this.onerror=null;this.style.display='none';this.parentNode&&this.parentNode.insertAdjacentHTML('beforeend','?')`;
-  return `<img src="${chain[0]}" onerror="${onerr}" style="width:100%;height:100%;object-fit:contain;display:block;">`;
+  const esc=v=>String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  return `<img src="${esc(chain[0]||'')}" data-fallbacks="${esc(chain.slice(1).join('|'))}" onerror="imgFallback(this)" style="width:100%;height:100%;object-fit:contain;display:block;">`;
 }
 
-// ── Centralised NPC icon registry ───────────────────────────
-// To update ANY named NPC's icon, just change the entry here.
-// Use npcImg('Filename.png') for image icons, or emoji strings.
-// NPCs not listed here fall back to their data dict icon, then inferNpcIcon().
-const NPC_ICON={
-  // ── Goodsprings ──
-  'Trudy':             npcImg('TrudyIcon.png','Trudyicon.png','trudyIcon.png'),
-  'Sunny Smiles':      npcImg('SunnysmilesIcon.png','SunnySmilesIcon.png','SunnySmiles.png'),
-  'Doc Mitchell':      npcImg('DocmitchellIcon.png','DocMitchellIcon.png','DocMitchell.png'),
-  'Chet':              npcImg('ChetIcon.png','Cheticon.png','Chet.png'),
-  'Easy Pete':         npcImg('EasypeteIcon.png','EasyPeteIcon.png','EasyPete.png'),
-  'Victor':            npcImg('VictorIcon.png','SecuritronIcon.png','SecruitronIcon.png'),
-  'Ringo':             npcImg('RingoIcon.png','Ringoicon.png','Ringo.png'),
-  // ── Primm ──
-  'Johnson Nash':      ICONS.NPC.JOHNSON_NASH,
-  'Ruby Nash':         ICONS.NPC.COOK,
-  'Primm Slim':        ICONS.NPC.PRIMM_SLIM,
-  'ED-E':              ICONS.NPC.EDE,
-  'Deputy Beagle':     ICONS.NPC.LAW,
-  'Lieutenant Hayes':  ICONS.NPC.NCR,
-  // ── Novac ──
-  'Cliff Briscoe':     ICONS.NPC.DINO,
-  'Manny Vargas':      ICONS.NPC.NCR_RANGER,
-  'Craig Boone':       ICONS.NPC.NCR_RANGER,
-  'No-bark Noonan':    ICONS.NPC.TOWN,
-  'Jeannie May Crawford':ICONS.NPC.MOTEL,
-  'Daisy Whitman':     ICONS.NPC.PILOT,
-  'Doctor Ada Straus': ICONS.NPC.DOCTOR,
-  'Bruce Isaac':       ICONS.NPC.ENTERTAINER,
-  'Ranger Andy':       ICONS.NPC.NCR_RANGER,
-  'Alice McBride':     ICONS.NPC.RANCHER,
-  'Dusty McBride':     ICONS.NPC.RANCHER,
-  // ── Freeside ──
-  'James Garret':      ICONS.NPC.WRANGLER,
-  'Francine Garret':   ICONS.NPC.WRANGLER,
-  'Old Ben':           ICONS.NPC.CIVILIAN,
-  'Orris':             ICONS.NPC.LAW,
-  'The King':          ICONS.NPC.KINGS,
-  'Pacer':             ICONS.NPC.KINGS,
-  'Rex':               ICONS.NPC.CYBERDOG,
-  'Mick':              ICONS.NPC.MERCHANT,
-  'Ralph':             ICONS.NPC.MERCHANT,
-  'Julie Farkas':      ICONS.NPC.FOLLOWERS,
-  'Major Kieran':      ICONS.NPC.FOLLOWERS,
-  'Loyal':             ICONS.NPC.MECHANIC,
-  // ── Camp Golf ──
-  'Chief Hanlon':      ICONS.NPC.NCR_RANGER,
-  'Sergeant McCredie': ICONS.NPC.NCR_COMMAND,
-  'Dr. Kemp':          ICONS.NPC.NCR_MEDIC,
-  // ── Bitter Springs ──
-  'Captain Gilles':    ICONS.NPC.NCR_COMMAND,
-  'Major Dhatri':      ICONS.NPC.NCR_RANGER,
-  'Oscar Velasco':     ICONS.NPC.CIVILIAN,
-  // ── NCRCF ──
-  'Eddie':             ICONS.NPC.POWDER_GANGER,
-  'Dawes':             ICONS.NPC.POWDER_GANGER,
-  'Carter':            ICONS.NPC.POWDER_TRADER,
-  'Meyers':            ICONS.NPC.PRISONER,
-  'Hannigan':          ICONS.NPC.DOCTOR,
-  // ── HELIOS One ──
-  'Lieutenant Haggerty':ICONS.NPC.NCR_COMMAND,
-  'Fantastic':         ICONS.NPC.NCR,
-  'Ignacio Rivas':     ICONS.NPC.FOLLOWERS,
-  // ── Hidden Valley ──
-  'Elder McNamara':    ICONS.NPC.BOS,
-  'Head Paladin Hardin':ICONS.NPC.BOS,
-  'Senior Knight Lorenzo':ICONS.NPC.BOS,
-  'Knight Torres':     ICONS.NPC.BOS,
-  'Scribe Ibsen':      ICONS.NPC.BOS_SCRIBE,
-  'Veronica Santangelo':ICONS.NPC.BOS_SCRIBE,
-  // ── Cinder Gulch ──
-  'Harlan Voss':       ICONS.NPC.NCR_RANGER,
-  'Dr. Mira Cade':     ICONS.NPC.DOCTOR,
-  'Lena Rourke':       ICONS.NPC.MECHANIC,
-  'Tom Quill':         ICONS.NPC.NCR_SCOUT,
-};
+// ── Auto-generated NPC icon lookup ──────────────────────────
+// Builds name→icon map from ICONS.NPC keys automatically.
+// Key naming convention: UPPER_SNAKE matches NPC name, e.g.
+//   CRAIG_BOONE → "Craig Boone",  DOC_MITCHELL → "Doc Mitchell",  EDE → "ED-E"
+// So to add a new named NPC icon, you ONLY touch ICONS.NPC — nothing else.
+// Role/faction keys (all-caps generic words) are excluded from auto-matching.
+const _NPC_ROLE_KEYS=new Set(['MALE','FEMALE','CIVILIAN','MERCHANT','COOK','LAW','DOCTOR','MECHANIC',
+  'RANCHER','ENTERTAINER','PILOT','TOWN','MOTEL','WRANGLER','CYBERDOG','PRISONER',
+  'SECURITRON','NCR','NCR_RANGER','NCR_COMMAND','NCR_MEDIC','NCR_SCOUT',
+  'BOS','BOS_SCRIBE','FOLLOWERS','KINGS','POWDER_GANGER','POWDER_TRADER','BOOMERS','DINO']);
+// Special key→name overrides for names that don't convert cleanly from UPPER_SNAKE
+const _NPC_KEY_ALIASES={'EDE':'ED-E','DOC_MITCHELL':'Doc Mitchell','PRIMM_SLIM':'Primm Slim',
+  'EASY_PETE':'Easy Pete','SUNNY_SMILES':'Sunny Smiles','JOHNSON_NASH':'Johnson Nash'};
+const NPC_ICON=(()=>{
+  const map={};
+  for(const [key,icon] of Object.entries(ICONS.NPC)){
+    if(_NPC_ROLE_KEYS.has(key))continue;
+    const name=_NPC_KEY_ALIASES[key]||key.split('_').map(w=>w[0]+w.slice(1).toLowerCase()).join(' ');
+    map[name]=icon;
+  }
+  // ── Role/faction overrides for named NPCs without unique icons ──
+  // These NPCs share a generic faction icon. Add them here so inferNpcIcon
+  // doesn't have to guess. Remove the line when you give them their own ICONS.NPC entry.
+  Object.assign(map,{
+    'Ruby Nash':         ICONS.NPC.COOK,
+    'Deputy Beagle':     ICONS.NPC.LAW,
+    'Lieutenant Hayes':  ICONS.NPC.NCR,
+    'Cliff Briscoe':     ICONS.NPC.DINO,
+    'Manny Vargas':      ICONS.NPC.NCR_RANGER,
+    'Craig Boone':       ICONS.NPC.NCR_RANGER,
+    'No-bark Noonan':    ICONS.NPC.TOWN,
+    'Jeannie May Crawford':ICONS.NPC.MOTEL,
+    'Daisy Whitman':     ICONS.NPC.PILOT,
+    'Doctor Ada Straus': ICONS.NPC.DOCTOR,
+    'Bruce Isaac':       ICONS.NPC.ENTERTAINER,
+    'Ranger Andy':       ICONS.NPC.NCR_RANGER,
+    'Alice McBride':     ICONS.NPC.RANCHER,
+    'Dusty McBride':     ICONS.NPC.RANCHER,
+    'James Garret':      ICONS.NPC.WRANGLER,
+    'Francine Garret':   ICONS.NPC.WRANGLER,
+    'Old Ben':           ICONS.NPC.CIVILIAN,
+    'Orris':             ICONS.NPC.LAW,
+    'The King':          ICONS.NPC.KINGS,
+    'Pacer':             ICONS.NPC.KINGS,
+    'Rex':               ICONS.NPC.CYBERDOG,
+    'Mick':              ICONS.NPC.MERCHANT,
+    'Ralph':             ICONS.NPC.MERCHANT,
+    'Julie Farkas':      ICONS.NPC.FOLLOWERS,
+    'Major Kieran':      ICONS.NPC.FOLLOWERS,
+    'Loyal':             ICONS.NPC.MECHANIC,
+    'Chief Hanlon':      ICONS.NPC.NCR_RANGER,
+    'Sergeant McCredie': ICONS.NPC.NCR_COMMAND,
+    'Dr. Kemp':          ICONS.NPC.NCR_MEDIC,
+    'Captain Gilles':    ICONS.NPC.NCR_COMMAND,
+    'Major Dhatri':      ICONS.NPC.NCR_RANGER,
+    'Oscar Velasco':     ICONS.NPC.CIVILIAN,
+    'Eddie':             ICONS.NPC.POWDER_GANGER,
+    'Dawes':             ICONS.NPC.POWDER_GANGER,
+    'Carter':            ICONS.NPC.POWDER_TRADER,
+    'Meyers':            ICONS.NPC.PRISONER,
+    'Hannigan':          ICONS.NPC.DOCTOR,
+    'Lieutenant Haggerty':ICONS.NPC.NCR_COMMAND,
+    'Fantastic':         ICONS.NPC.NCR,
+    'Ignacio Rivas':     ICONS.NPC.FOLLOWERS,
+    'Elder McNamara':    ICONS.NPC.BOS,
+    'Head Paladin Hardin':ICONS.NPC.BOS,
+    'Senior Knight Lorenzo':ICONS.NPC.BOS,
+    'Knight Torres':     ICONS.NPC.BOS,
+    'Scribe Ibsen':      ICONS.NPC.BOS_SCRIBE,
+    'Veronica Santangelo':ICONS.NPC.BOS_SCRIBE,
+    'Harlan Voss':       ICONS.NPC.NCR_RANGER,
+    'Dr. Mira Cade':     ICONS.NPC.DOCTOR,
+    'Lena Rourke':       ICONS.NPC.MECHANIC,
+    'Tom Quill':         ICONS.NPC.NCR_SCOUT,
+  });
+  return map;
+})();
 
 
 // Main-game Fallout: New Vegas barter values for mapped items. Project-only quest/custom items keep local values.
-const FNV_ITEM_VALUES={stimpak:75,super_stimpak:150,purified_water:20,dirty_water:5,sunset_sars:3,nuka_cola:20,fancy_lad:5,cram:5,iguana_bits:5,gecko_steak:5,bighorner_meat:5,healing_powder:20,antivenom:25,bloatfly_meat:10,radroach_meat:4,giant_mantis_foreleg:5,radscorpion_gland:25,bark_scorpion_gland:15,cazador_poison_gland:30,nightstalker_blood:25,jet:20,psycho:20,med_x:20,stealth_boy:100,pistol_9mm:100,pistol_10mm:750,revolver_357:110,varmint_rifle:75,service_rifle:540,assault_carbine:3950,hunting_rifle:2200,sniper_rifle:4100,caravan_shotgun:675,combat_shotgun:3800,laser_pistol:175,laser_rifle:800,plasma_rifle:1300,machete:50,combat_knife:50,switchblade:35,power_fist:5200,thermic_lance:5500,maria:1000,leather_armor:160,ncr_armor:300,metal_armor:1100,combat_armor:6500,power_armor:5200,headwrap:5,combat_helmet:800,ammo_9mm:1,ammo_10mm:3,ammo_357:2,ammo_556:2,ammo_308:3,ammo_shells:3,energy_cell:1,doctor_bag:55,cowboy_repeater:800,pickaxe:30,tire_iron:40,single_shotgun:175,trail_carbine:3000,smg_9mm:850,reinforced_leather_armor:1200,metal_helmet:120,scrap:10,duct_tape:20,bobby_pin:1,sensor_module:50,pre_war_money:10,powder_charge:25,dynamite:25,gecko_hide:10,legion_coin:5,wonderglue:10,wrench:75,scrap_electronics:25,fission_battery:75,camera:65,cigarette_pack:10,cigarette_carton:40,silverware:10,silver_watch:50,gold_necklace:125,conductor:10,laser_focusing_lens:25,microfusion_regulator:50,servo_motor:25};
+const FNV_ITEM_VALUES={stimpak:75,super_stimpak:150,purified_water:20,dirty_water:5,sunset_sars:3,nuka_cola:20,fancy_lad:5,cram:5,iguana_bits:5,gecko_steak:5,bighorner_meat:5,healing_powder:20,antivenom:25,bloatfly_meat:10,radroach_meat:4,giant_mantis_foreleg:5,radscorpion_gland:25,bark_scorpion_gland:15,cazador_poison_gland:30,nightstalker_blood:25,jet:20,psycho:20,med_x:20,stealth_boy:100,pistol_9mm:100,pistol_10mm:750,revolver_357:110,varmint_rifle:75,service_rifle:540,assault_carbine:3950,hunting_rifle:2200,sniper_rifle:4100,caravan_shotgun:675,combat_shotgun:3800,laser_pistol:175,laser_rifle:800,plasma_rifle:1300,machete:50,combat_knife:50,switchblade:35,power_fist:5200,thermic_lance:5500,maria:1000,leather_armor:160,ncr_armor:300,metal_armor:1100,combat_armor:6500,power_armor:5200,headwrap:5,patched_vault_jacket:35,settler_utility_vest:55,prospector_hat:15,schoolhouse_pad:8,combat_helmet:800,ammo_9mm:1,ammo_10mm:3,ammo_357:2,ammo_556:2,ammo_308:3,ammo_shells:3,energy_cell:1,doctor_bag:55,cowboy_repeater:800,pickaxe:30,tire_iron:40,single_shotgun:175,trail_carbine:3000,smg_9mm:850,reinforced_leather_armor:1200,metal_helmet:120,scrap:10,duct_tape:20,bobby_pin:1,sensor_module:50,pre_war_money:10,powder_charge:25,dynamite:25,gecko_hide:10,legion_coin:5,wonderglue:10,wrench:75,scrap_electronics:25,fission_battery:75,camera:65,cigarette_pack:10,cigarette_carton:40,silverware:10,silver_watch:50,gold_necklace:125,conductor:10,laser_focusing_lens:25,microfusion_regulator:50,servo_motor:25};
 Object.entries(FNV_ITEM_VALUES).forEach(([id,val])=>{if(ITEMS[id])ITEMS[id].p=val});
 
 // ============================================================
@@ -988,6 +1044,7 @@ const ENEMIES={
 // Stats use Fallout: New Vegas normal-difficulty style values: HP, attack damage and DT.
 gecko:{n:"Gecko",hp:28,a:5,d:0,xp:12,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_hide","gecko_steak","gecko_steak"],type:'animal',fac:'wild'},
 bloatfly:{n:"Bloatfly",hp:20,a:4,d:0,xp:9,e:ICONS.ENEMY.BLOATFLY,loot:["bloatfly_meat","bloatfly_meat"],type:'insect',fac:'wild'},
+coyote:{n:"Coyote",hp:24,a:5,d:0,xp:10,e:"🐺",loot:["bighorner_meat","gecko_steak"],type:'animal',fac:'wild'},
 mantis:{n:"Giant Mantis",hp:22,a:5,d:0,xp:10,e:ICONS.ENEMY.MANTIS,loot:["giant_mantis_foreleg","giant_mantis_foreleg"],type:'insect',fac:'wild'},
 radroach:{n:"Radroach",hp:16,a:3,d:0,xp:7,e:ICONS.ENEMY.RADROACH,loot:["radroach_meat","radroach_meat"],type:'insect',fac:'wild'},
 radscorpion:{n:"Radscorpion",hp:75,a:18,d:5,xp:50,e:ICONS.ENEMY.RADSCORPION,loot:["radscorpion_gland","radscorpion_gland","antivenom"],type:'insect',fac:'wild'},
@@ -1029,6 +1086,7 @@ saloon:{n:"Prospector Saloon",e:'<img src="NVImages/ProspectorsaloonIcon.png" st
 general_store:{n:"General Store",e:'<img src="NVImages/ChetgeneralstoreIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',am:["Dusty shelves. The essentials.","Chet looks suspicious.","Ammo behind the counter."]},
 gas_station:{n:"Gas Station",e:'<img src="NVImages/GoodspringsgasstationIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',am:["Pumps are dry. Workshop still works.","Grease and old tools."]},
 doc_house:{n:"Doc Mitchell's House",e:'<img src="NVImages/DocmitchellshouseIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',am:["Medical equipment hums.","The doc paces thoughtfully."]},
+caravan_stop:{n:"Goodsprings Caravan Stop",e:"🐂",am:["A two-headed brahmin stamps beside a patched wagon.","Canvas tarps snap in the wind near the old road sign.","A caravan guard watches the highway toward Primm."]},
 vikki_vance:{n:"Vikki & Vance Casino",e:'<img src="NVImages/VikkiandvancecasinoIcon.png" style="width:40%;height:40%;object-fit:contain;display:block;">',am:["The casino floor is quiet, but Primm Slim still delivers his pitch.","Johnson Nash keeps one eye on the tables and another on the Mojave Express ledger.","Ruby Nash has something hot on the stove for anyone with caps."]},
 mojave_express:{n:"Primm Mojave Express",e:'<img src="NVImages/MojaveexpressIcon.png" style="width:40%;height:40%;object-fit:contain;display:block;">',am:["Half-sorted parcels and courier crates are stacked against the wall.","A battered terminal still holds the last Mojave Express manifests.","ED-E emits a burst of static from a corner workbench."]},
 sheriff_office:{n:"Primm Sheriff's Office",e:'<img src="NVImages/PrimmsheriffsofficeIcon.png" style="width:40%;height:40%;object-fit:contain;display:block;">',am:["Dusty desks, a jail key rack, and old law books fill the room.","Deputy reports cover the walls while NCR papers sit in neat stacks.","The town still feels like it is waiting for someone to restore order."]},
@@ -1234,8 +1292,13 @@ function gsRefreshState(){
   const q2=gsFindQuest('gs_schoolhouse_clear');
   if(q2&&!q2.done){
     const mantis=gsKillSince(q2.ks,'mantis');
-    q2.progText=`Thin out the schoolhouse mantises (${Math.min(mantis,2)}/2).`;
-    if(mantis>=2)gsCompleteQuest('gs_schoolhouse_clear');
+    if(mantis>=2){
+      q2.ready=true;
+      q2.progText='Return to Doc Mitchell and tell him the abandoned schoolhouse is cleared.';
+    }else{
+      q2.ready=false;
+      q2.progText=`Thin out the schoolhouse mantises (${Math.min(mantis,2)}/2), then report back to Doc Mitchell.`;
+    }
   }
   const q3=gsFindQuest('gs_powder_road');
   if(q3&&!q3.done){
@@ -1249,7 +1312,7 @@ function gsRefreshState(){
 function gsStartQuest(id){
   if(gsFindQuest(id))return;
   if(id==='gs_source_clear')S.quests.push({id:'gs_source_clear',name:'Clean Water, Clear Source',desc:'Sunny Smiles wants the creatures around Goodsprings Source culled before they turn a water run into a funeral.',t:'custom',progText:'Kill geckos and a bark scorpion near Goodsprings Source (0/2 geckos, 0/1 bark scorpion).',rg:90,rx:20,done:false,ks:{gecko:S.kills['gecko']||0,bark_scorpion:S.kills['bark_scorpion']||0}});
-  if(id==='gs_schoolhouse_clear')S.quests.push({id:'gs_schoolhouse_clear',name:'Schoolhouse Sweep',desc:'Doc Mitchell wants the abandoned schoolhouse made a little less lethal for anyone stupid enough to poke around in it.',t:'custom',progText:'Thin out the schoolhouse mantises (0/2).',rg:85,rx:18,done:false,ks:{mantis:S.kills['mantis']||0}});
+  if(id==='gs_schoolhouse_clear')S.quests.push({id:'gs_schoolhouse_clear',name:'Schoolhouse Sweep',desc:'Doc Mitchell wants the abandoned schoolhouse made a little less lethal for anyone stupid enough to poke around in it.',t:'custom',progText:'Thin out the schoolhouse mantises (0/2), then report back to Doc Mitchell.',rg:85,rx:18,done:false,ks:{mantis:S.kills['mantis']||0}});
   if(id==='gs_powder_road')S.quests.push({id:'gs_powder_road',name:'Roadside Trouble',desc:'Trudy wants the raiders and Powder Gangers around the Goodsprings roads knocked down before trade gets strangled completely.',t:'custom',progText:'Break up the raiders hitting roads near Goodsprings (0/2 Powder Gangers, 0/1 convict).',rg:120,rx:26,done:false,ks:{powder_ganger:S.kills['powder_ganger']||0,convict:S.kills['convict']||0}});
   log('Accepted: '+gsFindQuest(id).name,'q');notify('📜 Quest accepted!');queueSave();
 }
@@ -1272,8 +1335,10 @@ function openGoodspringsNPC(id){
     h+=`<button class="bt go" onclick="advanceTime(2);S.xp+=10;S.ap=Math.min(S.maxAp,S.ap+8);log('Sunny Smiles gives you a quick shooting lesson outside Goodsprings.','e');closeDlg();showResult('Field Lesson','🎯',['⭐ +10 XP','⚡ +8 AP','⏰ 2 hours passed'],'Continue','chkLU();upAll()')">🎯 Take a shooting lesson</button>`;
   }else if(id==='doc_mitchell'){
     h+=`<button class="bt" onclick="closeDlg();showResult('Doc Mitchell','💉',['Doc reminds you he already patched a bullet wound in your skull once, which by his standards is more than enough excitement for one patient.','He worries more about idiots wandering into the schoolhouse than he lets on.'],'Continue','upAll()')">💉 Ask how you looked when he found you</button>`;
-    if(!gsFindQuest('gs_schoolhouse_clear'))h+=`<button class="bt pip" onclick="gsStartQuest('gs_schoolhouse_clear');closeDlg();showResult('Schoolhouse Sweep','📜',['Doc wants the worst of the mantis problem at the abandoned schoolhouse cut down before somebody gets carved up in there.'],'Continue','upAll()')">📜 Offer to clear the schoolhouse</button>`;
-    if(gsQuestActive('gs_schoolhouse_clear'))h+=`<button class="bt pip" onclick="closeDlg();showResult('Schoolhouse Sweep','📜',['Kill 2 giant mantises after taking Doc\'s job. The abandoned schoolhouse is the obvious place to start.'],'Continue','upAll()')">📜 Review Schoolhouse Sweep</button>`;
+    if(!gsFindQuest('gs_schoolhouse_clear'))h+=`<button class="bt pip" onclick="gsStartQuest('gs_schoolhouse_clear');closeDlg();showResult('Schoolhouse Sweep','📜',['Doc wants the worst of the mantis problem at the abandoned schoolhouse cut down before somebody gets carved up in there.','Come back and tell him once it is cleared.'],'Continue','upAll()')">📜 Offer to clear the schoolhouse</button>`;
+    const qSchool=gsFindQuest('gs_schoolhouse_clear');
+    if(qSchool&&!qSchool.done&&qSchool.ready)h+=`<button class="bt go" onclick="gsCompleteQuest('gs_schoolhouse_clear');closeDlg();showResult('Schoolhouse Sweep Complete','💉',['You tell Doc Mitchell the abandoned schoolhouse is clear enough for scavengers again.','Doc pays you and sets aside some extra supplies.'], 'Continue','giveItem(\'stimpak\');giveItem(\'ammo_9mm\');upAll()')">✅ Tell Doc the schoolhouse is clear</button>`;
+    else if(qSchool&&!qSchool.done)h+=`<button class="bt pip" onclick="closeDlg();showResult('Schoolhouse Sweep','📜',[gsFindQuest('gs_schoolhouse_clear').progText],'Continue','upAll()')">📜 Review Schoolhouse Sweep</button>`;
     const cost=22-Math.floor((S.special?S.special[3]:5)*2);
     h+=`<button class="bt go" onclick="goodspringsDocTreatment()">⚕️ Ask for full treatment (${cost} caps)</button>`;
     h+=`<button class="bt" onclick="closeDlg();openBld('doc_house')">🏠 Look around the house</button>`;
@@ -1738,7 +1803,7 @@ const SAVE_SLOT_KEYS=['fnv_rpg_slot0','fnv_rpg_slot1','fnv_rpg_slot2','fnv_rpg_s
 const SAVE_DB_NAME='fnv_rpg_db';
 const SAVE_DB_STORE='saves';
 const SAVE_DB_SLOTS=['primary','backup','mirror','recovery'];
-let _saveTimer=null,_autoSaveTimer=null,_lastSaveStamp=0;
+let _saveTimer=null,_autoSaveTimer=null,_lastSaveStamp=0,_autoSaveBound=false;
 let _dbPromise=null;
 let _slotCursor=0;
 let _lastSerialized='';
@@ -1858,60 +1923,87 @@ async function loadFromIndexedDb(){
 function save(force=false){
   if(!S)return false;
   const now=Date.now();
-  if(!force&&now-_lastSaveStamp<150)return true;
+  if(!force&&now-_lastSaveStamp<120)return true;
   try{
     const raw=serializeSave();
-    if(!raw)return false; // serializeSave failed
+    if(!raw)return false;
+    // Always keep a memory/window copy first. This survives some iOS tab restores even
+    // when the page process is killed before async writes finish.
     _lastSerialized=raw;
+    try{sessionStorage.setItem(SAVE_KEY+'_session',raw)}catch(e){}
+    try{window.name='fnv_rpg::'+raw}catch(e){}
+    // localStorage writes are synchronous, so do them before IndexedDB.
     writeLocalCopies(raw,now);
+    // IndexedDB is the durable backup for iOS/Safari storage edge cases.
     saveToIndexedDb(raw);
     _lastSaveStamp=now;
     return true;
   }catch(e){
     try{
       const raw=_lastSerialized||serializeSave();
-      if(raw){writeLocalCopies(raw,Date.now());saveToIndexedDb(raw)}
+      if(raw){
+        try{sessionStorage.setItem(SAVE_KEY+'_session',raw)}catch(e2){}
+        try{window.name='fnv_rpg::'+raw}catch(e2){}
+        writeLocalCopies(raw,Date.now());
+        saveToIndexedDb(raw);
+      }
     }catch(err){}
     return false
   }
 }
-function queueSave(delay=180){
+function queueSave(delay=100){
   if(!S)return;
   clearTimeout(_saveTimer);
   _saveTimer=setTimeout(()=>save(true),delay);
 }
 function snapshotState(){
   if(!S)return;
-  try{window.name='fnv_rpg::'+serializeSave()}catch(e){}
+  try{
+    const raw=serializeSave();
+    if(raw){window.name='fnv_rpg::'+raw;try{sessionStorage.setItem(SAVE_KEY+'_session',raw)}catch(e){}}
+  }catch(e){}
 }
 function recoverWindowSnapshot(){
   try{
-    if(typeof window.name!=='string'||!window.name.startsWith('fnv_rpg::'))return false;
-    const raw=window.name.slice(9);
-    const parsed=safeParse(raw);
-    if(!parsed)return false;
-    S=parsed;
-    migrate();
-    save(true);
-    return true;
+    const raws=[];
+    try{const ss=sessionStorage.getItem(SAVE_KEY+'_session');if(ss)raws.push(ss)}catch(e){}
+    if(typeof window.name==='string'&&window.name.startsWith('fnv_rpg::'))raws.push(window.name.slice(9));
+    for(const raw of raws){
+      const parsed=safeParse(raw);
+      if(!parsed)continue;
+      S=parsed;
+      migrate();
+      save(true);
+      return true;
+    }
+    return false;
   }catch(e){return false}
 }
 function startAutoSaveLoop(){
   clearInterval(_autoSaveTimer);
-  _autoSaveTimer=setInterval(()=>{save(true);snapshotState()},3000);
+  // iOS can kill a suspended PWA/tab without beforeunload. Keep a near-current
+  // synchronous localStorage save while the user is actively playing.
+  _autoSaveTimer=setInterval(()=>{
+    if(!S)return;
+    const raw=serializeSave();
+    if(raw&&raw!==_lastSerialized)save(true);
+    snapshotState();
+  },900);
 }
 function bindAutoSave(){
+  if(_autoSaveBound)return;
+  _autoSaveBound=true;
   const hardSave=()=>{save(true);snapshotState()};
+  const softSave=()=>queueSave(80);
   ['pagehide','beforeunload','blur','focusout','unload'].forEach(ev=>window.addEventListener(ev,hardSave,{capture:true}));
-  ['visibilitychange','webkitvisibilitychange','freeze','resume','pause'].forEach(ev=>document.addEventListener(ev,()=>{
-    if(ev==='visibilitychange'||ev==='webkitvisibilitychange'){
-      if(document.visibilityState==='hidden')hardSave();
-      return;
-    }
-    hardSave();
+  ['visibilitychange','webkitvisibilitychange'].forEach(ev=>document.addEventListener(ev,()=>{
+    if(document.hidden||document.visibilityState==='hidden')hardSave();
   },{capture:true}));
-  ['pageshow','focus','online'].forEach(ev=>window.addEventListener(ev,()=>{if(S){save(true);snapshotState()}},{capture:true}));
-  ['touchend','click'].forEach(ev=>document.addEventListener(ev,()=>queueSave(120),{capture:true,passive:true}));
+  ['freeze','resume','pause'].forEach(ev=>document.addEventListener(ev,hardSave,{capture:true}));
+  ['pageshow','focus','online'].forEach(ev=>window.addEventListener(ev,()=>{if(S)hardSave()},{capture:true}));
+  // Any real interaction that may change state schedules a save. Capture phase catches
+  // clicks/taps before overlays or buttons stop propagation.
+  ['touchstart','touchend','pointerup','click','input','change','keyup'].forEach(ev=>document.addEventListener(ev,softSave,{capture:true,passive:true}));
 }
 function load(){
   const candidates=collectStorageCandidates();
@@ -1974,6 +2066,20 @@ function migrate(){
   if(S.scroungerPerk===undefined)S.scroungerPerk=false;
   if(S.lightStepPerk===undefined)S.lightStepPerk=false;
   if(S.leaderPerk===undefined)S.leaderPerk=false;
+  if(S.bloodyMess===undefined)S.bloodyMess=false;
+  if(S.triagePerk===undefined)S.triagePerk=false;
+  if(S.leadBelly===undefined)S.leadBelly=false;
+  if(S.radChild===undefined)S.radChild=false;
+  if(S.nerdRage===undefined)S.nerdRage=false;
+  if(S.grimReaper===undefined)S.grimReaper=false;
+  if(S.rapidReload===undefined)S.rapidReload=false;
+  if(S.travelLight===undefined)S.travelLight=false;
+  if(S.fortuneFinder===undefined)S.fortuneFinder=false;
+  if(S.livingAnatomy===undefined)S.livingAnatomy=false;
+  if(S.entomologistPerk===undefined)S.entomologistPerk=false;
+  if(S.terrifyingPresence===undefined)S.terrifyingPresence=false;
+  if(S.hunterDmg===undefined)S.hunterDmg=0;
+  if(S.centerMass===undefined)S.centerMass=0;
   if(!S.flags)S.flags={};
   if(!S.flags.bountyBoard)S.flags.bountyBoard={};
   if(!S.gear)S.gear={w:null,body:null,head:null};
@@ -2211,7 +2317,7 @@ function giveItem(id,count=1,opts={}){
   return added;
 }
 function atkPow(){const w=getEquippedWeapon&&getEquippedWeapon();let a=w?(w.a||1):(1+Math.max(0,Math.floor(((S.special?S.special[0]:5)-5)/2)));a+=S.atk||0;return Math.max(1,Math.round(a))}
-function defPow(){let d=S.def||0;if(S.gear.body){const a=ITEMS[S.gear.body];if(a)d+=a.d||0}if(S.gear.head){const h=ITEMS[S.gear.head];if(h)d+=h.d||0}return Math.max(0,Math.round(d))}
+function defPow(){let d=S.def||0;if(S.gear.body){const a=ITEMS[S.gear.body];if(a)d+=a.d||0}if(S.gear.head){const h=ITEMS[S.gear.head];if(h)d+=h.d||0}if(S.nerdRage&&S.hp<=Math.floor(S.maxHp*0.25))d+=10;return Math.max(0,Math.round(d))}
 function xpNeed(l){return Math.floor(200*l)}
 function grantXP(amount){
   const bonus=S.xpPerk||0;
@@ -2360,7 +2466,7 @@ function upWorld(){
     (loc.b||[]).forEach(bId=>{
       const b=BLDS[bId];if(!b)return;
       const bc2=el('div','bc big-icon-card');
-      bc2.innerHTML=`<div class="card-icon-lg">${b.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${b.n}</div></div><div style="color:var(--muted)">›</div>`;
+      bc2.innerHTML=`<div class="building-icon-lg">${b.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${b.n}</div></div><div style="color:var(--muted)">›</div>`;
       bc2.onclick=()=>openBld(bId);
       tab.appendChild(bc2);
     });
@@ -2506,7 +2612,7 @@ Goodsprings:[
   {id:'gs_settler_help',icon:'👩',title:'Settler in Trouble',
    body:'A Goodsprings settler is crouched behind a broken fence post, a gecko circling nearby.',
    choices:[
-     {label:'⚔ Kill the gecko',fn:()=>{const g=rnd(8,18);S.xp+=g;S.karma+=2;S.rep.Goodsprings=(S.rep.Goodsprings||0)+1;log('Helped a Goodsprings settler. +2 karma.','e')},result:`You drop the gecko fast. The settler thanks you. ⭐ XP · ⚖ +2 karma · +1 Goodsprings rep.`},
+     fightChoice('⚔ Fight the gecko',['gecko'],'The settler thanks you after the fight. ⚖ +2 karma · +1 Goodsprings rep.',()=>{S.karma+=2;S.rep.Goodsprings=(S.rep.Goodsprings||0)+1;log('Helped a Goodsprings settler. +2 karma.','e')}),
      {label:'🚶 Keep moving',fn:()=>{S.karma-=2;log('Left a settler to fend for themselves.','e')},result:'You walk past. Their cry fades behind you. ⚖ -2 karma.'},
    ]},
   {id:'gs_water_cache',icon:'💧',title:'Hidden Water Cache',
@@ -2518,7 +2624,7 @@ Goodsprings:[
   {id:'gs_coyote_pack',icon:'🐺',title:'Coyote Pack',
    body:'A pack of three coyotes is tearing apart a brahmin carcass on the trail ahead. They notice you.',
    choices:[
-     {label:'⚔ Fight through',fn:()=>{const dmg=rnd(4,10);S.hp=Math.max(1,S.hp-dmg);const g=rnd(5,12);S.caps+=g;log('Fought through a coyote pack. Took some scratches.','e')},result:`You wade in swinging. Bitten but through. 💰 caps from the brahmin remains.`},
+     fightChoice('⚔ Fight through',['coyote','coyote','coyote'],'You fight through the coyote pack and can search the brahmin remains afterward.',()=>{const g=rnd(5,12);S.caps+=g;S.capsEarned+=g;log('Fought through a coyote pack.','e')}),
      {label:'🔥 Fire a warning shot',fn:()=>{if(S.gear.w){log('Fired a warning shot. Coyotes scattered.','e')}else{const dmg=rnd(6,14);S.hp=Math.max(1,S.hp-dmg);log('No weapon — the coyotes pressed in. Took damage.','e')}},result:'The shot scatters them — or they press in if you had nothing to shoot with.'},
      {label:'🚶 Detour around',fn:()=>{advanceTime(1);log('Took a long detour around the coyote pack.','e')},result:'⏰ +1 hour. Safer though.'},
    ]},
@@ -2766,6 +2872,59 @@ BitterSprings:[
    ]},
 ],
 
+// ── GOODSPRINGS AREA-SPECIFIC ───────────────────────────────
+Goodsprings_Cemetery:[
+  {id:'gs_cemetery_bloatfly_nest',icon:'🪰',title:'Bloatfly Nest in the Graves',
+   body:'A pair of bloatflies erupts from a sunken grave. This is a fight, not a warning.',
+   choices:[fightChoice('⚔ Fight the bloatflies',['bloatfly','bloatfly'],'Clear the graveyard nest.')]},
+  {id:'gs_cemetery_shallow_grave',icon:'⚰️',title:'Shallow Grave Cache',
+   body:'Fresh boot tracks lead to a half-covered grave near where you were found. A bark scorpion is already crawling over it.',
+   choices:[fightChoice('⚔ Fight the bark scorpion',['bark_scorpion'],'You search the grave after the scorpion drops and find 9mm rounds.',()=>giveItem('ammo_9mm')),{label:'🚶 Leave the grave alone',fn:()=>{},result:'Some things can stay buried.'}]},
+  {id:'gs_cemetery_crows_and_casings',icon:'🪶',title:'Crows Over Brass',
+   body:'Crows pick around spent shell casings near the ridge. Two bloatflies rise when you step closer.',
+   choices:[fightChoice('⚔ Fight for the shell casings',['bloatfly','bloatfly'],'You clear the flies and collect usable rounds.',()=>{for(let i=0;i<rnd(3,7);i++)giveItem('ammo_9mm')})]},
+  {id:'gs_cemetery_rattling_marker',icon:'🪦',title:'Rattling Grave Marker',
+   body:'Something scratches beneath a cracked grave marker. A radroach bursts out, followed by another.',
+   choices:[fightChoice('⚔ Fight the radroaches',['radroach','radroach'],'The marker settles. You find a bobby pin wedged in the stone.',()=>giveItem('bobby_pin'))]},
+  {id:'gs_cemetery_old_prospector_bones',icon:'💀',title:'Old Prospector Bones',
+   body:'A dead prospector lies in the dust by the fence. A bark scorpion is curled under his pack.',
+   choices:[fightChoice('⚔ Kill the scorpion and search the pack',['bark_scorpion'],'The pack has a little money and a useful scrap.',()=>{const c=rnd(4,12);S.caps+=c;S.capsEarned+=c;giveItem('scrap')})]},
+],
+Goodsprings_Source:[
+  {id:'gs_source_gecko_pack',icon:'🦎',title:'Geckos at the Water Trough',
+   body:'Three geckos are snapping around the clean water. If you want the source safe, you have to fight them.',
+   choices:[fightChoice('⚔ Fight the geckos',['gecko','gecko','gecko'],'The water source is safer.')]},
+  {id:'gs_source_scorpion_under_rocks',icon:'🦂',title:'Bark Scorpion Under the Rocks',
+   body:'A bark scorpion skitters out from under the warm stones beside the spring.',
+   choices:[fightChoice('⚔ Fight the scorpion',['bark_scorpion'],'The spring path is clear.'),{label:'💉 Use antivenom bait',fn:()=>{const i=S.inv.indexOf('antivenom');if(i!==-1){S.inv.splice(i,1);S.xp+=8;log('Used antivenom bait at Goodsprings Source.','e')}else{notify('Need Antivenom.');startCombatCard('bark_scorpion')}},result:'Either you use the bait, or it comes at you.'}]},
+  {id:'gs_source_thirsty_gecko',icon:'💧',title:'Thirsty Gecko Pair',
+   body:'Two geckos lap at the edge of the spring, then snap toward your boots.',
+   choices:[fightChoice('⚔ Fight the geckos',['gecko','gecko'],'You keep the source clear and collect gecko hide.',()=>giveItem('gecko_hide'))]},
+  {id:'gs_source_buried_water_jugs',icon:'🫙',title:'Buried Water Jugs',
+   body:'A half-buried crate of water jugs sits beside the spring. A bark scorpion guards the shade underneath it.',
+   choices:[fightChoice('⚔ Fight the scorpion for the water',['bark_scorpion'],'The crate is yours after the fight.',()=>{giveItem('purified_water');giveItem('purified_water')})]},
+  {id:'gs_source_coyote_drinking',icon:'🐺',title:'Coyotes at the Spring',
+   body:'A pair of coyotes drink from the shallows. They bare their teeth as you approach.',
+   choices:[fightChoice('⚔ Fight the coyotes',['coyote','coyote'],'The spring goes quiet again.')]},
+],
+Goodsprings_Schoolhouse:[
+  {id:'gs_school_mantis_nest',icon:'🦗',title:'Mantis Nest in the Classroom',
+   body:'The desks shift. Two giant mantises unfold from the dark corners. You are fighting them.',
+   choices:[fightChoice('⚔ Fight the mantises',['mantis','mantis'],'The classroom is quieter now.')]},
+  {id:'gs_school_roach_locker',icon:'🪳',title:'Roaches in the Lockers',
+   body:'A locker pops open and radroaches spill onto the floor around a dusty ammo box.',
+   choices:[fightChoice('⚔ Fight the radroaches',['radroach','radroach'],'You grab the ammo box after the fight.',()=>giveItem('ammo_9mm')),{label:'🏃 Slam it shut and back away',fn:()=>{advanceTime(1);log('Avoided a radroach locker in the schoolhouse.','e')},result:'⏰ +1 hour. No loot, no bites.'}]},
+  {id:'gs_school_mantis_eggs',icon:'🥚',title:'Mantis Egg Clutch',
+   body:'A clutch of mantis eggs pulses under the teacher desk. The mother mantis drops from the ceiling.',
+   choices:[fightChoice('⚔ Fight the mother mantis',['mantis'],'You smash the clutch and find duct tape in the desk.',()=>giveItem('duct_tape'))]},
+  {id:'gs_school_rat_in_the_cafeteria',icon:'🐀',title:'Rats in the Cafeteria',
+   body:'Giant rats have torn through old lunch tins in the back room. They swarm when the door opens.',
+   choices:[fightChoice('⚔ Fight the giant rats',['giant_rat','giant_rat'],'You clear the cafeteria and find a snack cake.',()=>giveItem('fancy_lad'))]},
+  {id:'gs_school_terminal_sparks',icon:'💻',title:'Sparking School Terminal',
+   body:'The old terminal spits static. A radroach nest is packed behind the desk panel.',
+   choices:[fightChoice('⚔ Pull the panel and fight',['radroach','radroach'],'You clear the nest and salvage electronics.',()=>giveItem('scrap_electronics')),{label:'🔧 Leave the panel closed',fn:()=>{S.xp+=4;log('Marked a dangerous school terminal for later.','e')},result:'⭐ +4 XP. You mark it and move on.'}]},
+],
+
 // ── GENERIC (any location) ────────────────────────────────────
 generic:[
   {id:'gen_wounded_traveller',icon:'🩹',title:'Wounded Traveller',
@@ -2806,12 +2965,45 @@ generic:[
 
 let _activeEncounter=null;
 
+// Area encounter routing is data-driven so future locations can add
+// "Location_AreaName" pools without changing the encounter engine.
+const AREA_ENCOUNTER_INDEX={
+  Goodsprings:[
+    {match:/cemetery|grave/i,key:'Goodsprings_Cemetery'},
+    {match:/source|spring|water/i,key:'Goodsprings_Source'},
+    {match:/schoolhouse|school/i,key:'Goodsprings_Schoolhouse'}
+  ]
+};
+function areaEncounterKeyName(locId,areaName){
+  return String(locId||'')+'_'+String(areaName||'')
+    .replace(/[^a-z0-9]+/gi,'_')
+    .replace(/^_+|_+$/g,'');
+}
+function encounterAreaKey(locId,area){
+  const n=(area&&area.n?area.n:'');
+  const configured=AREA_ENCOUNTER_INDEX[locId]||[];
+  const hit=configured.find(r=>r.match&&r.match.test(n));
+  if(hit)return hit.key;
+  const auto=areaEncounterKeyName(locId,n);
+  return ENCOUNTER_CARDS[auto]?auto:null;
+}
+function startCombatGroup(enemyIds){
+  const ids=Array.isArray(enemyIds)?enemyIds:[enemyIds];
+  const enemies=[];
+  ids.forEach(id=>{if(ENEMIES[id])enemies.push(mkEnemy(id));else log('Missing enemy id in encounter: '+id,'c')});
+  if(enemies.length)startCombat(enemies);
+}
+function fightChoice(label,enemyIds,result,after){
+  const ids=Array.isArray(enemyIds)?enemyIds:[enemyIds];
+  return {label:label||'⚔ Fight',enemies:ids,fn:()=>{startCombatGroup(ids);if(typeof after==='function')after();},result:result||'Fight resolved.'};
+}
 function rollEncounterCard(locId,area){
-  // Build candidate pool: location-specific first, then generic
+  // Build candidate pool: area-specific first, then location-specific, then generic
+  const areaCards=ENCOUNTER_CARDS[encounterAreaKey(locId,area)]||[];
   const locCards=ENCOUNTER_CARDS[locId]||[];
   const genCards=ENCOUNTER_CARDS.generic||[];
-  // Weight location cards 3:1 over generic
-  const pool=[...locCards,...locCards,...locCards,...genCards];
+  // Weight area cards hardest so Goodsprings cemetery/source/schoolhouse feel different
+  const pool=[...areaCards,...areaCards,...areaCards,...areaCards,...locCards,...locCards,...genCards];
   if(!pool.length)return null;
   // Avoid repeating same card too soon
   const recent=S.recentEncounters||[];
@@ -2825,9 +3017,10 @@ function rollEncounterCard(locId,area){
 
 function startCombatCard(enemyId,count=1){
   // Helper used inside encounter choice fns — queues combat that resumes expedition
-  const enemies=[];
-  for(let i=0;i<count;i++){if(ENEMIES[enemyId])enemies.push(mkEnemy(enemyId));}
-  if(enemies.length)startCombat(enemies);
+  if(Array.isArray(enemyId))return startCombatGroup(enemyId);
+  const ids=[];
+  for(let i=0;i<count;i++)ids.push(enemyId);
+  startCombatGroup(ids);
 }
 
 function showEncounterCard(card,area,step){
@@ -3246,9 +3439,10 @@ function buildEnemyLoot(enemy){
   if(enemy.elite){maybeLoot(pool,'stimpak',0.45);maybeLoot(pool,'ammo_556',0.3);maybeLoot(pool,'pre_war_money',0.35);}
   if(enemy.legendary){maybeLoot(pool,'super_stimpak',0.75);maybeLoot(pool,'ammo_308',0.55);maybeLoot(pool,'energy_cell',0.55);maybeLoot(pool,'combat_armor',0.22);}
 
-  if(['gecko','bloatfly','mantis','radroach','bark_scorpion','radscorpion','cazador','nightstalker','giant_rat','giant_ant','lakelurk','deathclaw','young_deathclaw'].includes(id)){
+  if(['gecko','bloatfly','mantis','radroach','bark_scorpion','coyote','radscorpion','cazador','nightstalker','giant_rat','giant_ant','lakelurk','deathclaw','young_deathclaw'].includes(id)){
     if(id==='gecko'){maybeLoot(pool,'gecko_hide',0.85);maybeLoot(pool,'gecko_steak',0.55);maybeLoot(pool,'herbs',0.25);}
     if(id==='bloatfly'){maybeLoot(pool,'bloatfly_meat',0.75);maybeLoot(pool,'dirty_water',0.12);}
+    if(id==='coyote'){maybeLoot(pool,'bighorner_meat',0.35);maybeLoot(pool,'gecko_steak',0.2);}
     if(id==='mantis'){maybeLoot(pool,'giant_mantis_foreleg',0.7);maybeLoot(pool,'scrap',0.18);}
     if(id==='radroach'){maybeLoot(pool,'radroach_meat',0.65);maybeLoot(pool,'dirty_water',0.08);}
     if(id==='bark_scorpion'){maybeLoot(pool,'bark_scorpion_gland',0.75);maybeLoot(pool,'antivenom',0.18);}
@@ -3324,7 +3518,7 @@ function buildEnemyLoot(enemy){
   }
   if(!pool.length) maybeLoot(pool,'scrap',0.7);
 
-  const capsBase = ['gecko','bloatfly','mantis','radroach','bark_scorpion','giant_rat','giant_ant'].includes(id) ? [0,2]
+  const capsBase = ['gecko','bloatfly','mantis','radroach','bark_scorpion','giant_rat','giant_ant','coyote'].includes(id) ? [0,2]
     : ['deathclaw','young_deathclaw','nightkin','legion_centurion','securitron'].includes(id) ? [8,22]
     : [2,12];
 
@@ -3488,7 +3682,14 @@ function playerHitDamage(attack,target,vats=false){
   const crit=rollPlayerCrit(vats);
   const mult=vats?(crit?2.25:1.5):(crit?2:1);
   const variance=vats?rnd(0,2):rnd(-1,1);
-  return {crit,dmg:fnvDTDamage(Math.round(attack.atk*mult)+variance,target.d,FNV_NORMAL.playerDamage)};
+  let bonus=0;
+  // Perk damage bonuses
+  if(S.bloodyMess)bonus+=Math.max(1,Math.round(attack.atk*0.05));
+  if(S.nerdRage&&S.hp<=Math.floor(S.maxHp*0.25))bonus+=15;
+  if(S.entomologistPerk&&target.type==='insect')bonus+=Math.round(attack.atk*0.5);
+  if(S.hunterDmg&&(target.type==='animal'||target.type==='insect'))bonus+=S.hunterDmg;
+  if(S.centerMass&&attack.gun&&!vats)bonus+=S.centerMass;
+  return {crit,dmg:fnvDTDamage(Math.round(attack.atk*mult)+variance+bonus,target.d,FNV_NORMAL.playerDamage)};
 }
 function renderCombat(){
   if(!combat)return;
@@ -3529,11 +3730,6 @@ function renderCombat(){
   const hp=hpPct(S.hp,S.maxHp);
   const ap=hpPct(S.ap,S.maxAp);
 
-  // Count usable healing items
-  const stimpakCount=countItem('stimpak');
-  const superStimpakCount=countItem('super_stimpak');
-  const healCount=stimpakCount+superStimpakCount;
-  const healLabel=healCount>0?`💉 Heal (${healCount} left)`:'💉 No Heals';
 
   let enemyHtml=alive.map((en)=>`<div class="combat-panel ${en.hitAnim==='crit'?'enemy-crit':(en.hitAnim?'enemy-hit':'')}" style="margin:2px 0;padding:6px;position:relative">
   ${en.hitAnim==='crit'?'<div class="crit-float">CRIT!</div>':''}
@@ -3541,7 +3737,7 @@ function renderCombat(){
   <div style="font-size:28px">${renderIcon(en.e,28)}</div>
   <div style="flex:1"><div style="font-weight:bold;font-size:12px;color:var(--red)">${en.name}</div>
   <div class="hb"><div class="hf cr" style="width:${hpPct(en.hp,en.maxHp)}%"></div></div>
-  <div style="font-size:9px;color:var(--muted)">HP ${en.hp}/${en.maxHp} · ATK ${en.a} · DEF ${en.d}</div></div></div></div>`).join('');
+  <div style="font-size:9px;color:var(--muted)">HP ${en.hp}/${en.maxHp} · ATK ${en.a}${S.livingAnatomy?' · DT '+en.d:''}</div></div></div></div>`).join('');
 
   panel.innerHTML=`<div style="text-align:center;font-size:10px;color:var(--amber);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">⚔ COMBAT · Turn ${combat.turn+1} ⚔</div>
   ${enemyHtml}
@@ -3549,14 +3745,116 @@ function renderCombat(){
   <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span>❤ ${S.hp}/${S.maxHp}</span><span style="color:${S.ap>=20?'var(--ap-blue)':'var(--red)'}">⚡ AP ${S.ap}/${S.maxAp}</span></div>
   <div class="hb"><div class="hf ${hp<=25?'cr':'g'}" style="width:${hp}%"></div></div>
   <div class="hb" style="margin-top:3px"><div class="hf ap" style="width:${ap}%"></div></div>
-  <div style="font-size:10px;color:var(--muted);margin-top:4px">${(()=>{const w=getEquippedWeapon();if(!w)return 'Weapon: Unarmed';if(!w.ammo)return `Weapon: ${w.e} ${w.n}`;const ammoId=w.ammo;const ammo=ITEMS[ammoId];const ammoCount=countItem(ammoId);return `Weapon: ${w.e} ${w.n} · ${ammo?ammo.e+' '+ammo.n:''} ×${ammoCount}`})()}</div></div>
+  <div onclick="openCombatInventory('weapons')" style="font-size:10px;color:var(--muted);margin-top:4px;cursor:pointer;display:flex;align-items:center;gap:4px;padding:3px 4px;border-radius:3px;background:#0d1f0d;border:1px solid #1a3a1a">${(()=>{const w=getEquippedWeapon();if(!w)return '<span>Weapon: Unarmed</span><span style="margin-left:auto;color:var(--amber);font-size:9px">TAP TO SWAP ›</span>';if(!w.ammo)return `<span>Weapon: ${w.e} ${w.n}</span><span style="margin-left:auto;color:var(--amber);font-size:9px">TAP TO SWAP ›</span>`;const ammoId=w.ammo;const ammo=ITEMS[ammoId];const ammoCount=countItem(ammoId);return `<span>Weapon: ${w.e} ${w.n} · ${ammo?ammo.e+' '+ammo.n:''} ×${ammoCount}</span><span style="margin-left:auto;color:var(--amber);font-size:9px">TAP TO SWAP ›</span>`})()}</div></div>
   <div class="combat-bar">
   <button class="bt go" onclick="combatAction('attack')">⚔ Attack</button>
   <button class="bt pip" onclick="combatAction('vats')" ${S.ap<20?'disabled':''}>🎯 V.A.T.S. (20 AP)</button></div>
   <div class="combat-bar">
-  <button class="bt${healCount===0?' ':' pip'}" onclick="combatAction('heal')" ${healCount===0?'disabled':''}>${healLabel}</button>
+  <button class="bt pip" onclick="openCombatInventory('aid')">🎒 Use Aid Item</button>
   <button class="bt dn" onclick="combatAction('flee')">🏃 Flee</button></div>
   <div style="max-height:90px;overflow-y:auto;margin-top:6px;padding:4px;background:#0a0a04;border-radius:4px;font-size:10px;color:var(--muted)">${combat.log.slice(-8).map(l=>'<div>'+l+'</div>').join('')}</div>`;
+}
+
+function openCombatInventory(mode='all'){
+  if(!combat)return;
+  const panel=$('CP');
+  const counts={};(S.inv||[]).forEach(id=>{counts[id]=(counts[id]||0)+1});
+  const rows=Object.entries(counts).filter(([id,c])=>{
+    const it=ITEMS[id];if(!it)return false;
+    if(mode==='weapons')return it.t==='w';
+    if(mode==='aid')return it.t==='c'||it.t==='chem'||it.hp||it.buff;
+    return it.t==='w'||it.t==='c'||it.t==='chem'||it.hp||it.buff;
+  });
+
+  // Sort aid items: highest HP first, then chems
+  if(mode==='aid')rows.sort((a,b)=>{const ia=ITEMS[a[0]],ib=ITEMS[b[0]];return(ib.hp||0)-(ia.hp||0)});
+
+  const title=mode==='weapons'?'🔁 Swap Weapon':'🎒 Aid Items';
+  const subtitle=mode==='weapons'?'Equipping a weapon is a free action — no turn cost.':'Using an item costs your turn. Enemies will attack after.';
+
+  // Show currently equipped weapon at top of weapon list
+  let equippedHtml='';
+  if(mode==='weapons'){
+    const w=getEquippedWeapon();
+    if(w){
+      const ammo=w.ammo?` · Ammo: ${ITEMS[w.ammo]?.n||'ammo'} ×${countItem(w.ammo)}`:'';
+      equippedHtml=`<div class="inv-card" style="border:1px solid var(--amber);background:#1a1400">
+        <div class="inv-row"><div style="flex:1"><span style="font-size:13px">${w.e}</span> <b>${w.n}</b></div><div style="font-size:10px;color:var(--amber)">EQUIPPED</div></div>
+        <div style="font-size:10px;color:var(--muted);margin:2px 0">${w.desc||''} ${w.a?'ATK +'+w.a:''}${ammo}</div>
+      </div>`;
+    }else{
+      equippedHtml=`<div class="inv-card" style="border:1px solid var(--muted);background:#1a1a0a">
+        <div class="inv-row"><div style="flex:1">👊 <b>Unarmed</b></div><div style="font-size:10px;color:var(--amber)">EQUIPPED</div></div>
+      </div>`;
+    }
+  }
+
+  // Show current HP in aid mode
+  let hpBarHtml='';
+  if(mode==='aid'){
+    const hp=hpPct(S.hp,S.maxHp);
+    hpBarHtml=`<div style="margin-bottom:8px;padding:4px 6px;background:#0a1a0a;border-radius:4px;border:1px solid #1a3a1a">
+      <div style="font-size:11px;margin-bottom:2px">❤ ${S.hp}/${S.maxHp}${S.ap!==undefined?' · ⚡ '+S.ap+'/'+S.maxAp:''}</div>
+      <div class="hb"><div class="hf ${hp<=25?'cr':'g'}" style="width:${hp}%"></div></div>
+    </div>`;
+  }
+
+  panel.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+    <button class="bt sm" onclick="renderCombat()">‹ Back</button>
+    <div style="flex:1;font-size:13px;font-weight:bold;color:var(--amber)">${title}</div>
+  </div>
+  <div style="font-size:10px;color:var(--muted);margin-bottom:8px">${subtitle}</div>
+  ${hpBarHtml}${equippedHtml}
+  ${rows.length?rows.map(([id,c])=>{const it=ITEMS[id];const ammo=it.ammo?` · Ammo: ${ITEMS[it.ammo]?.n||'ammo'} ×${countItem(it.ammo)}`:'';const hpInfo=it.hp?`<span style="color:var(--green)">+${it.hp} HP</span> `:'';const apInfo=it.buff&&it.buff.ap?`<span style="color:var(--ap-blue)">+${it.buff.ap} AP</span> `:'';const dmgInfo=it.buff&&it.buff.dmg?`<span style="color:var(--red)">+${it.buff.dmg} DMG</span> `:'';const drInfo=it.buff&&it.buff.dr?`<span style="color:var(--amber)">+${it.buff.dr} DR</span> `:'';return `<div class="inv-card">
+    <div class="inv-row"><div style="flex:1"><span style="font-size:13px">${it.e}</span> <b>${it.n}</b>${c>1?' ×'+c:''}</div><div style="font-size:10px;color:var(--muted)">${it.p||0}c</div></div>
+    <div style="font-size:10px;color:var(--muted);margin:2px 0">${hpInfo}${apInfo}${dmgInfo}${drInfo}${it.a?'ATK +'+it.a+' ':''}${ammo}</div>
+    <div>${it.t==='w'?`<button class="bt sm go" onclick="combatEquipItem('${id}')">Equip</button>`:''}${(it.t==='c'||it.t==='chem'||it.hp||it.buff)?`<button class="bt sm pip" onclick="combatUseItem('${id}')">Use</button>`:''}</div>
+  </div>`}).join(''):'<div class="cd"><div style="font-size:11px;color:var(--muted)">Nothing usable here.</div></div>'}
+  <button class="bt" onclick="renderCombat()">Back to fight</button>`;
+}
+function combatEquipItem(id){
+  if(!combat)return;
+  const idx=S.inv.indexOf(id);if(idx===-1){notify('Item not found.');return}
+  const it=ITEMS[id];if(!it||it.t!=='w')return;
+  if(S.gear.w)giveItem(S.gear.w,1,{ignoreLimit:true,silent:true});
+  S.gear.w=id;S.inv.splice(idx,1);
+  let msg=`Equipped ${it.n}.`;
+  if(S.rapidReload){S.ap=Math.min(S.maxAp,S.ap+5);msg+=` Rapid Reload: +5 AP!`}
+  combat.log.push(msg);notify('Equipped '+it.n);save();renderCombat();
+}
+function combatUseItem(id){
+  if(!combat)return;
+  const idx=S.inv.indexOf(id);if(idx===-1){notify('Item not found.');return}
+  const it=ITEMS[id];if(!it)return;
+  let lines=[];
+  if(it.hp){
+    let heal=it.hp;
+    // Triage: +25% healing from medical items (stimpak, super_stimpak, doctor_bag, healing_powder, antivenom)
+    if(S.triagePerk&&(id==='stimpak'||id==='super_stimpak'||id==='doctor_bag'||id==='healing_powder'||id==='antivenom')){heal=Math.round(heal*1.25)}
+    // Lead Belly: +50% healing from food/drink
+    if(S.leadBelly&&(id==='nuka_cola'||id==='sunset_sars'||id==='fancy_lad'||id==='cram'||id==='iguana_bits'||id==='gecko_steak'||id==='bighorner_meat'||id==='purified_water'||id==='dirty_water')){heal=Math.round(heal*1.5)}
+    S.hp=Math.min(S.maxHp,S.hp+heal);lines.push('+'+heal+' HP');
+  }
+  if(it.buff&&it.buff.ap){let apGain=it.buff.ap;if(S.chemResistant)apGain+=10;S.ap=Math.min(S.maxAp,S.ap+apGain);lines.push('+'+apGain+' AP')}
+  if(it.buff&&it.buff.dmg){lines.push('+'+it.buff.dmg+' DMG')}
+  if(it.buff&&it.buff.dr){lines.push('+'+it.buff.dr+' DR')}
+  S.inv.splice(idx,1);combat.log.push(`Used ${it.n}${lines.length?' ('+lines.join(', ')+')':''}.`);
+  notify('Used '+it.n);
+
+  // Enemies get a turn after using an item
+  const survivors=combat.enemies.filter(en=>en.hp>0);
+  if(survivors.length){
+    // Rad Child: heal per turn
+    if(S.radChild&&S.hp<S.maxHp){S.hp=Math.min(S.maxHp,S.hp+3);combat.log.push('Rad Child: +3 HP regen.')}
+    survivors.forEach(en=>{
+      const eDmg=fnvDTDamage(en.a+rnd(-1,1),defPow(),FNV_NORMAL.enemyDamage);
+      S.hp=Math.max(0,S.hp-eDmg);
+      combat.log.push(`${en.name} deals ${eDmg} damage to you.`);
+    });
+    if(S.hp<=0){combat.log.push('You are critically wounded!');endCombat(false,true);return}
+  }
+  combat.turn++;
+  upSB();save();renderCombat();
 }
   
 function combatAction(act){
@@ -3611,22 +3909,17 @@ function combatAction(act){
         log('Killed '+target.name+' (V.A.T.S.).','c');
         S.kills[target.id||'unknown']=(S.kills[target.id||'unknown']||0)+1;
         S.killCount++;
+        if(S.grimReaper){S.ap=Math.min(S.maxAp,S.ap+20);combat.log.push("Grim Reaper's Sprint: +20 AP!")}
       }
       break;
     }
     case 'heal':{
-      const si=S.inv.indexOf('stimpak');
-      const ssi=si===-1?S.inv.indexOf('super_stimpak'):-1;
-      const idx=si!==-1?si:ssi;
-      if(idx===-1){notify('No healing items!');return}
-      const item=ITEMS[S.inv[idx]];
-      S.hp=Math.min(S.maxHp,S.hp+(item.hp||30));
-      combat.log.push(`Used ${item.n}. +${item.hp||30} HP.`);
-      S.inv.splice(idx,1);
-      break;
+      // Legacy fallback — redirect to aid inventory
+      openCombatInventory('aid');
+      return;
     }
     case 'flee':{
-      const flee=R()<(.3+S.spd*.05+(S.special?S.special[5]*.03:0));
+      const flee=R()<(.3+S.spd*.05+(S.special?S.special[5]*.03:0)+(S.travelLight?0.1:0));
       if(flee){combat.log.push('You escaped!');log('Fled from combat.','c');endCombat(false);return}
       else{combat.log.push('Failed to escape!');}
       break;
@@ -3700,23 +3993,88 @@ function endCombat(won,died){
 // PERKS DATA
 // ============================================================
 const PERKS=[
-  {id:'toughness',name:'Toughness',icon:'🛡',cat:'Combat',desc:'+3 DT. Same role as New Vegas Toughness.',apply:s=>{s.def=(s.def||0)+3},req:{level:6,special:2,min:5}},
-  {id:'toughness_2',name:'Toughness II',icon:'🛡',cat:'Combat',desc:'+3 more DT. Heavy armour starts to matter.',apply:s=>{s.def=(s.def||0)+3},req:{level:12,special:2,min:5,perk:'toughness'}},
-  {id:'commando',name:'Commando',icon:'⚔',cat:'Combat',desc:'+3 gun damage. Better control with rifles and automatics.',apply:s=>{s.gunBonus=(s.gunBonus||0)+3},req:{level:8}},
-  {id:'cowboy',name:'Cowboy',icon:'🤠',cat:'Combat',desc:'+3 damage with simple wasteland weapons.',apply:s=>{s.gunBonus=(s.gunBonus||0)+2;s.meleeBonus=(s.meleeBonus||0)+1},req:{level:8}},
+  // ── SPECIAL Boosters (Intense Training) — available from Lv 2 ──
+  {id:'it_str',name:'Intense Training: Strength',icon:'💪',cat:'Training',desc:'+1 Strength. More carry weight and melee damage.',apply:s=>{s.special[0]=Math.min(10,s.special[0]+1);s.carryCap=calcCarryCap()},req:{level:2}},
+  {id:'it_per',name:'Intense Training: Perception',icon:'👁',cat:'Training',desc:'+1 Perception. Better awareness and detection.',apply:s=>{s.special[1]=Math.min(10,s.special[1]+1)},req:{level:2}},
+  {id:'it_end',name:'Intense Training: Endurance',icon:'🫀',cat:'Training',desc:'+1 Endurance. More max HP.',apply:s=>{s.special[2]=Math.min(10,s.special[2]+1);syncFNVStats()},req:{level:2}},
+  {id:'it_cha',name:'Intense Training: Charisma',icon:'🗣',cat:'Training',desc:'+1 Charisma. Better prices and NPC reactions.',apply:s=>{s.special[3]=Math.min(10,s.special[3]+1)},req:{level:2}},
+  {id:'it_int',name:'Intense Training: Intelligence',icon:'🧠',cat:'Training',desc:'+1 Intelligence. More XP from events.',apply:s=>{s.special[4]=Math.min(10,s.special[4]+1)},req:{level:2}},
+  {id:'it_agi',name:'Intense Training: Agility',icon:'💨',cat:'Training',desc:'+1 Agility. More max AP and better flee chance.',apply:s=>{s.special[5]=Math.min(10,s.special[5]+1);syncFNVStats()},req:{level:2}},
+  {id:'it_lck',name:'Intense Training: Luck',icon:'🍀',cat:'Training',desc:'+1 Luck. Better crits and gambling odds.',apply:s=>{s.special[6]=Math.min(10,s.special[6]+1)},req:{level:2}},
+
+  // ── Combat — Tier 1 (early game) ──
+  {id:'rapid_reload',name:'Rapid Reload',icon:'🔄',cat:'Combat',desc:'Weapon swaps in combat are instant and restore 5 AP.',apply:s=>{s.rapidReload=true},req:{level:2,special:5,min:5}},
+  {id:'grunt',name:'Grunt',icon:'🪖',cat:'Combat',desc:'+2 damage with all weapons. Basic military training.',apply:s=>{s.gunBonus=(s.gunBonus||0)+2;s.meleeBonus=(s.meleeBonus||0)+2},req:{level:4}},
+  {id:'hunter',name:'Hunter',icon:'🦎',cat:'Combat',desc:'Creatures drop better loot and +2 damage vs animals/insects.',apply:s=>{s.hunterPerk=true;s.hunterDmg=(s.hunterDmg||0)+2},req:{level:2}},
+  {id:'entomologist',name:'Entomologist',icon:'🦂',cat:'Combat',desc:'+50% damage against insects (mantis, scorpion, cazador, ant, bloatfly).',apply:s=>{s.entomologistPerk=true},req:{level:4,special:4,min:4}},
+
+  // ── Combat — Tier 2 (mid game) ──
+  {id:'commando',name:'Commando',icon:'⚔',cat:'Combat',desc:'+4 gun damage. Better control with rifles and automatics.',apply:s=>{s.gunBonus=(s.gunBonus||0)+4},req:{level:8}},
+  {id:'cowboy',name:'Cowboy',icon:'🤠',cat:'Combat',desc:'+3 gun and +2 melee damage. Simple wasteland weapons.',apply:s=>{s.gunBonus=(s.gunBonus||0)+3;s.meleeBonus=(s.meleeBonus||0)+2},req:{level:8}},
+  {id:'toughness',name:'Toughness',icon:'🛡',cat:'Combat',desc:'+3 DT. You can take a hit.',apply:s=>{s.def=(s.def||0)+3},req:{level:6,special:2,min:5}},
+  {id:'stonewall',name:'Stonewall',icon:'🧱',cat:'Combat',desc:'+5 DT but -5 max AP. Immovable object.',apply:s=>{s.def=(s.def||0)+5;s.maxAp=Math.max(20,s.maxAp-5);s.ap=Math.min(s.ap,s.maxAp)},req:{level:8,special:0,min:6}},
+  {id:'piercing_strike',name:'Piercing Strike',icon:'🗡',cat:'Combat',desc:'+5 melee damage. Helps blades punch through DT.',apply:s=>{s.meleeBonus=(s.meleeBonus||0)+5},req:{level:10}},
+  {id:'shotgun_surgeon',name:'Shotgun Surgeon',icon:'🔫',cat:'Combat',desc:'Shotguns ignore 4 DT on enemies.',apply:s=>{s.shotgunSurgeon=true},req:{level:6}},
+  {id:'center_mass',name:'Center of Mass',icon:'🎯',cat:'Combat',desc:'+3 damage with guns in non-VATS attacks.',apply:s=>{s.centerMass=(s.centerMass||0)+3},req:{level:6,special:1,min:5}},
+
+  // ── Combat — Tier 3 (late game) ──
+  {id:'toughness_2',name:'Toughness II',icon:'🛡',cat:'Combat',desc:'+3 more DT. Heavy armour really matters now.',apply:s=>{s.def=(s.def||0)+3},req:{level:12,special:2,min:5,perk:'toughness'}},
+  {id:'commando_2',name:'Commando II',icon:'⚔',cat:'Combat',desc:'+4 more gun damage. Elite marksman.',apply:s=>{s.gunBonus=(s.gunBonus||0)+4},req:{level:16,perk:'commando'}},
   {id:'better_crits',name:'Better Criticals',icon:'💥',cat:'Combat',desc:'+5% critical chance. Luck builds hit harder.',apply:s=>{s.critBonus=(s.critBonus||0)+5},req:{level:16,special:6,min:6}},
-  {id:'piercing_strike',name:'Piercing Strike',icon:'🗡',cat:'Combat',desc:'+4 melee damage. Helps blades punch through DT.',apply:s=>{s.meleeBonus=(s.meleeBonus||0)+4},req:{level:12}},
-  {id:'life_giver',name:'Life Giver',icon:'❤',cat:'Survival',desc:'+30 max HP, matching the New Vegas perk style.',apply:s=>{s.maxHp+=30;s.hp=Math.min(s.hp+30,s.maxHp)},req:{level:12,special:2,min:6}},
+  {id:'finesse',name:'Finesse',icon:'✨',cat:'Combat',desc:'+3% crit chance. Elegant precision.',apply:s=>{s.critBonus=(s.critBonus||0)+3},req:{level:10}},
+  {id:'slayer',name:'Slayer',icon:'☠',cat:'Combat',desc:'+8 melee damage. The wasteland fears you.',apply:s=>{s.meleeBonus=(s.meleeBonus||0)+8},req:{level:18,special:0,min:7,perk:'piercing_strike'}},
+  {id:'grim_reapers_sprint',name:"Grim Reaper's Sprint",icon:'💀',cat:'Combat',desc:'Killing a target in VATS restores 20 AP.',apply:s=>{s.grimReaper=true},req:{level:20,special:6,min:7}},
+  {id:'bloody_mess',name:'Bloody Mess',icon:'🩸',cat:'Combat',desc:'+5% overall damage. Everything hits a little harder.',apply:s=>{s.bloodyMess=true},req:{level:6}},
+
+  // ── Survival — Tier 1 ──
+  {id:'triage',name:'Triage',icon:'🩹',cat:'Survival',desc:'Healing items restore 25% more HP.',apply:s=>{s.triagePerk=true},req:{level:4,special:4,min:5}},
+  {id:'lead_belly',name:'Lead Belly',icon:'🫃',cat:'Survival',desc:'Food items restore 50% more HP. Iron stomach.',apply:s=>{s.leadBelly=true},req:{level:2,special:2,min:5}},
+  {id:'pack_rat',name:'Pack Rat',icon:'🎒',cat:'Survival',desc:'+30 carry weight. Every pocket matters.',apply:s=>{s.bonusCarry=(s.bonusCarry||0)+30;s.carryCap=calcCarryCap()},req:{level:4,special:4,min:5}},
+  {id:'travel_light',name:'Travel Light',icon:'🏃',cat:'Survival',desc:'+10% flee chance and faster travel between locations.',apply:s=>{s.travelLight=true},req:{level:4,special:5,min:5}},
+
+  // ── Survival — Tier 2 ──
+  {id:'life_giver',name:'Life Giver',icon:'❤',cat:'Survival',desc:'+30 max HP.',apply:s=>{s.maxHp+=30;s.hp=Math.min(s.hp+30,s.maxHp)},req:{level:12,special:2,min:6}},
+  {id:'life_giver_2',name:'Life Giver II',icon:'❤',cat:'Survival',desc:'+40 more max HP. Hard to put down.',apply:s=>{s.maxHp+=40;s.hp=Math.min(s.hp+40,s.maxHp)},req:{level:20,special:2,min:7,perk:'life_giver'}},
   {id:'action_boy',name:'Action Boy',icon:'⚡',cat:'Survival',desc:'+15 max AP.',apply:s=>{s.maxAp+=15;s.ap=Math.min(s.ap+15,s.maxAp)},req:{level:16,special:5,min:6}},
-  {id:'hunter',name:'Hunter',icon:'🦎',cat:'Survival',desc:'Creatures drop better loot. No flat damage bloat.',apply:s=>{s.hunterPerk=true},req:{level:2}},
-  {id:'pack_rat',name:'Pack Rat',icon:'🎒',cat:'Survival',desc:'+25 carry. Keeps looting useful without breaking combat.',apply:s=>{s.bonusCarry=(s.bonusCarry||0)+25;s.carryCap=calcCarryCap()},req:{level:8,special:4,min:5}},
-  {id:'strong_back',name:'Strong Back',icon:'💪',cat:'Survival',desc:'+50 carry weight, like New Vegas.',apply:s=>{s.bonusCarry=(s.bonusCarry||0)+50;s.carryCap=calcCarryCap()},req:{level:8,special:0,min:5}},
+  {id:'strong_back',name:'Strong Back',icon:'💪',cat:'Survival',desc:'+50 carry weight.',apply:s=>{s.bonusCarry=(s.bonusCarry||0)+50;s.carryCap=calcCarryCap()},req:{level:8,special:0,min:5}},
+  {id:'adamantium_skeleton',name:'Adamantium Skeleton',icon:'🦴',cat:'Survival',desc:'+2 DT and +20 max HP. Reinforced bones.',apply:s=>{s.def=(s.def||0)+2;s.maxHp+=20;s.hp=Math.min(s.hp+20,s.maxHp)},req:{level:14,special:2,min:7}},
+
+  // ── Survival — Tier 3 ──
+  {id:'rad_child',name:'Rad Child',icon:'☢',cat:'Survival',desc:'Heal 3 HP per turn in combat. Radiation adaption.',apply:s=>{s.radChild=true},req:{level:10,special:2,min:6}},
+  {id:'solar_powered',name:'Solar Powered',icon:'☀',cat:'Survival',desc:'+2 STR and +1 END during daytime travel.',apply:s=>{s.solarPowered=true},req:{level:20,special:2,min:7}},
+  {id:'chem_resistant',name:'Chem Resistant',icon:'💊',cat:'Survival',desc:'Chems last longer and restore +10 AP on use.',apply:s=>{s.chemResistant=true},req:{level:16,special:2,min:6}},
+
+  // ── Social — Tier 1 ──
   {id:'barter',name:'Barter',icon:'💰',cat:'Social',desc:'Buy 10% cheaper. Prices are just opening offers.',apply:s=>{s.barterPerk=(s.barterPerk||0)+10},req:{level:4}},
   {id:'smooth_talker',name:'Smooth Talker',icon:'😏',cat:'Social',desc:'+15 affinity gain on NPC interactions.',apply:s=>{s.charmPerk=(s.charmPerk||0)+15},req:{level:4,special:3,min:6}},
+  {id:'ladykiller',name:'Lady Killer / Black Widow',icon:'💋',cat:'Social',desc:'+20 affinity with opposite-sex NPCs and +2 damage vs them.',apply:s=>{s.ladykillerPerk=true},req:{level:2,special:3,min:5}},
+  {id:'confirmed_bachelor',name:'Confirmed Bachelor / Cherchez',icon:'🤝',cat:'Social',desc:'+15 affinity with same-sex NPCs and +2 damage vs them.',apply:s=>{s.confirmedBachelorPerk=true},req:{level:2,special:3,min:5}},
+
+  // ── Social — Tier 2 ──
+  {id:'barter_2',name:'Barter II',icon:'💰',cat:'Social',desc:'Another 10% cheaper. Real haggler.',apply:s=>{s.barterPerk=(s.barterPerk||0)+10},req:{level:10,perk:'barter'}},
   {id:'local_leader',name:'Local Leader',icon:'🏘',cat:'Social',desc:'Faction rep gains are doubled.',apply:s=>{s.leaderPerk=true},req:{level:10,special:3,min:7}},
+  {id:'animal_friend',name:'Animal Friend',icon:'🐾',cat:'Social',desc:'Chance to pacify animal enemies instead of fighting.',apply:s=>{s.animalFriend=true},req:{level:10,special:3,min:6}},
+  {id:'terrifying_presence',name:'Terrifying Presence',icon:'😨',cat:'Social',desc:'New intimidation dialogue option. Chance to scare off human enemies.',apply:s=>{s.terrifyingPresence=true},req:{level:8,special:3,min:7}},
+
+  // ── Social — Tier 3 ──
+  {id:'speech_master',name:'Speech Master',icon:'📢',cat:'Social',desc:'All speech checks get +20% success chance.',apply:s=>{s.speechMaster=true},req:{level:14,special:3,min:8,perk:'smooth_talker'}},
+
+  // ── Utility — Tier 1 ──
   {id:'scrounger',name:'Scrounger',icon:'🔍',cat:'Utility',desc:'Find ammo more often when scavenging.',apply:s=>{s.scroungerPerk=true},req:{level:4}},
   {id:'educated',name:'Educated',icon:'🎓',cat:'Utility',desc:'+2 XP from events and kills.',apply:s=>{s.flatXpBonus=(s.flatXpBonus||0)+2},req:{level:4,special:4,min:4}},
-  {id:'light_step',name:'Light Step',icon:'👣',cat:'Utility',desc:'30% chance to avoid random combat encounters while exploring.',apply:s=>{s.lightStepPerk=true},req:{level:14,special:5,min:6}},
+  {id:'retention',name:'Retention',icon:'📖',cat:'Utility',desc:'+4 XP from all sources. Quick learner.',apply:s=>{s.flatXpBonus=(s.flatXpBonus||0)+4},req:{level:8,special:4,min:6,perk:'educated'}},
+  {id:'fortune_finder',name:'Fortune Finder',icon:'💎',cat:'Utility',desc:'Find 30% more caps from loot and rewards.',apply:s=>{s.fortuneFinder=true},req:{level:6,special:6,min:5}},
+  {id:'jury_rigging',name:'Jury Rigging',icon:'🔧',cat:'Utility',desc:'Scrap items sell for 50% more caps.',apply:s=>{s.juryRigging=true},req:{level:14,special:4,min:7}},
+
+  // ── Utility — Tier 2 ──
+  {id:'explorer',name:'Explorer',icon:'🗺',cat:'Utility',desc:'Discover new locations faster and find rarer loot in expeditions.',apply:s=>{s.explorerPerk=true},req:{level:8}},
+  {id:'light_step',name:'Light Step',icon:'👣',cat:'Utility',desc:'30% chance to avoid random combat while exploring.',apply:s=>{s.lightStepPerk=true},req:{level:14,special:5,min:6}},
+  {id:'living_anatomy',name:'Living Anatomy',icon:'🔬',cat:'Utility',desc:'See enemy DT and exact HP in combat.',apply:s=>{s.livingAnatomy=true},req:{level:8,special:1,min:7}},
+  {id:'vigilant_recycler',name:'Vigilant Recycler',icon:'♻',cat:'Utility',desc:'Chance to recover spent ammo after combat.',apply:s=>{s.vigilantRecycler=true},req:{level:6,special:4,min:6}},
+
+  // ── Utility — Tier 3 ──
+  {id:'nerd_rage',name:'Nerd Rage!',icon:'🤓',cat:'Utility',desc:'Below 25% HP: +10 DT and +15 damage. Desperate brilliance.',apply:s=>{s.nerdRage=true},req:{level:10,special:4,min:8}},
+  {id:'voracious_reader',name:'Voracious Reader',icon:'📚',cat:'Utility',desc:'+8 XP from all sources. Rapid mastery.',apply:s=>{s.flatXpBonus=(s.flatXpBonus||0)+8},req:{level:16,special:4,min:7,perk:'retention'}},
 ];
 
 // ============================================================
@@ -3724,17 +4082,33 @@ const PERKS=[
 // ============================================================
 let _pendingLevelUps=0;
 
+// Per-level stat gains beyond HP+5
+function applyLevelBonuses(level){
+  // Every level: +5 HP (already in syncFNVStats)
+  // Every 3 levels: +2 AP
+  if(level%3===0){S.maxAp+=2;S.ap=Math.min(S.ap+2,S.maxAp)}
+  // Every 5 levels: +1 base ATK
+  if(level%5===0){S.atk=(S.atk||0)+1}
+  // Every 4 levels: +1 base DEF
+  if(level%4===0){S.def=(S.def||0)+1}
+}
+
 function chkLU(){
   let levelled=false;
   while(S.xp>=xpNeed(S.level)){
     S.xp-=xpNeed(S.level);S.level++;
+    applyLevelBonuses(S.level);
     syncFNVStats(true);
-    log('Level up! Now level '+S.level+'. HP +5 from New Vegas levelling.','q');
+    const bonuses=['HP +5'];
+    if(S.level%3===0)bonuses.push('AP +2');
+    if(S.level%5===0)bonuses.push('ATK +1');
+    if(S.level%4===0)bonuses.push('DEF +1');
+    log('Level up! Now level '+S.level+'. '+bonuses.join(', ')+'.','q');
     if(calcPerkDue(S.level))_pendingLevelUps++;
     levelled=true;
   }
   if(_pendingLevelUps) showPerkScreen();
-  else if(levelled) upSB();
+  else if(levelled){notify('⬆ LEVEL '+S.level+'!');upSB()}
 }
 
 function perkOwned(id){return (S.perks||[]).includes(id)}
@@ -3744,6 +4118,9 @@ function perkMeetsReq(p){
   if(p.req.level && S.level < p.req.level) return false;
   if(p.req.special !== undefined && S.special[p.req.special] < p.req.min) return false;
   if(p.req.perk && !perkOwned(p.req.perk)) return false;
+  // Block Intense Training if that stat is already maxed
+  const itMap={it_str:0,it_per:1,it_end:2,it_cha:3,it_int:4,it_agi:5,it_lck:6};
+  if(itMap[p.id]!==undefined && S.special[itMap[p.id]]>=10) return false;
   return true;
 }
 
@@ -3751,49 +4128,71 @@ function showPerkScreen(){
   if(!_pendingLevelUps) return;
   if(!S.perks) S.perks=[];
 
-  // Pick 3 random unowned perks, weighted toward meetable requirements
+  const panel=$('PP');
   const pool=PERKS.filter(p=>!perkOwned(p.id));
   const meetable=pool.filter(p=>perkMeetsReq(p));
-  const locked=pool.filter(p=>!perkMeetsReq(p));
-  // Offer 2 meetable + 1 locked (shown as locked/dim) if possible, else 3 meetable
-  let choices=[];
-  const shuffled=[...meetable].sort(()=>R()-.5);
-  choices=shuffled.slice(0,3);
-  if(choices.length<3 && locked.length){
-    choices=[...choices,...locked.slice(0,3-choices.length)];
-  }
-  if(!choices.length){
-    // No perks left — just give a stat bonus
+
+  if(!meetable.length && !pool.length){
     _pendingLevelUps=0;
-    notify('⬆ LEVEL '+S.level+'! Max perks reached.');
-    upSB();save();
-    return;
+    notify('⬆ LEVEL '+S.level+'! All perks acquired!');
+    upSB();save();return;
   }
 
-  const lvl=S.level-(_pendingLevelUps-1); // Display for current pending level
-  const panel=$('PP');
+  // Build level-up stat summary
+  const bonuses=['❤ HP +5'];
+  if(S.level%3===0)bonuses.push('⚡ AP +2');
+  if(S.level%5===0)bonuses.push('⚔ ATK +1');
+  if(S.level%4===0)bonuses.push('🛡 DEF +1');
+
+  // Group available perks by category
+  const perkCats=['Training','Combat','Survival','Social','Utility'];
+  const catIcons={Training:'🏋️',Combat:'⚔️',Survival:'❤️',Social:'💬',Utility:'🔧'};
+
+  let catSections='';
+  perkCats.forEach(cat=>{
+    const catMeetable=meetable.filter(p=>p.cat===cat);
+    if(!catMeetable.length)return;
+    catSections+=`<div style="margin-top:8px">
+      <div style="font-size:10px;font-weight:bold;color:var(--amber2);letter-spacing:1px;margin-bottom:4px">${catIcons[cat]||''} ${cat.toUpperCase()} (${catMeetable.length})</div>
+      ${catMeetable.map(p=>{
+        // Build requirement text for display
+        let reqParts=[];
+        if(p.req&&p.req.perk){const pp=PERKS.find(x=>x.id===p.req.perk);if(pp)reqParts.push('Requires: '+pp.name)}
+        const itMap2={it_str:0,it_per:1,it_end:2,it_cha:3,it_int:4,it_agi:5,it_lck:6};
+        let itInfo='';
+        if(itMap2[p.id]!==undefined){itInfo=SPECIAL_NAMES[itMap2[p.id]]+' '+S.special[itMap2[p.id]]+'→'+(S.special[itMap2[p.id]]+1)}
+        return `<div class="perk-card" onclick="pickPerk('${p.id}')" style="display:flex;align-items:flex-start;gap:10px">
+          <div class="perk-icon">${p.icon}</div>
+          <div style="flex:1">
+            <div class="perk-name">${p.name}</div>
+            <div class="perk-desc">${p.desc}</div>
+            ${itInfo?'<div style="font-size:10px;color:var(--green2);margin-top:2px">'+itInfo+'</div>':''}
+            ${reqParts.length?'<div style="font-size:9px;color:var(--amber2);margin-top:2px">'+reqParts.join(' · ')+'</div>':''}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  });
+
+  // Count locked perks for info
+  const lockedCount=pool.length-meetable.length;
+
   panel.innerHTML=`
-    <div style="text-align:center;margin-bottom:10px">
+    <div style="text-align:center;margin-bottom:6px">
       <div style="font-size:32px;margin-bottom:4px">⬆</div>
       <div style="font-size:17px;font-weight:bold;color:var(--amber);letter-spacing:2px">LEVEL ${S.level}</div>
-      <div style="font-size:10px;color:var(--muted);margin-top:2px">Perks arrive every 2 levels, closer to New Vegas pacing.</div>
-      ${_pendingLevelUps>1?`<div style="font-size:10px;color:var(--green);margin-top:2px">${_pendingLevelUps} level-ups pending</div>`:''}
+      <div style="display:flex;justify-content:center;gap:8px;margin:6px 0;flex-wrap:wrap">
+        ${bonuses.map(b=>'<span style="font-size:10px;padding:2px 8px;background:#1a2a1a;border:1px solid #2a4a2a;border-radius:10px;color:var(--green)">'+b+'</span>').join('')}
+      </div>
+      ${_pendingLevelUps>1?'<div style="font-size:10px;color:var(--green);margin-top:2px">'+_pendingLevelUps+' perk choices pending</div>':''}
+      <div style="font-size:10px;color:var(--muted);margin-top:4px">${meetable.length} perks available${lockedCount?' · '+lockedCount+' locked':''} · Choose one</div>
     </div>
-    <div style="font-size:9px;color:var(--muted);text-align:center;margin-bottom:8px;letter-spacing:1px">AVAILABLE PERKS</div>
-    ${choices.map(p=>{
-      const ok=perkMeetsReq(p);
-      const reqText=!ok?(p.req?.perk?`Req: ${PERKS.find(x=>x.id===p.req.perk)?.name||p.req.perk}`:(p.req?.level&&S.level<p.req.level?`Req: Level ${p.req.level}`:`Req: ${SPECIAL_NAMES[p.req?.special||0]} ${p.req?.min}+`)):'';
-      return `<div class="perk-card${ok?'':' locked'}" onclick="${ok?`pickPerk('${p.id}')`:''}" style="display:flex;align-items:flex-start;gap:10px">
-        <div class="perk-icon">${p.icon}</div>
-        <div style="flex:1">
-          <div class="perk-name">${p.name}</div>
-          <div style="font-size:9px;color:var(--amber2);text-transform:uppercase;margin:1px 0">${p.cat}</div>
-          <div class="perk-desc">${p.desc}</div>
-          ${reqText?`<div class="perk-req">🔒 ${reqText}</div>`:''}
-        </div>
-      </div>`;
-    }).join('')}
-    <button class="bt" style="margin-top:10px;text-align:center;font-size:11px" onclick="skipPerk()">Skip — bank +50 XP instead</button>`;
+    <div style="max-height:55vh;overflow-y:auto;padding-right:4px">
+      ${catSections}
+    </div>
+    <div style="margin-top:8px;display:flex;gap:6px">
+      <button class="bt" style="flex:1;text-align:center;font-size:11px" onclick="skipPerk()">Skip — bank +50 XP</button>
+    </div>`;
 
   $('PO').classList.add('A');
   upSB();
@@ -3808,7 +4207,6 @@ function pickPerk(id){
   log('Perk: '+p.name+' — '+p.desc,'q');
   _pendingLevelUps--;
   $('PO').classList.remove('A');
-  // Show result then continue if more pending
   showResult('Perk Acquired',''+p.icon,
     [`<b style="color:var(--amber)">${p.name}</b>`, p.desc, '⭐ Level '+S.level],
     _pendingLevelUps?'Next Level Up':'Continue',
@@ -3989,7 +4387,7 @@ function openBld(bId){
   }
   const npc=getBuildingNpc(S.loc,bId,{loc:S.loc,bId});
   const o=$('BO');const bi=$('BI');bi.innerHTML='';
-  const isGoodspringsSpecial=['saloon','general_store','gas_station','doc_house'].includes(bId);
+  const isGoodspringsSpecial=['saloon','general_store','gas_station','doc_house','caravan_stop'].includes(bId);
   const isPrimmSpecial=['vikki_vance','mojave_express','sheriff_office','bison_steve'].includes(bId);
   const isNovacSpecial=['dino_bite','motel','mcbride_house','ranger_bungalow','no_bark_shack'].includes(bId);
   const isFreesideSpecial=['atomic_wrangler','kings_hq','mick_ralph','old_mormon_fort','silver_rush','cerulean_robotics'].includes(bId);
@@ -4018,6 +4416,7 @@ function openBld(bId){
   else if(bId==='general_store'){bldGoodspringsStore(body)}
   else if(bId==='gas_station'){bldGoodspringsGas(body)}
   else if(bId==='doc_house'){bldGoodspringsDoc(body)}
+  else if(bId==='caravan_stop'){bldGoodspringsCaravan(body)}
   else if(bId==='vikki_vance'){bldPrimmVikki(body)}
   else if(bId==='mojave_express'){bldPrimmExpress(body)}
   else if(bId==='sheriff_office'){bldPrimmSheriff(body)}
@@ -4920,6 +5319,23 @@ function buildBuyButtons(body,itemIds,bId){
   body.appendChild(btn);
 }
 
+function gsSaloonOddJob(){
+  const jobs=[
+    {n:'run water jugs from the source',loot:['purified_water','sunset_sars'],caps:[6,14],xp:[6,10]},
+    {n:'break down gecko hides for traders',loot:['gecko_hide','duct_tape'],caps:[8,16],xp:[7,12]},
+    {n:'sweep the saloon and listen for road gossip',loot:['pre_war_money','fancy_lad'],caps:[5,12],xp:[5,9]},
+    {n:'sort scrap behind the gas station',loot:['scrap','wrench','duct_tape'],caps:[4,10],xp:[6,11]}
+  ];
+  const job=rndA(jobs);
+  const caps=rnd(job.caps[0],job.caps[1]);
+  const xp=rnd(job.xp[0],job.xp[1]);
+  const pick=rndA(job.loot);
+  S.caps+=caps;S.xp+=xp;S.rep.Goodsprings=(S.rep.Goodsprings||0)+1;
+  giveItem(pick,1,{silent:true});advanceTime(1);
+  log('Goodsprings odd job: '+job.n+'.','e');
+  closeBld();showResult('Goodsprings Odd Job','🛠',[job.n,`💰 +${caps} caps`,`⭐ +${xp} XP`,`🏘 Goodsprings standing +1`,`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','chkLU();upAll()');
+}
+
 function bldGoodspringsSaloon(body){
   body.appendChild(el('div','bs2','Prospector Saloon'));
   body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The saloon feels like the real heart of Goodsprings: warm food, wary eyes, and people quietly deciding whether you are worth trusting.</div>`));
@@ -4927,6 +5343,9 @@ function bldGoodspringsSaloon(body){
   const rumorBtn=el('button','bt','🗣 Listen to town talk');
   rumorBtn.onclick=()=>{closeBld();showResult('Town Talk','🗣',[rndA(['Folks are worried about trouble spilling up from the prison roads.','The source stays clean only if somebody keeps the wildlife honest.','Goodsprings looks peaceful until you remember how close the Mojave is to everything else.'])],'Continue','upAll()')};
   body.appendChild(rumorBtn);
+  const oddBtn=el('button','bt go','🛠 Work the Goodsprings odd-jobs board');
+  oddBtn.onclick=()=>gsSaloonOddJob();
+  body.appendChild(oddBtn);
   const tableBtn=el('button','bt','🔎 Check the empty tables');
   tableBtn.onclick=()=>{advanceTime(1);const pick=rndA(['sunset_sars','pre_war_money','fancy_lad']);giveItem(pick);log('You check the saloon tables and find '+ITEMS[pick].n+'.','e');closeBld();showResult('Prospector Saloon','🔎',[`${ITEMS[pick].e} ${ITEMS[pick].n}`,'⏰ 1 hour passed'],'Continue','upAll()')};
   body.appendChild(tableBtn);
@@ -4970,13 +5389,75 @@ function goodspringsDocTreatment(){
 }
 function openGoodspringsTrade(){
   const ids=[
-    {id:'stimpak',qty:3},{id:'purified_water',qty:4},{id:'sunset_sars',qty:5},
-    {id:'ammo_9mm',qty:8},{id:'ammo_10mm',qty:5},{id:'ammo_357',qty:4},
-    {id:'pistol_9mm',qty:1},{id:'varmint_rifle',qty:1},
-    {id:'bobby_pin',qty:3},{id:'duct_tape',qty:2}
+    {id:'stimpak',qty:5},{id:'purified_water',qty:6},{id:'sunset_sars',qty:8},{id:'doctor_bag',qty:1},
+    {id:'ammo_9mm',qty:28},{id:'ammo_10mm',qty:16},{id:'ammo_357',qty:14},{id:'ammo_556',qty:18},{id:'ammo_shells',qty:10},
+    {id:'pistol_9mm',qty:1},{id:'revolver_357',qty:1},{id:'varmint_rifle',qty:1},{id:'single_shotgun',qty:1},{id:'tire_iron',qty:1},
+    {id:'patched_vault_jacket',qty:1},{id:'settler_utility_vest',qty:1},{id:'leather_armor',qty:1},{id:'prospector_hat',qty:1},{id:'headwrap',qty:2},
+    {id:'bobby_pin',qty:6},{id:'duct_tape',qty:4},{id:'scrap',qty:4},{id:'wrench',qty:1},{id:'cram',qty:3},{id:'dirty_water',qty:3}
   ];
   openTrade(ids,'general_store',"Chet's Store");
 }
+
+function gsCaravanDayIndex(){return ((S.days||1)-1)%4}
+function gsCaravanCurrent(){
+  const schedule=[
+    {id:'prospector',name:'Prospector Wagon',icon:'⛏️',desc:'A weather-beaten prospector wagon stops outside town, trading salvage, tools, and trail food for caps before heading toward Sloan and the old quarry roads.',stock:[
+      {id:'scrap',qty:10},{id:'duct_tape',qty:6},{id:'wrench',qty:2},{id:'wonderglue',qty:3},{id:'bobby_pin',qty:8},{id:'gecko_hide',qty:4},{id:'purified_water',qty:4},{id:'cram',qty:4},{id:'prospector_hat',qty:1},{id:'pickaxe',qty:1}
+    ],rumors:['A prospector says fresh tracks were found near the cemetery fence.','Someone saw lights near the old schoolhouse after dark.','The road south has been chewing up small caravans again.']},
+    {id:'mormon',name:'Mormon Fort Relief Cart',icon:'⚕️',desc:'A Followers-friendly relief cart has come through from the direction of Freeside, selling medicine at fair prices and asking after anyone hurt on the road.',stock:[
+      {id:'stimpak',qty:6},{id:'doctor_bag',qty:2},{id:'healing_powder',qty:6},{id:'antivenom',qty:4},{id:'purified_water',qty:8},{id:'dirty_water',qty:4},{id:'fancy_lad',qty:3},{id:'sunset_sars',qty:6}
+    ],rumors:['The relief driver warns that gecko bites are getting worse by the spring.','A Followers note mentions raiders shifting west of Primm.','Doc Mitchell swaps a few words with the cart before it moves on.']},
+    {id:'gunrunner',name:'Passing Arms Peddler',icon:'🔫',desc:'Not a real Gun Runner, just a road peddler with a locked ammo case, a nervous smile, and enough sense not to camp too far from the saloon.',stock:[
+      {id:'ammo_9mm',qty:80},{id:'ammo_10mm',qty:40},{id:'ammo_357',qty:36},{id:'ammo_556',qty:35},{id:'ammo_shells',qty:24},{id:'pistol_9mm',qty:1},{id:'varmint_rifle',qty:1},{id:'single_shotgun',qty:1},{id:'leather_armor',qty:1},{id:'headwrap',qty:2}
+    ],rumors:['The peddler says convicts near Primm are buying every round they can find.','A caravan guard swears he heard automatic fire east of the highway.','Chet keeps one eye on the ammo case and pretends not to care.']},
+    {id:'brahmin',name:'Crimson Caravan Waystop',icon:'🐂',desc:'A small Crimson Caravan waystop has pulled in under Goodsprings protection. The trader offers mixed goods, road stories, and better stock than Chet usually risks keeping on the shelves.',stock:[
+      {id:'stimpak',qty:3},{id:'purified_water',qty:6},{id:'sunset_sars',qty:8},{id:'ammo_9mm',qty:50},{id:'ammo_357',qty:24},{id:'ammo_shells',qty:16},{id:'settler_utility_vest',qty:1},{id:'patched_vault_jacket',qty:1},{id:'tire_iron',qty:1},{id:'cigarette_pack',qty:3},{id:'pre_war_money',qty:5}
+    ],rumors:['The trader says Goodsprings is quiet, which means everyone dangerous is still on the road.','A brahmin handler complains about bark scorpions nesting near the old graves.','Trudy lets the caravan water up, but only while they behave.']}
+  ];
+  return schedule[gsCaravanDayIndex()];
+}
+function openGoodspringsCaravanTrade(){
+  const c=gsCaravanCurrent();
+  openTrade(c.stock,'caravan_stop',c.name);
+}
+function gsCaravanRumor(){
+  const c=gsCaravanCurrent();
+  advanceTime(1);
+  const rumor=rndA(c.rumors||['The caravan has nothing new to say.']);
+  log('Heard caravan road gossip at Goodsprings.','e');
+  closeBld();
+  showResult(c.name,c.icon,[rumor,'⏰ 1 hour passed'],'Continue','upAll()');
+}
+function gsCaravanUnload(){
+  advanceTime(2);
+  const pay=rnd(8,18);
+  S.caps+=pay;
+  const bonus=R()<.45?rndA(['purified_water','sunset_sars','cram','duct_tape']):null;
+  if(bonus)giveItem(bonus);
+  S.rep.Goodsprings=(S.rep.Goodsprings||0)+1;
+  log('Helped unload a caravan at Goodsprings.','q');
+  const lines=[`💰 +${pay} caps`,'📍 Goodsprings reputation +1','⏰ 2 hours passed'];
+  if(bonus)lines.splice(1,0,`${ITEMS[bonus].e} ${ITEMS[bonus].n}`);
+  closeBld();
+  showResult('Caravan Work','📦',lines,'Continue','upAll()');
+}
+function bldGoodspringsCaravan(body){
+  const c=gsCaravanCurrent();
+  const next=4-gsCaravanDayIndex();
+  body.appendChild(el('div','bs2','Goodsprings Caravan Stop'));
+  body.appendChild(el('div','cd',`<div style="display:flex;align-items:center;gap:10px"><div style="font-size:38px">${c.icon}</div><div style="flex:1"><div style="font-size:13px;font-weight:bold;color:var(--amber)">${c.name}</div><div style="font-size:11px;color:var(--muted);line-height:1.45;margin-top:3px">${c.desc}</div><div style="font-size:10px;color:var(--amber2);margin-top:5px">Current stop: Day ${S.days||1} · caravan stock rotates every day</div></div></div>`));
+  const tradeBtn=el('button','bt go',`🛒 Trade with ${c.name}`);
+  tradeBtn.onclick=()=>openGoodspringsCaravanTrade();
+  body.appendChild(tradeBtn);
+  const rumorBtn=el('button','bt','🗣 Ask for road gossip');
+  rumorBtn.onclick=()=>gsCaravanRumor();
+  body.appendChild(rumorBtn);
+  const workBtn=el('button','bt pip','📦 Help unload the wagon');
+  workBtn.onclick=()=>gsCaravanUnload();
+  body.appendChild(workBtn);
+  body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The stop is deliberately small: no permanent depot, no NCR flag, no Strip money. Just a safe patch of dirt where Trudy tolerates honest traders, Chet watches prices, and brahmin get watered before the road south.</div>`));
+}
+
 function bldGoodspringsDoc(body){
   body.appendChild(el('div','bs2',"Doc Mitchell's House"));
   body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">The house still smells like antiseptic, dust, and someone stubborn enough to keep patching up the Mojave one idiot at a time.</div>`));
@@ -5599,6 +6080,7 @@ const PROPERTY_DEFS=[
   {id:'goodsprings_house',name:'Goodsprings House',cost:5000,loc:'Goodsprings',desc:'A proper Goodsprings house. Expensive, secure, and useful.',actions:['stash','cache']},
   {id:'goodsprings_workshop',name:'Goodsprings Workshop',cost:3500,loc:'Goodsprings',desc:'A proper bench and tools. Unlocks property-only crafting and repair actions.',actions:['repair','ammo']},
   {id:'goodsprings_water_rights',name:'Goodsprings Water Rights Share',cost:2800,loc:'Goodsprings',desc:'A paid share in the spring output. Lets you draw water and gather around the source once per day.',actions:['water_draw','spring_gather']},
+  {id:'goodsprings_bungalow',name:'Goodsprings Bungalow',cost:2200,loc:'Goodsprings',desc:'A small fixer-upper beside town. Gives free rest, a daily breakfast, and a scavenger notice board for repeatable local runs.',actions:['rest','breakfast','local_notice']},
   {id:'primm_bounty_office',name:'Primm Bounty Office',cost:4200,loc:'Primm',desc:'A small law office and holding room in Primm. Take named bounties and open the evidence locker.',actions:['start_bounty','evidence']},
   {id:'hidden_valley_quarters',name:'Hidden Valley Bunker Quarters',cost:6500,loc:'HiddenValley',desc:'Personal quarters inside Hidden Valley. Brotherhood access only.',requires:{fac:'BOS',rep:40},actions:['energy_ration','med_cache']},
   {id:'hidden_valley_workbench',name:'Hidden Valley Scribe Workbench',cost:4800,loc:'HiddenValley',desc:'A reserved Brotherhood workshop bench for calibrating energy tech and salvaging advanced parts.',requires:{fac:'BOS',rep:25},actions:['energy_tuning','tech_cache']},
@@ -5699,6 +6181,36 @@ function claimGoodspringsCache(){
   giveItem(food);
   log('You pull supplies from your Goodsprings house cache.','e');
   closeBld();showResult('House Cache','🏠',[`Purified Water ×${water}`,`${ITEMS[food].e} ${ITEMS[food].n}`],'Continue','upAll()');
+}
+
+function useGoodspringsBungalowRest(){
+  S.hp=S.maxHp;S.ap=S.maxAp;advanceTime(6);
+  log('You rest in your Goodsprings bungalow.','e');
+  closeBld();showResult('Bungalow Rest','🛏',['❤ Full HP/AP','⏰ 6 hours passed'],'Continue','upAll()');
+}
+function claimBungalowBreakfast(){
+  if(!propertyReady('prop_bungalow_breakfast_day')){notify('The bungalow breakfast stash is empty today.');return}
+  markPropertyUsed('prop_bungalow_breakfast_day');
+  const food=rndA(['cram','fancy_lad','gecko_steak','sunset_sars']);
+  giveItem(food);giveItem('purified_water');
+  log('You collect breakfast supplies from the Goodsprings bungalow.','e');
+  closeBld();showResult('Bungalow Breakfast','🥫',[`${ITEMS[food].e} ${ITEMS[food].n}`,'💧 Purified Water'],'Continue','upAll()');
+}
+function runBungalowNoticeJob(){
+  if(!propertyReady('prop_bungalow_notice_day')){notify('No new local notices today.');return}
+  markPropertyUsed('prop_bungalow_notice_day');
+  advanceTime(1);
+  const job=rndA([
+    {t:'Clear gecko tracks by the spring',en:['gecko','gecko'],caps:[12,24],rep:1},
+    {t:'Check graves for bloatfly nests',en:['bloatfly','bloatfly'],caps:[10,22],rep:1},
+    {t:'Pull roaches out of the school lockers',en:['radroach','radroach'],caps:[8,18],rep:1},
+    {t:'Drive coyotes away from the water trail',en:['coyote','coyote'],caps:[14,26],rep:1}
+  ]);
+  const reward=rnd(job.caps[0],job.caps[1]);
+  S.caps+=reward;S.capsEarned+=reward;S.rep.Goodsprings=(S.rep.Goodsprings||0)+job.rep;
+  closeBld();
+  combat={enemies:job.en.map(mkEnemy),turn:0,log:[`Local notice: ${job.t}.`,`Reward secured: ${reward} caps and +${job.rep} Goodsprings standing.`]};
+  renderCombat();
 }
 function claimBosEnergyRation(){
   if(!propertyReady('prop_bos_energy_day')){notify('No new ration allotment yet.');return}
@@ -5873,6 +6385,11 @@ function openPropertyMenu(){
         const water=el('button','bt','💧 Collect water share');water.onclick=drawGoodspringsWater;card.appendChild(water);
         const gather=el('button','bt','🌿 Gather at the spring');gather.onclick=gatherAtSpring;card.appendChild(gather);
       }
+      if(p.id==='goodsprings_bungalow'){
+        const rest=el('button','bt','🛏 Rest at bungalow');rest.onclick=useGoodspringsBungalowRest;card.appendChild(rest);
+        const food=el('button','bt','🥫 Collect breakfast stash');food.onclick=claimBungalowBreakfast;card.appendChild(food);
+        const notice=el('button','bt dn','📌 Run local notice job');notice.onclick=runBungalowNoticeJob;card.appendChild(notice);
+      }
       if(p.id==='primm_bounty_office'){
         const board=getCurrentBounty()||rollNewBounty();
         card.appendChild(el('div','cd',`<div style="font-size:11px"><b>Current target:</b> ${board.name}</div><div style="font-size:10px;color:var(--muted)">${board.desc}</div>`));
@@ -5926,50 +6443,64 @@ function openPropertyMenu(){
 function upChar(){
   const tab=$('char-tab');if(!S)return;tab.innerHTML='';
 
-  // Profile
+  // ── Profile Card ──
   const prof=el('div','cd');
+  const xpPct=hpPct(S.xp,xpNeed(S.level));
   prof.innerHTML=`<div style="display:flex;align-items:center;gap:10px">
   <div style="font-size:36px">${S.isMale?'👨':'👩'}</div>
   <div style="flex:1"><div style="font-size:15px;font-weight:bold;color:var(--amber)">${S.name}</div>
   <div style="font-size:10px;color:var(--muted)">Level ${S.level} ${S.class} · Age ${S.age} · Day ${S.days}</div>
-  <div style="font-size:10px;color:var(--muted)">Karma: <span style="color:${S.karma>0?'var(--green)':S.karma<0?'var(--red)':'var(--muted)'}">${S.karma>0?'Good':S.karma<0?'Evil':'Neutral'} (${S.karma})</span></div></div></div>`;
+  <div style="font-size:10px;color:var(--muted)">Karma: <span style="color:${S.karma>0?'var(--green)':S.karma<0?'var(--red)':'var(--muted)'}">${S.karma>0?'Good':S.karma<0?'Evil':'Neutral'} (${S.karma})</span></div>
+  <div style="margin-top:4px">
+    <div style="font-size:10px;margin-bottom:1px">⭐ XP ${S.xp}/${xpNeed(S.level)} <span style="color:var(--muted)">(next perk at level ${S.level%2===0?S.level+2:S.level+1})</span></div>
+    <div class="hb"><div class="hf xp" style="width:${xpPct}%"></div></div>
+  </div></div></div>`;
   tab.appendChild(prof);
 
-  // HP/AP/XP bars
+  // ── Vital Stats ──
   const bars=el('div','cd');
-  bars.innerHTML=`<div style="font-size:10px;margin-bottom:2px">❤ HP ${S.hp}/${S.maxHp}</div>
-  <div class="hb"><div class="hf hp" style="width:${hpPct(S.hp,S.maxHp)}%"></div></div>
-  <div style="font-size:10px;margin:4px 0 2px">⚡ AP ${S.ap}/${S.maxAp}</div>
-  <div class="hb"><div class="hf ap" style="width:${hpPct(S.ap,S.maxAp)}%"></div></div>
-  <div style="font-size:10px;margin:4px 0 2px">⭐ XP ${S.xp}/${xpNeed(S.level)}</div>
-  <div class="hb"><div class="hf xp" style="width:${hpPct(S.xp,xpNeed(S.level))}%"></div></div>`;
+  bars.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+  <div><div style="font-size:10px;margin-bottom:2px">❤ HP ${S.hp}/${S.maxHp}</div><div class="hb"><div class="hf hp" style="width:${hpPct(S.hp,S.maxHp)}%"></div></div></div>
+  <div><div style="font-size:10px;margin-bottom:2px">⚡ AP ${S.ap}/${S.maxAp}</div><div class="hb"><div class="hf ap" style="width:${hpPct(S.ap,S.maxAp)}%"></div></div></div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:6px;font-size:11px;text-align:center">
+  <div style="background:#0a1a0a;padding:4px;border-radius:4px">⚔ ATK<br><b style="color:var(--green)">${atkPow()}</b></div>
+  <div style="background:#0a1a0a;padding:4px;border-radius:4px">🛡 DEF<br><b style="color:var(--green)">${defPow()}</b></div>
+  <div style="background:#0a1a0a;padding:4px;border-radius:4px">💰 Caps<br><b style="color:var(--amber)">${S.caps}</b></div>
+  <div style="background:#0a1a0a;padding:4px;border-radius:4px">🗡 Kills<br><b>${S.killCount||0}</b></div>
+  <div style="background:#0a1a0a;padding:4px;border-radius:4px">📜 Quests<br><b>${S.questsComplete||0}</b></div>
+  <div style="background:#0a1a0a;padding:4px;border-radius:4px">🎒 Carry<br><b style="color:${overEncumbered()?'var(--red)':'var(--green)'}">${fmtWeight(currentCarryWeight())}/${fmtWeight(carryCapacity())}</b></div></div>`;
   tab.appendChild(bars);
 
-  // SPECIAL
+  // ── S.P.E.C.I.A.L. (interactive — tap to expand) ──
+  const spEffects=[
+    ['Carry weight, melee damage',`Carry: ${calcCarryCap()}kg · Melee: +${calcMeleeBonus()}`],
+    ['Awareness, detection','Skill checks & dialogue'],
+    ['Max HP, poison/rad resist',`Max HP: ${calcMaxHp()}`],
+    ['Prices, NPC affinity, persuasion',`Shop discount: ~${Math.floor((S.special?S.special[3]:5)*2)}%`],
+    ['XP gain, skill checks',`XP bonus: +${Math.max(0,((S.special?S.special[4]:5)-5))} per event`],
+    ['Max AP, flee chance',`Max AP: ${calcMaxAp()} · Flee: +${((S.special?S.special[5]:5)*3)}%`],
+    ['Crit chance, gambling odds',`Crit: ${Math.max(1,(S.special?S.special[6]:5)+(S.critBonus||0))}%`]
+  ];
   tab.appendChild(el('div','sh','S.P.E.C.I.A.L.'));
   const sp=el('div','cd');
   let spHtml='';
   S.special.forEach((v,i)=>{
-    spHtml+=`<div class="sp-bar"><div class="sp-label">${SPECIAL_LABELS[i]}</div>
+    const maxed=v>=10;
+    spHtml+=`<div onclick="this.querySelector('.sp-detail').style.display=this.querySelector('.sp-detail').style.display==='none'?'block':'none'" style="cursor:pointer;padding:3px 0;border-bottom:1px solid #1a1810">
+    <div class="sp-bar" style="margin:0"><div class="sp-label">${SPECIAL_LABELS[i]}</div>
     <div style="font-size:10px;color:var(--muted);width:70px">${SPECIAL_NAMES[i]}</div>
-    <div class="sp-fill-bg"><div class="sp-fill" style="width:${v*10}%"></div></div>
-    <div class="sp-val">${v}</div></div>`;
+    <div class="sp-fill-bg"><div class="sp-fill" style="width:${v*10}%;${maxed?'background:var(--amber)':''}"></div></div>
+    <div class="sp-val" style="${maxed?'color:var(--amber);font-weight:bold':''}">${v}${maxed?' ★':''}</div></div>
+    <div class="sp-detail" style="display:none;font-size:10px;color:var(--muted);padding:2px 0 2px 22px;line-height:1.5">
+      <div style="color:var(--green2)">${spEffects[i][0]}</div>
+      <div>${spEffects[i][1]}</div>
+    </div></div>`;
   });
+  spHtml+=`<div style="font-size:9px;color:var(--muted);text-align:center;margin-top:6px;font-style:italic">Tap any stat for details · Raise stats with Intense Training perks</div>`;
   sp.innerHTML=spHtml;
   tab.appendChild(sp);
 
-  // Combat stats
-  tab.appendChild(el('div','sh','Combat'));
-  tab.appendChild(el('div','cd',`<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px">
-  <div>⚔ ATK: <b style="color:var(--green)">${atkPow()}</b></div>
-  <div>🛡 DEF: <b style="color:var(--green)">${defPow()}</b></div>
-  <div>💨 SPD: <b>${S.spd}</b></div>
-  <div>💰 Caps: <b>${S.caps}</b></div>
-  <div>🗡 Kills: <b>${S.killCount||0}</b></div>
-  <div>📜 Quests: <b>${S.questsComplete||0}</b></div>
-  <div>🎒 Carry: <b style="color:${overEncumbered()?'var(--red)':'var(--green)'}">${fmtWeight(currentCarryWeight())}/${fmtWeight(carryCapacity())}kg</b></div></div>`));
-
-  // Companions
+  // ── Companions ──
   if(S.companions.length){
     tab.appendChild(el('div','sh','Companions'));
     S.companions.forEach(c=>{
@@ -5981,22 +6512,62 @@ function upChar(){
     });
   }
 
-  // Perks
-  if(S.perks&&S.perks.length){
-    tab.appendChild(el('div','sh','Perks'));
-    const pg=el('div','cd');
-    pg.innerHTML=S.perks.map(id=>{
-      const p=PERKS.find(x=>x.id===id);
-      if(!p)return'';
-      return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #1a1810">
-        <span style="font-size:18px;width:24px;text-align:center">${p.icon}</span>
-        <div><div style="font-size:11px;font-weight:bold;color:var(--amber)">${p.name}</div>
-        <div style="font-size:10px;color:var(--muted)">${p.desc}</div></div></div>`;
-    }).join('');
-    tab.appendChild(pg);
-  }
+  // ── Perk Tree (full view — all perks, grouped by category) ──
+  tab.appendChild(el('div','sh',`Perks (${(S.perks||[]).length}/${PERKS.length})`));
+  const perkCats=['Training','Combat','Survival','Social','Utility'];
+  const perkWrap=el('div','');
 
-  // Quests
+  perkCats.forEach(cat=>{
+    const catPerks=PERKS.filter(p=>p.cat===cat);
+    if(!catPerks.length)return;
+    const owned=catPerks.filter(p=>perkOwned(p.id)).length;
+    const catIcons={Training:'🏋️',Combat:'⚔️',Survival:'❤️',Social:'💬',Utility:'🔧'};
+
+    const hdr=el('div','');
+    hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a2818;border-radius:6px 6px 0 0;cursor:pointer;margin-top:6px';
+    hdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--amber);letter-spacing:1px">${catIcons[cat]||'📋'} ${cat.toUpperCase()}</span><span style="font-size:10px;color:var(--muted)">${owned}/${catPerks.length} owned</span>`;
+
+    const body=el('div','');
+    body.style.cssText='background:var(--panel2);border:1px solid #2a2818;border-top:none;border-radius:0 0 6px 6px;padding:6px;display:'+(cat==='Training'||owned>0?'block':'none');
+
+    body.innerHTML=catPerks.map(p=>{
+      const owns=perkOwned(p.id);
+      const meets=perkMeetsReq(p);
+      const statusColor=owns?'var(--green)':meets?'var(--amber)':'var(--red)';
+      const statusIcon=owns?'✓':meets?'○':'🔒';
+      const statusText=owns?'OWNED':meets?'AVAILABLE':'LOCKED';
+      let reqParts=[];
+      if(p.req&&p.req.level)reqParts.push('Lv '+p.req.level+(S.level>=p.req.level?' ✓':''));
+      if(p.req&&p.req.special!==undefined)reqParts.push(SPECIAL_NAMES[p.req.special]+' '+p.req.min+'+'+(S.special[p.req.special]>=p.req.min?' ✓':''));
+      if(p.req&&p.req.perk)reqParts.push((PERKS.find(x=>x.id===p.req.perk)||{}).name||p.req.perk+(perkOwned(p.req.perk)?' ✓':''));
+      const itMap={it_str:0,it_per:1,it_end:2,it_cha:3,it_int:4,it_agi:5,it_lck:6};
+      let itInfo='';
+      if(itMap[p.id]!==undefined){
+        const si=itMap[p.id];
+        const cur=S.special[si];
+        itInfo=cur>=10?'<span style="color:var(--amber)">MAXED (10)</span>':'Current: '+cur+'/10';
+      }
+      return '<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 4px;border-bottom:1px solid #1a1810;'+(owns?'':'opacity:'+(meets?'0.85':'0.4'))+'">'+
+        '<div style="font-size:22px;width:32px;text-align:center;flex-shrink:0">'+p.icon+'</div>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div style="display:flex;align-items:center;gap:6px">'+
+            '<span style="font-size:12px;font-weight:bold;color:'+(owns?'var(--green)':'var(--amber)')+'">'+p.name+'</span>'+
+            '<span style="font-size:8px;padding:1px 4px;border-radius:3px;background:'+statusColor+'22;color:'+statusColor+';font-weight:bold">'+statusIcon+' '+statusText+'</span>'+
+          '</div>'+
+          '<div style="font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4">'+p.desc+'</div>'+
+          (itInfo?'<div style="font-size:10px;color:var(--green2);margin-top:2px">'+itInfo+'</div>':'')+
+          (!owns&&reqParts.length?'<div style="font-size:9px;color:#886;margin-top:2px">Requires: '+reqParts.join(' · ')+'</div>':'')+
+        '</div></div>';
+    }).join('');
+
+    let isOpen=cat==='Training'||owned>0;
+    hdr.onclick=()=>{isOpen=!isOpen;body.style.display=isOpen?'block':'none'};
+    perkWrap.appendChild(hdr);
+    perkWrap.appendChild(body);
+  });
+  tab.appendChild(perkWrap);
+
+  // ── Active Quests ──
   const active=S.quests.filter(q=>!q.done);
   if(active.length){
     tab.appendChild(el('div','sh','Active Quests'));
@@ -6013,74 +6584,47 @@ function upChar(){
     });
   }
 
-  // Faction & Settlement Standings — interactive collapsible groups
+  // ── Faction & Settlement Standings ──
   tab.appendChild(el('div','sh','Standings'));
   const repGetLabel=(r)=>r>=50?'Idolized':r>=30?'Liked':r>=10?'Accepted':r>=0?'Neutral':r>=-20?'Shunned':'Vilified';
   const repGetCol=(r)=>r>=30?'var(--green)':r>=10?'#6a8':r>=0?'var(--muted)':r>=-20?'var(--amber2)':'var(--red)';
   const repBar=(fac,rep)=>{
-    const label=repGetLabel(rep);
-    const col=repGetCol(rep);
+    const label=repGetLabel(rep);const col=repGetCol(rep);
     const pct=Math.max(2,Math.min(100,Math.round((rep+50)/100*100)));
     return `<div style="padding:6px 0;border-bottom:1px solid #1a1810">
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
         <span style="color:var(--amber)">${FACTIONS[fac]||fac}</span>
         <span style="color:${col}">${label} (${rep>=0?'+':''}${rep})</span>
-      </div>
-      <div class="hb"><div class="hf ${rep>=0?'g':'cr'}" style="width:${pct}%"></div></div>
-    </div>`;
+      </div><div class="hb"><div class="hf ${rep>=0?'g':'cr'}" style="width:${pct}%"></div></div></div>`;
   };
-
-  // Major factions group
   const majorReps=MAJOR_FACS.filter(f=>(S.rep[f]||0)!==0);
   const localReps=LOCAL_FACS.filter(f=>(S.rep[f]||0)!==0);
-  // Also catch any other rep keys not in either list
   const otherReps=Object.keys(S.rep||{}).filter(f=>(S.rep[f]||0)!==0&&!MAJOR_FACS.includes(f)&&!LOCAL_FACS.includes(f)&&FACTIONS[f]);
-
   const facWrap=el('div','');
-
-  // Major factions — always show header, collapsible
   const mjHdr=el('div','');
   mjHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a2818;border-radius:6px 6px 0 0;cursor:pointer;margin-top:4px';
-  mjHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--amber);letter-spacing:1px">🏴 MAJOR FACTIONS</span><span style="font-size:10px;color:var(--muted)">${majorReps.length} active · tap to ${majorReps.length?'view':'expand'}</span>`;
+  mjHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--amber);letter-spacing:1px">🏴 MAJOR FACTIONS</span><span style="font-size:10px;color:var(--muted)">${majorReps.length} active</span>`;
   const mjBody=el('div','');
   mjBody.style.cssText='background:var(--panel2);border:1px solid #2a2818;border-top:none;border-radius:0 0 6px 6px;padding:4px 8px;display:block';
-  if(majorReps.length){
-    mjBody.innerHTML=majorReps.map(f=>repBar(f,S.rep[f]||0)).join('');
-  } else {
-    mjBody.innerHTML='<div style="font-size:10px;color:var(--muted);text-align:center;padding:8px 0;font-style:italic">No major faction standing yet. Complete quests and make choices to build rep.</div>';
-  }
-  // Show all major facs at 0 as muted reference
+  if(majorReps.length){mjBody.innerHTML=majorReps.map(f=>repBar(f,S.rep[f]||0)).join('')}
+  else{mjBody.innerHTML='<div style="font-size:10px;color:var(--muted);text-align:center;padding:8px 0;font-style:italic">No major faction standing yet.</div>'}
   const dormantMajor=MAJOR_FACS.filter(f=>(S.rep[f]||0)===0);
-  if(dormantMajor.length){
-    mjBody.innerHTML+=`<div style="font-size:9px;color:#3a3828;padding:4px 0;margin-top:4px;border-top:1px solid #1a1810">${dormantMajor.map(f=>FACTIONS[f]).join(' · ')}</div>`;
-  }
+  if(dormantMajor.length){mjBody.innerHTML+=`<div style="font-size:9px;color:#3a3828;padding:4px 0;margin-top:4px;border-top:1px solid #1a1810">${dormantMajor.map(f=>FACTIONS[f]).join(' · ')}</div>`}
   let mjOpen=true;
   mjHdr.onclick=()=>{mjOpen=!mjOpen;mjBody.style.display=mjOpen?'block':'none'};
-  facWrap.appendChild(mjHdr);
-  facWrap.appendChild(mjBody);
-
-  // Local settlements group
+  facWrap.appendChild(mjHdr);facWrap.appendChild(mjBody);
   const lcHdr=el('div','');
   lcHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a2818;border-radius:6px 6px 0 0;cursor:pointer;margin-top:8px';
-  lcHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--green2);letter-spacing:1px">📍 SETTLEMENTS</span><span style="font-size:10px;color:var(--muted)">${localReps.length} active · tap to ${localReps.length?'view':'expand'}</span>`;
+  lcHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--green2);letter-spacing:1px">📍 SETTLEMENTS</span><span style="font-size:10px;color:var(--muted)">${localReps.length} active</span>`;
   const lcBody=el('div','');
-  lcBody.style.cssText='background:var(--panel2);border:1px solid #2a2818;border-top:none;border-radius:0 0 6px 6px;padding:4px 8px;display:block';
-  if(localReps.length){
-    lcBody.innerHTML=localReps.map(f=>repBar(f,S.rep[f]||0)).join('');
-  } else {
-    lcBody.innerHTML='<div style="font-size:10px;color:var(--muted);text-align:center;padding:8px 0;font-style:italic">No local standing yet. Help settlements to earn their trust.</div>';
-  }
+  lcBody.style.cssText='background:var(--panel2);border:1px solid #2a2818;border-top:none;border-radius:0 0 6px 6px;padding:4px 8px;display:'+(localReps.length>0?'block':'none');
+  if(localReps.length){lcBody.innerHTML=localReps.map(f=>repBar(f,S.rep[f]||0)).join('')}
+  else{lcBody.innerHTML='<div style="font-size:10px;color:var(--muted);text-align:center;padding:8px 0;font-style:italic">No local standing yet.</div>'}
   const dormantLocal=LOCAL_FACS.filter(f=>(S.rep[f]||0)===0);
-  if(dormantLocal.length){
-    lcBody.innerHTML+=`<div style="font-size:9px;color:#3a3828;padding:4px 0;margin-top:4px;border-top:1px solid #1a1810">${dormantLocal.map(f=>FACTIONS[f]).join(' · ')}</div>`;
-  }
+  if(dormantLocal.length){lcBody.innerHTML+=`<div style="font-size:9px;color:#3a3828;padding:4px 0;margin-top:4px;border-top:1px solid #1a1810">${dormantLocal.map(f=>FACTIONS[f]).join(' · ')}</div>`}
   let lcOpen=localReps.length>0;
-  lcBody.style.display=lcOpen?'block':'none';
   lcHdr.onclick=()=>{lcOpen=!lcOpen;lcBody.style.display=lcOpen?'block':'none'};
-  facWrap.appendChild(lcHdr);
-  facWrap.appendChild(lcBody);
-
-  // Other/misc reps
+  facWrap.appendChild(lcHdr);facWrap.appendChild(lcBody);
   if(otherReps.length){
     const otHdr=el('div','');
     otHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a2818;border-radius:6px 6px 0 0;cursor:pointer;margin-top:8px';
@@ -6090,12 +6634,9 @@ function upChar(){
     otBody.innerHTML=otherReps.map(f=>repBar(f,S.rep[f]||0)).join('');
     let otOpen=false;
     otHdr.onclick=()=>{otOpen=!otOpen;otBody.style.display=otOpen?'block':'none'};
-    facWrap.appendChild(otHdr);
-    facWrap.appendChild(otBody);
+    facWrap.appendChild(otHdr);facWrap.appendChild(otBody);
   }
-
   tab.appendChild(facWrap);
-
 }
 
 // ============================================================
@@ -7387,8 +7928,12 @@ window.addEventListener('unhandledrejection',ev=>{
     if(await loadAsync()){upAll();save(true);snapshotState()}else{newGame()}
   }catch(e){
     console.error('[FNV-RPG init error]',e);
-    // Last-resort: try to boot a new game if init fails
-    try{newGame()}catch(e2){console.error('[FNV-RPG] Fatal init failure',e2)}
+    // Do not instantly overwrite a possible save if boot fails. Try every recovery
+    // source one more time before showing character creation.
+    try{
+      if(load()||recoverWindowSnapshot()){upAll();save(true);snapshotState()}
+      else newGame();
+    }catch(e2){console.error('[FNV-RPG] Fatal init failure',e2)}
   }
 })();
 </script>
