@@ -845,6 +845,73 @@ plasma_defender:{n:"Plasma Defender",t:"w",e:"⚡",a:18,p:3000,w:3,ammo:"energy_
 multiplas_rifle:{n:"Multiplas Rifle",t:"w",e:"⚡",a:26,p:2500,w:12,ammo:"energy_cell",rare:2,desc:"A dangerous burst plasma rifle kept under Brotherhood lock and key."},
 laser_rcw:{n:"Laser RCW",t:"w",e:"⚡",a:13,p:2150,w:4,ammo:"energy_cell",rare:1,desc:"A rapid-fire laser weapon pulled from old world stock."},
 bos_holotape:{n:"Brotherhood Holotape",t:"m",e:"💾",p:55,w:0,desc:"Encrypted Brotherhood field notes and requisition records."},
+// ── New Weapons ──
+pistol_9mm:{n:"9mm Pistol",t:"w",e:"🔫",a:8,ammo:"ammo_9mm",desc:"Standard 9mm sidearm.",p:120,w:1.2},
+pistol_10mm:{n:"10mm Pistol",t:"w",e:"🔫",a:10,ammo:"ammo_10mm",desc:"Reliable 10mm pistol.",p:175,w:1.4},
+revolver_357:{n:".357 Revolver",t:"w",e:"🔫",a:14,ammo:"ammo_357",desc:"Six-shooter. Hits hard.",p:220,w:1.5},
+smg_9mm:{n:"9mm SMG",t:"w",e:"🔫",a:9,ammo:"ammo_9mm",desc:"Fast-firing submachine gun.",p:280,w:3.5},
+brush_gun:{n:"Brush Gun",t:"w",e:"🔫",a:22,ammo:"ammo_45_70",desc:"Lever-action powerhouse.",p:950,w:4.5},
+anti_materiel:{n:"Anti-Materiel Rifle",t:"w",e:"🔫",a:32,ammo:"ammo_50",desc:"Devastating heavy sniper rifle.",p:4800,w:12},
+marksman_carbine:{n:"Marksman Carbine",t:"w",e:"🔫",a:18,ammo:"ammo_556",desc:"Scoped semi-auto. Precise.",p:1200,w:4.5},
+riot_shotgun:{n:"Riot Shotgun",t:"w",e:"🔫",a:16,ammo:"ammo_shells",desc:"Semi-auto shotgun. Devastating up close.",p:1400,w:4.8},
+grenade_rifle:{n:"Grenade Rifle",t:"w",e:"💥",a:20,ammo:"ammo_40mm",desc:"Single-shot grenade launcher.",p:1800,w:4.0},
+plasma_caster:{n:"Plasma Caster",t:"w",e:"⚡",a:28,ammo:"energy_cell",desc:"Heavy plasma weapon. Melts everything.",p:3200,w:6.0},
+gauss_rifle:{n:"Gauss Rifle",t:"w",e:"⚡",a:30,ammo:"microfusion_cell",desc:"Pre-war electromagnetic weapon. Devastating.",p:5500,w:8.0},
+recharger_pistol:{n:"Recharger Pistol",t:"w",e:"⚡",a:7,desc:"Never runs out. Self-charging energy pistol.",p:200,w:1.0},
+oh_baby:{n:"Oh, Baby!",t:"w",e:"🔨",a:24,desc:"Unique super sledge. Massive damage.",p:2800,w:10},
+ballistic_fist:{n:"Ballistic Fist",t:"w",e:"👊",a:20,desc:"Shotgun strapped to your fist.",p:2000,w:3.5},
+chainsaw:{n:"Chainsaw",t:"w",e:"🪚",a:18,desc:"Buzzing melee terror.",p:1500,w:7.0},
+cleaver:{n:"Cleaver",t:"w",e:"🔪",a:10,desc:"Sharp kitchen blade. Fast.",p:80,w:0.8},
+lead_pipe:{n:"Lead Pipe",t:"w",e:"🪈",a:7,desc:"Heavy blunt weapon.",p:40,w:2.0},
+brass_knuckles:{n:"Brass Knuckles",t:"w",e:"👊",a:6,desc:"Fist-mounted brawling gear.",p:50,w:0.5},
+straight_razor:{n:"Straight Razor",t:"w",e:"🪒",a:8,desc:"Fast, sharp, discreet.",p:55,w:0.3},
+fire_axe:{n:"Fire Axe",t:"w",e:"🪓",a:14,desc:"Heavy axe. Slow but devastating.",p:180,w:4.0},
+throwing_spear:{n:"Throwing Spear",t:"w",e:"🗡",a:12,desc:"Legion-issue throwing weapon.",p:60,w:1.5},
+// ── New Ammo ──
+ammo_45_70:{n:".45-70 Gov't",t:"ammo",e:"🔸",p:5,w:0.02},
+ammo_50:{n:".50 MG",t:"ammo",e:"🔸",p:8,w:0.04},
+ammo_40mm:{n:"40mm Grenade",t:"ammo",e:"💥",p:25,w:0.2},
+microfusion_cell:{n:"Microfusion Cell",t:"ammo",e:"⚡",p:4,w:0.02},
+// ── New Armor ──
+leather_armor_rl:{n:"Reinforced Leather Mk II",t:"a",e:"🧥",d:8,desc:"Double-layered wasteland armor.",p:450,w:8},
+ncr_ranger_combat:{n:"NCR Ranger Combat Armor",t:"a",e:"🪖",d:18,desc:"The iconic black armor of the desert rangers.",p:5500,w:15},
+ncr_salvaged_pa:{n:"NCR Salvaged Power Armor",t:"a",e:"🪖",d:16,desc:"Stripped-down power armor. No training needed.",p:4000,w:18},
+legion_centurion_armor:{n:"Legion Centurion Armor",t:"a",e:"🛡",d:14,desc:"Heavy armor made from conquered enemies' gear.",p:2800,w:14},
+riot_gear:{n:"Riot Gear",t:"a",e:"🪖",d:15,desc:"Pre-war riot control armor.",p:3500,w:12},
+gecko_leather:{n:"Gecko-Backed Leather",t:"a",e:"🧥",d:5,desc:"Light armor reinforced with gecko hide.",p:200,w:5},
+raider_armor:{n:"Raider Armor",t:"a",e:"🧥",d:3,desc:"Scrap metal and leather. Better than nothing.",p:80,w:6},
+// ── New Headgear ──
+first_recon_beret:{n:"1st Recon Beret",t:"a",slot:"head",e:"🎖",d:1,desc:"+1 PER. NCR elite marksman.",p:350,w:0.2},
+authority_glasses:{n:"Authority Glasses",t:"a",slot:"head",e:"🕶",d:0,desc:"+1 CHA. Look official.",p:120,w:0.1},
+// ── New Consumables ──
+gecko_stew:{n:"Gecko Stew",t:"c",e:"🍲",hp:25,desc:"Hot gecko meat in broth.",p:18,w:0.5},
+brahmin_steak:{n:"Brahmin Steak",t:"c",e:"🥩",hp:30,desc:"Grilled two-headed beef.",p:22,w:0.5},
+desert_salad:{n:"Desert Salad",t:"c",e:"🥗",hp:15,desc:"Edible plants from the Mojave.",p:8,w:0.3},
+instamash:{n:"InstaMash",t:"c",e:"🥔",hp:12,desc:"Instant mashed potatoes. Still edible.",p:6,w:0.3},
+dandy_boy_apples:{n:"Dandy Boy Apples",t:"c",e:"🍎",hp:10,desc:"Pre-war apple snack.",p:5,w:0.2},
+pork_n_beans:{n:"Pork n' Beans",t:"c",e:"🥫",hp:15,desc:"Canned pre-war meal.",p:10,w:0.5},
+// ── New Chems ──
+turbo:{n:"Turbo",t:"chem",e:"💊",buff:{ap:15},desc:"+15 AP. Slows time perception.",p:60,w:0.1},
+buffout:{n:"Buffout",t:"chem",e:"💊",buff:{dmg:3,dr:2},desc:"+3 DMG, +2 DR. Pre-war steroids.",p:45,w:0.1},
+mentats:{n:"Mentats",t:"chem",e:"💊",buff:{},desc:"+1 PER, +1 INT (story checks).",p:35,w:0.1},
+steady:{n:"Steady",t:"chem",e:"💊",buff:{dmg:2},desc:"+2 DMG. Eliminates weapon sway.",p:40,w:0.1},
+fixer:{n:"Fixer",t:"chem",e:"💊",hp:10,desc:"Chem detox. Restores 10 HP.",p:30,w:0.1},
+hydra:{n:"Hydra",t:"chem",e:"💊",hp:35,buff:{},desc:"Powerful healing chem.",p:65,w:0.1},
+weapon_binding_ritual:{n:"Weapon Binding Ritual",t:"chem",e:"🪶",buff:{dmg:4},desc:"Legion ritual. +4 DMG temporarily.",p:20,w:0.1},
+// ── New Misc Items ──
+tin_can:{n:"Tin Can",t:"m",e:"🥫",p:1,w:0.1},
+coffee_mug:{n:"Coffee Mug",t:"m",e:"☕",p:2,w:0.3},
+pilot_light:{n:"Pilot Light",t:"m",e:"🔥",p:8,w:0.2},
+surgical_tubing:{n:"Surgical Tubing",t:"m",e:"🔧",p:12,w:0.2},
+glass_bottles:{n:"Empty Bottles",t:"m",e:"🍾",p:2,w:0.3},
+clipboards:{n:"Clipboard",t:"m",e:"📋",p:3,w:0.3},
+pencils:{n:"Pencils",t:"m",e:"✏",p:1,w:0.1},
+hot_plate:{n:"Hot Plate",t:"m",e:"🔌",p:15,w:2.0},
+lunchbox:{n:"Lunchbox",t:"m",e:"🧰",p:10,w:0.5},
+caravan_cards:{n:"Caravan Cards",t:"m",e:"🃏",p:15,w:0.2},
+ncr_dogtags:{n:"NCR Dog Tags",t:"m",e:"🏷",p:5,w:0.1},
+legion_ears:{n:"Legion Ears",t:"m",e:"👂",p:8,w:0.1},
+
 };
 
 // Central icon registry for enemies and NPCs.
@@ -1095,6 +1162,41 @@ lakelurk:{n:"Lakelurk",hp:125,a:35,d:4,xp:100,e:ICONS.ENEMY.LAKELURK,loot:["lake
 rogue_scavenger:{n:"Rogue Scavenger",hp:65,a:22,d:2,xp:45,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","duct_tape","damaged_holotape","pre_war_money","targeting_module","bobby_pin","scrap"],type:'human',fac:'Raiders',hostile:true},
 deathclaw:{n:"Deathclaw",hp:500,a:125,d:15,xp:250,e:ICONS.ENEMY.DEATHCLAW,loot:["deathclaw_hand","deathclaw_hand","super_stimpak","super_stimpak","combat_armor"],boss:1,type:'animal',fac:'wild'},
 ncr_trooper:{n:"NCR Trooper",hp:75,a:28,d:4,xp:45,e:ICONS.NPC.NCR,loot:["ammo_556","ammo_556","stimpak","ncr_armor","dog_tags","purified_water"],type:'human',fac:'NCR'},
+// ── New Creatures ──
+bighorner:{n:"Bighorner",hp:55,a:10,d:3,xp:18,e:"🐂",loot:["bighorner_meat","bighorner_meat","gecko_hide"],type:'animal',fac:'wild'},
+bighorner_bull:{n:"Bighorner Bull",hp:90,a:16,d:5,xp:30,e:"🐂",loot:["bighorner_meat","bighorner_meat","bighorner_meat"],type:'animal',fac:'wild'},
+fire_gecko:{n:"Fire Gecko",hp:45,a:10,d:2,xp:20,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_steak","gecko_steak"],type:'animal',fac:'wild'},
+golden_gecko:{n:"Golden Gecko",hp:55,a:12,d:3,xp:25,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_hide","gecko_steak","pre_war_money"],type:'animal',fac:'wild'},
+green_gecko:{n:"Green Gecko",hp:35,a:7,d:1,xp:14,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_steak"],type:'animal',fac:'wild'},
+brahmin:{n:"Feral Brahmin",hp:35,a:5,d:2,xp:10,e:"🐄",loot:["brahmin_steak","dirty_water"],type:'animal',fac:'wild'},
+mole_rat:{n:"Mole Rat",hp:18,a:4,d:0,xp:8,e:"🐀",loot:["cram"],type:'animal',fac:'wild'},
+yao_guai:{n:"Yao Guai",hp:120,a:22,d:6,xp:45,e:"🐻",loot:["bighorner_meat","stimpak"],type:'animal',fac:'wild'},
+gecko_hunter:{n:"Gecko Hunter",hp:40,a:8,d:2,xp:16,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_steak"],type:'animal',fac:'wild'},
+// ── New Ghouls ──
+feral_ghoul_reaver:{n:"Feral Ghoul Reaver",hp:85,a:18,d:4,xp:35,e:ICONS.ENEMY.GHOUL,loot:["irradiated_blood","stimpak","pre_war_money"],type:'undead',fac:'undead'},
+feral_ghoul_roamer:{n:"Feral Ghoul Roamer",hp:50,a:12,d:2,xp:22,e:ICONS.ENEMY.GHOUL,loot:["irradiated_blood","dirty_water"],type:'undead',fac:'undead'},
+// ── New Human Enemies ──
+ncr_ranger:{n:"NCR Ranger",hp:80,a:18,d:10,xp:42,e:ICONS.ENEMY.NCR_RANGER||ICONS.NPC.NCR_RANGER,loot:["service_rifle","ammo_556","stimpak","ncr_dogtags"],type:'human',fac:'NCR'},
+ncr_heavy_trooper:{n:"NCR Heavy Trooper",hp:70,a:15,d:12,xp:38,e:ICONS.ENEMY.NCR||ICONS.NPC.NCR,loot:["ammo_556","ammo_556","combat_armor","stimpak"],type:'human',fac:'NCR'},
+bos_paladin:{n:"BOS Paladin",hp:100,a:20,d:16,xp:55,e:ICONS.NPC.BOS,loot:["energy_cell","laser_rifle","stimpak","super_stimpak"],type:'human',fac:'BOS'},
+bos_knight:{n:"BOS Knight",hp:75,a:16,d:12,xp:40,e:ICONS.NPC.BOS,loot:["energy_cell","laser_pistol","stimpak"],type:'human',fac:'BOS'},
+khan_warrior:{n:"Great Khan Warrior",hp:55,a:12,d:4,xp:25,e:"🏹",loot:["ammo_9mm","jet","stimpak","machete"],type:'human',fac:'Khans'},
+legion_decanus:{n:"Legion Decanus",hp:70,a:16,d:8,xp:35,e:ICONS.ENEMY.LEGION,loot:["machete","healing_powder","legion_coin","throwing_spear"],type:'human',fac:'Legion'},
+legion_assassin:{n:"Legion Assassin",hp:65,a:18,d:6,xp:38,e:ICONS.ENEMY.LEGION,loot:["combat_knife","throwing_spear","healing_powder","stealth_boy"],type:'human',fac:'Legion'},
+fiend_leader:{n:"Fiend Leader",hp:65,a:14,d:4,xp:30,e:"☠",loot:["psycho","jet","ammo_10mm","pistol_10mm"],type:'human',fac:'Fiends',hostile:true},
+powder_ganger_leader:{n:"Powder Ganger Boss",hp:55,a:12,d:5,xp:25,e:ICONS.ENEMY.CONVICT,loot:["dynamite","powder_charge","ammo_9mm","caps"],type:'human',fac:'PowderGangers'},
+raider_leader:{n:"Raider Leader",hp:50,a:12,d:3,xp:22,e:"💀",loot:["ammo_9mm","pistol_9mm","jet","psycho"],type:'human',fac:'Raiders',hostile:true},
+viper_leader:{n:"Viper Leader",hp:55,a:13,d:4,xp:24,e:ICONS.ENEMY.VIPER,loot:["ammo_357","revolver_357","antivenom"],type:'human',fac:'Raiders',hostile:true},
+jackal_veteran:{n:"Jackal Veteran",hp:45,a:11,d:3,xp:20,e:ICONS.ENEMY.JACKAL,loot:["ammo_9mm","combat_knife","dirty_water"],type:'human',fac:'Raiders',hostile:true},
+escaped_convict:{n:"Escaped Convict",hp:40,a:9,d:2,xp:18,e:ICONS.ENEMY.CONVICT,loot:["switchblade","dirty_water","bobby_pin"],type:'human',fac:'PowderGangers'},
+// ── New Mutants ──
+nightkin_master:{n:"Nightkin Master",hp:150,a:24,d:10,xp:60,e:ICONS.ENEMY.NIGHTKIN,loot:["stealth_boy","super_stimpak","rebar_club"],type:'mutant',fac:'SuperMutants'},
+super_mutant_brute:{n:"Super Mutant Brute",hp:130,a:20,d:8,xp:50,e:ICONS.ENEMY.SUPER_MUTANT,loot:["hunting_rifle","ammo_308","stimpak"],type:'mutant',fac:'SuperMutants'},
+// ── New Robots ──
+mr_gutsy:{n:"Mr. Gutsy",hp:60,a:14,d:6,xp:28,e:"🤖",loot:["energy_cell","scrap_electronics","sensor_module","fission_battery"],type:'robot',fac:'wild'},
+protectron:{n:"Protectron",hp:40,a:8,d:8,xp:18,e:"🤖",loot:["scrap_electronics","fission_battery","energy_cell"],type:'robot',fac:'wild'},
+sentry_bot:{n:"Sentry Bot",hp:150,a:25,d:14,xp:65,e:"🤖",loot:["energy_cell","energy_cell","sensor_module","combat_armor","scrap_electronics"],type:'robot',fac:'wild'},
+
 };
 
 // Buildings
@@ -3088,7 +3190,32 @@ function resolveEncounterChoice(idx){
 // ============================================================
 
 // Factions that are always hostile regardless of player rep
-const ALWAYS_HOSTILE_FACS=new Set(['Raiders','Fiends','PowderGangers','Legion','SuperMutants','Freeside']);
+// Factions that are ALWAYS hostile regardless of rep (truly feral/irredeemable)
+const ALWAYS_HOSTILE_FACS=new Set(['Raiders','Fiends','SuperMutants']);
+
+// Factions that are hostile by DEFAULT but can become neutral/friendly via rep
+// Hostile when rep < 0, neutral at 0-9, friendly at 10+
+const DEFAULT_HOSTILE_FACS=new Set(['PowderGangers','Legion']);
+
+// Faction wars — if you're aligned with one side, the other sends more hostiles
+const FACTION_WARS={
+  NCR:['Legion','Fiends'],
+  Legion:['NCR'],
+  Kings:['NCR'],  // tensions, not open war
+  BOS:['NCR'],    // uneasy
+};
+
+// Faction patrol enemy pools — what each faction sends as patrols
+const FACTION_PATROLS={
+  NCR:['ncr_trooper','ncr_trooper','ncr_trooper','ncr_ranger','ncr_heavy_trooper'],
+  Legion:['legion_recruit','legion_recruit','legion_veteran','legion_decanus','legion_assassin'],
+  PowderGangers:['powder_ganger','powder_ganger','convict','escaped_convict','powder_ganger_leader'],
+  BOS:['bos_paladin','bos_knight','bos_knight'],
+  Kings:['freeside_thug','freeside_thug'],
+  Khans:['khan_warrior','khan_warrior'],
+  Fiends:['fiend','fiend','fiend','fiend_leader'],
+  Raiders:['jackal_raider','jackal_raider','jackal_veteran','viper_gunslinger','viper_leader','raider_leader'],
+};
 
 // Faction compatibility: which enemy facs can appear together in one group
 const FAC_GROUPS={
@@ -3186,13 +3313,41 @@ function buildCohesiveGroup(pool,count){
 
 function isHostileToPlayer(enemyId){
   const e=ENEMIES[enemyId];if(!e)return true;
-  if(e.hostile)return true; // explicitly marked always-hostile
+  if(e.hostile)return true;
   if(ALWAYS_HOSTILE_FACS.has(e.fac))return true;
   const fac=e.fac;
   const rep=S.rep[fac]||0;
-  // Hostile if rep < -20 or fac has no player rep entry and is military
+  // Default-hostile facs: hostile below 0, neutral 0-9, friendly 10+
+  if(DEFAULT_HOSTILE_FACS.has(fac))return rep<0;
+  // Regular facs: hostile below -20
   if(rep<=-20)return true;
+  // Animals/creatures/undead are always hostile
+  if(['animal','insect','creature','wild','undead'].includes(e.type))return true;
   return false;
+}
+
+function getFactionDisposition(fac){
+  const rep=S.rep[fac]||0;
+  if(ALWAYS_HOSTILE_FACS.has(fac))return 'hostile';
+  if(DEFAULT_HOSTILE_FACS.has(fac)){
+    if(rep<0)return 'hostile';
+    if(rep<10)return 'wary';
+    return 'friendly';
+  }
+  if(rep<=-20)return 'hostile';
+  if(rep<0)return 'wary';
+  if(rep<10)return 'neutral';
+  if(rep<30)return 'friendly';
+  return 'allied';
+}
+
+function getDispositionColor(disp){
+  if(disp==='hostile')return 'var(--red)';
+  if(disp==='wary')return 'var(--amber2)';
+  if(disp==='neutral')return 'var(--muted)';
+  if(disp==='friendly')return 'var(--green)';
+  if(disp==='allied')return 'var(--green)';
+  return 'var(--muted)';
 }
 
 function groupIsHostile(enemies){
@@ -3224,30 +3379,148 @@ function preEncounter(enemies,area,step,travelMode=false){
   const hostile=groupIsHostile(enemies);
   const isAnimal=['animal','insect'].includes(anchor.type);
   const isUndead=['undead','mutant','robot'].includes(anchor.type);
+  const isHuman=anchor.type==='human';
   const hasHunterPerk=S.hunterPerk||false;
   const cha=S.special?S.special[3]:5;
   const str=S.special?S.special[0]:5;
   const agi=S.special?S.special[5]:5;
+  const per=S.special?S.special[1]:5;
+  const lck=S.special?S.special[6]:5;
   const fac=anchor.fac;
   const facName=FACTIONS[fac]||fac;
   const rep=S.rep[fac]||0;
-  const enemyLabel=enemies.map(e=>e.name).join(' & ');
+  const disp=isHuman&&fac?getFactionDisposition(fac):'hostile';
   const hasWeapon=!!S.gear.w;
 
-  // Build choices
+  // Group enemy names for display
+  const nameCounts={};
+  enemies.forEach(en=>{nameCounts[en.name]=(nameCounts[en.name]||0)+1});
+  const enemyLabel=Object.entries(nameCounts).map(([n,c])=>c>1?c+'× '+n:n).join(' & ');
+
   const choices=[];
 
-  // Always: Fight
-  choices.push({
-    label:'⚔ Fight',
-    style:'bt go',
-    fn:()=>{
-      if(travelMode){startCombat(enemies);combat.postT=tDest}
-      else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
-    }
-  });
+  // ── FRIENDLY / ALLIED encounters ──
+  if(!hostile&&isHuman&&(disp==='friendly'||disp==='allied')){
+    // Trade opportunity
+    choices.push({
+      label:`🤝 Greet them [${facName}, ${disp}]`,
+      style:'bt go',
+      fn:()=>{
+        const xpGain=rnd(8,15);S.xp+=xpGain;
+        const repGain=R()<0.3?1:0;
+        if(repGain)S.rep[fac]=(S.rep[fac]||0)+1;
+        const lines=[];
+        if(disp==='allied')lines.push(`The ${facName} patrol recognises you. "Good to see a friendly face out here."`);
+        else lines.push(`The ${facName} patrol nods cautiously. They're not looking for trouble.`);
+        if(repGain)lines.push(`+1 ${facName} rep.`);
+        lines.push(`⭐ +${xpGain} XP`);
+        return _preEncResolve(lines.join(' '),area,step,travelMode,true);
+      }
+    });
+    // Trade
+    choices.push({
+      label:'💰 Trade supplies',
+      style:'bt pip',
+      fn:()=>{
+        // Give a random useful item
+        const tradeItems=['stimpak','purified_water','ammo_9mm','ammo_556','ammo_357','sunset_sars','nuka_cola','cram'];
+        const offer=rndA(tradeItems);
+        const cost=Math.round((ITEMS[offer]?.p||20)*0.8);
+        if(S.caps<cost){return _preEncResolve(`They offer ${ITEMS[offer]?.e} ${ITEMS[offer]?.n} but you can't afford the ${cost} caps.`,area,step,travelMode,true)}
+        S.caps-=cost;giveItem(offer,1,{ignoreLimit:true});
+        return _preEncResolve(`You trade ${cost} caps for ${ITEMS[offer]?.e} ${ITEMS[offer]?.n}. Fair deal on the road.`,area,step,travelMode,true);
+      }
+    });
+    // Intel
+    choices.push({
+      label:'🗨 Ask for intel',
+      style:'bt',
+      fn:()=>{
+        const xpGain=rnd(5,10);S.xp+=xpGain;
+        const tips=[
+          `"Watch the road south — Fiends have been hitting caravans."`,
+          `"There's good scavenge near the old overpass if you know where to look."`,
+          `"${facName} command has been on edge lately. Something big coming."`,
+          `"Heard there's a trader in trouble east of here. Might be worth checking out."`,
+          `"Legion scouts were spotted near the ridge last week. Stay sharp."`,
+          `"Word is the Khans are restless again. Keep your distance unless you're allied."`,
+        ];
+        return _preEncResolve(rndA(tips)+` ⭐ +${xpGain} XP`,area,step,travelMode,true);
+      }
+    });
+  }
 
-  // Animals/insects with Hunter perk: Calm Animal
+  // ── NEUTRAL / WARY encounters ──
+  else if(!hostile&&isHuman&&(disp==='neutral'||disp==='wary')){
+    choices.push({
+      label:`💬 Approach carefully [${facName}, ${disp}]`,
+      style:'bt pip',
+      fn:()=>{
+        const xpGain=rnd(6,12);S.xp+=xpGain;
+        const repGain=R()<0.4?1:0;
+        if(repGain)S.rep[fac]=(S.rep[fac]||0)+1;
+        let msg=disp==='wary'
+          ?`The ${facName} patrol eyes you warily. Hands stay near weapons, but nobody draws.`
+          :`The ${facName} group watches you pass. No trouble — this time.`;
+        if(repGain)msg+=` +1 ${facName} rep.`;
+        msg+=` ⭐ +${xpGain} XP`;
+        return _preEncResolve(msg,area,step,travelMode,true);
+      }
+    });
+
+    // Persuade for supplies (CHA check)
+    choices.push({
+      label:`😏 Persuade for supplies [${checkLabel('CHA',cha,6)}]`,
+      style:'bt',
+      fn:()=>{
+        if(R()<checkChance(cha,6)){
+          const gifts=['stimpak','purified_water','ammo_9mm','sunset_sars'];
+          const g=rndA(gifts);giveItem(g,1,{ignoreLimit:true});
+          S.rep[fac]=(S.rep[fac]||0)+1;
+          return _preEncResolve(`You talk them into sharing supplies. ${ITEMS[g]?.e} ${ITEMS[g]?.n} received. +1 ${facName} rep.`,area,step,travelMode,true);
+        }
+        return _preEncResolve(`They're not convinced. "Buy from a trader like everyone else." No harm done.`,area,step,travelMode,true);
+      }
+    });
+  }
+
+  // ── HOSTILE encounters — always have Fight ──
+  if(hostile){
+    choices.push({
+      label:'⚔ Fight',
+      style:'bt go',
+      fn:()=>{
+        if(travelMode){startCombat(enemies);combat.postT=tDest}
+        else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+      }
+    });
+  }else if(isAnimal||isUndead){
+    // Always fight option for creatures
+    choices.push({
+      label:'⚔ Fight',
+      style:'bt go',
+      fn:()=>{
+        if(travelMode){startCombat(enemies);combat.postT=tDest}
+        else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+      }
+    });
+  }
+
+  // ── PROVOKE — attack non-hostile faction (rep cost) ──
+  if(!hostile&&isHuman&&fac&&!ALWAYS_HOSTILE_FACS.has(fac)){
+    choices.push({
+      label:`⚔ Attack them [-5 ${facName} rep]`,
+      style:'bt dn',
+      fn:()=>{
+        S.rep[fac]=(S.rep[fac]||0)-5;S.karma=(S.karma||0)-3;
+        combat.log=['You attacked a '+facName+' patrol. This will have consequences.'];
+        if(travelMode){startCombat(enemies);combat.postT=tDest}
+        else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+      }
+    });
+  }
+
+  // ── Animals/insects ──
   if(isAnimal&&hasHunterPerk){
     choices.push({
       label:'🐾 Calm animal [Hunter perk]',
@@ -3255,8 +3528,16 @@ function preEncounter(enemies,area,step,travelMode=false){
       fn:()=>_preEncResolve(`You extend your hand slowly. The ${enemies[0].name} circles once, then retreats. Hunter's instinct.`,area,step,travelMode,true)
     });
   }
-
-  // Animals/insects: Scare off (Strength check, no perk needed)
+  if(isAnimal&&S.animalFriend){
+    choices.push({
+      label:'🐾 Pacify [Animal Friend perk]',
+      style:'bt pip',
+      fn:()=>{
+        if(R()<0.7){return _preEncResolve(`The creatures sense no threat from you and wander off.`,area,step,travelMode,true)}
+        startFailedEncounter(enemies,area,step,travelMode,'Too agitated to pacify.');
+      }
+    });
+  }
   if(isAnimal&&!isUndead){
     choices.push({
       label:`💪 Scare them off [${checkLabel('STR',str,6)}]`,
@@ -3270,24 +3551,8 @@ function preEncounter(enemies,area,step,travelMode=false){
     });
   }
 
-  // Non-hostile faction humans: Talk
-  if(!hostile&&!isUndead&&!isAnimal&&anchor.type==='human'){
-    const talkLabel=rep>=20?`💬 Talk to them [${facName}, +${rep} rep]`:`💬 Talk to them [${facName}]`;
-    choices.push({
-      label:talkLabel,
-      style:'bt pip',
-      fn:()=>{
-        const xpGain=rnd(6,12);
-        S.xp+=xpGain;
-        const repGain=R()<0.5?1:0;
-        if(repGain)S.rep[fac]=(S.rep[fac]||0)+1;
-        return _preEncResolve(`They're wary but not aggressive. You exchange words. ${repGain?`+1 ${facName} rep. `:''}⭐ +${xpGain} XP.`,area,step,travelMode,true);
-      }
-    });
-  }
-
-  // Hostile humans with high CHA: Intimidate
-  if(anchor.type==='human'&&!isUndead){
+  // ── Intimidate hostile humans ──
+  if(isHuman&&hostile){
     choices.push({
       label:`😠 Intimidate [${checkLabel('CHA',cha,7)}]`,
       style:'bt',
@@ -3301,11 +3566,26 @@ function preEncounter(enemies,area,step,travelMode=false){
     });
   }
 
-  // Hostile humans: Bribe (costs caps)
-  if(anchor.type==='human'&&!isUndead&&hostile){
+  // ── Terrifying Presence perk ──
+  if(isHuman&&hostile&&S.terrifyingPresence){
+    choices.push({
+      label:'😨 Terrifying Presence [perk — 80%]',
+      style:'bt pip',
+      fn:()=>{
+        if(R()<0.8){
+          S.xp+=rnd(10,18);
+          return _preEncResolve(`Your reputation precedes you. They take one look and run.`,area,step,travelMode,true);
+        }
+        startFailedEncounter(enemies,area,step,travelMode,'"We\'re not scared of you." Apparently they are — but not enough.');
+      }
+    });
+  }
+
+  // ── Bribe hostile humans ──
+  if(isHuman&&hostile){
     const bribeAmt=Math.max(20,enemies.length*15+S.level*5);
     choices.push({
-      label:`💰 Bribe them off (${bribeAmt} caps · ${Math.round(checkChance(cha,6,rep/200)*100)}%)`,
+      label:`💰 Bribe (${bribeAmt} caps · ${Math.round(checkChance(cha,6,rep/200)*100)}%)`,
       style:'bt',
       fn:()=>{
         if(S.caps<bribeAmt){notify('Not enough caps.');return null}
@@ -3318,13 +3598,14 @@ function preEncounter(enemies,area,step,travelMode=false){
     });
   }
 
-  // Sneak past (Agility attempt — chanced, never guaranteed)
+  // ── Sneak (always available except undead) ──
   if(!isUndead){
+    const sneakBonus=S.lightStepPerk?0.1:0;
     choices.push({
-      label:`🤫 Sneak past [${checkLabel('AGI',agi,6)}]`,
+      label:`🤫 Sneak past [${checkLabel('AGI',agi,6,sneakBonus)}]`,
       style:'bt',
       fn:()=>{
-        if(R()<checkChance(agi,6)){
+        if(R()<checkChance(agi,6,sneakBonus)){
           return _preEncResolve(`You move quietly through the terrain. They never spot you.`,area,step,travelMode,true);
         }
         startFailedEncounter(enemies,area,step,travelMode,'Sneak attempt spotted.');
@@ -3332,21 +3613,22 @@ function preEncounter(enemies,area,step,travelMode=false){
     });
   }
 
-  // Always: Retreat/flee
+  // ── Retreat ──
   choices.push({
     label:'🏃 Retreat',
     style:'bt dn',
     fn:()=>{
-      log('Retreated from '+( area?.n||'the road')+'.','e');
+      log('Retreated from '+(area?.n||'the road')+'.','e');
       if(travelMode){cancelTravel('You turn back before reaching your destination.')}
       else{$('TO').classList.remove('A');upAll()}
     }
   });
 
-  // Render the pre-encounter screen in the TO overlay
+  // ── Render ──
   $('TS').innerHTML=enemies[0].e||'⚔';
-  const hostile_label=hostile?`<span style="color:var(--red)">HOSTILE</span>`:`<span style="color:var(--amber)">${facName}</span>`;
-  $('TT').innerHTML=`<b>${enemyLabel}</b><br><span style="font-size:10px;color:var(--muted)">${hostile_label} · ${anchor.type}</span>`;
+  const dispLabel=isHuman&&fac?`<span style="color:${getDispositionColor(disp)}">${disp.toUpperCase()}</span> · ${facName}`
+    :(hostile?`<span style="color:var(--red)">HOSTILE</span>`:`<span style="color:var(--amber)">WILD</span>`);
+  $('TT').innerHTML=`<b>${enemyLabel}</b><br><span style="font-size:10px;color:var(--muted)">${dispLabel} · ${anchor.type}</span>`;
   const cd=$('TC');cd.innerHTML='';
   choices.forEach(ch=>{
     const btn=el('button',ch.style,'');
@@ -3413,7 +3695,20 @@ function runExpedition(area,step){
     $('TT').innerHTML=`<div style="text-align:center"><div style="display:flex;align-items:center;justify-content:center;width:64px;height:64px;background:#0f0f08;border:1px solid #3a3828;border-radius:10px;margin:6px auto">${it.e}</div><b style="color:var(--green);display:block;margin-top:4px">${it.n}</b></div>`;
     $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1)}
   } else {
-    // 60% chance of encounter card, 40% plain scene flavour
+    // 25% chance of faction patrol in expedition areas
+    const facPat=R()<0.25?rollFactionPatrol(S.loc):null;
+    if(facPat&&facPat._factionAid){
+      // Friendly faction aid during expedition
+      const lines=handleFactionAid(facPat.aidData);
+      const facName=FACTIONS[facPat.aidData.fac]||facPat.aidData.fac;
+      $('TS').innerHTML='🏴';
+      $('TT').innerHTML=`<b>${facName} Patrol</b><br><span style="font-size:10px;color:var(--muted)">${lines.join('<br>')}</span>`;
+      $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1);
+      save();return;
+    }else if(facPat&&facPat.length){
+      preEncounter(facPat,area,step+1,false);return;
+    }
+    // 40% encounter card, rest is flavour
     const card=R()<0.60?rollEncounterCard(S.loc,area):null;
     if(card){
       showEncounterCard(card,area,step+1);
@@ -6383,17 +6678,121 @@ function tradeRenderFooter(){
 }
 
 function getShopInventory(bId){
-  const general=[{id:'stimpak',qty:3},{id:'purified_water',qty:4},{id:'dirty_water',qty:3},{id:'sunset_sars',qty:5},{id:'cram',qty:3},{id:'iguana_bits',qty:3},{id:'ammo_9mm',qty:10},{id:'ammo_10mm',qty:6},{id:'ammo_357',qty:5},{id:'duct_tape',qty:2},{id:'bobby_pin',qty:3},{id:'wonderglue',qty:1},{id:'wrench',qty:1},{id:'camera',qty:1},{id:'cigarette_pack',qty:2}];
-  const guns=[{id:'pistol_9mm',qty:1},{id:'pistol_10mm',qty:1},{id:'revolver_357',qty:1},{id:'cowboy_repeater',qty:1},{id:'trail_carbine',qty:1},{id:'smg_9mm',qty:1},{id:'varmint_rifle',qty:1},{id:'service_rifle',qty:1},{id:'single_shotgun',qty:1},{id:'caravan_shotgun',qty:1},{id:'combat_knife',qty:1},{id:'tire_iron',qty:1},{id:'reinforced_leather_armor',qty:1},{id:'metal_helmet',qty:1},{id:'ammo_556',qty:8},{id:'ammo_308',qty:5},{id:'ammo_shells',qty:6},{id:'ammo_9mm',qty:10},{id:'ammo_10mm',qty:6},{id:'ammo_357',qty:5}];
-  const medical=[{id:'stimpak',qty:5},{id:'super_stimpak',qty:2},{id:'doctor_bag',qty:2},{id:'antivenom',qty:3},{id:'purified_water',qty:4},{id:'dirty_water',qty:3},{id:'med_x',qty:2}];
-  const legion=[{id:'machete',qty:2},{id:'tire_iron',qty:1},{id:'healing_powder',qty:5},{id:'antivenom',qty:2},{id:'silverware',qty:2},{id:'legion_coin',qty:3}];
-  const bos=[{id:'laser_pistol',qty:1},{id:'laser_rifle',qty:1},{id:'plasma_defender',qty:1},{id:'laser_rcw',qty:1},{id:'energy_cell',qty:10},{id:'stimpak',qty:3},{id:'combat_helmet',qty:1},{id:'metal_helmet',qty:1},{id:'bos_recon_helmet',qty:1},{id:'bos_recon_armor',qty:1},{id:'initiate_robes',qty:1},{id:'scribe_robes',qty:1},{id:'sensor_module',qty:2},{id:'fission_battery',qty:2},{id:'conductor',qty:2},{id:'scrap_electronics',qty:3},{id:'laser_focusing_lens',qty:1},{id:'microfusion_regulator',qty:1},{id:'servo_motor',qty:1},{id:'scribe_data_slate',qty:1},{id:'knight_toolkit',qty:1},{id:'weapon_repair_kit',qty:1},{id:'bos_holotape',qty:1}];
-  const khans=[{id:'pistol_9mm',qty:1},{id:'revolver_357',qty:1},{id:'trail_carbine',qty:1},{id:'smg_9mm',qty:1},{id:'single_shotgun',qty:1},{id:'caravan_shotgun',qty:1},{id:'combat_knife',qty:2},{id:'ammo_9mm',qty:8},{id:'ammo_357',qty:5},{id:'ammo_shells',qty:4},{id:'jet',qty:4},{id:'psycho',qty:3},{id:'stimpak',qty:3},{id:'cigarette_carton',qty:2}];
+  // ── General Store (Goodsprings, small towns) ──
+  const general=[
+    {id:'stimpak',qty:4},{id:'purified_water',qty:5},{id:'dirty_water',qty:4},
+    {id:'sunset_sars',qty:6},{id:'nuka_cola',qty:4},{id:'cram',qty:4},
+    {id:'iguana_bits',qty:3},{id:'fancy_lad',qty:2},{id:'instamash',qty:3},
+    {id:'pork_n_beans',qty:3},{id:'dandy_boy_apples',qty:2},
+    {id:'ammo_9mm',qty:12},{id:'ammo_10mm',qty:8},{id:'ammo_357',qty:6},
+    {id:'ammo_shells',qty:4},{id:'bobby_pin',qty:4},{id:'duct_tape',qty:3},
+    {id:'wonderglue',qty:2},{id:'wrench',qty:1},{id:'cigarette_pack',qty:3},
+    {id:'caravan_cards',qty:1},{id:'leather_armor',qty:1},{id:'headwrap',qty:1},
+    {id:'pistol_9mm',qty:1},{id:'switchblade',qty:1},{id:'varmint_rifle',qty:1},
+  ];
+
+  // ── Gun Store / Supply Depot (Mick & Ralph, Supply buildings) ──
+  const guns=[
+    // Sidearms
+    {id:'pistol_9mm',qty:2},{id:'pistol_10mm',qty:2},{id:'revolver_357',qty:1},{id:'maria',qty:1},
+    // Long guns
+    {id:'cowboy_repeater',qty:1},{id:'trail_carbine',qty:1},{id:'varmint_rifle',qty:2},
+    {id:'service_rifle',qty:1},{id:'hunting_rifle',qty:1},{id:'marksman_carbine',qty:1},
+    {id:'assault_carbine',qty:1},{id:'sniper_rifle',qty:1},
+    // Shotguns
+    {id:'single_shotgun',qty:1},{id:'caravan_shotgun',qty:1},{id:'combat_shotgun',qty:1},
+    {id:'riot_shotgun',qty:1},
+    // SMG
+    {id:'smg_9mm',qty:1},
+    // Melee
+    {id:'combat_knife',qty:2},{id:'machete',qty:1},{id:'fire_axe',qty:1},
+    {id:'tire_iron',qty:1},{id:'lead_pipe',qty:1},{id:'brass_knuckles',qty:1},
+    // Armor
+    {id:'leather_armor',qty:1},{id:'reinforced_leather_armor',qty:1},{id:'gecko_leather',qty:1},
+    {id:'metal_armor',qty:1},{id:'combat_armor',qty:1},{id:'metal_helmet',qty:1},
+    {id:'combat_helmet',qty:1},{id:'prospector_hat',qty:1},{id:'raider_armor',qty:1},
+    // Ammo (large stock)
+    {id:'ammo_9mm',qty:20},{id:'ammo_10mm',qty:15},{id:'ammo_357',qty:12},
+    {id:'ammo_556',qty:12},{id:'ammo_308',qty:8},{id:'ammo_shells',qty:10},
+    {id:'ammo_45_70',qty:4},{id:'ammo_50',qty:2},
+    // Repair
+    {id:'weapon_repair_kit',qty:2},{id:'duct_tape',qty:3},{id:'wonderglue',qty:2},
+  ];
+
+  // ── Medical (Doctors, Clinics, Forts) ──
+  const medical=[
+    {id:'stimpak',qty:8},{id:'super_stimpak',qty:3},{id:'doctor_bag',qty:3},
+    {id:'antivenom',qty:4},{id:'med_x',qty:3},{id:'fixer',qty:2},
+    {id:'hydra',qty:2},{id:'purified_water',qty:6},{id:'dirty_water',qty:4},
+    {id:'healing_powder',qty:4},{id:'surgical_tubing',qty:2},
+    {id:'buffout',qty:2},{id:'mentats',qty:2},{id:'psycho',qty:1},
+  ];
+
+  // ── Legion Supply ──
+  const legion=[
+    {id:'machete',qty:3},{id:'throwing_spear',qty:3},{id:'combat_knife',qty:2},
+    {id:'cleaver',qty:1},{id:'fire_axe',qty:1},{id:'thermic_lance',qty:1},
+    {id:'healing_powder',qty:8},{id:'antivenom',qty:4},{id:'hydra',qty:2},
+    {id:'weapon_binding_ritual',qty:3},{id:'dirty_water',qty:5},
+    {id:'legion_centurion_armor',qty:1},{id:'legion_coin',qty:5},
+    {id:'silverware',qty:3},{id:'dog_tags',qty:2},
+  ];
+
+  // ── BOS (Energy weapons, high-tech) ──
+  const bos=[
+    {id:'laser_pistol',qty:2},{id:'laser_rifle',qty:1},{id:'laser_rcw',qty:1},
+    {id:'plasma_defender',qty:1},{id:'plasma_rifle',qty:1},{id:'plasma_caster',qty:1},
+    {id:'gauss_rifle',qty:1},{id:'recharger_pistol',qty:1},
+    {id:'energy_cell',qty:15},{id:'microfusion_cell',qty:8},
+    {id:'bos_recon_armor',qty:1},{id:'bos_recon_helmet',qty:1},{id:'bos_combat_armor',qty:1},
+    {id:'combat_armor',qty:1},{id:'combat_helmet',qty:1},
+    {id:'stimpak',qty:4},{id:'super_stimpak',qty:2},
+    {id:'sensor_module',qty:3},{id:'fission_battery',qty:3},{id:'conductor',qty:3},
+    {id:'scrap_electronics',qty:4},{id:'servo_motor',qty:2},
+    {id:'weapon_repair_kit',qty:2},{id:'knight_toolkit',qty:1},
+  ];
+
+  // ── Khans (Guns + chems) ──
+  const khans=[
+    {id:'pistol_9mm',qty:2},{id:'revolver_357',qty:1},{id:'smg_9mm',qty:1},
+    {id:'trail_carbine',qty:1},{id:'single_shotgun',qty:1},{id:'caravan_shotgun',qty:1},
+    {id:'combat_knife',qty:2},{id:'brass_knuckles',qty:1},{id:'straight_razor',qty:1},
+    {id:'ammo_9mm',qty:12},{id:'ammo_357',qty:8},{id:'ammo_shells',qty:6},
+    {id:'jet',qty:6},{id:'psycho',qty:4},{id:'turbo',qty:2},{id:'buffout',qty:3},
+    {id:'med_x',qty:2},{id:'mentats',qty:2},{id:'steady',qty:2},
+    {id:'stimpak',qty:3},{id:'cigarette_carton',qty:3},
+    {id:'leather_armor',qty:1},{id:'raider_armor',qty:1},
+  ];
+
+  // ── Energy Weapons Dealer (Silver Rush, high-end) ──
+  const energy=[
+    {id:'laser_pistol',qty:2},{id:'laser_rifle',qty:2},{id:'laser_rcw',qty:1},
+    {id:'plasma_defender',qty:1},{id:'plasma_rifle',qty:1},{id:'multiplas_rifle',qty:1},
+    {id:'plasma_caster',qty:1},{id:'gauss_rifle',qty:1},{id:'recharger_pistol',qty:2},
+    {id:'energy_cell',qty:20},{id:'microfusion_cell',qty:12},
+    {id:'combat_armor',qty:1},{id:'metal_armor',qty:1},
+    {id:'stimpak',qty:3},{id:'sensor_module',qty:2},{id:'fission_battery',qty:3},
+  ];
+
+  // ── NCR Quartermaster ──
+  const ncr=[
+    {id:'service_rifle',qty:2},{id:'hunting_rifle',qty:1},{id:'marksman_carbine',qty:1},
+    {id:'combat_shotgun',qty:1},{id:'pistol_9mm',qty:2},{id:'combat_knife',qty:2},
+    {id:'ammo_556',qty:15},{id:'ammo_9mm',qty:15},{id:'ammo_308',qty:8},
+    {id:'ammo_shells',qty:6},{id:'ncr_armor',qty:1},
+    {id:'combat_armor',qty:1},{id:'combat_helmet',qty:1},{id:'riot_gear',qty:1},
+    {id:'stimpak',qty:5},{id:'doctor_bag',qty:2},{id:'purified_water',qty:5},
+    {id:'weapon_repair_kit',qty:2},{id:'ncr_dogtags',qty:3},
+  ];
+
+  // ── Route by building ID ──
+  if(bId.includes('silver_rush'))return energy;
   if(bId.includes('khan'))return khans;
   if(bId.includes('armory')||bId.includes('bos'))return bos;
   if(bId.includes('legion'))return legion;
-  if(bId.includes('med')||bId.includes('doc')||bId.includes('fort'))return medical;
-  if(bId.includes('supply')||bId.includes('ralph'))return guns;
+  if(bId.includes('mccarran_supply')||bId.includes('outpost_supply'))return ncr;
+  if(bId.includes('med')||bId.includes('doc')||bId.includes('fort')||bId.includes('clinic'))return medical;
+  if(bId.includes('supply')||bId.includes('ralph')||bId.includes('mick'))return guns;
   return general;
 }
 function bldMedical(body){
@@ -8125,7 +8524,8 @@ function genTravelEv(days,from,to){
   const evs=[];const total=days*2+rnd(1,3);
   for(let i=0;i<total;i++){
     const r=R();
-    if(r<.3){
+    if(r<.22){
+      // Standard creature/enemy combat
       const dloc=LOCS[to];
       const enPool=dloc?.sur?.length?rndA(dloc.sur).en:['gecko','bloatfly'];
       const validPool=enPool.filter(e=>ENEMIES[e]);
@@ -8134,24 +8534,194 @@ function genTravelEv(days,from,to){
         const enemies=buildCohesiveGroup(validPool,cnt);
         if(enemies.length)evs.push({tp:'combat',e:enemies[0].e,tx:'',enemies,_i:i,_t:total});
       }
+    }else if(r<.35){
+      // Faction patrol encounter — based on rep and location
+      const facPatrol=rollFactionPatrol(to);
+      if(facPatrol&&facPatrol._factionAid){
+        evs.push({tp:'factionAid',e:'🏴',tx:'',aidData:facPatrol,_i:i,_t:total});
+      }else if(facPatrol){
+        evs.push({tp:'combat',e:facPatrol[0].e,tx:'',enemies:facPatrol,_i:i,_t:total});
+      }else{
+        // Fallback to scene
+        evs.push({tp:'scene',e:'🏜',tx:rndA(TRAVEL_SCENES),_i:i,_t:total});
+      }
     }else if(r<.48){
       const finds=['stimpak','sunset_sars','dirty_water','cram','iguana_bits','ammo_9mm','ammo_10mm','ammo_357','ammo_556','ammo_shells','energy_cell','herbs','scrap','pre_war_money','wonderglue','wrench','scrap_electronics','camera','cigarette_pack','cigarette_carton','silverware','silver_watch','gold_necklace','conductor'];
       const fi=rndA(finds);const it=ITEMS[fi];
       evs.push({tp:'loot',e:'✨',tx:`You spot something: <b style="color:var(--green)">${it?.e} ${it?.n}</b>`,fn:()=>{if(fi&&ITEMS[fi])giveItem(fi);log('Found '+it?.n+' on the road.','e')},_i:i,_t:total});
     }else if(r<.72){
-      // Encounter card — use destination location for flavour
       const card=rollEncounterCard(to,null);
       if(card)evs.push({tp:'encounter',e:card.icon,tx:'',card,_i:i,_t:total});
       else{
-        const scenes=["The road stretches endlessly.","Heat waves shimmer off the asphalt.","You pass a rusted pre-war car.","A brahmin caravan passes going the other way.","Dust devils spin across the highway.","Radio signals fade in and out."];
-        evs.push({tp:'scene',e:rndA(['🏜','🌵','☀','🛣']),tx:rndA(scenes),_i:i,_t:total});
+        evs.push({tp:'scene',e:rndA(['🏜','🌵','☀','🛣']),tx:rndA(TRAVEL_SCENES),_i:i,_t:total});
       }
     }else{
-      const scenes=["The road stretches endlessly.","Heat waves shimmer off the asphalt.","You pass a rusted pre-war car.","A brahmin caravan passes going the other way.","Dust devils spin across the highway.","Radio signals fade in and out."];
-      evs.push({tp:'scene',e:rndA(['🏜','🌵','☀','🛣']),tx:rndA(scenes),_i:i,_t:total});
+      evs.push({tp:'scene',e:rndA(['🏜','🌵','☀','🛣']),tx:rndA(TRAVEL_SCENES),_i:i,_t:total});
     }
   }
   return evs;
+}
+
+const TRAVEL_SCENES=["The road stretches endlessly.","Heat waves shimmer off the asphalt.","You pass a rusted pre-war car.","A brahmin caravan passes going the other way.","Dust devils spin across the highway.","Radio signals fade in and out.","A tumbleweed rolls across the cracked road.","Distant gunfire echoes from the hills.","A lone bighorner watches you from a ridge.","The wind carries the smell of campfire smoke."];
+
+// ── FACTION ENCOUNTER SYSTEM ────────────────────────────────
+// Rep-scaled frequency, ambushes, bounty hunters, aid, and reinforcements.
+
+// Faction-specific positive encounter templates
+const FACTION_AID={
+  NCR:[
+    {type:'supply',text:'"NCR quartermaster flagged you as a friend. Take these."',items:['stimpak','ammo_556'],caps:0},
+    {type:'supply',text:'"Standing orders: share supplies with friendlies. Here."',items:['purified_water','ammo_9mm'],caps:15},
+    {type:'intel',text:'"We spotted Legion scouts near the eastern pass. Stay sharp."',xp:12},
+    {type:'escort',text:'"We\'re heading the same way. Safety in numbers."',heal:true},
+    {type:'bounty',text:'"Command posted bounties on Fiend leaders. Interested?"',questHint:'Fiend bounty from NCR.'},
+  ],
+  Legion:[
+    {type:'supply',text:'"Caesar rewards loyalty. Take these."',items:['healing_powder','antivenom'],caps:0},
+    {type:'intel',text:'"The profligates have thinned their patrols west of the dam."',xp:12},
+    {type:'supply',text:'"Spoils of war. You have earned them."',items:['combat_knife','dirty_water'],caps:20},
+  ],
+  BOS:[
+    {type:'supply',text:'"Elder McNamara authorised field support for allies."',items:['stimpak','energy_cell'],caps:0},
+    {type:'intel',text:'"We tracked a weapons cache underground. Marking it for you."',xp:15},
+    {type:'supply',text:'"Take this. Pre-war tech, still functional."',items:['sensor_module','scrap_electronics'],caps:0},
+  ],
+  Kings:[
+    {type:'supply',text:'"The King says you\'re good people."',items:['sunset_sars','switchblade'],caps:10},
+    {type:'intel',text:'"Some creeps have been hassling traders near the east gate."',xp:10},
+  ],
+  Followers:[
+    {type:'supply',text:'"Medical supplies. No charge — that\'s what we do."',items:['stimpak','purified_water'],caps:0},
+    {type:'heal',text:'"You look rough. Let us patch you up."',heal:true},
+  ],
+};
+
+// Bounty hunter squads sent when rep is very low
+const FACTION_HUNTERS={
+  NCR:{
+    name:'NCR Hit Squad',
+    pool:['ncr_ranger','ncr_ranger','ncr_trooper','ncr_trooper'],
+    minRep:-30,
+    msg:'"By order of the Republic, you are sentenced to death."',
+  },
+  Legion:{
+    name:'Legion Assassins',
+    pool:['legion_veteran','legion_veteran','legion_recruit'],
+    minRep:-30,
+    msg:'"Ave. True to Caesar. You die today, dissolute."',
+  },
+  BOS:{
+    name:'Brotherhood Enforcers',
+    pool:['bos_paladin','bos_knight'],
+    minRep:-25,
+    msg:'"The Brotherhood does not forgive. Or forget."',
+  },
+};
+
+// Roll a faction patrol encounter based on region and rep
+function rollFactionPatrol(destId){
+  const dloc=LOCS[destId];if(!dloc)return null;
+  const locFac=dloc.fac;
+
+  // Build weighted faction pool based on location and player rep
+  const candidates=[];
+
+  // Location's own faction patrols — hostile factions patrol more heavily
+  if(locFac&&FACTION_PATROLS[locFac]){
+    const rep=S.rep[locFac]||0;
+    const disp=getFactionDisposition(locFac);
+    let weight=1;
+    if(disp==='hostile')weight=5;
+    else if(disp==='wary')weight=3;
+    else if(disp==='friendly')weight=1;
+    else if(disp==='allied')weight=1;
+    // Extra patrols scale with how negative rep is
+    if(rep<=-20)weight+=2;
+    if(rep<=-40)weight+=2;
+    for(let w=0;w<weight;w++)candidates.push(locFac);
+  }
+
+  // Enemy factions of player's allies send hostile patrols
+  Object.entries(S.rep||{}).forEach(([fac,rep])=>{
+    if(rep>=10&&FACTION_WARS[fac]){
+      FACTION_WARS[fac].forEach(enemy=>{
+        if(FACTION_PATROLS[enemy]){
+          // More allied = more enemy activity
+          const w=rep>=30?3:rep>=20?2:1;
+          for(let i=0;i<w;i++)candidates.push(enemy);
+        }
+      });
+    }
+  });
+
+  // Factions the player is very hostile with send hunters
+  Object.entries(S.rep||{}).forEach(([fac,rep])=>{
+    if(rep<=-15&&FACTION_PATROLS[fac]){
+      const w=rep<=-30?4:rep<=-20?3:2;
+      for(let i=0;i<w;i++)candidates.push(fac);
+    }
+  });
+
+  // Random NCR/Legion patrols in contested territory
+  const contested=['NovacN','FreesideN','NiptonN','BoulderCityN','CampMcCarran','CampGolf'];
+  if(contested.some(c=>destId.includes(c)||destId===c)){
+    if(R()<0.35)candidates.push('NCR');
+    if(R()<0.25)candidates.push('Legion');
+  }
+
+  if(!candidates.length)return null;
+
+  const pickedFac=rndA(candidates);
+  const rep=S.rep[pickedFac]||0;
+  const disp=getFactionDisposition(pickedFac);
+
+  // ── Bounty hunter squads for vilified factions ──
+  const hunter=FACTION_HUNTERS[pickedFac];
+  if(hunter&&rep<=hunter.minRep&&R()<0.25){
+    const squad=hunter.pool.filter(id=>ENEMIES[id]);
+    if(squad.length){
+      const enemies=buildCohesiveGroup(squad,rnd(2,Math.min(4,squad.length)));
+      enemies.forEach(en=>{en.name=hunter.name.split(' ')[0]+' '+en.name;en.xp=Math.round(en.xp*1.5)});
+      return enemies;
+    }
+  }
+
+  const pool=FACTION_PATROLS[pickedFac];
+  if(!pool)return null;
+
+  // ── Friendly/allied factions give aid instead of combat ──
+  if((disp==='friendly'||disp==='allied')&&R()<(disp==='allied'?0.6:0.35)){
+    // Return a special "aid encounter" marker
+    const aidPool=FACTION_AID[pickedFac];
+    if(aidPool&&aidPool.length){
+      const aid=rndA(aidPool);
+      return {_factionAid:true,fac:pickedFac,aid:aid};
+    }
+  }
+
+  const cnt=rnd(1,Math.min(3,pool.length));
+  const validPool=pool.filter(id=>ENEMIES[id]);
+  if(!validPool.length)return null;
+
+  return buildCohesiveGroup(validPool,cnt);
+}
+
+// Handle faction aid encounters during travel
+function handleFactionAid(aidData){
+  const fac=aidData.fac;
+  const aid=aidData.aid;
+  const facName=FACTIONS[fac]||fac;
+  const disp=getFactionDisposition(fac);
+  const lines=[`A ${facName} patrol approaches.`];
+  lines.push(aid.text);
+  if(aid.items){aid.items.forEach(id=>{const it=ITEMS[id];if(it){giveItem(id,1,{ignoreLimit:true});lines.push(`${it.e} ${it.n} received.`)}})}
+  if(aid.caps){S.caps+=aid.caps;lines.push(`+${aid.caps} caps.`)}
+  if(aid.xp){S.xp+=grantXP(aid.xp);lines.push(`⭐ +${aid.xp} XP`)}
+  if(aid.heal){S.hp=Math.min(S.maxHp,S.hp+Math.round(S.maxHp*0.4));lines.push(`❤ Healed to ${S.hp}/${S.maxHp}`)}
+  if(aid.questHint){lines.push(`📜 ${aid.questHint}`)}
+  const repGain=R()<0.3?1:0;
+  if(repGain){S.rep[fac]=(S.rep[fac]||0)+1;lines.push(`+1 ${facName} rep`)}
+  return lines;
 }
 function nextTEv(){
   if(!tQ.length){finTravel();return}
@@ -8160,6 +8730,12 @@ function nextTEv(){
   $('TB').style.width=Math.round(((ev._i+1)/ev._t)*100)+'%';
   $('TS').innerHTML=ev.e;$('TT').innerHTML=ev.tx;$('TC').innerHTML='';$('TN').style.display='none';
   clearTravelEncounterIcons();
+  if(ev.tp==='factionAid'){
+    const lines=handleFactionAid(ev.aidData);
+    const facName=FACTIONS[ev.aidData.fac]||ev.aidData.fac;
+    showResult(facName+' Patrol','🏴',lines,'Continue','travelCont()');
+    return;
+  }
   if(ev.tp==='combat'){
     setTravelEncounterIcons(ev.enemies);
     preEncounter(ev.enemies,null,0,true);
