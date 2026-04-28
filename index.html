@@ -293,6 +293,26 @@ html,body,#W,#C,#N,button{touch-action:manipulation}
 .travel-map-zoom button{width:30px;height:30px;min-height:30px;padding:0;background:#18180d;color:var(--amber);border:1px solid #3a3828;border-radius:5px;font-family:'Courier New',monospace;font-weight:bold}
 #TO>div{position:relative}
 #TO #TC,#TO #TT,#TO #TS,#TO .hb,#TO #TN{position:relative;z-index:2}
+
+
+/* Bigger item cards for mobile clarity */
+.inv-card{padding:14px!important;margin:10px 0!important;border-radius:10px!important;min-height:118px!important}
+.inv-row{gap:12px!important;font-size:15px!important;align-items:center!important}
+.inv-row>div:first-child{display:flex!important;align-items:center!important;gap:8px!important;min-width:0!important}
+.inv-item-icon,.tr-icon,.loot-item-icon{width:108px!important;height:108px!important;min-width:108px!important;border-radius:10px!important}
+.inv-item-icon{display:inline-flex!important;align-items:center!important;justify-content:center!important;background:#111108;border:1px solid #1a1810;margin-right:10px;vertical-align:middle;overflow:hidden}
+.inv-item-icon .icon-wrap,.inv-item-icon img,.inv-item-icon svg,
+.tr-icon .icon-wrap,.tr-icon img,.tr-icon svg,
+.loot-item-icon .icon-wrap,.loot-item-icon img,.loot-item-icon svg{
+  width:96px!important;height:96px!important;max-width:96px!important;max-height:96px!important;font-size:96px!important;object-fit:contain!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:0 auto!important
+}
+.tr-item{gap:14px!important;padding:14px!important;margin:10px 0!important;min-height:132px!important;border-radius:10px!important}
+.loot-item{gap:14px!important;padding:14px!important;margin:10px 0!important;min-height:128px!important;border-radius:10px!important}
+.loot-item-name{font-size:15px!important;line-height:1.35!important}
+.found-item-icon{display:flex;align-items:center;justify-content:center;margin:0 auto 10px;width:132px;height:132px;background:#111108;border:1px solid var(--amber2);border-radius:14px}
+.found-item-icon .icon-wrap,.found-item-icon img,.found-item-icon svg{width:112px!important;height:112px!important;max-width:112px!important;max-height:112px!important;font-size:112px!important;object-fit:contain!important;margin:auto!important}
+#RP{text-align:center!important}
+
 </style>
 </head>
 <body>
@@ -388,6 +408,12 @@ function showResult(title,emoji,lines,btnText,btnFn){
   rp.innerHTML=`<div style="font-size:40px;margin-bottom:8px">${emoji}</div><div style="font-size:15px;font-weight:bold;margin-bottom:8px;color:var(--amber)">${title}</div>${lines.map(l=>'<div style="font-size:11px;margin:3px 0;color:var(--muted)">'+l+'</div>').join('')}<button class="bt go" style="margin-top:10px;text-align:center" onclick="closeResult();${btnFn||''}">${btnText||'Continue'}</button>`;
   rp.style.display='block';bg.style.display='block';
   requestAnimationFrame(()=>requestAnimationFrame(()=>{rp.classList.add('show');bg.classList.add('show')}));
+}
+function showItemFound(title,itemName,itemIcon,btnFn){
+  showResult(title||'Item Found',
+    `<div class="found-item-icon">${renderIcon(itemIcon,96)}</div>`,
+    [`<b style="color:var(--text)">${itemName}</b>`],
+    'Continue',btnFn||'upAll()');
 }
 function closeResult(){$('RP').classList.remove('show');$('RBG').classList.remove('show');setTimeout(()=>{$('RP').style.display='none';$('RBG').style.display='none'},200)}
 function openDlg(h){const db=$('DB'),dlg=$('DO');if(!db||!dlg)return;db.innerHTML=h;dlg.classList.add('A')}
@@ -982,7 +1008,7 @@ const ICONS={
     // ── Faction generic icons ──
     SECURITRON:     '<img src="NVImages/SecruitronIcon.png" style="width:150%;height:150%;object-fit:contain;display:block;">',
     NCR:            '<img src="NVImages/NCRTrooper1.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
-    NCR_RANGER:     '<img src="NVImages/NCRRanger1.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    NCR_RANGER:     '<img src="NVImages/NcrrangerIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
     NCR_COMMAND:    "📋",
     NCR_MEDIC:      "⚕️",
     NCR_SCOUT:      "🔭",
@@ -1163,7 +1189,7 @@ giant_rat:{n:"Giant Rat",hp:18,a:4,d:0,xp:8,e:ICONS.ENEMY.RAT,loot:["dirty_water
 giant_ant:{n:"Giant Ant",hp:35,a:12,d:0,xp:25,e:ICONS.ENEMY.ANT,loot:["herbs","scrap","giant_ant_meat"],type:'insect',fac:'wild'},
 jackal_raider:{n:"Jackal Gang Member",hp:55,a:20,d:1,xp:40,e:ICONS.ENEMY.CONVICT,loot:["ammo_9mm","ammo_9mm","switchblade","single_shotgun","cigarette_pack","dirty_water","pre_war_money"],type:'human',fac:'Raiders',hostile:true},
 viper_gunslinger:{n:"Viper Gunslinger",hp:65,a:26,d:2,xp:50,e:ICONS.ENEMY.VIPER,loot:["ammo_357","ammo_357","varmint_rifle","leather_armor","cigarette_carton","stimpak","pre_war_money"],type:'human',fac:'Raiders',hostile:true},
-centaur:{n:"Centaur",hp:100,a:30,d:0,xp:80,e:ICONS.ENEMY.GHOUL,loot:["med_x","dirty_water","scrap","herbs"],type:'mutant',fac:'SuperMutants'},
+centaur:{n:"Centaur",hp:100,a:30,d:0,xp:80,e:'<img src="NVImages/CentaurIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',loot:["med_x","dirty_water","scrap","herbs"],type:'mutant',fac:'SuperMutants'},
 feral_ghoul_trooper:{n:"Feral Ghoul Trooper",hp:75,a:25,d:3,xp:65,e:ICONS.ENEMY.GLOWING_ONE,loot:["stimpak","ammo_556","ammo_556","pre_war_money","ncr_armor","dog_tags"],type:'undead',fac:'wild'},
 young_deathclaw:{n:"Young Deathclaw",hp:250,a:40,d:15,xp:150,e:ICONS.ENEMY.YOUNG_DEATHCLAW,loot:["deathclaw_hand","stimpak","combat_armor"],type:'animal',fac:'wild'},
 lakelurk:{n:"Lakelurk",hp:125,a:35,d:4,xp:100,e:ICONS.ENEMY.LAKELURK,loot:["lakelurk_meat","purified_water","stimpak","pre_war_money"],type:'creature',fac:'wild'},
@@ -1185,7 +1211,7 @@ feral_ghoul_reaver:{n:"Feral Ghoul Reaver",hp:85,a:18,d:4,xp:35,e:'<img src="NVI
 feral_ghoul_roamer:{n:"Feral Ghoul Roamer",hp:50,a:12,d:2,xp:22,e:ICONS.ENEMY.GHOUL,loot:["irradiated_blood","dirty_water"],type:'undead',fac:'undead'},
 // ── New Human Enemies ──
 ncr_ranger:{n:"NCR Ranger",hp:80,a:18,d:10,xp:42,e:ICONS.ENEMY.NCR_RANGER||ICONS.NPC.NCR_RANGER,loot:["service_rifle","ammo_556","stimpak","ncr_dogtags"],type:'human',fac:'NCR'},
-ncr_heavy_trooper:{n:"NCR Heavy Trooper",hp:70,a:15,d:12,xp:38,e:ICONS.ENEMY.NCR||ICONS.NPC.NCR,loot:["ammo_556","ammo_556","combat_armor","stimpak"],type:'human',fac:'NCR'},
+ncr_heavy_trooper:{n:"NCR Heavy Trooper",hp:70,a:15,d:12,xp:38,e:'<img src="NVImages/NcrheavytrooperIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',loot:["ammo_556","ammo_556","combat_armor","stimpak"],type:'human',fac:'NCR'},
 bos_paladin:{n:"BOS Paladin",hp:100,a:20,d:16,xp:55,e:ICONS.NPC.BOS,loot:["energy_cell","laser_rifle","stimpak","super_stimpak"],type:'human',fac:'BOS'},
 bos_knight:{n:"BOS Knight",hp:75,a:16,d:12,xp:40,e:ICONS.NPC.BOS,loot:["energy_cell","laser_pistol","stimpak"],type:'human',fac:'BOS'},
 khan_warrior:{n:"Great Khan Warrior",hp:55,a:12,d:4,xp:25,e:"🏹",loot:["ammo_9mm","jet","stimpak","machete"],type:'human',fac:'Khans'},
@@ -1331,7 +1357,7 @@ function addGoodspringsNpcCard(body,id){
   const npc=GOODSPRINGS_NPCS[id];if(!npc)return;
   const ex=gsNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openGoodspringsNPC(id);
   body.appendChild(nc);
 }
@@ -1646,7 +1672,7 @@ function addHiddenValleyNpcCard(body,id){
   const npc=HIDDEN_VALLEY_NPCS[id];if(!npc)return;
   const ex=hvNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openHiddenValleyNPC(id);
   body.appendChild(nc);
 }
@@ -2371,7 +2397,7 @@ function renderCustomChar(){
       <button class="bt sm" onclick="changeCustomBg(-1)">◀</button>
       <div style="flex:1;text-align:center">
         <div style="color:var(--green);font-size:12px">${bg.n}</div>
-        <div style="font-size:10px;color:var(--muted)">${bg.d}</div>
+        <div style="font-size:12px;color:var(--muted)">${bg.d}</div>
       </div>
       <button class="bt sm" onclick="changeCustomBg(1)">▶</button>
     </div>
@@ -2390,7 +2416,7 @@ function renderCustomChar(){
       <button class="bt sm" onclick="changePreset(-1)">◀</button>
       <div style="flex:1;text-align:center">
         <div style="color:var(--amber);font-size:12px">${preset.n}</div>
-        <div style="font-size:10px;color:var(--muted)">${preset.d}</div>
+        <div style="font-size:12px;color:var(--muted)">${preset.d}</div>
       </div>
       <button class="bt sm" onclick="changePreset(1)">▶</button>
     </div>
@@ -2556,14 +2582,14 @@ function upWorld(){
   hdr.innerHTML=`<div style="display:flex;align-items:center;gap:10px">
   <div style="font-size:32px">${loc.e}</div>
   <div style="flex:1"><div style="font-size:15px;font-weight:bold;color:var(--amber)">${loc.n}</div>
-  <div style="font-size:10px;color:var(--muted)">${loc.r} · ${timeStr()} · ${'☠'.repeat(loc.dg)}</div>
+  <div style="font-size:12px;color:var(--muted)">${loc.r} · ${timeStr()} · ${'☠'.repeat(loc.dg)}</div>
   <div style="font-size:11px;color:var(--muted);margin-top:2px;font-style:italic">${loc.d}</div></div></div>`;
   tab.appendChild(hdr);
   applyEndgameRoutes();
 
   if(S.loc==='TheStrip'){
     const broker=el('div','bc big-icon-card');
-    broker.innerHTML=`<div class="card-icon-lg">🕶️</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Tunnel Broker</div><div style="font-size:10px;color:var(--muted)">${S.level>=20?(tunnelsUnlocked()?'Travel to the Mojave Service Tunnels.':'Level 20+ rumour: hidden tunnels under Vegas.'):('Come back at level 20. Current level '+S.level+'.')}</div></div><div style="color:var(--muted)">›</div>`;
+    broker.innerHTML=`<div class="card-icon-lg">🕶️</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Tunnel Broker</div><div style="font-size:12px;color:var(--muted)">${S.level>=20?(tunnelsUnlocked()?'Travel to the Mojave Service Tunnels.':'Level 20+ rumour: hidden tunnels under Vegas.'):('Come back at level 20. Current level '+S.level+'.')}</div></div><div style="color:var(--muted)">›</div>`;
     broker.onclick=()=>openTunnelBroker();
     tab.appendChild(broker);
   }
@@ -2588,7 +2614,7 @@ function upWorld(){
   if(surs.length){
     surs.forEach((s,i)=>{
       const sc=el('div','bc big-icon-card');
-      sc.innerHTML=`<div class="card-icon-lg">${s.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${s.n}</div><div style="font-size:10px;color:var(--muted)">${s.d}</div></div><div style="color:var(--muted)">›</div>`;
+      sc.innerHTML=`<div class="card-icon-lg">${s.e}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${s.n}</div><div style="font-size:12px;color:var(--muted)">${s.d}</div></div><div style="color:var(--muted)">›</div>`;
       sc.onclick=()=>explore(i);
       tab.appendChild(sc);
     });
@@ -2598,7 +2624,7 @@ function upWorld(){
   tab.appendChild(el('div','sh','Locations'));
   if(S.loc==='HiddenValley'&&!hvHasAccess()){
     const door=el('div','bc big-icon-card');
-    door.innerHTML=`<div class="card-icon-lg">🚪</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Hidden Valley Bunker Door</div><div style="font-size:10px;color:var(--muted)">Use the intercom to earn Brotherhood access.</div></div><div style="color:var(--muted)">›</div>`;
+    door.innerHTML=`<div class="card-icon-lg">🚪</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Hidden Valley Bunker Door</div><div style="font-size:12px;color:var(--muted)">Use the intercom to earn Brotherhood access.</div></div><div style="color:var(--muted)">›</div>`;
     door.onclick=()=>openHiddenValleyEntry();
     tab.appendChild(door);
   }else{
@@ -2613,7 +2639,7 @@ function upWorld(){
 
   // Property
   const propBtn=el('div','bc');
-  propBtn.innerHTML=`<div style="font-size:22px">🏠</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Property${S.properties.length?' ('+S.properties.length+')':''}</div><div style="font-size:10px;color:var(--muted)">${propertyAtLoc(S.loc).length?'Owned here: '+propertyAtLoc(S.loc).map(p=>p.name).join(', '):'Browse local property options'}</div></div><div style="color:var(--muted)">›</div>`;
+  propBtn.innerHTML=`<div style="font-size:22px">🏠</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">Property${S.properties.length?' ('+S.properties.length+')':''}</div><div style="font-size:12px;color:var(--muted)">${propertyAtLoc(S.loc).length?'Owned here: '+propertyAtLoc(S.loc).map(p=>p.name).join(', '):'Browse local property options'}</div></div><div style="color:var(--muted)">›</div>`;
   propBtn.onclick=()=>openPropertyMenu();
   tab.appendChild(propBtn);
 
@@ -2710,7 +2736,7 @@ function doScavenge(){
     const ltPool=area?area.lt:['herbs','scrap'];
     const bonusPool=getBonusLootPool(S.loc,area);
     const fi=rndA(ltPool.concat(bonusPool));const it=ITEMS[fi];
-    if(it){giveItem(fi);log('Found '+it.n+'.','e');notify(it.e+' Found '+it.n)}
+    if(it){giveItem(fi);log('Found '+it.n+'.','e');showItemFound('Scavenged',it.n,it.e)}
   } else if(r<.82){
     // NPC encounter
     const npc=mkNPC({loc:S.loc});
@@ -3718,7 +3744,7 @@ function preEncounter(enemies,area,step,travelMode=false){
   $('TS').innerHTML=enemies[0].e||'⚔';
   const dispLabel=isHuman&&fac?`<span style="color:${getDispositionColor(disp)}">${disp.toUpperCase()}</span> · ${facName}`
     :(hostile?`<span style="color:var(--red)">HOSTILE</span>`:`<span style="color:var(--amber)">WILD</span>`);
-  $('TT').innerHTML=`<b>${enemyLabel}</b><br><span style="font-size:10px;color:var(--muted)">${dispLabel} · ${anchor.type}</span>`;
+  $('TT').innerHTML=`<b>${enemyLabel}</b><br><span style="font-size:12px;color:var(--muted)">${dispLabel} · ${anchor.type}</span>`;
   const cd=$('TC');cd.innerHTML='';
   choices.forEach(ch=>{
     const btn=el('button',ch.style,'');
@@ -3792,7 +3818,7 @@ function runExpedition(area,step){
       const lines=handleFactionAid(facPat.aidData);
       const facName=FACTIONS[facPat.aidData.fac]||facPat.aidData.fac;
       $('TS').innerHTML='🏴';
-      $('TT').innerHTML=`<b>${facName} Patrol</b><br><span style="font-size:10px;color:var(--muted)">${lines.join('<br>')}</span>`;
+      $('TT').innerHTML=`<b>${facName} Patrol</b><br><span style="font-size:12px;color:var(--muted)">${lines.join('<br>')}</span>`;
       $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1);
       save();return;
     }else if(facPat&&facPat.length){
@@ -4049,6 +4075,7 @@ function finishCombatLoot(){
   const pendingWEId=combat._pendingWEId;
   const pendingWEResult=combat._pendingWEResult;
 
+  updateSideTasks(lines);
   $('CO').style.display='none';
   combat=null;
   chkLU();save();
@@ -4184,7 +4211,7 @@ function renderCombat(){
   <div class="combat-bar">
   <button class="bt pip" onclick="openCombatInventory('aid')">🎒 Use Aid Item</button>
   <button class="bt dn" onclick="combatAction('flee')">🏃 Flee</button></div>
-  <div style="max-height:90px;overflow-y:auto;margin-top:6px;padding:4px;background:#0a0a04;border-radius:4px;font-size:10px;color:var(--muted)">${combat.log.slice(-8).map(l=>'<div>'+l+'</div>').join('')}</div>`;
+  <div style="max-height:90px;overflow-y:auto;margin-top:6px;padding:4px;background:#0a0a04;border-radius:4px;font-size:12px;color:var(--muted)">${combat.log.slice(-8).map(l=>'<div>'+l+'</div>').join('')}</div>`;
 }
 
 function openCombatInventory(mode='all'){
@@ -4211,7 +4238,7 @@ function openCombatInventory(mode='all'){
     if(w){
       const ammo=w.ammo?` · Ammo: ${ITEMS[w.ammo]?.n||'ammo'} ×${countItem(w.ammo)}`:'';
       equippedHtml=`<div class="inv-card" style="border:1px solid var(--amber);background:#1a1400">
-        <div class="inv-row"><div style="flex:1"><span style="font-size:13px">${w.e}</span> <b>${w.n}</b></div><div style="font-size:10px;color:var(--amber)">EQUIPPED</div></div>
+        <div class="inv-row"><div style="flex:1"><span class="inv-item-icon">${renderIcon(w.e,96)}</span><span><b>${w.n}</b></span></div><div style="font-size:10px;color:var(--amber)">EQUIPPED</div></div>
         <div style="font-size:10px;color:var(--muted);margin:2px 0">${w.desc||''} ${w.a?'ATK +'+w.a:''}${ammo}</div>
       </div>`;
     }else{
@@ -4238,7 +4265,7 @@ function openCombatInventory(mode='all'){
   <div style="font-size:10px;color:var(--muted);margin-bottom:8px">${subtitle}</div>
   ${hpBarHtml}${equippedHtml}
   ${rows.length?rows.map(([id,c])=>{const it=ITEMS[id];const ammo=it.ammo?` · Ammo: ${ITEMS[it.ammo]?.n||'ammo'} ×${countItem(it.ammo)}`:'';const hpInfo=it.hp?`<span style="color:var(--green)">+${it.hp} HP</span> `:'';const apInfo=it.buff&&it.buff.ap?`<span style="color:var(--ap-blue)">+${it.buff.ap} AP</span> `:'';const dmgInfo=it.buff&&it.buff.dmg?`<span style="color:var(--red)">+${it.buff.dmg} DMG</span> `:'';const drInfo=it.buff&&it.buff.dr?`<span style="color:var(--amber)">+${it.buff.dr} DR</span> `:'';return `<div class="inv-card">
-    <div class="inv-row"><div style="flex:1"><span style="font-size:13px">${it.e}</span> <b>${it.n}</b>${c>1?' ×'+c:''}</div><div style="font-size:10px;color:var(--muted)">${it.p||0}c</div></div>
+    <div class="inv-row"><div style="flex:1"><span style="font-size:13px">${it.e}</span> <b>${it.n}</b>${c>1?' ×'+c:''}</div><div style="font-size:12px;color:var(--muted)">${it.p||0}c</div></div>
     <div style="font-size:10px;color:var(--muted);margin:2px 0">${hpInfo}${apInfo}${dmgInfo}${drInfo}${it.a?'ATK +'+it.a+' ':''}${ammo}</div>
     <div>${it.t==='w'?`<button class="bt sm go" onclick="combatEquipItem('${id}')">Equip</button>`:''}${(it.t==='c'||it.t==='chem'||it.hp||it.buff)?`<button class="bt sm pip" onclick="combatUseItem('${id}')">Use</button>`:''}</div>
   </div>`}).join(''):'<div class="cd"><div style="font-size:11px;color:var(--muted)">Nothing usable here.</div></div>'}
@@ -5213,6 +5240,100 @@ function mkQuest(giver){
 }
 function accQuest(q){closeDlg();S.quests.push(q);log('Accepted: '+q.name,'q');notify('📜 Quest accepted!');upAll()}
 
+
+// ============================================================
+// SIDE TASK BOARDS — faction/settlement work without instant rewards
+// ============================================================
+const SIDE_TASK_BOARDS={
+  ncr_mccarran:{
+    title:'NCR Mission Board',icon:'📋',fac:'NCR',giver:'Camp McCarran HQ',
+    intro:'The board is full of patrol requests, missing recon reports, and Fiend suppression orders. These are side contracts, not main story quests.',
+    tasks:[
+      {name:'Three-Card Push',desc:'NCR command wants Fiends pushed back from the ruins west of Camp McCarran.',targets:['fiend'],need:3,caps:[75,130],xp:[38,60],rep:3,where:'Fiend Territory'},
+      {name:'Centaur Cleanout',desc:'A patrol reported centaurs near the airport perimeter. Clear them before they drift toward the runway.',targets:['centaur'],need:1,caps:[70,115],xp:[35,55],rep:2,where:'Fiend Territory'},
+      {name:'Roadside Security',desc:'NCR scouts need the roads around Vegas thinned out before supply wagons move again.',targets:['jackal_raider','fiend'],need:2,caps:[65,110],xp:[30,50],rep:2,where:'Camp McCarran approaches'}
+    ]
+  },
+  ncr_golf:{
+    title:'Camp Golf Duty Board',icon:'🗺',fac:'NCR',giver:'Camp Golf Command',
+    intro:'Golf posts smaller field duties here: patrol checks, deserter scares, and hostile activity around the lake.',
+    tasks:[
+      {name:'Shore Patrol',desc:'Camp Golf wants lake threats cleared before recruits start using the water route again.',targets:['lakelurk'],need:2,caps:[70,120],xp:[35,55],rep:2,where:'Lake Mead shore'},
+      {name:'Misfit Field Check',desc:'The Misfits need a safer patrol lane. Knock out nearby raiders before they get blamed for another mess.',targets:['jackal_raider','viper_raider'],need:2,caps:[55,95],xp:[28,45],rep:2,where:'Camp Golf perimeter'},
+      {name:'Night Watch',desc:'Hanlon wants proof the night patrol reports are real, not nerves. Kill any confirmed hostiles.',targets:['legion_scout','legion_recruit'],need:2,caps:[80,135],xp:[40,65],rep:3,where:'eastern approach'}
+    ]
+  },
+  bos_hiddenvalley:{
+    title:'Brotherhood Field Orders',icon:'🛡',fac:'BOS',giver:'Hidden Valley Command',
+    intro:'The bunker does not pay people for listening to briefings. It posts field orders for initiates, scribes, and trusted outsiders.',
+    tasks:[
+      {name:'Valley Pest Control',desc:'Clear scorpions from the ventilation approaches before they damage another intake grill.',targets:['bark_scorpion','radscorpion'],need:3,caps:[65,115],xp:[34,55],rep:3,where:'Hidden Valley approaches'},
+      {name:'Recover the Route',desc:'Robots and scavengers are interfering with old Brotherhood listening posts. Secure the route.',targets:['protectron','rogue_scavenger'],need:2,caps:[75,125],xp:[38,62],rep:3,where:'Listening Post Ruins'},
+      {name:'Tech Sweep Escort',desc:'A scribe team needs the trench made safe before they can recover old-world components.',targets:['giant_ant','bark_scorpion','rogue_scavenger'],need:3,caps:[70,120],xp:[35,58],rep:3,where:'Ventilation Trench'}
+    ]
+  }
+};
+function sideTaskActive(boardId){return (S.quests||[]).find(q=>!q.done&&q.sideBoard===boardId)||null}
+function sideTaskProgress(q){
+  if(!q||q.t!=='side_kill')return 0;
+  return (q.targets||[]).reduce((sum,id)=>sum+Math.max(0,(S.kills[id]||0)-((q.ks||{})[id]||0)),0);
+}
+function sideTaskText(q){
+  const n=Math.min(q.need||1,sideTaskProgress(q));
+  const names=(q.targets||[]).map(id=>ENEMIES[id]?.n||id).join(', ');
+  q.kd=n;
+  q.progText=`Complete side task: ${n}/${q.need||1} hostiles dealt with (${names}). Return to the relevant board for more work.`;
+  return q.progText;
+}
+function sideTaskCheck(q,lines){
+  if(!q||q.done||q.t!=='side_kill')return false;
+  sideTaskText(q);
+  if((q.kd||0)<(q.need||1))return false;
+  q.done=true;
+  S.xp+=grantXP(q.rx||0);S.caps+=(q.rg||0);S.capsEarned=(S.capsEarned||0)+(q.rg||0);S.questsComplete=(S.questsComplete||0)+1;
+  if(q.fac){S.rep[q.fac]=(S.rep[q.fac]||0)+(q.repBonus||2)}
+  log('Side task complete: '+q.name+' (+'+(q.rg||0)+' caps, +'+(q.rx||0)+' XP)','q');
+  notify('📜 Side task complete!');
+  if(lines){lines.push('📜 Side task complete: '+q.name);lines.push('💰 +'+(q.rg||0)+' caps side-task pay');lines.push('⭐ +'+(q.rx||0)+' XP side-task reward');if(q.fac)lines.push('🏴 +'+(q.repBonus||2)+' '+(FACTIONS[q.fac]||q.fac)+' standing')}
+  return true;
+}
+function updateSideTasks(lines){
+  (S.quests||[]).forEach(q=>{if(!q.done&&q.t==='side_kill')sideTaskCheck(q,lines)});
+}
+function makeSideTask(boardId,task){
+  const b=SIDE_TASK_BOARDS[boardId];
+  const ks={};(task.targets||[]).forEach(id=>ks[id]=S.kills[id]||0);
+  return {id:'side_'+boardId+'_'+Date.now()+'_'+rnd(10,999),name:task.name,desc:task.desc,t:'side_kill',sideBoard:boardId,targets:task.targets,need:task.need||1,kd:0,ks:ks,where:task.where,rg:rnd(task.caps[0],task.caps[1]),rx:rnd(task.xp[0],task.xp[1]),fac:b.fac,repBonus:task.rep||2,giver:b.giver,done:false,progText:'Side task accepted. '+task.desc};
+}
+function acceptSideTask(boardId,i){
+  const b=SIDE_TASK_BOARDS[boardId];if(!b)return;
+  if(sideTaskActive(boardId)){notify('Finish the current side task first.');return}
+  const task=b.tasks[i];if(!task)return;
+  const q=makeSideTask(boardId,task);
+  S.quests.push(q);
+  log('Accepted side task: '+q.name,'q');
+  closeDlg();closeBld();
+  showResult('Side Task Accepted',b.icon,[`<b>${q.name}</b>`,q.desc,`Target area: ${q.where}`,`Reward on completion: ${q.rg} caps, ${q.rx} XP, +${q.repBonus} ${FACTIONS[q.fac]||q.fac} standing`],'Continue','upAll()');
+  queueSave();
+}
+function openSideTaskBoard(boardId){
+  const b=SIDE_TASK_BOARDS[boardId];if(!b)return;
+  let h=`<div style="text-align:center;font-size:38px;margin-bottom:6px">${b.icon}</div><div style="font-size:15px;font-weight:bold;color:var(--amber);text-align:center;margin-bottom:6px">${b.title}</div>`;
+  h+=`<div style="font-size:11px;color:var(--muted);line-height:1.45;margin-bottom:10px;text-align:center">${b.intro}</div>`;
+  const active=sideTaskActive(boardId);
+  if(active){
+    h+=`<div class="cd" style="border-color:var(--amber2)"><div style="font-size:12px;color:var(--amber);font-weight:bold">Active: ${active.name}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">${active.desc}</div><div style="font-size:11px;color:var(--green);margin-top:6px">${sideTaskText(active)}</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Area: ${active.where||'field assignment'}</div></div>`;
+  }else{
+    h+=`<div style="font-size:10px;color:var(--amber);letter-spacing:1px;text-transform:uppercase;margin:8px 0 4px">Available Side Tasks</div>`;
+    b.tasks.forEach((t,i)=>{
+      const names=(t.targets||[]).map(id=>ENEMIES[id]?.n||id).join(', ');
+      h+=`<button class="bt pip" onclick="acceptSideTask('${boardId}',${i})"><b>${t.name}</b><br><span style="font-size:10px;color:var(--muted)">${t.desc}<br>Targets: ${names} · Area: ${t.where}</span></button>`;
+    });
+  }
+  h+='<button class="bt dn" onclick="closeDlg()">Close board</button>';
+  openDlg(h);
+}
+
 // ============================================================
 // BUILDINGS
 // ============================================================
@@ -5242,7 +5363,7 @@ function openBld(bId){
 
   if(!isGoodspringsSpecial&&!isPrimmSpecial&&!isNovacSpecial&&!isFreesideSpecial&&!isCampGolfSpecial&&!isBitterSpringsSpecial&&!isNcrcFSpecial&&!isHeliosSpecial&&!isCinderGulchSpecial&&!isHiddenValleySpecial){
     const np=el('div','bn');np.style.cursor='pointer';
-    np.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
+    np.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}</div></div><div style="font-size:11px;color:var(--muted)">💬</div>`;
     np.onclick=()=>openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
     bi.appendChild(np);
   }
@@ -5311,7 +5432,7 @@ function addNamedNpcCard(body,id){
   const npc=PRIMM_NPCS[id];if(!npc)return;
   const ex=namedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openPrimmNPC(id);
   body.appendChild(nc);
 }
@@ -5367,7 +5488,7 @@ function addNovacNpcCard(body,id){
   const npc=NOVAC_NPCS[id];if(!npc)return;
   const ex=novacNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openNovacNPC(id);
   body.appendChild(nc);
 }
@@ -5563,7 +5684,7 @@ function addCampGolfNpcCard(body,id){
   const npc=CAMP_GOLF_NPCS[id];if(!npc)return;
   const ex=campGolfNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openCampGolfNPC(id);
   body.appendChild(nc);
 }
@@ -5650,8 +5771,8 @@ function bldCampGolfBarracks(body){
 function bldCampGolfCommand(body){
   body.appendChild(el('div','bs2','Command'));
   body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Maps of Lake Mead, Boulder City, and Hoover Dam cover the tables. Camp Golf may be a training camp, but every order here points toward the front.</div>`));
-  const briefBtn=el('button','bt go','🗺 Sit through an NCR briefing');
-  briefBtn.onclick=()=>{advanceTime(2);S.xp+=10;log('You sit through a tactical briefing at Camp Golf.','e');closeBld();showResult('Field Briefing','🗺',['⭐ +10 XP','You leave knowing the roads around the Dam a little better.','⏰ 2 hours passed'],'Continue','chkLU();upAll()')};
+  const briefBtn=el('button','bt pip','🗺 Check Camp Golf duty board');
+  briefBtn.onclick=()=>openSideTaskBoard('ncr_golf');
   body.appendChild(briefBtn);
   const patrolBtn=el('button','bt pip','📜 Ask for patrol duty');
   patrolBtn.onclick=()=>{closeBld();queueCampGolfQuest('sergeant_mccredie','Camp Golf Patrol',18,12)};
@@ -5683,7 +5804,7 @@ function addBitterSpringsNpcCard(body,id){
   const npc=BITTER_SPRINGS_NPCS[id];if(!npc)return;
   const ex=bitterSpringsNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openBitterSpringsNPC(id);
   body.appendChild(nc);
 }
@@ -5786,7 +5907,7 @@ function addNcrcfNpcCard(body,id){
   const npc=NCRCF_NPCS[id];if(!npc)return;
   const ex=ncrcfNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openNcrcfNPC(id);
   body.appendChild(nc);
 }
@@ -5888,7 +6009,7 @@ function addHeliosNpcCard(body,id){
   const npc=HELIOS_NPCS[id];if(!npc)return;
   const ex=heliosNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openHeliosNPC(id);
   body.appendChild(nc);
 }
@@ -5989,7 +6110,7 @@ function addCinderGulchNpcCard(body,id){
   const npc=CINDER_GULCH_NPCS[id];if(!npc)return;
   const ex=cinderGulchNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openCinderGulchNPC(id);
   body.appendChild(nc);
 }
@@ -6074,7 +6195,7 @@ function addFreesideNpcCard(body,id){
   const npc=FREESIDE_NPCS[id];if(!npc)return;
   const ex=freesideNamedNpcRel(id);
   const nc=el('div','bn');nc.style.cursor='pointer';
-  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:10px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
+  nc.innerHTML=`<div style="font-size:28px">${renderIcon(inferNpcIcon(npc),28)}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${npc.name}</div><div style="font-size:12px;color:var(--muted)">${npc.role}${ex?' · '+ex.rel:''}</div><div style="font-size:10px;color:var(--muted);margin-top:2px;font-style:italic">${npc.line}</div></div><div style="color:var(--muted)">›</div>`;
   nc.onclick=()=>openFreesideNPC(id);
   body.appendChild(nc);
 }
@@ -6431,7 +6552,7 @@ function bldMcCarranHQ(body){
   hsuCard.innerHTML=`<div style="display:flex;align-items:center;gap:8px">
     <div style="font-size:24px">${renderIcon(ICONS.NPC.NCR_COMMAND,24)}</div>
     <div style="flex:1"><div style="font-weight:bold;font-size:12px;color:var(--amber)">Colonel Hsu</div>
-    <div style="font-size:10px;color:var(--muted)">NCR commanding officer · Camp McCarran</div>
+    <div style="font-size:12px;color:var(--muted)">NCR commanding officer · Camp McCarran</div>
     <div style="font-size:9px;color:var(--amber)">TAP TO TALK${!bhDone()&&!bhActive()?' · 📜 Quest available':bhActive()?' · 📜 Quest active':''}</div></div></div>`;
   hsuCard.onclick=()=>{
     closeBld();
@@ -6457,9 +6578,9 @@ function bldMcCarranHQ(body){
   };
   body.appendChild(hsuCard);
 
-  // Briefing board
-  const briefBtn=el('button','bt','📋 Check the mission briefing board');
-  briefBtn.onclick=()=>{advanceTime(1);S.xp+=grantXP(5);closeBld();showResult('Briefing Board','📋',['NCR patrol routes, supply schedules, and threat assessments.','You pick up useful intel about the region.','⭐ +5 XP · ⏰ 1 hour'],'Continue','chkLU();upAll()')};
+  // Side task board
+  const briefBtn=el('button','bt pip','📋 Check NCR mission board');
+  briefBtn.onclick=()=>openSideTaskBoard('ncr_mccarran');
   body.appendChild(briefBtn);
 
   const restBtn=el('button','bt go','🛏 Use the barracks (8 hours)');
@@ -6698,13 +6819,13 @@ function tradeRenderItems(){
       const sel=st.selId===id;
       const row=document.createElement('div');
       row.className='tr-item'+(sel?' selected':'');
-      row.innerHTML=`<div class="tr-icon">${renderIcon(it.e,30)}</div>
+      row.innerHTML=`<div class="tr-icon">${renderIcon(it.e,96)}</div>
         <div style="flex:1;min-width:0;line-height:1.3">
-          <div style="font-size:12px;font-weight:bold;color:${canAfford?'var(--text)':'var(--muted)'}">${it.n}</div>
-          <div style="font-size:10px;color:var(--muted)">${_tradeDesc(it)}</div>
+          <div style="font-size:16px;font-weight:bold;color:${canAfford?'var(--text)':'var(--muted)'}">${it.n}</div>
+          <div style="font-size:12px;color:var(--muted)">${_tradeDesc(it)}</div>
         </div>
         <div style="text-align:right;flex-shrink:0;margin-left:6px">
-          <div style="font-size:13px;font-weight:bold;color:${canAfford?'var(--amber)':'var(--red)'}">${price}c</div>
+          <div style="font-size:16px;font-weight:bold;color:${canAfford?'var(--amber)':'var(--red)'}">${price}c</div>
           <div style="font-size:10px;color:${qty<=2?'var(--red)':'var(--muted)'}">×${qty} in stock</div>
         </div>`;
       row.onclick=()=>tradeSelect(id);
@@ -6722,14 +6843,14 @@ function tradeRenderItems(){
       const sel=st.selId===id;
       const row=document.createElement('div');
       row.className='tr-item'+(sel?' selected':'');
-      row.innerHTML=`<div class="tr-icon">${renderIcon(it.e,30)}</div>
+      row.innerHTML=`<div class="tr-icon">${renderIcon(it.e,96)}</div>
         <div style="flex:1;min-width:0;line-height:1.3">
-          <div style="font-size:12px;font-weight:bold;color:var(--text)">${it.n}</div>
-          <div style="font-size:10px;color:var(--muted)">${_tradeDesc(it)}</div>
+          <div style="font-size:16px;font-weight:bold;color:var(--text)">${it.n}</div>
+          <div style="font-size:12px;color:var(--muted)">${_tradeDesc(it)}</div>
         </div>
         <div style="text-align:right;flex-shrink:0;margin-left:6px">
-          <div style="font-size:13px;font-weight:bold;color:var(--amber2)">${price}c</div>
-          <div style="font-size:10px;color:var(--muted)">×${cnt}</div>
+          <div style="font-size:16px;font-weight:bold;color:var(--amber2)">${price}c</div>
+          <div style="font-size:12px;color:var(--muted)">×${cnt}</div>
         </div>`;
       row.onclick=()=>tradeSelect(id);
       body.appendChild(row);
@@ -7080,7 +7201,7 @@ function bldWorkshop(body,bId){
       card.innerHTML=`<div class="craft-row" style="margin-bottom:5px">
         <span class="craft-out-icon">${renderIcon(out.e,24)}</span>
         <div style="flex:1"><div style="font-size:12px;font-weight:bold;color:${canDo?'var(--green)':'var(--text)'}">${out.n}${recipe.qty>1?' ×'+recipe.qty:''}</div>
-        <div style="font-size:10px;color:var(--muted)">${recipe.desc}</div></div>
+        <div style="font-size:12px;color:var(--muted)">${recipe.desc}</div></div>
       </div>
       <div style="margin-bottom:6px">${matHtml}</div>`;
       const btn=el('button',canDo?'bt go':'bt',canDo?'🔧 Craft':'🔒 Missing materials');
@@ -7104,7 +7225,7 @@ function bldGeneric(body,bId){
   body.appendChild(el('div','bs2','Look Around'));
   const searchBtn=el('button','bt','🔍 Search the area');
   searchBtn.onclick=()=>{
-    if(R()<.4){const finds=['scrap','bobby_pin','pre_war_money','herbs','sunset_sars'];const fi=rndA(finds);const it=ITEMS[fi];if(it){giveItem(fi);log('Found '+it.n+'.','e');notify(it.e+' Found '+it.n)}}
+    if(R()<.4){const finds=['scrap','bobby_pin','pre_war_money','herbs','sunset_sars'];const fi=rndA(finds);const it=ITEMS[fi];if(it){giveItem(fi);log('Found '+it.n+'.','e');showItemFound('Found',it.n,it.e,'openBld(\"'+bId+'\")')}}
     else{notify('Nothing useful.')}
     closeBld();upAll();
   };
@@ -7304,8 +7425,8 @@ function bldHiddenValleyCommand(body){
   hvRefreshState();
   body.appendChild(el('div','bs2','Bunker Command'));
   body.appendChild(el('div','cd',`<div style="font-size:11px;color:var(--muted)">Hidden Valley finally feels like a real bunker command center here: sealed doors, doctrine, patrol reports, and quiet arguments about what the Brotherhood should become.</div>`));
-  const briefBtn=el('button','bt go','🛡 Sit in on a Brotherhood briefing');
-  briefBtn.onclick=()=>{advanceTime(1);S.xp+=10;S.rep.BOS=(S.rep.BOS||0)+1;log('You sit through a Brotherhood field briefing in Hidden Valley.','e');closeBld();showResult('Bunker Briefing','🛡',['⭐ +10 XP','🏴 Brotherhood standing +1','⏰ 1 hour passed'],'Continue','chkLU();upAll()')};
+  const briefBtn=el('button','bt pip','🛡 Check Brotherhood field orders');
+  briefBtn.onclick=()=>openSideTaskBoard('bos_hiddenvalley');
   body.appendChild(briefBtn);
   if(propertyOwned('hidden_valley_quarters')){
     const restBtn=el('button','bt','🛏 Use your bunker quarters (FREE)');
@@ -7402,7 +7523,7 @@ function openPropertyMenu(){
     body.appendChild(el('div','bs2','Owned Here'));
     localOwned.forEach(p=>{
       const card=el('div','cd');
-      card.innerHTML=`<div style="font-weight:bold;font-size:12px">${p.name}</div><div style="font-size:10px;color:var(--muted)">${getPropertyDef(p.id)?.desc||''}</div>`;
+      card.innerHTML=`<div style="font-weight:bold;font-size:12px">${p.name}</div><div style="font-size:12px;color:var(--muted)">${getPropertyDef(p.id)?.desc||''}</div>`;
       if(p.id==='goodsprings_shack'||p.id==='goodsprings_house'){
         const stash=el('button','bt','📦 Check stash');stash.onclick=claimPropertyStash;card.appendChild(stash);
       }
@@ -7428,7 +7549,7 @@ function openPropertyMenu(){
       }
       if(p.id==='primm_bounty_office'){
         const board=getCurrentBounty()||rollNewBounty();
-        card.appendChild(el('div','cd',`<div style="font-size:11px"><b>Current target:</b> ${board.name}</div><div style="font-size:10px;color:var(--muted)">${board.desc}</div>`));
+        card.appendChild(el('div','cd',`<div style="font-size:11px"><b>Current target:</b> ${board.name}</div><div style="font-size:12px;color:var(--muted)">${board.desc}</div>`));
         const hunt=el('button','bt dn','🎯 Hunt bounty target');hunt.onclick=startPrimmBountyHunt;card.appendChild(hunt);
         const evidence=el('button','bt','🗄 Open evidence locker');evidence.onclick=claimEvidenceLocker;card.appendChild(evidence);
       }
@@ -7449,7 +7570,7 @@ function openPropertyMenu(){
 
   if(allOwned.length){
     body.appendChild(el('div','bs2','All Owned Properties'));
-    allOwned.forEach(p=>body.appendChild(el('div','cd',`<div style="font-weight:bold;font-size:12px">${p.name}</div><div style="font-size:10px;color:var(--muted)">${LOCS[p.loc]?.n||p.loc}</div>`)));
+    allOwned.forEach(p=>body.appendChild(el('div','cd',`<div style="font-weight:bold;font-size:12px">${p.name}</div><div style="font-size:12px;color:var(--muted)">${LOCS[p.loc]?.n||p.loc}</div>`)));
   }
 
   body.appendChild(el('div','bs2','Available Here'));
@@ -7459,7 +7580,7 @@ function openPropertyMenu(){
     if(propertyOwned(p.id))return;
     const pc=el('div','cd');
     const req=p.requires?` · Requires ${FACTIONS[p.requires.fac]||p.requires.fac} ${p.requires.rep}+`:'';
-    pc.innerHTML=`<div style="font-weight:bold;font-size:12px">${p.name} — ${p.cost} caps</div><div style="font-size:10px;color:var(--muted)">${p.desc}${req}</div>`;
+    pc.innerHTML=`<div style="font-weight:bold;font-size:12px">${p.name} — ${p.cost} caps</div><div style="font-size:12px;color:var(--muted)">${p.desc}${req}</div>`;
     if(p.requires){
       const rep=S.rep[p.requires.fac]||0;
       pc.appendChild(el('div','cd',`<div style="font-size:10px">Standing with <b style="color:var(--amber)">${FACTIONS[p.requires.fac]||p.requires.fac}</b>: <b style="color:${rep>=p.requires.rep?'var(--green)':'var(--red)'}">${rep}/${p.requires.rep}</b></div>`));
@@ -7485,8 +7606,8 @@ function upChar(){
   prof.innerHTML=`<div style="display:flex;align-items:center;gap:10px">
   <div style="font-size:36px">${S.isMale?'👨':'👩'}</div>
   <div style="flex:1"><div style="font-size:15px;font-weight:bold;color:var(--amber)">${S.name}</div>
-  <div style="font-size:10px;color:var(--muted)">Level ${S.level} ${S.class} · Age ${S.age} · Day ${S.days}</div>
-  <div style="font-size:10px;color:var(--muted)">Karma: <span style="color:${S.karma>0?'var(--green)':S.karma<0?'var(--red)':'var(--muted)'}">${S.karma>0?'Good':S.karma<0?'Evil':'Neutral'} (${S.karma})</span></div>
+  <div style="font-size:12px;color:var(--muted)">Level ${S.level} ${S.class} · Age ${S.age} · Day ${S.days}</div>
+  <div style="font-size:12px;color:var(--muted)">Karma: <span style="color:${S.karma>0?'var(--green)':S.karma<0?'var(--red)':'var(--muted)'}">${S.karma>0?'Good':S.karma<0?'Evil':'Neutral'} (${S.karma})</span></div>
   <div style="margin-top:4px">
     <div style="font-size:10px;margin-bottom:1px">⭐ XP ${S.xp}/${xpNeed(S.level)} <span style="color:var(--muted)">(next perk at level ${S.level%2===0?S.level+2:S.level+1})</span></div>
     <div class="hb"><div class="hf xp" style="width:${xpPct}%"></div></div>
@@ -7561,7 +7682,7 @@ function upChar(){
 
     const hdr=el('div','');
     hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a2818;border-radius:6px 6px 0 0;cursor:pointer;margin-top:6px';
-    hdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--amber);letter-spacing:1px">${catIcons[cat]||'📋'} ${cat.toUpperCase()}</span><span style="font-size:10px;color:var(--muted)">${owned}/${catPerks.length} owned</span>`;
+    hdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--amber);letter-spacing:1px">${catIcons[cat]||'📋'} ${cat.toUpperCase()}</span><span style="font-size:12px;color:var(--muted)">${owned}/${catPerks.length} owned</span>`;
 
     const body=el('div','');
     body.style.cssText='background:var(--panel2);border:1px solid #2a2818;border-top:none;border-radius:0 0 6px 6px;padding:6px;display:'+(cat==='Training'||owned>0?'block':'none');
@@ -7615,7 +7736,7 @@ function upChar(){
     if(active.length){
       const aqHdr=el('div','');
       aqHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a3a1a;border-radius:6px 6px 0 0;cursor:pointer';
-      aqHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--green);letter-spacing:1px">📜 ACTIVE (${active.length})</span><span style="font-size:10px;color:var(--muted)">tap to toggle</span>`;
+      aqHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--green);letter-spacing:1px">📜 ACTIVE (${active.length})</span><span style="font-size:12px;color:var(--muted)">tap to toggle</span>`;
       const aqBody=el('div','');
       aqBody.style.cssText='background:var(--panel2);border:1px solid #2a3a1a;border-top:none;border-radius:0 0 6px 6px;padding:6px;display:block';
 
@@ -7720,7 +7841,7 @@ function upChar(){
     if(completed.length){
       const cqHdr=el('div','');
       cqHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a2818;border-radius:6px 6px 0 0;cursor:pointer;margin-top:8px';
-      cqHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--muted);letter-spacing:1px">✓ COMPLETED (${completed.length})</span><span style="font-size:10px;color:var(--muted)">tap to view</span>`;
+      cqHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--muted);letter-spacing:1px">✓ COMPLETED (${completed.length})</span><span style="font-size:12px;color:var(--muted)">tap to view</span>`;
       const cqBody=el('div','');
       cqBody.style.cssText='background:var(--panel2);border:1px solid #2a2818;border-top:none;border-radius:0 0 6px 6px;padding:6px;display:none';
       cqBody.innerHTML=completed.map(q=>`<div style="padding:4px;border-bottom:1px solid #1a1810;opacity:0.6">
@@ -7762,7 +7883,7 @@ function upChar(){
   const facWrap=el('div','');
   const mjHdr=el('div','');
   mjHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a2818;border-radius:6px 6px 0 0;cursor:pointer;margin-top:4px';
-  mjHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--amber);letter-spacing:1px">🏴 MAJOR FACTIONS</span><span style="font-size:10px;color:var(--muted)">${majorReps.length} active</span>`;
+  mjHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--amber);letter-spacing:1px">🏴 MAJOR FACTIONS</span><span style="font-size:12px;color:var(--muted)">${majorReps.length} active</span>`;
   const mjBody=el('div','');
   mjBody.style.cssText='background:var(--panel2);border:1px solid #2a2818;border-top:none;border-radius:0 0 6px 6px;padding:4px 8px;display:block';
   if(majorReps.length){mjBody.innerHTML=majorReps.map(f=>repBar(f,S.rep[f]||0)).join('')}
@@ -7774,7 +7895,7 @@ function upChar(){
   facWrap.appendChild(mjHdr);facWrap.appendChild(mjBody);
   const lcHdr=el('div','');
   lcHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a2818;border-radius:6px 6px 0 0;cursor:pointer;margin-top:8px';
-  lcHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--green2);letter-spacing:1px">📍 SETTLEMENTS</span><span style="font-size:10px;color:var(--muted)">${localReps.length} active</span>`;
+  lcHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--green2);letter-spacing:1px">📍 SETTLEMENTS</span><span style="font-size:12px;color:var(--muted)">${localReps.length} active</span>`;
   const lcBody=el('div','');
   lcBody.style.cssText='background:var(--panel2);border:1px solid #2a2818;border-top:none;border-radius:0 0 6px 6px;padding:4px 8px;display:'+(localReps.length>0?'block':'none');
   if(localReps.length){lcBody.innerHTML=localReps.map(f=>repBar(f,S.rep[f]||0)).join('')}
@@ -7787,7 +7908,7 @@ function upChar(){
   if(otherReps.length){
     const otHdr=el('div','');
     otHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--panel);border:1px solid #2a2818;border-radius:6px 6px 0 0;cursor:pointer;margin-top:8px';
-    otHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--muted);letter-spacing:1px">📋 OTHER</span><span style="font-size:10px;color:var(--muted)">${otherReps.length}</span>`;
+    otHdr.innerHTML=`<span style="font-size:11px;font-weight:bold;color:var(--muted);letter-spacing:1px">📋 OTHER</span><span style="font-size:12px;color:var(--muted)">${otherReps.length}</span>`;
     const otBody=el('div','');
     otBody.style.cssText='background:var(--panel2);border:1px solid #2a2818;border-top:none;border-radius:0 0 6px 6px;padding:4px 8px;display:none';
     otBody.innerHTML=otherReps.map(f=>repBar(f,S.rep[f]||0)).join('');
@@ -7849,7 +7970,7 @@ function upInv(){
     if(it.t==='c')actions=`<button class="bt sm pip" onclick="useItem('${id}')">Use</button>`;
     actions+=`<button class="bt sm dn" onclick="dropItem('${id}')">Drop</button>`;
 
-    ic.innerHTML=`<div class="inv-row"><div style="flex:1"><span style="font-size:13px">${it.e}</span> <b>${it.n}</b>${cnt>1?' ×'+cnt:''}</div><div style="font-size:10px;color:var(--muted)">${it.p}c</div></div>
+    ic.innerHTML=`<div class="inv-row"><div style="flex:1"><span class="inv-item-icon">${renderIcon(it.e,96)}</span><span><b>${it.n}</b>${cnt>1?' ×'+cnt:''}</span></div><div style="font-size:12px;color:var(--muted)">${it.p}c</div></div>
     <div style="font-size:10px;color:var(--muted);margin:2px 0">${it.desc||''} ${it.a?'ATK +'+it.a:''}${it.d?'DEF +'+it.d:''}${it.hp?'HP +'+it.hp:''}${it.ammo?' · Uses '+(ITEMS[it.ammo]?.n||'ammo'):''}${it.t==='ammo'?' · Ammunition':''} · WT ${fmtWeight(it.w||0)}kg</div>
     <div>${actions}</div>`;
     tab.appendChild(ic);
@@ -8050,7 +8171,7 @@ function upRoads(){
   const hdr=el('div','');
   hdr.style.cssText='background:#0e0e08;border-bottom:1px solid #2a2818;padding:8px 12px 6px;display:flex;align-items:center;justify-content:space-between';
   hdr.innerHTML=`<div style="font-size:11px;color:var(--amber);letter-spacing:2px;text-transform:uppercase">📍 ${LOCS[S.loc]?.n||S.loc}</div>
-    <div style="font-size:10px;color:var(--muted)">${LOCS[S.loc]?.r||'Mojave'}</div>`;
+    <div style="font-size:12px;color:var(--muted)">${LOCS[S.loc]?.r||'Mojave'}</div>`;
   tab.appendChild(hdr);
 
   // ── SVG Map ───────────────────────────────────────────────
@@ -8967,7 +9088,7 @@ function upLog(){
   S.log.forEach((dg,di)=>{
     const group=el('div','log-group');
     const header=el('div','log-header');
-    header.innerHTML=`<span style="color:var(--amber)">Day ${dg.day}</span><span style="font-size:10px;color:var(--muted)">${dg.entries.length} events</span>`;
+    header.innerHTML=`<span style="color:var(--amber)">Day ${dg.day}</span><span style="font-size:12px;color:var(--muted)">${dg.entries.length} events</span>`;
     const entries=el('div','log-entries'+(di===0?' open':''));
     dg.entries.forEach(e=>{
       const le=el('div','log-entry '+(e.type==='c'?'combat-log':e.type==='e'?'event-log':e.type==='q'?'quest-log':''));
@@ -8995,6 +9116,7 @@ function advanceTime(hours){
     if(q.done)return;
     if(q.t==='kill'&&q.kt){q.kd=S.kills[q.kt]||0;if(q.kd>=q.kc)completeQuest(q)}
     if(q.t==='explore'){q.ed=(q.ed||0);if(q.ed>=q.ec)completeQuest(q)}
+    if(q.t==='side_kill')sideTaskCheck(q);
   });
   if(S.flags&&S.flags.hv)hvRefreshState();
   gsRefreshState();
@@ -9423,7 +9545,7 @@ function fnvCompanionCard(d,c){
    <div style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:#0d0d08;border:1px solid #2a2818;border-radius:4px;font-size:24px">${d.icon}</div>
    <div style="flex:1;min-width:0">
     <div style="font-size:13px;font-weight:bold;color:var(--amber)">${d.name}</div>
-    <div style="font-size:10px;color:var(--muted)">${d.role} · ${companionStatusText(d)}</div>
+    <div style="font-size:12px;color:var(--muted)">${d.role} · ${companionStatusText(d)}</div>
     ${inP?`<div style="font-size:10px;margin-top:5px">❤ ${c.hp}/${c.maxHp} · ⚔ ${c.atk} · 🛡 ${c.def} · 🎒 +${c.carryBonus}kg</div><div class="hb" style="margin-top:3px"><div class="hf hp" style="width:${hp}%"></div></div>`:`<div style="font-size:10px;color:${sameLoc(S.loc,d.loc)&&d.req(S)?'var(--green)':'var(--muted)'};margin-top:5px">${companionRecruitLine(d)}</div>`}
     <div style="font-size:10px;color:var(--amber2);margin-top:4px">${d.ability.icon} ${d.ability.name} — ${d.ability.desc}</div>
     <div style="font-size:10px;color:var(--muted);margin-top:3px">Affinity ${aff}/100</div>
@@ -9444,7 +9566,7 @@ function companionCharSection(){
  const here=knownCompanions().filter(d=>sameLoc(S.loc,d.loc)&&!isRecruited(d.id));
  if(here.length)h+='<div class="bs2">Available Here</div>'+here.map(d=>fnvCompanionCard(d,null)).join('');
  const leads=knownCompanions().filter(d=>!sameLoc(S.loc,d.loc)&&!isRecruited(d.id));
- if(leads.length)h+='<div class="bs2">People You Can Find</div>'+leads.map(d=>`<div class="cd" style="font-size:11px"><b style="color:var(--amber)">${d.icon} ${d.name}</b><div style="font-size:10px;color:var(--muted)">${d.role} · ${LOCS[d.loc]?.n||d.loc}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${d.reqText==='None'?'No known requirement':'Requires: '+d.reqText}</div></div>`).join('');
+ if(leads.length)h+='<div class="bs2">People You Can Find</div>'+leads.map(d=>`<div class="cd" style="font-size:11px"><b style="color:var(--amber)">${d.icon} ${d.name}</b><div style="font-size:12px;color:var(--muted)">${d.role} · ${LOCS[d.loc]?.n||d.loc}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${d.reqText==='None'?'No known requirement':'Requires: '+d.reqText}</div></div>`).join('');
  return h;
 }
 window.openCompanionRecruit=function(id){
@@ -9455,7 +9577,7 @@ function companionWorldCard(){
  normalizeCompanions();
  const here=knownCompanions().filter(d=>sameLoc(S.loc,d.loc)&&!isRecruited(d.id));
  if(!here.length)return '';
- return '<div class="sh">People Nearby</div>'+here.map(d=>`<div class="bc" onclick="openCompanionRecruit('${d.id}')"><div style="font-size:28px;width:34px;text-align:center">${d.icon}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${d.name}</div><div style="font-size:10px;color:var(--muted)">${d.role} · ${d.req(S)?'Can join you':'Requires: '+d.reqText}</div></div><div style="color:var(--muted)">›</div></div>`).join('');
+ return '<div class="sh">People Nearby</div>'+here.map(d=>`<div class="bc" onclick="openCompanionRecruit('${d.id}')"><div style="font-size:28px;width:34px;text-align:center">${d.icon}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${d.name}</div><div style="font-size:12px;color:var(--muted)">${d.role} · ${d.req(S)?'Can join you':'Requires: '+d.reqText}</div></div><div style="color:var(--muted)">›</div></div>`).join('');
 }
 function removePartyTabUi(){
  const pt=$('party-tab');if(pt)pt.remove();
