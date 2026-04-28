@@ -9272,6 +9272,207 @@ window.addEventListener('unhandledrejection',ev=>{
     }catch(e2){console.error('[FNV-RPG] Fatal init failure',e2)}
   }
 })();
+
+
+/* ============================================================
+   COMPLETE COMPANION SYSTEM — applied by ChatGPT
+   Adds: Party tab, 6 unique companions, recruitment, combat help,
+   companion abilities, carry bonuses, healing, dismissal, persistence.
+   ============================================================ */
+(function(){
+'use strict';
+
+const COMPANION_DEFS={
+ boone:{id:'boone',name:'Craig Boone',icon:'🎯',role:'1st Recon Sniper',loc:'Novac',reqText:'Complete Novac trust / have 10+ Novac rep',req:s=>(s.questsComplete||0)>=1||((s.rep&&s.rep.Novac)||0)>=10,baseHp:220,baseAtk:18,baseDef:6,carryBonus:50,ability:{id:'snipe',name:'First Shot',icon:'🎯',desc:'2.5× rifle shot at the toughest enemy.'},talk:['Still watching the road.','Pick your shot. Make it count.','I prefer quiet. Less movement.']},
+ ede:{id:'ede',name:'ED-E',icon:'📡',role:'Eyebot Scout',loc:'Primm',reqText:'Reach Primm',req:s=>true,baseHp:160,baseAtk:12,baseDef:8,carryBonus:30,ability:{id:'scan',name:'Combat Scan',icon:'📡',desc:'+4 damage to your attacks this fight.'},talk:['ED-E chirps and projects a tiny radar sweep.','A happy burst of beeps follows you.','ED-E scans the horizon.']},
+ veronica:{id:'veronica',name:'Veronica Santangelo',icon:'👊',role:'Brotherhood Scribe',loc:'HiddenValley',reqText:'20+ Brotherhood rep',req:s=>((s.rep&&s.rep.BOS)||0)>=20,baseHp:200,baseAtk:20,baseDef:10,carryBonus:60,ability:{id:'slam',name:'BOS Slam',icon:'👊',desc:'3× power-fist slam against the toughest enemy.'},talk:['Punching usually solves at least the first problem.','I miss dresses. And punching things.','Brotherhood politics are worse than cazadores.']},
+ cass:{id:'cass',name:'Rose of Sharon Cassidy',icon:'🥃',role:'Caravan Shotgunner',loc:'TradingPost188',reqText:'Level 5+',req:s=>(s.level||1)>=5,baseHp:190,baseAtk:15,baseDef:7,carryBonus:40,ability:{id:'whiskey',name:'Whiskey Rose',icon:'🥃',desc:'Heal party and boost companion damage this fight.'},talk:['Roads are bad. People are worse. Still, we move.','If this goes sideways, I told you so.','A drink and a shotgun fix plenty.']},
+ arcade:{id:'arcade',name:'Arcade Gannon',icon:'💉',role:'Followers Doctor',loc:'Freeside',reqText:'15+ Followers rep',req:s=>((s.rep&&s.rep.Followers)||0)>=15,baseHp:175,baseAtk:11,baseDef:6,carryBonus:20,ability:{id:'triage',name:'Field Triage',icon:'💉',desc:'Instantly heals you and all companions.'},talk:['I have several medical objections to this plan.','Try not to bleed on anything important.','This is why the Followers need funding.']},
+ raul:{id:'raul',name:'Raul Tejada',icon:'🔧',role:'Ghoul Vaquero',loc:'Jacobstown',reqText:'Level 10+',req:s=>(s.level||1)>=10,baseHp:230,baseAtk:16,baseDef:9,carryBonus:45,ability:{id:'vaquero',name:'Old Vaquero',icon:'🔧',desc:'+3 companion attack and +3 player defence this fight.'},talk:['Sure thing, boss. I have only been alive forever.','These old bones still shoot straight.','Maintenance first. Heroics second.']}
+};
+window.COMPANION_DEFS=COMPANION_DEFS;
+
+const locAliases={HiddenValley:['HiddenValley','Hidden Valley','HiddenValleyBunker'],TradingPost188:['TradingPost188','188TradingPost','188 Trading Post'],Freeside:['Freeside','FreesideN','FreesideNorth','Freeside N']};
+function sameLoc(a,b){const arr=locAliases[b]||[b];return arr.includes(a)}
+function party(){if(!S)return[];S.companionSystem=S.companionSystem||{recruited:[],dismissed:[],aff:{}};S.companions=Array.isArray(S.companions)?S.companions:[];return S.companions}
+function compDef(id){return COMPANION_DEFS[id]||null}
+function compLevelBonus(){return Math.max(0,Math.floor(((S&&S.level)||1)/5))}
+function scaleComp(id){const d=compDef(id);if(!d)return null;const b=compLevelBonus();return {hp:d.baseHp+b*30,atk:d.baseAtk+b*2,def:d.baseDef+b,carry:d.carryBonus}}
+function normalizeCompanions(){
+ if(!S)return;S.companionSystem=S.companionSystem||{recruited:[],dismissed:[],aff:{}};S.companions=Array.isArray(S.companions)?S.companions:[];
+ S.companions=S.companions.map(c=>{
+  if(c&&c.id&&COMPANION_DEFS[c.id]){const st=scaleComp(c.id);return Object.assign({hp:st.hp,maxHp:st.hp,abilityUsed:false},c,{maxHp:st.hp,atk:st.atk,def:st.def,carryBonus:st.carry})}
+  return c;
+ }).filter(c=>c&&c.id&&COMPANION_DEFS[c.id]).slice(0,2);
+}
+function recruitedIds(){normalizeCompanions();return party().map(c=>c.id)}
+function dismissedIds(){return (S&&S.companionSystem&&S.companionSystem.dismissed)||[]}
+function isRecruited(id){return recruitedIds().includes(id)}
+function isDismissed(id){return dismissedIds().includes(id)}
+function knownCompanions(){return Object.values(COMPANION_DEFS)}
+function canRecruit(id){const d=compDef(id);return !!(S&&d&&sameLoc(S.loc,d.loc)&&d.req(S)&&!isRecruited(id)&&party().length<2)}
+function companionName(c){const d=compDef(c.id);return d?d.name:(c.name||'Companion')}
+function companionIcon(c){const d=compDef(c.id);return d?d.icon:(c.icon||'👥')}
+function companionAff(id){S.companionSystem=S.companionSystem||{aff:{}};S.companionSystem.aff=S.companionSystem.aff||{};if(S.companionSystem.aff[id]==null)S.companionSystem.aff[id]=35;return S.companionSystem.aff[id]}
+function changeAff(id,n){S.companionSystem.aff[id]=Math.max(0,Math.min(100,companionAff(id)+n))}
+
+window.recruitCompanion=function(id){
+ normalizeCompanions();const d=compDef(id);if(!d)return notify('Unknown companion.');
+ if(party().length>=2)return notify('Max 2 companions.');
+ if(!sameLoc(S.loc,d.loc))return notify(d.name+' is not here.');
+ if(!d.req(S))return notify('Requirement not met: '+d.reqText+'.');
+ const st=scaleComp(id);S.companions.push({id,hp:st.hp,maxHp:st.hp,atk:st.atk,def:st.def,carryBonus:st.carry,abilityUsed:false});
+ S.companionSystem.recruited=[...new Set([...(S.companionSystem.recruited||[]),id])];
+ S.companionSystem.dismissed=(S.companionSystem.dismissed||[]).filter(x=>x!==id);
+ changeAff(id,10);log(d.name+' is now travelling with you.','q');notify(d.name+' joined you.');upAll();save(true);
+};
+window.dismissCompanion=function(id){
+ normalizeCompanions();const d=compDef(id);S.companions=party().filter(c=>c.id!==id);
+ S.companionSystem.dismissed=[...new Set([...(S.companionSystem.dismissed||[]),id])];
+ if(d){log(d.name+' stopped travelling with you.','e');notify(d.name+' dismissed.')}upAll();save(true);
+};
+window.talkCompanion=function(id){const d=compDef(id);if(!d)return;changeAff(id,rnd(2,6));notify(rndA(d.talk));save(true);upParty&&upParty()};
+window.shareStimCompanion=function(id){
+ normalizeCompanions();const c=party().find(x=>x.id===id);const d=compDef(id);if(!c||!d)return;
+ const idx=S.inv.indexOf('stimpak');if(idx<0)return notify('No stimpaks.');
+ S.inv.splice(idx,1);const before=c.hp;c.hp=Math.min(c.maxHp,c.hp+55);changeAff(id,4);
+ notify(`${d.name} healed +${c.hp-before} HP.`);log('Shared a stimpak with '+d.name+'.','e');save(true);upAll();
+};
+
+function partyCarryBonus(){normalizeCompanions();return party().reduce((sum,c)=>sum+(c.carryBonus||0),0)}
+const oldCalcCarry=window.calcCarryCap||calcCarryCap;
+window.calcCarryCap=calcCarryCap=function(){return oldCalcCarry()+partyCarryBonus()};
+const oldMigrate=window.migrate||migrate;
+window.migrate=migrate=function(){oldMigrate();normalizeCompanions();S.companionSystem=S.companionSystem||{recruited:[],dismissed:[],aff:{}}};
+
+function companionCombatHtml(){
+ normalizeCompanions();if(!combat||!party().length)return '';
+ return `<div style="background:#10180d;border:1px solid #263a18;border-radius:6px;padding:7px;margin:6px 0">
+ <div style="font-size:10px;color:var(--amber);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px">👥 Companions</div>
+ ${party().map(c=>{const d=compDef(c.id);const hp=hpPct(c.hp,c.maxHp);return `<div style="display:flex;align-items:center;gap:6px;margin:4px 0">
+  <div style="font-size:20px;width:24px;text-align:center">${d.icon}</div><div style="flex:1;min-width:0">
+  <div style="font-size:11px;color:var(--text)">${d.name} <span style="color:var(--muted)">· ${d.role}</span></div>
+  <div class="hb" style="margin-top:2px"><div class="hf hp" style="width:${hp}%"></div></div></div>
+  <button class="bt pip sm" style="min-height:32px;padding:5px 7px" ${c.abilityUsed?'disabled':''} onclick="companionAbility('${c.id}')">${d.ability.icon} ${d.ability.name}</button>
+ </div>`}).join('')}</div>`;
+}
+function livingEnemies(){return combat?combat.enemies.filter(e=>e.hp>0):[]}
+function strongestEnemy(){const a=livingEnemies();return a.sort((x,y)=>(y.hp+y.a*4)-(x.hp+x.a*4))[0]||null}
+function companionBasicAttacks(){
+ if(!combat)return;normalizeCompanions();if(!party().length)return;
+ party().filter(c=>c.hp>0).forEach(c=>{
+  const d=compDef(c.id), target=strongestEnemy();if(!target)return;
+  let dmg=fnvDTDamage((c.atk||5)+rnd(-2,3)+(combat.companionAtkBonus||0),target.d||0,FNV_NORMAL.playerDamage);
+  target.hp=Math.max(0,target.hp-dmg);combat.log.push(`${d.icon} ${d.name} hits ${target.name} for ${dmg}.`);
+  if(target.hp<=0){combat.log.push(`${target.name} is killed by ${d.name}!`);S.kills[target.id||'unknown']=(S.kills[target.id||'unknown']||0)+1;S.killCount++;}
+ });
+}
+function companionInterceptDamage(hpBefore){
+ if(!combat||!party().length||S.hp>=hpBefore)return;normalizeCompanions();
+ const loss=hpBefore-S.hp;if(loss<=0)return;
+ const living=party().filter(c=>c.hp>0);if(!living.length)return;
+ if(R()<0.28){const c=rndA(living),d=compDef(c.id);const take=Math.max(1,Math.round(loss*.55));S.hp=Math.min(S.maxHp,S.hp+take);c.hp=Math.max(0,c.hp-Math.max(1,take-(c.def||0)));combat.log.push(`${d.icon} ${d.name} draws fire and takes ${take} damage.`);if(c.hp<=0)combat.log.push(`${d.name} is down but can recover after combat.`)}
+}
+window.companionAbility=function(id){
+ if(!combat)return;normalizeCompanions();const c=party().find(x=>x.id===id);const d=compDef(id);if(!c||!d||c.abilityUsed)return;
+ c.abilityUsed=true;let target=strongestEnemy();
+ if(id==='boone'&&target){let dmg=fnvDTDamage(Math.round((c.atk||10)*2.5),target.d||0,FNV_NORMAL.playerDamage);target.hp=Math.max(0,target.hp-dmg);combat.log.push(`🎯 Boone's First Shot deals ${dmg} to ${target.name}.`)}
+ else if(id==='ede'){combat.playerScanBonus=(combat.playerScanBonus||0)+4;combat.log.push('📡 ED-E scans weak points. Your attacks hit harder this fight.');}
+ else if(id==='veronica'&&target){let dmg=fnvDTDamage(Math.round((c.atk||10)*3),target.d||0,FNV_NORMAL.playerDamage);target.hp=Math.max(0,target.hp-dmg);combat.log.push(`👊 Veronica slams ${target.name} for ${dmg}.`)}
+ else if(id==='cass'){S.hp=Math.min(S.maxHp,S.hp+20);party().forEach(x=>x.hp=Math.min(x.maxHp,x.hp+20));combat.companionAtkBonus=(combat.companionAtkBonus||0)+4;combat.log.push('🥃 Cass rallies the party: +20 HP and companion damage up.');}
+ else if(id==='arcade'){S.hp=Math.min(S.maxHp,S.hp+35);party().forEach(x=>x.hp=Math.min(x.maxHp,x.hp+15));combat.log.push('💉 Arcade performs field triage.');}
+ else if(id==='raul'){combat.companionAtkBonus=(combat.companionAtkBonus||0)+3;combat.playerDefBonus=(combat.playerDefBonus||0)+3;combat.log.push('🔧 Raul keeps everyone steady: companions +3 ATK, you +3 DEF.');}
+ if(target&&target.hp<=0){combat.log.push(`${target.name} is eliminated!`);S.kills[target.id||'unknown']=(S.kills[target.id||'unknown']||0)+1;S.killCount++;}
+ if(!livingEnemies().length){endCombat(true);return}save(true);renderCombat();
+};
+
+const oldPlayerHit=window.playerHitDamage||playerHitDamage;
+window.playerHitDamage=playerHitDamage=function(attack,target,vats){const res=oldPlayerHit(attack,target,vats);if(combat&&combat.playerScanBonus)res.dmg+=combat.playerScanBonus;return res};
+const oldDefPow=window.defPow||defPow;
+window.defPow=defPow=function(){return oldDefPow()+(combat&&combat.playerDefBonus?combat.playerDefBonus:0)};
+const oldStartCombat=window.startCombat||startCombat;
+window.startCombat=startCombat=function(enemies){oldStartCombat(enemies);normalizeCompanions();if(combat){party().forEach(c=>c.abilityUsed=false);combat.playerScanBonus=0;combat.companionAtkBonus=0;combat.playerDefBonus=0}};
+const oldCombatAction=window.combatAction||combatAction;
+window.combatAction=combatAction=function(act){
+ if(!combat)return;const hpBefore=S.hp;
+ if(act==='attack'||act==='vats'){companionBasicAttacks();if(!livingEnemies().length){endCombat(true);return}}
+ oldCombatAction(act);if(combat)companionInterceptDamage(hpBefore);save(true);
+};
+const oldRenderCombat=window.renderCombat||renderCombat;
+window.renderCombat=renderCombat=function(){oldRenderCombat();try{if(!combat||combat.lootPhase)return;const panel=$('CP');if(panel&&!panel.querySelector('[data-companion-panel]')){const wrap=document.createElement('div');wrap.setAttribute('data-companion-panel','1');wrap.innerHTML=companionCombatHtml();const bars=panel.querySelector('.combat-bar');if(bars&&wrap.innerHTML.trim())panel.insertBefore(wrap,bars);}}catch(e){}};
+const oldEndCombat=window.endCombat||endCombat;
+window.endCombat=endCombat=function(won,died){if(won){normalizeCompanions();party().forEach(c=>{c.hp=Math.min(c.maxHp,Math.max(1,c.hp+Math.ceil(c.maxHp*.15)));c.abilityUsed=false;});}oldEndCombat(won,died)};
+
+function companionStatusText(d){
+ const here=sameLoc(S.loc,d.loc), inP=isRecruited(d.id), req=d.req(S);
+ if(inP)return 'Travelling with you';
+ if(here&&req)return 'Available here';
+ if(here&&!req)return 'Here, but not ready to join';
+ return 'Can be found at '+(LOCS[d.loc]?.n||d.loc);
+}
+function companionRecruitLine(d){
+ if(!sameLoc(S.loc,d.loc))return `Travel to ${LOCS[d.loc]?.n||d.loc} to find ${d.name}.`;
+ if(!d.req(S))return `Requires: ${d.reqText}`;
+ if(party().length>=2)return 'You already have two companions.';
+ return 'Can be recruited here.';
+}
+function fnvCompanionCard(d,c){
+ const inP=!!c, hp=inP?hpPct(c.hp,c.maxHp):100, aff=companionAff(d.id);
+ return `<div class="cd" style="background:#19190f;border-color:${inP?'#3a4a28':sameLoc(S.loc,d.loc)?'#4a3a18':'#2a2818'}">
+  <div style="display:flex;gap:10px;align-items:flex-start">
+   <div style="width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:#0d0d08;border:1px solid #2a2818;border-radius:4px;font-size:24px">${d.icon}</div>
+   <div style="flex:1;min-width:0">
+    <div style="font-size:13px;font-weight:bold;color:var(--amber)">${d.name}</div>
+    <div style="font-size:10px;color:var(--muted)">${d.role} · ${companionStatusText(d)}</div>
+    ${inP?`<div style="font-size:10px;margin-top:5px">❤ ${c.hp}/${c.maxHp} · ⚔ ${c.atk} · 🛡 ${c.def} · 🎒 +${c.carryBonus}kg</div><div class="hb" style="margin-top:3px"><div class="hf hp" style="width:${hp}%"></div></div>`:`<div style="font-size:10px;color:${sameLoc(S.loc,d.loc)&&d.req(S)?'var(--green)':'var(--muted)'};margin-top:5px">${companionRecruitLine(d)}</div>`}
+    <div style="font-size:10px;color:var(--amber2);margin-top:4px">${d.ability.icon} ${d.ability.name} — ${d.ability.desc}</div>
+    <div style="font-size:10px;color:var(--muted);margin-top:3px">Affinity ${aff}/100</div>
+   </div>
+  </div>
+  <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px">
+   ${inP?`<button class="bt pip sm" onclick="talkCompanion('${d.id}')">Talk</button><button class="bt go sm" onclick="shareStimCompanion('${d.id}')">Give Stimpak</button><button class="bt dn sm" onclick="dismissCompanion('${d.id}')">Dismiss</button>`:
+   (sameLoc(S.loc,d.loc)&&d.req(S)&&party().length<2?`<button class="bt go" onclick="recruitCompanion('${d.id}')">Ask to travel together</button>`:`<button class="bt" disabled>${companionStatusText(d)}</button>`)}
+  </div>
+ </div>`;
+}
+function companionCharSection(){
+ normalizeCompanions();
+ let h='<div class="sh">Companions</div>';
+ h+=`<div class="cd" style="font-size:11px;color:var(--muted)">Like New Vegas, companions are people you find at specific places. Recruit up to two, travel with them, talk to them here, and use their once-per-fight ability in combat.<div style="color:var(--amber);margin-top:5px">Slots: ${party().length}/2 · Carry bonus: +${partyCarryBonus()}kg</div></div>`;
+ if(party().length){h+='<div class="bs2">Travelling With You</div>'+party().map(c=>fnvCompanionCard(compDef(c.id),c)).join('')}
+ else h+='<div class="cd" style="font-size:11px;color:var(--muted)">No companion travelling with you.</div>';
+ const here=knownCompanions().filter(d=>sameLoc(S.loc,d.loc)&&!isRecruited(d.id));
+ if(here.length)h+='<div class="bs2">Available Here</div>'+here.map(d=>fnvCompanionCard(d,null)).join('');
+ const leads=knownCompanions().filter(d=>!sameLoc(S.loc,d.loc)&&!isRecruited(d.id));
+ if(leads.length)h+='<div class="bs2">People You Can Find</div>'+leads.map(d=>`<div class="cd" style="font-size:11px"><b style="color:var(--amber)">${d.icon} ${d.name}</b><div style="font-size:10px;color:var(--muted)">${d.role} · ${LOCS[d.loc]?.n||d.loc}</div><div style="font-size:10px;color:var(--muted);margin-top:2px">${d.reqText==='None'?'No known requirement':'Requires: '+d.reqText}</div></div>`).join('');
+ return h;
+}
+window.openCompanionRecruit=function(id){
+ const d=compDef(id);if(!d)return;
+ openDlg(`<div style="text-align:center"><div style="font-size:42px;margin-bottom:6px">${d.icon}</div><div style="font-size:15px;font-weight:bold;color:var(--amber)">${d.name}</div><div style="font-size:11px;color:var(--muted);margin:4px 0 10px">${d.role}</div><div class="npc-line">${d.recruit||'I can travel with you for a while.'}</div><div style="font-size:10px;color:var(--amber2);margin:8px 0">${d.ability.icon} ${d.ability.name}: ${d.ability.desc}</div><button class="bt go" onclick="closeDlg();recruitCompanion('${id}')">Travel with me</button><button class="bt" onclick="closeDlg()">Not now</button></div>`);
+};
+function companionWorldCard(){
+ normalizeCompanions();
+ const here=knownCompanions().filter(d=>sameLoc(S.loc,d.loc)&&!isRecruited(d.id));
+ if(!here.length)return '';
+ return '<div class="sh">People Nearby</div>'+here.map(d=>`<div class="bc" onclick="openCompanionRecruit('${d.id}')"><div style="font-size:28px;width:34px;text-align:center">${d.icon}</div><div style="flex:1"><div style="font-weight:bold;font-size:12px">${d.name}</div><div style="font-size:10px;color:var(--muted)">${d.role} · ${d.req(S)?'Can join you':'Requires: '+d.reqText}</div></div><div style="color:var(--muted)">›</div></div>`).join('');
+}
+function removePartyTabUi(){
+ const pt=$('party-tab');if(pt)pt.remove();
+ const pb=$('nb-party');if(pb)pb.remove();
+}
+removePartyTabUi();
+const oldRefresh=window.refreshActiveTab||refreshActiveTab;
+window.refreshActiveTab=function(){removePartyTabUi();oldRefresh();};
+const oldUpAll=window.upAll||upAll;
+window.upAll=function(){normalizeCompanions();removePartyTabUi();oldUpAll();};
+const oldUpChar=window.upChar||upChar;
+window.upChar=function(){oldUpChar();try{const tab=$('char-tab');if(!tab||!S)return;tab.insertAdjacentHTML('beforeend',companionCharSection())}catch(e){}};
+const oldUpWorld=window.upWorld||upWorld;
+window.upWorld=function(){oldUpWorld();try{const tab=$('world-tab');const html=companionWorldCard();if(tab&&html){const prop=[...tab.children].find(x=>x.textContent&&x.textContent.includes('Property'))||null;const wrap=document.createElement('div');wrap.innerHTML=html;while(wrap.firstChild)tab.insertBefore(wrap.firstChild,prop)}}catch(e){}};
+normalizeCompanions();removePartyTabUi();
+})();
+
 </script>
 </body>
 </html>
