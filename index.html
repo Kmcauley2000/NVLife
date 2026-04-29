@@ -9595,6 +9595,188 @@ window.upWorld=function(){oldUpWorld();try{const tab=$('world-tab');const html=c
 normalizeCompanions();removePartyTabUi();
 })();
 
+
+/* ============================================================
+   FNV RPG — NPC Encounter Cards + Companion v2 safety overrides
+   Applied by ChatGPT, 2026-04-29
+   ============================================================ */
+(function(){
+'use strict';
+
+function escHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function jsStr(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+function itemName(id){return ITEMS&&ITEMS[id]?ITEMS[id].n:id}
+function itemIcon(id){return ITEMS&&ITEMS[id]?ITEMS[id].e:'•'}
+function hasItem(id){return S&&Array.isArray(S.inv)&&S.inv.indexOf(id)>=0}
+function remItem(id){const i=S.inv.indexOf(id);if(i>=0){S.inv.splice(i,1);return true}return false}
+function npcFacName(npc){const f=npc&&npc.fac;return f&&FACTIONS&&FACTIONS[f]?FACTIONS[f]:(f||'')}
+function npcIcon(npc,size){return renderIcon(inferNpcIcon(npc||{}),size||56)}
+
+// NPC portrait sizing.
+(function injectNpcEncounterCss(){
+ const old=document.getElementById('npc-encounter-patch-css');if(old)old.remove();
+ const s=document.createElement('style');s.id='npc-encounter-patch-css';
+ s.textContent=`
+ .bn>div:first-child{font-size:56px!important;width:56px!important;height:56px!important;min-width:56px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+ .bn>div:first-child .icon-wrap{width:56px!important;height:56px!important;font-size:56px!important}
+ .bn>div:first-child img{width:48px!important;height:48px!important;max-width:48px!important;max-height:48px!important;object-fit:contain!important}
+ .npc-encounter-portrait .icon-wrap,.npc-encounter-portrait img{width:56px!important;height:56px!important;font-size:56px!important;max-width:56px!important;max-height:56px!important;object-fit:contain!important}
+ .comp-card-v2{background:#151510;border:1px solid #2a2818;border-radius:8px;padding:0;margin:6px 0;overflow:hidden}
+ .comp-card-v2.active{border-color:#4aff4a}.comp-card-v2.available{border-color:var(--amber2)}
+ .comp-head-v2{display:flex;min-height:96px}.comp-port-v2{width:88px;min-width:88px;display:flex;align-items:center;justify-content:center;background:#0d0d08;border-right:1px solid #1a1810;font-size:52px}.comp-port-v2 img{width:72px!important;height:72px!important;object-fit:contain!important}.comp-port-v2 .icon-wrap{width:64px!important;height:64px!important;font-size:52px!important}
+ .comp-info-v2{flex:1;padding:10px;min-width:0}.comp-name-v2{font-size:14px;font-weight:bold;color:var(--amber)}.comp-role-v2{font-size:11px;color:var(--muted);margin-top:2px}.comp-ability-v2{font-size:10px;color:var(--amber2);border-top:1px solid #1a1810;padding:6px 10px;background:#0d0d08}.comp-actions-v2{display:flex;gap:4px;flex-wrap:wrap;padding:7px 10px;border-top:1px solid #1a1810}.comp-actions-v2 .bt{flex:1;min-width:72px;text-align:center;padding:8px 6px;font-size:11px;min-height:36px}
+ .combat-companion-strip{background:#0d1a0d;border:1px solid #1a3a1a;border-radius:6px;padding:8px 10px;margin:6px 0}.combat-companion-strip-title{font-size:9px;color:var(--amber2);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}.combat-comp-row{display:flex;align-items:center;gap:8px;margin:4px 0}.combat-comp-icon{font-size:22px;width:26px;text-align:center}.combat-comp-details{flex:1;min-width:0}.combat-comp-name{font-size:11px;color:var(--text);font-weight:bold}.combat-comp-hpbar{height:5px;background:#0a1a0a;border-radius:2px;overflow:hidden;margin-top:2px}.combat-comp-hpfill{height:100%;background:var(--green2);border-radius:2px}.combat-comp-hpfill.low{background:var(--amber2)}.combat-comp-hpfill.critical{background:var(--red)}.comp-ability-btn{padding:5px 8px;background:#102010;color:var(--green);border:1px solid #1a3a1a;border-radius:4px;font-family:'Courier New',monospace;font-size:10px;cursor:pointer;white-space:nowrap;min-height:32px}.comp-ability-btn:disabled{opacity:.3}
+ `;
+ document.head.appendChild(s);
+})();
+
+// Replace BitLife relationship chat with encounter-card options.
+window.openNPCInteraction=function(npc,existing){
+ if(!S.relationships)S.relationships=[];
+ if(!existing){
+  existing={name:npc.name,rel:'acquaintance',male:npc.male,age:npc.age,role:npc.role,loc:npc.loc||S.loc,fac:npc.fac,icon:inferNpcIcon(npc),met:S.days};
+  S.relationships.push(existing);
+ }
+ const safe=jsStr(npc.name);
+ const fac=npcFacName(npc);
+ const greetings=['Hey there.','What do you want?','Looking for something?','Watch yourself out there.','Got caps? I got time.','You look like trouble.','Need something?','Stay safe, stranger.','Roads been rough. You too, looks like.','You armed? Good. Keep it that way.'];
+ let h=`<div class="npc-encounter-portrait" style="text-align:center;padding:10px 0 6px">${npcIcon(npc,56)}</div>`;
+ h+=`<div style="text-align:center;font-size:16px;font-weight:bold;color:var(--amber);margin-bottom:3px">${escHtml(npc.name)}</div>`;
+ h+=`<div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:10px">${escHtml(npc.role||'Wastelander')}${fac?' · '+escHtml(fac):''}</div>`;
+ h+=`<div class="npc-line" style="margin-bottom:12px">"${escHtml(rndA(greetings))}"</div>`;
+ h+=`<button class="bt" onclick="npcEncounterRumour('${safe}')">🗣 Ask what's going on around here</button>`;
+ h+=`<button class="bt pip" onclick="npcEncounterWork('${safe}')">📜 Ask if there's any paid work</button>`;
+ h+=`<button class="bt" onclick="npcEncounterTrade('${safe}')">🔄 Offer to trade supplies</button>`;
+ h+=`<button class="bt go" onclick="npcEncounterHelp('${safe}')">🤝 Offer to help</button>`;
+ h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+ openDlg(h);
+};
+
+window.npcEncounterRumour=function(name){
+ const roads=Object.keys((ROADS&&ROADS[S.loc])||{});const nearby=rndA(roads.map(r=>(LOCS[r]&&LOCS[r].n)||r))||'the highway';const rep=S.rep||{};
+ const rumours=['The road south has been trouble lately. Raiders picking off anyone moving alone.',"NCR's stretched thin right now. Legion knows it.",`Heard there's decent salvage near ${nearby} if you can get there in one piece.`,"Water's getting scarce west of here. Caravans are already fighting over it.",'A courier went quiet three days ago on the highway. Nobody\'s asking questions.','The Powder Gangers are restless around the prison again.','Somebody\'s paying good caps for old tech out here. Followers, maybe Brotherhood.','Deathclaw sign near the quarry road. Locals say stay well off it.',"Word is the Strip's hiring additional security. Better caps than caravan work.",'Legion scouts are pushing further west every week.','Brahmin rustlers have been hitting the eastern ranches.'];
+ if((rep.NCR||0)<=-20)rumours.push("NCR's put out word on you. Every checkpoint south will have your description.");
+ if((rep.Legion||0)>=30)rumours.push("Legion patrols are giving this stretch a wide berth. Word travels fast.");
+ if((rep.BOS||0)>=20)rumours.push('Brotherhood patrols have been seen near Hidden Valley. More active than usual.');
+ const r=rndA(rumours);advanceTime(1);log(name+' says: '+r,'e');closeDlg();showResult('Road Gossip','🗣',[`"${escHtml(r)}"`,'⏰ 1 hour passed'],'Continue','upAll()');
+};
+window.npcEncounterWork=function(name){
+ closeDlg();
+ if(R()<0.42){const q=mkQuest(name);window._pendingQuest=q;showResult('Work Available','📜',[`<b>${escHtml(q.name)}</b>`,escHtml(q.desc),`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');return}
+ showResult(name,'📋',[escHtml(rndA(['Nothing I cannot handle myself.','Ask around at the nearest settlement.','Not right now, friend.',"Clean work's hard to find out here.",'Try the saloon. Someone there always needs something.']))],'Continue','upAll()');
+};
+window.npcEncounterTrade=function(name){
+ const tradeables=(S.inv||[]).filter(id=>ITEMS[id]&&ITEMS[id].p>0&&ITEMS[id].p<80);
+ if(!tradeables.length){closeDlg();notify('Nothing worth trading right now.');return}
+ const give=rndA(tradeables);const offered=['stimpak','purified_water','sunset_sars','ammo_9mm','ammo_357','cram','healing_powder','bobby_pin','pre_war_money','ammo_556','duct_tape','fancy_lad'].filter(id=>ITEMS[id]);const get=rndA(offered)||give;
+ openDlg(`<div style="text-align:center;padding:8px 0 4px"><span style="font-size:36px">🔄</span></div><div style="font-size:15px;font-weight:bold;color:var(--amber);text-align:center;margin-bottom:10px">Trade Offer</div><div class="npc-line">"Give me ${itemIcon(give)} <b style="color:var(--text)">${escHtml(itemName(give))}</b> and I'll hand over ${itemIcon(get)} <b style="color:var(--text)">${escHtml(itemName(get))}</b>. Fair enough out here."</div><button class="bt go" onclick="doNpcTrade('${jsStr(give)}','${jsStr(get)}','${jsStr(name)}')">Accept the trade</button><button class="bt dn" onclick="closeDlg()">Decline</button>`);
+};
+window.doNpcTrade=function(giveId,getId,name){if(!remItem(giveId)){notify('No longer have that.');closeDlg();return}giveItem(getId,1,{ignoreLimit:true});log('Traded '+itemName(giveId)+' for '+itemName(getId)+' with '+name+'.','e');closeDlg();showResult('Trade Complete','🤝',[`Gave: ${itemIcon(giveId)} ${escHtml(itemName(giveId))}`,`Got: ${itemIcon(getId)} ${escHtml(itemName(getId))}`],'Continue','upAll()')};
+window.npcEncounterHelp=function(name){
+ const foods=['cram','fancy_lad','gecko_steak','bighorner_meat','iguana_bits','dandy_boy_apples','pork_n_beans','instamash','brahmin_steak','gecko_stew','desert_salad'];
+ const opts=[];const fi=(S.inv||[]).findIndex(id=>foods.includes(id));if(fi>=0)opts.push(['🥫 Share food','food',fi,'You share your rations. They eat quickly without a word.',2]);
+ const wi=(S.inv||[]).indexOf('purified_water');if(wi>=0)opts.push(['💧 Share water','water',wi,'Clean water means more out here than caps.',3]);
+ const si=(S.inv||[]).indexOf('stimpak');if(si>=0)opts.push(['💉 Use a stimpak on them','stimpak',si,"You patch them up. They'll make it now.",4]);
+ opts.push(['⏰ Spend an hour helping out','time',-1,'Real work, honestly done. They are better off for it.',2]);
+ let h='<div style="font-size:15px;font-weight:bold;color:var(--amber);margin-bottom:10px">How do you help?</div>';
+ opts.forEach(o=>h+=`<button class="bt go" onclick="doNpcHelp('${o[1]}',${o[2]},'${jsStr(name)}',${o[4]},'${jsStr(o[3])}')">${o[0]}</button>`);
+ h+='<button class="bt dn" onclick="closeDlg()">Actually, never mind</button>';openDlg(h);
+};
+window.doNpcHelp=function(cost,idx,name,karma,msg){if(cost==='time')advanceTime(1);else if(idx>=0&&S.inv[idx])S.inv.splice(idx,1);else{closeDlg();notify('No longer have that.');return}S.karma=(S.karma||0)+karma;log('Helped '+name+' on the road.','q');closeDlg();showResult('Good Deed','🤝',[escHtml(msg),'⚖ Karma +'+karma],'Continue','upAll()')};
+window.npcAct=function(action,name){if(action==='rumour'||action==='chat')return npcEncounterRumour(name);if(action==='quest')return npcEncounterWork(name);if(action==='drink'||action==='favour'||action==='compliment'||action==='flirt'||action==='propose')return npcEncounterHelp(name);const rel=(S.relationships||[]).find(r=>r.name===name)||{name,role:'Wastelander',loc:S.loc};openNPCInteraction(rel,rel)};
+
+// Remove spouse/children gameplay without breaking old code that expects fields.
+function cleanLegacyFamily(){if(!S)return;S.spouse=null;S.children=[]}
+cleanLegacyFamily();
+const npcPatchMigrate=window.migrate;if(typeof npcPatchMigrate==='function')window.migrate=function(){npcPatchMigrate.apply(this,arguments);cleanLegacyFamily()};
+const npcPatchPayDaily=window.payDaily;if(typeof npcPatchPayDaily==='function')window.payDaily=function(){const oldSpouse=S&&S.spouse; if(S)S.spouse=null; npcPatchPayDaily.apply(this,arguments); cleanLegacyFamily();};
+
+// Re-skin/enhance existing companion system as v2, while keeping its working integration.
+(function companionV2Override(){
+ if(!window.COMPANION_DEFS)return;
+ const v2={
+  boone:{name:'Craig Boone',icon:(ICONS&&ICONS.NPC&&ICONS.NPC.CRAIG_BOONE)||'🎯',role:'Former NCR 1st Recon Sniper',loc:'Novac',reqText:'Reach Novac and build town trust',req:s=>(s.visitedLocs&&s.visitedLocs.includes('Novac'))||s.loc==='Novac'||((s.rep&&s.rep.Novac)||0)>=10,baseHp:240,baseAtk:20,baseDef:6,carryBonus:60,ability:{id:'marksman',name:'Marksman',icon:'🎯',desc:'Targets the toughest enemy for heavy damage.'},talk:['I keep watch. I shoot what needs shooting.','Still watching the road.','You get used to the dark.']},
+  ede:{name:'ED-E',icon:(ICONS&&ICONS.NPC&&ICONS.NPC.EDE)||'📡',role:'Eyebot / Mobile Scout Unit',loc:'Primm',reqText:'Reach Primm',req:s=>(s.visitedLocs&&s.visitedLocs.includes('Primm'))||s.loc==='Primm',baseHp:170,baseAtk:14,baseDef:10,carryBonus:30,ability:{id:'scanner',name:'Combat Scan',icon:'📡',desc:'Weak-point scan. Your attacks deal bonus damage this fight.'},talk:['ED-E chirps and projects a small radar sweep.','[CONTENTED BEEPING]','[SYSTEMS NOMINAL]']},
+  veronica:{name:'Veronica Santangelo',icon:(ICONS&&ICONS.NPC&&ICONS.NPC.VERONICA)||'👊',role:'Brotherhood Scribe / Brawler',loc:'HiddenValley',reqText:'Brotherhood standing 15+',req:s=>((s.rep&&s.rep.BOS)||0)>=15,baseHp:210,baseAtk:22,baseDef:12,carryBonus:60,ability:{id:'power_slam',name:'Power Slam',icon:'👊',desc:'Power-fist slam on the strongest enemy.'},talk:['Punching usually solves at least the first problem.','I miss dresses. And punching things.','Brotherhood politics are worse than cazadores.']},
+  cass:{name:'Rose of Sharon Cassidy',icon:'🥃',role:'Caravan Hand / Shotgunner',loc:'TradingPost188',reqText:'Level 4+',req:s=>(s.level||1)>=4,baseHp:195,baseAtk:16,baseDef:8,carryBonus:45,ability:{id:'whiskey_rose',name:'Whiskey Rose',icon:'🥃',desc:'Rallies the party with healing and companion damage.'},talk:['Roads are bad. People are worse. Still, we move.','A drink and a shotgun fix plenty.','If this goes sideways, I told you so.']},
+  arcade:{name:'Arcade Gannon',icon:'💉',role:'Followers of the Apocalypse Doctor',loc:'Freeside',reqText:'Followers standing 10+ or level 6+',req:s=>((s.rep&&s.rep.Followers)||0)>=10||(s.level||1)>=6,baseHp:180,baseAtk:13,baseDef:7,carryBonus:25,ability:{id:'field_triage',name:'Field Triage',icon:'💉',desc:'Emergency medicine for you and companions.'},talk:['I have several medical objections to this plan.','Try not to bleed on anything important.','This is why the Followers need funding.']},
+  raul:{name:'Raul Tejada',icon:'🔧',role:'Ghoul Vaquero / Mechanic',loc:'Jacobstown',reqText:'Level 8+',req:s=>(s.level||1)>=8,baseHp:245,baseAtk:17,baseDef:10,carryBonus:50,ability:{id:'old_vaquero',name:'Old Vaquero',icon:'🔧',desc:'Steadies the party with companion attack and player defence.'},talk:['Sure thing, boss. I have only been alive forever.','Old tricks still work.','Maintenance first. Heroics second.']}
+ };
+ Object.keys(v2).forEach(id=>Object.assign(window.COMPANION_DEFS[id]||(window.COMPANION_DEFS[id]={id}),v2[id],{id}));
+})();
+
+// Expanded encounter cards: add safe, item/enemy-checked cards to the existing deck.
+(function addMoreEncounterCards(){
+ if(typeof ENCOUNTER_CARDS==='undefined')return;
+ function hasEnemy(id){return typeof ENEMIES!=='undefined'&&!!ENEMIES[id]}
+ function okEnemies(ids){return ids.filter(hasEnemy)}
+ function fight(label,ids,after){ids=okEnemies(Array.isArray(ids)?ids:[ids]);return{label,enemies:ids,fn:()=>{if(ids.length)startCombatGroup(ids);if(typeof after==='function')after()},result:'Fight resolved.'}}
+ function add(key,cards){ENCOUNTER_CARDS[key]=ENCOUNTER_CARDS[key]||[];ENCOUNTER_CARDS[key].push(...cards)}
+ const cards={
+ Goodsprings:[
+  {id:'gs_gecko_hunting_party_v2',icon:'🦎',title:'Gecko Hunting Opportunity',body:'Sunny mentioned geckos circling the south pen. Fresh tracks lead into the brush.',choices:[fight('⚔ Follow and hunt them',['gecko','gecko'],()=>{if(ITEMS.gecko_hide)giveItem('gecko_hide');if(ITEMS.gecko_steak)giveItem('gecko_steak')}),{label:'🐾 Set a snare [AGI]',fn:()=>{if(R()<checkChance(statVal(5),6)){if(ITEMS.gecko_hide)giveItem('gecko_hide');S.xp+=6;return 'Clean catch. Gecko hide without a fight.'}return 'Nothing in the snare by morning.'},result:''}]},
+  {id:'gs_old_ncr_cache_v2',icon:'🪖',title:'Buried NCR Cache',body:'A half-buried ammunition box near the cemetery fence has an NCR eagle stamped into the lid.',choices:[{label:'🔍 Dig it up',fn:()=>{const a=rndA(['ammo_556','ammo_9mm','stimpak'].filter(id=>ITEMS[id]));if(a)giveItem(a);S.caps+=rnd(8,18);log('Found a buried NCR cache near Goodsprings.','e');return 'Useful supplies.'},result:''},{label:'🚶 Leave it',fn:()=>{},result:'Probably wise.'}]},
+  {id:'gs_scorpion_nest_v2',icon:'🦂',title:'Bark Scorpion Nest',body:'A crack in the cemetery wall pulses with movement. Bark scorpions — a nest of them.',choices:[fight('⚔ Clear the nest',['bark_scorpion','bark_scorpion','bark_scorpion'],()=>{if(ITEMS.bark_scorpion_gland)giveItem('bark_scorpion_gland');if(ITEMS.antivenom)giveItem('antivenom')})]}
+ ],
+ Primm:[
+  {id:'primm_vikki_slot_v2',icon:'🎰',title:'Working Slot Machine',body:'One Vikki & Vance slot machine is still drawing power.',choices:[{label:'🎰 Pull it (20 caps)',fn:()=>{if(S.caps<20){notify('Not enough caps.');return null}S.caps-=20;if(R()<.35+statVal(6)*.035){const win=rnd(30,80);S.caps+=win;return 'Jackpot! +'+win+' caps.'}return 'Nothing. The machine mocks you.'},result:''},{label:'🔧 Pry it open',fn:()=>{const c=rnd(5,20);S.caps+=c;S.karma-=1;return c+' caps in loose change. ⚖ -1 karma.'},result:''}]},
+  {id:'primm_convicts_gas_v2',icon:'⛏',title:'Convicts at the Gas Station',body:'Two escaped convicts shelter in the old gas station, arguing over a busted radio.',choices:[fight('⚔ Take them down',['escaped_convict','convict'],()=>{S.caps+=rnd(15,30)}),{label:'💬 Bluff them [CHA]',fn:()=>{if(R()<checkChance(statVal(3),6)){S.caps+=rnd(10,22);S.karma+=1;return 'They throw the caps out and run.'}startCombatGroup(okEnemies(['convict','escaped_convict']));return null},result:''}]}
+ ],
+ Novac:[
+  {id:'novac_night_stalkers_v2',icon:'🌙',title:'Night Stalkers at the Perimeter',body:'Nightstalkers have circled the McBride pen in the dark. The brahmin panic.',choices:[fight('⚔ Kill the nightstalkers',['nightstalker','nightstalker'],()=>{S.caps+=rnd(12,24);S.rep.Novac=(S.rep.Novac||0)+2;if(ITEMS.nightstalker_blood)giveItem('nightstalker_blood')}),{label:'📢 Wake the ranch hands',fn:()=>{advanceTime(1);S.xp+=6;S.rep.Novac=(S.rep.Novac||0)+1;return '+1 Novac rep. ⭐ +6 XP.'},result:''}]},
+  {id:'novac_fire_gecko_trail_v2',icon:'🔥',title:'Fire Gecko Trail',body:'Scorch marks lead south from town. Fire geckos have been coming closer than usual.',choices:[fight('⚔ Track and eliminate them',['fire_gecko','fire_gecko'],()=>{if(ITEMS.gecko_hide)giveItem('gecko_hide');if(ITEMS.gecko_steak)giveItem('gecko_steak')}),{label:'⚠ Warn Novac',fn:()=>{S.rep.Novac=(S.rep.Novac||0)+2;S.xp+=8;return '+2 Novac rep. ⭐ +8 XP.'},result:''}]}
+ ],
+ FreesideN:[
+  {id:'fs_alley_ambush_v2',icon:'🪖',title:'Alley Ambush',body:'Three thugs step out of the dark. “Empty your pockets.”',choices:[fight('⚔ Fight all three',['freeside_thug','freeside_thug','freeside_thug'],()=>{S.karma+=1}),{label:'😠 Intimidate [CHA]',fn:()=>{if(R()<checkChance(statVal(3),6,((S.rep.Kings||0)>10?.15:0))){S.xp+=8;return 'They back off. Word gets around.'}startCombatGroup(okEnemies(['freeside_thug','freeside_thug']));return null},result:''}]},
+  {id:'fs_kings_errand_v2',icon:'👑',title:'Kings Errand Boy',body:'A King needs a parcel delivered east side. Thirty caps, no questions.',choices:[{label:'📦 Take the job',fn:()=>{advanceTime(2);if(R()<.25){startCombatGroup(okEnemies(['freeside_thug','freeside_thug']));return null}S.caps+=30;S.rep.Kings=(S.rep.Kings||0)+2;return '+30 caps. +2 Kings rep.'},result:''},{label:'🚶 Decline',fn:()=>{},result:''}]}
+ ],
+ HiddenValley:[
+  {id:'hv_data_recovery_v2',icon:'💾',title:'Dead Terminal Cache',body:'A Brotherhood scribe kneels over a dead terminal near the ventilation trench.',choices:[{label:'🔧 Salvage the data [INT]',fn:()=>{if(R()<checkChance(statVal(4),6)){S.rep.BOS=(S.rep.BOS||0)+4;S.xp+=14;if(ITEMS.scribe_data_slate)giveItem('scribe_data_slate');return '+4 BOS rep. ⭐ +14 XP.'}return 'The hardware is too damaged.'},result:''}]},
+  {id:'hv_ant_infestation_v2',icon:'🐜',title:'Ant Infestation in the Trench',body:'Giant ants have found the ventilation trench. A Brotherhood knight waves you over.',choices:[fight('⚔ Clear the ants',['giant_ant','giant_ant','giant_ant'],()=>{S.rep.BOS=(S.rep.BOS||0)+3;if(ITEMS.giant_ant_meat)giveItem('giant_ant_meat')})]}
+ ],
+ RedRockCanyon:[
+  {id:'rrc_cazador_ambush_v2',icon:'🐝',title:'Cazador Ambush',body:'The canyon pass hums. Cazadores erupt from the rocks above.',choices:[fight('⚔ Fight them',['cazador','cazador'],()=>{if(ITEMS.cazador_poison_gland)giveItem('cazador_poison_gland');if(ITEMS.antivenom)giveItem('antivenom')}),{label:'🏃 Sprint for open ground [AGI]',fn:()=>{if(R()<checkChance(statVal(5),7)){advanceTime(1);return 'You clear the kill zone.'}S.hp=Math.max(1,S.hp-rnd(15,35));startCombatGroup(okEnemies(['cazador']));return null},result:''}]}
+ ],
+ Jacobstown:[
+  {id:'jt_bighorner_roundup_v2',icon:'🐂',title:'Escaped Bighorner',body:'A bighorner bull has broken the pen. It is terrified and dangerous.',choices:[fight('⚔ Subdue it',['bighorner_bull'],()=>{S.rep.Jacobstown=(S.rep.Jacobstown||0)+2;if(ITEMS.bighorner_meat)giveItem('bighorner_meat',2)}),{label:'🐾 Guide it back [END]',fn:()=>{if(R()<checkChance(statVal(2),5)){S.rep.Jacobstown=(S.rep.Jacobstown||0)+3;S.karma+=2;return '+3 Jacobstown rep. ⚖ +2 karma.'}startCombatGroup(okEnemies(['bighorner_bull']));return null},result:''}]}
+ ],
+ generic:[
+  {id:'gen_lone_prospector_v2',icon:'⛏',title:'Old Prospector',body:'A weathered prospector tips his hat. “Seen anything worth salvaging east of here?”',choices:[{label:'🗺 Share road intel',fn:()=>{S.xp+=8;const p=rndA(['bobby_pin','duct_tape','scrap','pre_war_money','sunset_sars'].filter(id=>ITEMS[id]));if(p)giveItem(p);return '⭐ +8 XP. He trades you something useful.'},result:''},{label:'💰 Escort him',fn:()=>{advanceTime(2);const pay=rnd(20,45);S.caps+=pay;return '+'+pay+' caps. ⏰ 2 hours.'},result:''}]},
+  {id:'gen_mole_rat_colony_v2',icon:'🐀',title:'Mole Rat Colony',body:'The ground erupts. A colony of mole rats tunnels toward your footsteps.',choices:[fight('⚔ Fight them off',['mole_rat','mole_rat','mole_rat','mole_rat'],()=>{S.xp+=12;if(ITEMS.cram)giveItem('cram')}),{label:'🏃 Run for high ground',fn:()=>{advanceTime(1);if(R()<checkChance(statVal(5),5))return 'You outpace them on the rocks.';const d=rnd(6,14);S.hp=Math.max(1,S.hp-d);return '-'+d+' HP. You get clear, barely.'},result:''}]},
+  {id:'gen_robot_patrol_old_v2',icon:'🤖',title:'Ancient Security Loop',body:'A protectron still follows a patrol route from before the war.',choices:[fight('⚔ Scrap it',['protectron'],()=>{if(ITEMS.scrap_electronics)giveItem('scrap_electronics');if(ITEMS.fission_battery)giveItem('fission_battery')}),{label:'🚶 Walk around it',fn:()=>{S.karma+=1;S.xp+=4;return '⚖ +1 karma. ⭐ +4 XP.'},result:''}]}
+ ]};
+ Object.keys(cards).forEach(k=>add(k,cards[k].filter(c=>!(ENCOUNTER_CARDS[k]||[]).some(x=>x.id===c.id))));
+ console.log('[FNV-Patch] Extra encounter cards added.');
+})();
+
+// Accurate-ish enemy loot overlay. Adds/overrides loot for common Mojave enemy families and falls back safely.
+(function patchEnemyLootSafe(){
+ if(typeof buildEnemyLoot!=='function')return;const old=window.buildEnemyLoot;
+ const tables={
+  gecko:['gecko_hide:.85','gecko_steak:.65','herbs:.3'],green_gecko:['gecko_hide:.85','gecko_steak:.65'],golden_gecko:['gecko_hide:.95','gecko_steak:.8','pre_war_money:.25'],fire_gecko:['gecko_hide:.9','gecko_steak:.7','herbs:.35'],bloatfly:['bloatfly_meat:.75'],bark_scorpion:['bark_scorpion_gland:.85','antivenom:.25'],radscorpion:['radscorpion_gland:.9','antivenom:.35','stimpak:.15'],cazador:['cazador_poison_gland:.9','antivenom:.45'],nightstalker:['nightstalker_blood:.85','stimpak:.2','antivenom:.25'],mole_rat:['cram:.35','dirty_water:.4'],giant_ant:['giant_ant_meat:.8','scrap:.2'],lakelurk:['lakelurk_meat:.85','purified_water:.45','stimpak:.2'],brahmin:['brahmin_steak:.9'],bighorner:['bighorner_meat:.9'],bighorner_bull:['bighorner_meat:.95','bighorner_meat:.8'],yao_guai:['bighorner_meat:.85','stimpak:.2'],deathclaw:['deathclaw_hand:1','super_stimpak:.65','combat_armor:.15'],
+  feral_ghoul:['pre_war_money:.35','dirty_water:.5','scrap:.25','stimpak:.15','irradiated_blood:.3'],feral_ghoul_roamer:['pre_war_money:.4','dirty_water:.45','irradiated_blood:.35','stimpak:.2'],feral_ghoul_reaver:['irradiated_blood:.55','stimpak:.35','pre_war_money:.45','med_x:.2'],glowing_one:['irradiated_blood:.7','super_stimpak:.2','med_x:.3'],
+  convict:['ammo_9mm:.65','switchblade:.4','pistol_9mm:.15','sunset_sars:.3','dirty_water:.4','bobby_pin:.35'],escaped_convict:['ammo_9mm:.65','switchblade:.4','pistol_9mm:.15','dirty_water:.4'],powder_ganger:['dynamite:1','powder_charge:.5','ammo_9mm:.6','stimpak:.2','pistol_9mm:.18'],powder_ganger_leader:['dynamite:.7','powder_charge:.7','pistol_9mm:.35','ammo_9mm:.7','stimpak:.35'],joe_cobb:['pistol_9mm:1','ammo_9mm:1','dynamite:1','stimpak:.5','leather_armor:.4'],
+  jackal_raider:['ammo_9mm:.6','switchblade:.5','single_shotgun:.15','ammo_shells:.3','dirty_water:.5','raider_armor:.15'],jackal_veteran:['combat_knife:.45','ammo_9mm:.7','stimpak:.15'],viper_gunslinger:['ammo_357:.75','revolver_357:.2','varmint_rifle:.15','stimpak:.2'],viper_leader:['ammo_357:.8','revolver_357:.3','antivenom:.4','stimpak:.3'],freeside_thug:['switchblade:.55','jet:.35','pre_war_money:.45','dirty_water:.5','brass_knuckles:.2'],fiend:['jet:.65','psycho:.5','ammo_9mm:.5','ammo_10mm:.4','combat_knife:.25','pistol_10mm:.18','stimpak:.2'],fiend_leader:['psycho:.7','jet:.55','ammo_10mm:.65','pistol_10mm:.35','stimpak:.35','turbo:.3'],
+  legion_recruit:['machete:1','healing_powder:.7','legion_coin:1','throwing_spear:.3'],legion_scout:['machete:.5','healing_powder:.6','legion_coin:.75','throwing_spear:.45'],legion_decanus:['machete:.6','healing_powder:.65','legion_coin:.85','throwing_spear:.55','stimpak:.2'],legion_assassin:['combat_knife:1','throwing_spear:.65','healing_powder:.55','stealth_boy:.25','legion_coin:.7'],legion_veteran:['machete:.45','super_stimpak:.3','legion_coin:1','healing_powder:.5','reinforced_leather_armor:.2'],legion_centurion:['thermic_lance:.2','legion_coin:1','super_stimpak:.55','power_fist:.12','combat_armor:.15'],
+  great_khan:['ammo_9mm:.6','ammo_357:.5','jet:.55','stimpak:.25','revolver_357:.18','leather_armor:.18','psycho:.3'],khan_warrior:['ammo_9mm:.6','ammo_357:.5','jet:.55','stimpak:.25','straight_razor:.25'],ncr_trooper:['ammo_556:.75','stimpak:.35','ncr_armor:.2','dog_tags:.65','purified_water:.4','service_rifle:.12'],ncr_ranger:['service_rifle:.25','ammo_556:.8','stimpak:.5','ncr_dogtags:.75','doctor_bag:.2','ammo_308:.35'],ncr_heavy_trooper:['ammo_556:.8','combat_armor:.18','stimpak:.45','dog_tags:.6'],bos_knight:['energy_cell:.75','laser_pistol:.2','stimpak:.45','bos_holotape:.35'],bos_paladin:['energy_cell:.85','laser_rifle:.18','super_stimpak:.35','bos_holotape:.5','stimpak:.6'],
+  super_mutant:['ammo_556:.7','scrap:.5','stimpak:.25','cowboy_repeater:.12','hunting_rifle:.1','rebar_club:.2'],super_mutant_brute:['ammo_556:.75','hunting_rifle:.18','ammo_308:.45','stimpak:.4','super_stimpak:.2'],nightkin:['stealth_boy:.4','super_stimpak:.3','rebar_club:.35','stimpak:.45','mentats:.3'],nightkin_master:['stealth_boy:1','super_stimpak:.55','rebar_club:.5','mentats:.45'],securitron:['energy_cell:.85','sensor_module:.55','scrap:.65','scrap_electronics:.5','fission_battery:.3','microfusion_cell:.25'],protectron:['scrap_electronics:.65','fission_battery:.45','energy_cell:.55','scrap:.55'],mr_gutsy:['energy_cell:.7','scrap_electronics:.6','sensor_module:.45','fission_battery:.35'],sentry_bot:['energy_cell:.9','sensor_module:.65','combat_armor:.15','scrap_electronics:.65','microfusion_cell:.35']
+ };
+ function capsFor(id){if(/deathclaw|centurion|paladin|sentry|ranger/.test(id))return rnd(10,35);if(/ncr|legion|bos|khan|fiend|raider|convict|ganger|thug|securitron/.test(id))return rnd(3,20);return 0}
+ window.buildEnemyLoot=buildEnemyLoot=function(enemy){
+  const id=String(enemy&&enemy.id||'').toLowerCase();const spec=tables[id];if(!spec)return old(enemy);
+  const loot=[];const caps=capsFor(id);if(caps>0)loot.push({type:'caps',amount:caps,label:caps+' caps',icon:'💰',taken:false});
+  let pool=[];spec.forEach(s=>{let [iid,ch]=s.split(':');ch=parseFloat(ch||'1');if(ITEMS[iid]&&R()<ch)pool.push(iid)});
+  if(enemy&&enemy.legendary){['super_stimpak','ammo_308','energy_cell','combat_armor','stealth_boy'].forEach(i=>{if(ITEMS[i]&&R()<.55)pool.push(i)})}
+  else if(enemy&&enemy.elite){['stimpak','ammo_556','pre_war_money'].forEach(i=>{if(ITEMS[i]&&R()<.45)pool.push(i)})}
+  pool.sort(()=>R()-.5).slice(0,enemy&&enemy.legendary?5:enemy&&enemy.elite?4:3).forEach(i=>loot.push({type:'item',id:i,label:ITEMS[i].n,icon:ITEMS[i].e,taken:false}));
+  return loot.length?loot:old(enemy);
+ };
+ console.log('[FNV-Patch] Enemy loot override active.');
+})();
+
+console.log('[FNV-Patch final] NPC encounter cards, companion v2 overrides, expanded encounters and loot loaded.');
+})();
+
 </script>
 </body>
 </html>
