@@ -313,6 +313,77 @@ html,body,#W,#C,#N,button{touch-action:manipulation}
 .found-item-icon .icon-wrap,.found-item-icon img,.found-item-icon svg{width:112px!important;height:112px!important;max-width:112px!important;max-height:112px!important;font-size:112px!important;object-fit:contain!important;margin:auto!important}
 #RP{text-align:center!important}
 
+
+/* Combat loot mobile overflow fix */
+#CP{overflow-x:hidden!important}
+.corpse-grid{
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr))!important;
+  align-items:start!important;
+  width:100%!important;
+  max-width:100%!important;
+}
+.corpse-card{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+}
+.corpse-card .loot-list{
+  width:100%!important;
+  max-width:100%!important;
+}
+.corpse-card .loot-item{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  min-height:58px!important;
+  gap:8px!important;
+  padding:8px!important;
+  margin:6px 0!important;
+  border-radius:8px!important;
+}
+.corpse-card .loot-item-icon{
+  width:44px!important;
+  height:44px!important;
+  min-width:44px!important;
+  max-width:44px!important;
+  border-radius:7px!important;
+  overflow:hidden!important;
+}
+.corpse-card .loot-item-icon .icon-wrap,
+.corpse-card .loot-item-icon img,
+.corpse-card .loot-item-icon svg{
+  width:36px!important;
+  height:36px!important;
+  max-width:36px!important;
+  max-height:36px!important;
+  font-size:36px!important;
+  object-fit:contain!important;
+}
+.corpse-card .loot-item-name{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  white-space:normal!important;
+  font-size:12px!important;
+  line-height:1.25!important;
+  text-align:left!important;
+}
+.corpse-card .loot-item-tick{
+  flex:0 0 auto!important;
+  width:18px!important;
+  text-align:center!important;
+}
+.corpse-card .loot-actions{
+  flex-wrap:wrap!important;
+}
+.corpse-card .loot-actions .bt{
+  min-width:0!important;
+}
+@media (max-width:390px){
+  .corpse-grid{grid-template-columns:1fr!important}
+}
+
 /* Bottlecap currency icon */
 .cap-icon{width:18px;height:18px;object-fit:contain;display:inline-block;vertical-align:middle;margin:0 2px}
 #SB .cap-icon{width:14px;height:14px;margin-right:2px}
