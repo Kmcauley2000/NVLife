@@ -761,8 +761,8 @@ gecko_steak:{n:"Gecko Steak",t:"c",e:'<img src="NVImages/GeckosteakIcon.png" sty
 bighorner_meat:{n:"Bighorner Steak",t:"c",e:'<img src="NVImages/BighornermeatIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:20,p:5,w:1},
 healing_powder:{n:"Healing Powder",t:"c",e:'<img src="NVImages/HealingpowderIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:18,p:20,w:0},
 antivenom:{n:"Antivenom",t:"c",e:'<img src="NVImages/AntivenomIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:10,p:30,w:0.1},
-radscorpion_gland:{n:"Radscorpion Poison Gland",t:"m",e:"🦂",p:25,w:1,desc:"Venom sac harvested from a radscorpion."},
-bark_scorpion_gland:{n:"Bark Scorpion Poison Gland",t:"m",e:'<img src="NVImages/RadscorpionposionglandIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:10,w:1,desc:"Small venom gland from a bark scorpion."},
+radscorpion_gland:{n:"Radscorpion Poison Gland",t:"m",e:'<img src="NVImages/RadscoprionpoisonglandIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:25,w:1,desc:"Venom sac harvested from a radscorpion."},
+bark_scorpion_gland:{n:"Bark Scorpion Poison Gland",t:"m",e:'<img src="NVImages/RadscoprionpoisonglandIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:10,w:1,desc:"Small venom gland from a bark scorpion."},
 bloatfly_meat:{n:"Bloatfly Meat",t:"c",e:'<img src="NVImages/BloatflymeatIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:8,p:4,w:1},
 radroach_meat:{n:"Radroach Meat",t:"c",e:'<img src="NVImages/RadroachmeatIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:5,p:4,w:1},
 giant_mantis_foreleg:{n:"Giant Mantis Foreleg",t:"c",e:"🦗",hp:6,p:4,w:1},
@@ -6382,7 +6382,7 @@ function goodspringsDocTreatment(){
   S.caps-=cost;S.hp=S.maxHp;S.ap=S.maxAp;advanceTime(1);
   log('Doc Mitchell patches you up in Goodsprings.','e');
   closeDlg();closeBld();
-  showResult('Doc Mitchell','💉',['❤ Full HP restored','⚡ AP restored','⏰ 1 hour passed',`💰 -${cost} caps`],'Continue','upAll()');
+  showResult('Doc Mitchell','💉',['❤ Full HP restored','⚡ AP restored','⏰ 1 hour passed',`'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', -${cost} caps`],'Continue','upAll()');
 }
 function openGoodspringsTrade(){
   const ids=[
@@ -6433,7 +6433,7 @@ function gsCaravanUnload(){
   if(bonus)giveItem(bonus);
   S.rep.Goodsprings=(S.rep.Goodsprings||0)+1;
   log('Helped unload a caravan at Goodsprings.','q');
-  const lines=[`💰 +${pay} caps`,'📍 Goodsprings reputation +1','⏰ 2 hours passed'];
+  const lines=[`'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', +${pay} caps`,'📍 Goodsprings reputation +1','⏰ 2 hours passed'];
   if(bonus)lines.splice(1,0,`${ITEMS[bonus].e} ${ITEMS[bonus].n}`);
   closeBld();
   showResult('Caravan Work','📦',lines,'Continue','upAll()');
@@ -6785,7 +6785,7 @@ function tradeRender(){
   tradeRenderCaps();tradeRenderCats();tradeRenderItems();tradeRenderFooter();
 }
 function tradeRenderCaps(){
-  $('TRADE-CAPS').textContent='💰 '+S.caps+' caps  ·  🎒 '+S.inv.length+' items';
+  $('TRADE-CAPS').textContent=''<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', '+S.caps+' caps  ·  🎒 '+S.inv.length+' items';
 }
 function tradeRenderCats(){
   const cats=$('TRADE-CATS');cats.innerHTML='';
@@ -7054,8 +7054,8 @@ function bldCasino(body,bId){
     gb.onclick=()=>{if(S.caps<bet){notify("Not enough.");return}
     const luck=S.special?S.special[6]:5;
     const win=R()<(.35+luck*.03);
-    if(win){const w=Math.floor(bet*(1.5+luck*.1));S.caps+=w-bet;log('Won '+w+' caps gambling!','e');closeBld();showResult('Winner!','🎰',['💰 +'+w+' caps','Lady Luck smiles.'],'Continue','upAll()')}
-    else{S.caps-=bet;log('Lost '+bet+' caps gambling.','e');closeBld();showResult('Bust','💸',['💰 -'+bet+' caps','The house always wins... usually.'],'Continue','upAll()')}};
+    if(win){const w=Math.floor(bet*(1.5+luck*.1));S.caps+=w-bet;log('Won '+w+' caps gambling!','e');closeBld();showResult('Winner!','🎰',[''<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', +'+w+' caps','Lady Luck smiles.'],'Continue','upAll()')}
+    else{S.caps-=bet;log('Lost '+bet+' caps gambling.','e');closeBld();showResult('Bust','💸',[''<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', -'+bet+' caps','The house always wins... usually.'],'Continue','upAll()')}};
     body.appendChild(gb);
   });
 
@@ -7079,7 +7079,7 @@ function bldFaction(body,bId){
   qBtn.onclick=()=>{
     if(rep<0){notify("They don't trust you.");return}
     const q=mkQuest(FACTIONS[fac]||fac);q.fac=fac;q.rg+=15;q.rx+=10;q.name=(FACTIONS[fac]||fac)+': '+q.name;
-    window._pendingQuest=q;closeBld();showResult('Quest Available','📜',[`<b>${q.name}</b>`,q.desc,`💰 ${q.rg} caps · ⭐ ${q.rx} XP · +5 ${FACTIONS[fac]||fac} rep`],'Accept','acceptPendingQuest()');
+    window._pendingQuest=q;closeBld();showResult('Quest Available','📜',[`<b>${q.name}</b>`,q.desc,`'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', ${q.rg} caps · ⭐ ${q.rx} XP · +5 ${FACTIONS[fac]||fac} rep`],'Accept','acceptPendingQuest()');
   };
   body.appendChild(qBtn);
 }
@@ -7300,7 +7300,7 @@ function claimEvidenceLocker(){
   const pick=rndA(['ammo_9mm','pre_war_money','dynamite','cigarette_carton','stimpak']);
   S.caps+=caps;S.capsEarned+=caps;giveItem(pick);
   log('You claim seized goods from the Primm evidence locker.','e');
-  closeBld();showResult('Evidence Locker','🗄',[`💰 +${caps} caps`,`${ITEMS[pick].e} ${ITEMS[pick].n}`],'Continue','upAll()');
+  closeBld();showResult('Evidence Locker','🗄',[`'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', +${caps} caps`,`${ITEMS[pick].e} ${ITEMS[pick].n}`],'Continue','upAll()');
 }
 function drawGoodspringsWater(){
   if(!propertyReady('prop_water_draw_day')){notify('You already collected your water share today.');return}
@@ -7328,7 +7328,7 @@ function claimPropertyStash(){
   const caps=rnd(8,20);
   S.caps+=caps;S.capsEarned+=caps;giveItem(pick);
   log('You check your Goodsprings stash.','e');
-  closeBld();showResult('Personal Stash','📦',[`💰 +${caps} caps`,`${ITEMS[pick].e} ${ITEMS[pick].n}`],'Continue','upAll()');
+  closeBld();showResult('Personal Stash','📦',[`'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', +${caps} caps`,`${ITEMS[pick].e} ${ITEMS[pick].n}`],'Continue','upAll()');
 }
 function claimGoodspringsCache(){
   if(!propertyReady('prop_goodsprings_cache_day')){notify('Your house cache is empty today.');return}
@@ -7622,7 +7622,7 @@ function upChar(){
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:6px;font-size:11px;text-align:center">
   <div style="background:#0a1a0a;padding:4px;border-radius:4px">⚔ ATK<br><b style="color:var(--green)">${atkPow()}</b></div>
   <div style="background:#0a1a0a;padding:4px;border-radius:4px">🛡 DEF<br><b style="color:var(--green)">${defPow()}</b></div>
-  <div style="background:#0a1a0a;padding:4px;border-radius:4px">💰 Caps<br><b style="color:var(--amber)">${S.caps}</b></div>
+  <div style="background:#0a1a0a;padding:4px;border-radius:4px">'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', Caps<br><b style="color:var(--amber)">${S.caps}</b></div>
   <div style="background:#0a1a0a;padding:4px;border-radius:4px">🗡 Kills<br><b>${S.killCount||0}</b></div>
   <div style="background:#0a1a0a;padding:4px;border-radius:4px">📜 Quests<br><b>${S.questsComplete||0}</b></div>
   <div style="background:#0a1a0a;padding:4px;border-radius:4px">🎒 Carry<br><b style="color:${overEncumbered()?'var(--red)':'var(--green)'}">${fmtWeight(currentCarryWeight())}/${fmtWeight(carryCapacity())}</b></div></div>`;
@@ -7825,7 +7825,7 @@ function upChar(){
           ${!steps&&progPct>0?`<div class="hb" style="margin:4px 0"><div class="hf g" style="width:${progPct}%"></div></div>`:''}
           ${!steps&&progText?`<div style="font-size:10px;color:var(--green)">${progText}</div>`:''}
           ${locHint?`<div style="font-size:9px;color:var(--amber2);margin-top:4px;display:flex;align-items:center;gap:4px"><span>📍</span> ${locHint}</div>`:''}
-          <div style="font-size:9px;color:var(--muted);margin-top:3px">${q.giver?'From: '+q.giver+' · ':''}💰 ${q.rg} caps · ⭐ ${q.rx} XP</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px">${q.giver?'From: '+q.giver+' · ':''}'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', ${q.rg} caps · ⭐ ${q.rx} XP</div>
         </div>`;
       }).join('');
 
@@ -7848,7 +7848,7 @@ function upChar(){
         <div style="display:flex;align-items:center;gap:6px">
           <span style="font-size:11px;color:var(--green)">✓</span>
           <span style="font-size:11px;font-weight:bold;color:var(--green)">${q.name}</span>
-          <span style="font-size:9px;color:var(--muted);margin-left:auto">💰 ${q.rg} · ⭐ ${q.rx}</span>
+          <span style="font-size:9px;color:var(--muted);margin-left:auto">'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', ${q.rg} · ⭐ ${q.rx}</span>
         </div>
         <div style="font-size:9px;color:var(--muted);margin-top:2px">${q.desc}</div>
       </div>`).join('');
@@ -8017,7 +8017,7 @@ function sellJunk(){
   S.capsEarned=(S.capsEarned||0)+total;
   const names=Object.entries(sold).map(([id,n])=>`${ITEMS[id]?.n||id}${n>1?' ×'+n:''}`).join(', ');
   log(`Sold junk: ${names} for ${total} caps.`,'e');
-  notify(`💰 Sold junk for ${total} caps`);
+  notify(`'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', Sold junk for ${total} caps`);
   upInv();upSB();save();
 }
 
@@ -9163,7 +9163,7 @@ const WORLD_EVENT_TEMPLATES=[
    body:'Raiders hit an NCR supply wagon on the road. The driver is dead, a trooper is pinned, and the crates are still there.',
    choices:[
      {label:'🛡 Fight off the raiders and secure the supplies',fn:()=>{startCombatWE('jackal_raider',2);return{repDelta:{NCR:6},karma:3,caps:0,xpBonus:20,postText:'You hold the road. The surviving trooper radios HQ. +6 NCR rep.'}},result:'NCR will hear about this.'},
-     {label:'💰 Loot the crates and slip away',fn:()=>{const pool=['ammo_556','stimpak','ncr_armor','super_stimpak'];const p=rndA(pool);giveItem(p);giveItem('ammo_556');return{repDelta:{NCR:-4},karma:-3,caps:rnd(20,45),xpBonus:5,postText:'Caps and supplies gained. NCR won\'t know your face — yet. -4 NCR rep.'}},result:'There\'s a risk if they ever piece it together.'},
+     {label:''<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', Loot the crates and slip away',fn:()=>{const pool=['ammo_556','stimpak','ncr_armor','super_stimpak'];const p=rndA(pool);giveItem(p);giveItem('ammo_556');return{repDelta:{NCR:-4},karma:-3,caps:rnd(20,45),xpBonus:5,postText:'Caps and supplies gained. NCR won\'t know your face — yet. -4 NCR rep.'}},result:'There\'s a risk if they ever piece it together.'},
      {label:'🏃 Ride past — not your problem',fn:()=>{return{repDelta:{},karma:-1,caps:0,xpBonus:0,postText:'The trooper\'s shouts fade behind you. Sometimes the Mojave just takes people.'}},result:'Nothing gained, nothing lost. Except the trooper.'},
    ]},
   {title:'NCR checkpoint demanding papers near {loc}',type:'military',fac:'NCR',duration:6,icon:'🛡',
@@ -9202,7 +9202,7 @@ const WORLD_EVENT_TEMPLATES=[
    body:'Three Khans have a small trader surrounded. They want product. He doesn\'t have any. This is going badly.',
    choices:[
      {label:'⚔ Step in for the trader',fn:()=>{startCombatWE('great_khan',2);return{repDelta:{Khans:-4,NCR:3},karma:3,caps:0,xpBonus:18,postText:'The Khans back off fast when it gets real. +3 NCR rep, -4 Khans rep.'}},result:'The trader looks like he might actually survive now.'},
-     {label:'💰 Buy the trader\'s way out (30 caps)',fn:()=>{if((S.caps||0)<30){return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'Not enough caps. The Khans aren\'t interested in promises.'}}S.caps-=30;return{repDelta:{Khans:2},karma:2,caps:0,xpBonus:8,postText:'Thirty caps buys a quiet afternoon. +2 Khans rep for doing business properly.',capsDelta:-30}},result:'Caps talk. Even Khans respect that.'},
+     {label:''<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', Buy the trader\'s way out (30 caps)',fn:()=>{if((S.caps||0)<30){return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'Not enough caps. The Khans aren\'t interested in promises.'}}S.caps-=30;return{repDelta:{Khans:2},karma:2,caps:0,xpBonus:8,postText:'Thirty caps buys a quiet afternoon. +2 Khans rep for doing business properly.',capsDelta:-30}},result:'Caps talk. Even Khans respect that.'},
      {label:'🚶 None of your business',fn:()=>{return{repDelta:{Khans:1},karma:-2,caps:0,xpBonus:0,postText:'The Khans nod. You understand how things work. +1 Khans rep.'}},result:'Not your caravan. Not your caps.'},
    ]},
 
@@ -9229,7 +9229,7 @@ const WORLD_EVENT_TEMPLATES=[
    body:'Smoke ahead. A Crimson Caravan wagon is burning. The guards are spread thin fighting off Jackals.',
    choices:[
      {label:'⚔ Help the caravan guards',fn:()=>{startCombatWE('jackal_raider',2);return{repDelta:{NCR:2},karma:3,caps:rnd(30,60),xpBonus:20,postText:'The Jackals break and run. The caravan master presses caps into your hand.'}},result:'They can pay. The Jackals cannot.'},
-     {label:'💰 Loot the burning wagon while everyone\'s distracted',fn:()=>{const pick=rndA(['ammo_556','stimpak','sunset_sars','pre_war_money','ammo_9mm']);giveItem(pick);giveItem(rndA(['caps_stash','sunset_sars','ammo_10mm'])||'pre_war_money');return{repDelta:{NCR:-3},karma:-4,caps:rnd(15,35),xpBonus:0,postText:'You grab what you can from the fire. Nobody catches you. -3 NCR rep, -4 karma.'}},result:'Fast hands. Cold conscience.'},
+     {label:''<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', Loot the burning wagon while everyone\'s distracted',fn:()=>{const pick=rndA(['ammo_556','stimpak','sunset_sars','pre_war_money','ammo_9mm']);giveItem(pick);giveItem(rndA(['caps_stash','sunset_sars','ammo_10mm'])||'pre_war_money');return{repDelta:{NCR:-3},karma:-4,caps:rnd(15,35),xpBonus:0,postText:'You grab what you can from the fire. Nobody catches you. -3 NCR rep, -4 karma.'}},result:'Fast hands. Cold conscience.'},
      {label:'🏃 Ride past before you become part of it',fn:()=>{return{repDelta:{},karma:-1,caps:0,xpBonus:0,postText:'Smoke and screaming behind you. The Mojave keeps score.'}},result:''},
    ]},
   {title:'Abandoned caravan camp found near {loc}',type:'trade',fac:'None',duration:4,icon:'🏕',
@@ -9251,7 +9251,7 @@ const WORLD_EVENT_TEMPLATES=[
    body:'A cracked pipe at an old pre-war water processing plant is leaking into the ground water. A handful of settlers are trying to find someone who knows what to do.',
    choices:[
      {label:'🔬 Assess the damage and advise [INT check]',fn:()=>{const intel=statVal(4);if(R()<checkChance(intel,6)){const xp=grantXP(18);S.xp+=xp;S.karma+=4;giveItem('stimpak');log('Helped contain a radiation leak near the highway.','e');return{repDelta:{Followers:3},karma:0,caps:0,xpBonus:0,postText:'You isolate the worst of it and give clear instructions. +3 Followers rep, +4 karma, stimpak from grateful settler.'}}else{const dmg=rnd(5,15);S.hp=Math.max(1,S.hp-dmg);return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'You try but it\'s beyond your knowledge. You take '+dmg+' rads/HP getting close. Walk away.'}}},result:'Medical knowledge makes this survivable. Ignorance does not.'},
-     {label:'💰 Offer to find a Followers medic for 40 caps',fn:()=>{const caps=40;if((S.caps||0)<caps){return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'They can\'t pay. Nobody has 40 caps.'}}S.caps+=caps;S.rep.Followers=(S.rep.Followers||0)+2;return{repDelta:{},karma:1,caps:0,xpBonus:10,postText:'You play middleman. The caps are fair. +2 Followers rep.',capsDelta:caps}},result:'Helping for hire still helps.'},
+     {label:''<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', Offer to find a Followers medic for 40 caps',fn:()=>{const caps=40;if((S.caps||0)<caps){return{repDelta:{},karma:0,caps:0,xpBonus:0,postText:'They can\'t pay. Nobody has 40 caps.'}}S.caps+=caps;S.rep.Followers=(S.rep.Followers||0)+2;return{repDelta:{},karma:1,caps:0,xpBonus:10,postText:'You play middleman. The caps are fair. +2 Followers rep.',capsDelta:caps}},result:'Helping for hire still helps.'},
    ]},
 ];
 
@@ -9662,7 +9662,7 @@ window.npcEncounterRumour=function(name){
 };
 window.npcEncounterWork=function(name){
  closeDlg();
- if(R()<0.42){const q=mkQuest(name);window._pendingQuest=q;showResult('Work Available','📜',[`<b>${escHtml(q.name)}</b>`,escHtml(q.desc),`💰 ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');return}
+ if(R()<0.42){const q=mkQuest(name);window._pendingQuest=q;showResult('Work Available','📜',[`<b>${escHtml(q.name)}</b>`,escHtml(q.desc),`'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">', ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');return}
  showResult(name,'📋',[escHtml(rndA(['Nothing I cannot handle myself.','Ask around at the nearest settlement.','Not right now, friend.',"Clean work's hard to find out here.",'Try the saloon. Someone there always needs something.']))],'Continue','upAll()');
 };
 window.npcEncounterTrade=function(name){
@@ -9764,7 +9764,7 @@ const npcPatchPayDaily=window.payDaily;if(typeof npcPatchPayDaily==='function')w
  function capsFor(id){if(/deathclaw|centurion|paladin|sentry|ranger/.test(id))return rnd(10,35);if(/ncr|legion|bos|khan|fiend|raider|convict|ganger|thug|securitron/.test(id))return rnd(3,20);return 0}
  window.buildEnemyLoot=buildEnemyLoot=function(enemy){
   const id=String(enemy&&enemy.id||'').toLowerCase();const spec=tables[id];if(!spec)return old(enemy);
-  const loot=[];const caps=capsFor(id);if(caps>0)loot.push({type:'caps',amount:caps,label:caps+' caps',icon:'💰',taken:false});
+  const loot=[];const caps=capsFor(id);if(caps>0)loot.push({type:'caps',amount:caps,label:caps+' caps',icon:'<img src="NVImages/BottlecapIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',taken:false});
   let pool=[];spec.forEach(s=>{let [iid,ch]=s.split(':');ch=parseFloat(ch||'1');if(ITEMS[iid]&&R()<ch)pool.push(iid)});
   if(enemy&&enemy.legendary){['super_stimpak','ammo_308','energy_cell','combat_armor','stealth_boy'].forEach(i=>{if(ITEMS[i]&&R()<.55)pool.push(i)})}
   else if(enemy&&enemy.elite){['stimpak','ammo_556','pre_war_money'].forEach(i=>{if(ITEMS[i]&&R()<.45)pool.push(i)})}
