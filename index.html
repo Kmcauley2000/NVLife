@@ -1258,6 +1258,69 @@ Object.entries(FNV_ITEM_VALUES).forEach(([id,val])=>{if(ITEMS[id])ITEMS[id].p=va
 // ============================================================
 // DATA - ENEMIES
 // ============================================================
+// Fallout: New Vegas weapon stat lock.
+// DAM/crit/AP/weight/value are copied as direct FNV counterparts where the item exists in FNV.
+// This runs after ITEMS is built so duplicate earlier item keys are forced back to the official values.
+const FNV_WEAPON_STATS={
+  pistol_9mm:{n:"9mm Pistol",a:16,crit:16,ap:17,p:100,w:1.5,ammo:"ammo_9mm",skill:"guns"},
+  maria:{n:"Maria",a:20,crit:20,ap:15,p:1000,w:1.5,ammo:"ammo_9mm",skill:"guns",rare:2},
+  pistol_10mm:{n:"10mm Pistol",a:22,crit:22,ap:17,p:750,w:3,ammo:"ammo_10mm",skill:"guns"},
+  revolver_357:{n:".357 Magnum Revolver",a:26,crit:26,ap:26,p:110,w:2,ammo:"ammo_357",skill:"guns"},
+  smg_9mm:{n:"9mm SMG",a:14,crit:14,ap:20,p:850,w:4,ammo:"ammo_9mm",skill:"guns"},
+  varmint_rifle:{n:"Varmint Rifle",a:18,crit:18,ap:35,p:75,w:5.5,ammo:"ammo_556",skill:"guns"},
+  boones_varmint_rifle:{n:"Boone's Scoped Hunting Rifle",a:52,crit:15,ap:40,p:2600,w:6,ammo:"ammo_308",skill:"guns",rare:2},
+  cowboy_repeater:{n:"Cowboy Repeater",a:32,crit:32,ap:27,p:800,w:5,ammo:"ammo_357",skill:"guns"},
+  trail_carbine:{n:"Trail Carbine",a:48,crit:48,ap:29,p:3900,w:5.5,ammo:"ammo_44",skill:"guns"},
+  brush_gun:{n:"Brush Gun",a:75,crit:75,ap:33,p:4900,w:5,ammo:"ammo_45_70",skill:"guns"},
+  service_rifle:{n:"Service Rifle",a:18,crit:18,ap:15,p:540,w:8.5,ammo:"ammo_556",skill:"guns"},
+  marksman_carbine:{n:"Marksman Carbine",a:24,crit:24,ap:14,p:5200,w:6,ammo:"ammo_556",skill:"guns"},
+  assault_carbine:{n:"Assault Carbine",a:13,crit:13,ap:20,p:3950,w:6,ammo:"ammo_556",skill:"guns"},
+  hunting_rifle:{n:"Hunting Rifle",a:52,crit:52,ap:40,p:2200,w:6,ammo:"ammo_308",skill:"guns"},
+  sniper_rifle:{n:"Sniper Rifle",a:45,crit:45,ap:27,p:4100,w:8,ammo:"ammo_308",skill:"guns",rare:1},
+  anti_materiel:{n:"Anti-Materiel Rifle",a:110,crit:110,ap:55,p:5600,w:20,ammo:"ammo_50",skill:"guns",rare:2},
+  caravan_shotgun:{n:"Caravan Shotgun",a:45,crit:6,ap:20,p:675,w:3,ammo:"ammo_shells",skill:"guns"},
+  combat_shotgun:{n:"Hunting Shotgun",a:70,crit:10,ap:28,p:3800,w:7.5,ammo:"ammo_shells",skill:"guns",rare:1},
+  single_shotgun:{n:"Single Shotgun",a:50,crit:7,ap:50,p:175,w:7,ammo:"ammo_shells",skill:"guns"},
+  riot_shotgun:{n:"Riot Shotgun",a:67,crit:10,ap:17,p:5500,w:5,ammo:"ammo_shells",skill:"guns",rare:2},
+  laser_pistol:{n:"Laser Pistol",a:12,crit:12,ap:15,p:175,w:3,ammo:"energy_cell",skill:"energy"},
+  plasma_defender:{n:"Plasma Defender",a:38,crit:38,ap:20,p:3000,w:2,ammo:"energy_cell",skill:"energy"},
+  recharger_pistol:{n:"Recharger Pistol",a:18,crit:18,ap:13,p:2700,w:7,ammo:null,skill:"energy"},
+  laser_rcw:{n:"Laser RCW",a:15,crit:15,ap:20,p:2150,w:4,ammo:"electron_charge_pack",skill:"energy",rare:1},
+  laser_rifle:{n:"Laser Rifle",a:22,crit:22,ap:18,p:800,w:8,ammo:"microfusion_cell",skill:"energy"},
+  plasma_rifle:{n:"Plasma Rifle",a:47,crit:47,ap:30,p:1300,w:8,ammo:"microfusion_cell",skill:"energy",rare:1},
+  multiplas_rifle:{n:"Multiplas Rifle",a:105,crit:34,ap:35,p:2500,w:7,ammo:"microfusion_cell",skill:"energy",rare:2},
+  gauss_rifle:{n:"Gauss Rifle",a:120,crit:60,ap:40,p:3000,w:7,ammo:"microfusion_cell",skill:"energy",rare:2},
+  plasma_caster:{n:"Plasma Caster",a:65,crit:65,ap:25,p:7000,w:20,ammo:"microfusion_cell",skill:"energy",rare:2},
+  grenade_rifle:{n:"Grenade Rifle",a:102,crit:0,ap:35,p:300,w:6,ammo:"ammo_40mm",skill:"explosives",rare:1},
+  machete:{n:"Machete",a:11,crit:11,ap:20,p:50,w:2,skill:"melee"},
+  combat_knife:{n:"Combat Knife",a:15,crit:15,ap:17,p:500,w:1,skill:"melee"},
+  switchblade:{n:"Switchblade",a:7,crit:11,ap:18,p:35,w:1,skill:"melee"},
+  straight_razor:{n:"Straight Razor",a:5,crit:10,ap:18,p:35,w:1,skill:"melee"},
+  cleaver:{n:"Cleaver",a:7,crit:7,ap:22,p:20,w:2,skill:"melee"},
+  fire_axe:{n:"Fire Axe",a:55,crit:27,ap:22,p:2500,w:8,skill:"melee",rare:1},
+  chainsaw:{n:"Chainsaw",a:80,crit:8,ap:65,p:2800,w:20,skill:"melee",ignoreDT:true,rare:1},
+  thermic_lance:{n:"Thermic Lance",a:100,crit:10,ap:65,p:5500,w:20,skill:"melee",ignoreDT:true,rare:2},
+  pickaxe:{n:"Pickaxe",a:32,crit:15,ap:27,p:75,w:5,skill:"melee"},
+  rebar_club:{n:"Rebar Club",a:42,crit:24,ap:40,p:500,w:9,skill:"melee"},
+  tire_iron:{n:"Tire Iron",a:15,crit:15,ap:27,p:40,w:3,skill:"melee"},
+  lead_pipe:{n:"Lead Pipe",a:22,crit:22,ap:24,p:75,w:3,skill:"melee"},
+  oh_baby:{n:"Oh, Baby!",a:80,crit:40,ap:35,p:6200,w:20,skill:"melee",rare:2},
+  throwing_spear:{n:"Throwing Spear",a:50,crit:50,ap:24,p:25,w:.5,skill:"melee"},
+  power_fist:{n:"Power Fist",a:40,crit:40,ap:28,p:800,w:6,skill:"unarmed"},
+  ballistic_fist:{n:"Ballistic Fist",a:80,crit:80,ap:28,p:7800,w:6,skill:"unarmed",rare:2},
+  brass_knuckles:{n:"Brass Knuckles",a:18,crit:18,ap:18,p:120,w:1,skill:"unarmed"}
+};
+function lockFNVWeaponStats(){
+  if(!ITEMS.ammo_44)ITEMS.ammo_44={n:".44 Magnum Rounds",t:"ammo",e:"🔸",p:3,w:0.02,stack:1};
+  if(!ITEMS.electron_charge_pack)ITEMS.electron_charge_pack={n:"Electron Charge Pack",t:"ammo",e:"⚡",p:1,w:0.01,stack:1};
+  Object.entries(FNV_WEAPON_STATS).forEach(([id,st])=>{
+    if(!ITEMS[id])return;
+    Object.assign(ITEMS[id],st,{fnvLocked:true});
+    if(st.ammo===null)delete ITEMS[id].ammo;
+  });
+}
+lockFNVWeaponStats();
+
 const ENEMIES={
 // Stats use Fallout: New Vegas normal-difficulty style values: HP, attack damage and DT.
 gecko:{n:"Gecko",hp:28,a:5,d:0,xp:12,e:ICONS.ENEMY.GECKO,loot:["gecko_hide","gecko_hide","gecko_steak","gecko_steak"],type:'animal',fac:'wild'},
@@ -2041,8 +2104,41 @@ const SPECIAL_LABELS=['S','P','E','C','I','A','L'];
 const SPECIAL_NAMES=['Strength','Perception','Endurance','Charisma','Intelligence','Agility','Luck'];
 const FNV_NORMAL={playerDamage:1,enemyDamage:1,minDamageMult:.2};
 function fnvDTDamage(base,dt,mult=1){base=Math.max(1,Math.round(base));dt=Math.max(0,Math.round(dt||0));const raw=Math.max(base-dt,Math.ceil(base*FNV_NORMAL.minDamageMult));return Math.max(1,Math.round(raw*mult));}
+function fnvSpecial(i){return Math.max(1,Math.min(10,((S&&S.special)?S.special[i]:5)||5))}
+function fnvClampSkill(v){return Math.max(0,Math.min(100,Math.round(v||0)))}
+function fnvInitialSkill(kind){
+  const L=Math.ceil(fnvSpecial(6)/2);
+  const map={
+    barter:3,energy:1,explosives:1,guns:5,lockpick:1,
+    medicine:4,melee:0,repair:4,science:4,sneak:5,
+    speech:3,survival:2,unarmed:2
+  };
+  const s=map[kind];
+  return fnvClampSkill(2+(s===undefined?5:fnvSpecial(s))*2+L);
+}
+function fnvSkill(kind){
+  if(S&&S.skills&&S.skills[kind]!=null)return fnvClampSkill(S.skills[kind]);
+  return fnvInitialSkill(kind);
+}
+function fnvSkillMult(skill){return (100+fnvClampSkill(skill))/200}
+function fnvMeleeBonus(){return fnvSpecial(0)*0.5+(S&&S.meleeBonus?S.meleeBonus:0)}
+function fnvUnarmedBonus(){return Math.ceil((10+fnvSkill('unarmed'))/20)+(S&&S.unarmedBonus?S.unarmedBonus:0)}
+function fnvWeaponSkillType(w){
+  if(!w)return'unarmed';
+  if(w.skill)return w.skill;
+  if(!w.ammo)return'melee';
+  return /energy|microfusion|electron|ecp/i.test(w.ammo)?'energy':'guns';
+}
+function fnvBaseDamageForAttack(attack,vats=false){
+  const base=Math.max(1,attack.baseDamage||attack.atk||1);
+  const skill=fnvSkill(attack.skillType||'unarmed');
+  const cond=Math.max(.5,Math.min(1,attack.condition==null?1:attack.condition));
+  const power=(vats&&!attack.gun)?2:1;
+  const bonus=attack.unarmed?fnvUnarmedBonus():(attack.melee?fnvMeleeBonus():0);
+  return Math.max(1,Math.round(base*fnvSkillMult(skill)*cond*power+bonus));
+}
 function calcCarryCap(){return 150+((S&&S.special)?S.special[0]:5)*10+(S&&S.bonusCarry?S.bonusCarry:0)}
-function calcMeleeBonus(){return Math.max(0,Math.floor((((S&&S.special)?S.special[0]:5)-5)/2))}
+function calcMeleeBonus(){return Math.floor(fnvMeleeBonus())}
 function calcCritChance(){return Math.max(1,((S&&S.special)?S.special[6]:5)+(S&&S.critBonus?S.critBonus:0))/100}
 function calcPerkDue(level){return level>1&&level%2===0}
 function syncFNVStats(healFull=false){if(!S)return;const hpRatio=S.maxHp?S.hp/S.maxHp:1;S.maxHp=calcMaxHp();S.maxAp=calcMaxAp();S.carryCap=calcCarryCap();S.hp=healFull?S.maxHp:Math.max(1,Math.min(S.maxHp,Math.round(S.maxHp*hpRatio)));S.ap=Math.min(S.maxAp,S.ap||S.maxAp)}
@@ -2075,7 +2171,7 @@ let _lastSerialized='';
 
 const BASE={name:"Courier",hp:200,maxHp:200,ap:80,maxAp:80,xp:0,level:1,caps:30,
 special:[5,5,5,5,5,5,5],perks:[],
-atk:5,def:3,spd:4,loc:"Goodsprings",
+atk:5,def:0,spd:4,loc:"Goodsprings",
 gear:{w:null,body:null,head:null},inv:[],quests:[],
 rep:{NCR:0,Legion:0,House:0,BOS:0,Followers:0,Kings:0,Khans:0,PowderGangers:0,Boomers:0,Goodsprings:0,Primm:0,Novac:0,BoulderCity:0,Freeside:0,Westside:0,Jacobstown:0,Sloan:0,CinderGulch:0,TradingPost188:0},
 kills:{},days:1,hours:8,log:[],karma:0,
@@ -2093,6 +2189,7 @@ scavengeCount:0,capsEarned:0,killCount:0,questsComplete:0,
 settlements:[],army:{soldiers:0,quality:1,morale:50,max:0},
 flags:{},
 carryCap:200,bonusCarry:0,critBonus:0,
+skills:null,tagSkills:[],skillPoints:0,spentSkillPoints:0,
 };
 
 function serializeSave(){try{return JSON.stringify(S)}catch(e){return null}}
@@ -2595,22 +2692,24 @@ function getEquippedWeaponAmmoId(){const w=getEquippedWeapon();return w&&w.ammo?
 function getEquippedWeaponAmmoCount(){const ammoId=getEquippedWeaponAmmoId();return ammoId?countItem(ammoId):0}
 function getCombatAttackProfile(consumeAmmo){
   const w=getEquippedWeapon();
-  const baseUnarmed=1+Math.max(0,Math.floor(((S.special?S.special[0]:5)-5)/2))+(S.unarmedBonus||0);
-  if(!w)return{atk:baseUnarmed,weapon:null,ammoId:null,ammoName:'',hadAmmo:true,gun:false,usedAmmo:false};
-  let a=w.a||1;
+  if(!w){
+    const base=1;
+    return{atk:base,baseDamage:base,critDamage:0,weapon:null,ammoId:null,ammoName:'',hadAmmo:true,outOfAmmo:false,gun:false,melee:false,unarmed:true,skillType:'unarmed',condition:1,usedAmmo:false};
+  }
+  const skillType=fnvWeaponSkillType(w);
+  const base=Math.max(1,w.a||1);
   if(!w.ammo){
-    a+=calcMeleeBonus()+(S.meleeBonus||0);
-    return{atk:Math.max(1,a),weapon:w,ammoId:null,ammoName:'',hadAmmo:true,gun:false,usedAmmo:false};
+    return{atk:base,baseDamage:base,critDamage:w.crit||w.c||base,weapon:w,ammoId:null,ammoName:'',hadAmmo:true,outOfAmmo:false,gun:false,melee:true,unarmed:false,skillType,condition:w.cond||1,usedAmmo:false};
   }
   const ammoId=w.ammo;
   const ammoIdx=S.inv.indexOf(ammoId);
   const ammoName=ITEMS[ammoId]?.n||'ammo';
   if(ammoIdx!==-1){
     if(consumeAmmo)S.inv.splice(ammoIdx,1);
-    a+=S.gunBonus||0;
-    return{atk:Math.max(1,a),weapon:w,ammoId,ammoName,hadAmmo:true,gun:true,usedAmmo:!!consumeAmmo};
+    return{atk:base,baseDamage:base,critDamage:w.crit||w.c||base,weapon:w,ammoId,ammoName,hadAmmo:true,outOfAmmo:false,gun:true,melee:false,unarmed:false,skillType,condition:w.cond||1,usedAmmo:!!consumeAmmo};
   }
-  return{atk:baseUnarmed,weapon:w,ammoId,ammoName,hadAmmo:false,gun:true,usedAmmo:false};
+  // Empty guns do not get gun damage. They fall back to bare unarmed damage only.
+  return{atk:1,baseDamage:1,critDamage:0,weapon:w,ammoId,ammoName,hadAmmo:false,outOfAmmo:true,gun:false,melee:false,unarmed:true,skillType:'unarmed',condition:1,usedAmmo:false};
 }
 function hasFlag(k){return !!(S&&S.flags&&S.flags[k])}
 function setFlag(k,v=true){if(!S.flags)S.flags={};S.flags[k]=v;save()}
@@ -3455,6 +3554,7 @@ function canScaleHere(){
   return locDangerForScaling()>=2 && S.level>=12;
 }
 function scaleEnemyForEndgame(enemy){
+  return enemy;
   if(!enemy||!canScaleHere())return enemy;
   const danger=locDangerForScaling();
   const tunnel=S.loc==='MojaveTunnels';
@@ -3581,8 +3681,10 @@ function checkLabel(name,stat,diff,bonus=0){
 }
 function startFailedEncounter(enemies,area,step,travelMode,msg){
   log(msg||'The attempt failed.','c');
-  if(travelMode){startCombat(enemies);combat.postT=tDest}
-  else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+  const first=enemies&&enemies[0];
+  const fac=first&&first.fac&&first.type==='human'?first.fac:null;
+  if(travelMode){startCombat(enemies);if(combat){combat.postT=tDest;if(fac)combat._factionFac=fac}}
+  else{startCombat(enemies);if(combat){combat._expArea=area;combat._expStep=step;if(fac)combat._factionFac=fac}}
 }
 
 // ── PRE-ENCOUNTER SYSTEM ───────────────────────────────────
@@ -3706,8 +3808,8 @@ function preEncounter(enemies,area,step,travelMode=false){
       label:'⚔ Fight',
       style:'bt go',
       fn:()=>{
-        if(travelMode){startCombat(enemies);combat.postT=tDest}
-        else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+        if(travelMode){startCombat(enemies);if(combat){combat.postT=tDest;if(isHuman&&fac)combat._factionFac=fac}}
+        else{startCombat(enemies);if(combat){combat._expArea=area;combat._expStep=step;if(isHuman&&fac)combat._factionFac=fac}}
       }
     });
   }else if(isAnimal||isUndead){
@@ -3716,8 +3818,8 @@ function preEncounter(enemies,area,step,travelMode=false){
       label:'⚔ Fight',
       style:'bt go',
       fn:()=>{
-        if(travelMode){startCombat(enemies);combat.postT=tDest}
-        else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+        if(travelMode){startCombat(enemies);if(combat){combat.postT=tDest;if(isHuman&&fac)combat._factionFac=fac}}
+        else{startCombat(enemies);if(combat){combat._expArea=area;combat._expStep=step;if(isHuman&&fac)combat._factionFac=fac}}
       }
     });
   }
@@ -3729,9 +3831,8 @@ function preEncounter(enemies,area,step,travelMode=false){
       style:'bt dn',
       fn:()=>{
         S.rep[fac]=(S.rep[fac]||0)-5;S.karma=(S.karma||0)-3;
-        combat.log=['You attacked a '+facName+' patrol. This will have consequences.'];
-        if(travelMode){startCombat(enemies);combat.postT=tDest}
-        else{startCombat(enemies);combat._expArea=area;combat._expStep=step}
+        if(travelMode){startCombat(enemies);if(combat){combat.postT=tDest;combat._factionFac=fac;combat._provokedFac=fac;combat._noResumeOnDefeat=true;combat.log.unshift('You attacked a '+facName+' patrol. This will have consequences.')}}
+        else{startCombat(enemies);if(combat){combat._expArea=area;combat._expStep=step;combat._factionFac=fac;combat._provokedFac=fac;combat._noResumeOnDefeat=true;combat.log.unshift('You attacked a '+facName+' patrol. This will have consequences.')}}
       }
     });
   }
@@ -3942,12 +4043,115 @@ function travelCont(){
   else finTravel();
 }
 
+
+// ============================================================
+// FNV STAT LOCK — keeps combat values tied to real New Vegas-style creature/NPC variants.
+// hp = Hit Points, a = main attack/weapon damage used by this simplified combat loop, d = DT.
+// No level-scaling, elite, or legendary random upgrades are applied to these values.
+// ============================================================
+const FNV_ENEMY_STATS={
+  // Creatures / animals
+  gecko:{n:"Young Gecko",hp:40,a:10,d:0,xp:10},
+  gecko_hunter:{n:"Gecko Hunter",hp:80,a:22,d:0,xp:25},
+  golden_gecko:{n:"Golden Gecko",hp:125,a:35,d:0,xp:40},
+  fire_gecko:{n:"Fire Gecko",hp:185,a:50,d:0,xp:50},
+  green_gecko:{n:"Green Gecko",hp:225,a:35,d:0,xp:50},
+  bloatfly:{n:"Bloatfly",hp:20,a:4,d:0,xp:5},
+  coyote:{n:"Coyote",hp:30,a:8,d:0,xp:10},
+  mantis:{n:"Giant Mantis Nymph",hp:22,a:5,d:0,xp:10},
+  radroach:{n:"Radroach",hp:16,a:3,d:0,xp:5},
+  bark_scorpion:{n:"Bark Scorpion",hp:20,a:8,d:5,xp:10},
+  radscorpion:{n:"Radscorpion",hp:70,a:30,d:5,xp:30},
+  cazador:{n:"Cazador",hp:200,a:40,d:0,xp:50},
+  nightstalker:{n:"Night Stalker",hp:80,a:25,d:2,xp:35},
+  giant_rat:{n:"Giant Rat",hp:18,a:4,d:0,xp:5},
+  giant_ant:{n:"Giant Ant",hp:35,a:12,d:0,xp:10},
+  bighorner:{n:"Bighorner",hp:55,a:10,d:3,xp:15},
+  bighorner_bull:{n:"Bighorner Bull",hp:90,a:16,d:5,xp:25},
+  brahmin:{n:"Brahmin",hp:35,a:5,d:2,xp:5},
+  mole_rat:{n:"Mole Rat",hp:18,a:4,d:0,xp:5},
+  yao_guai:{n:"Yao Guai",hp:120,a:22,d:6,xp:50},
+
+  // Ghouls / mutants
+  feral_ghoul:{n:"Feral Ghoul",hp:45,a:16,d:0,xp:20},
+  feral_ghoul_roamer:{n:"Feral Ghoul Roamer",hp:50,a:12,d:2,xp:30},
+  feral_ghoul_reaver:{n:"Feral Ghoul Reaver",hp:85,a:18,d:4,xp:50},
+  feral_ghoul_trooper:{n:"Feral Trooper Ghoul",hp:75,a:25,d:3,xp:45},
+  glowing_one:{n:"Glowing One",hp:110,a:35,d:0,xp:60},
+  nightkin:{n:"Nightkin",hp:180,a:45,d:0,xp:100},
+  nightkin_master:{n:"Nightkin Master",hp:220,a:52,d:10,xp:120},
+  super_mutant:{n:"Super Mutant",hp:180,a:45,d:0,xp:100},
+  super_mutant_brute:{n:"Super Mutant Brute",hp:220,a:52,d:8,xp:110},
+  centaur:{n:"Centaur",hp:100,a:30,d:0,xp:60},
+  lakelurk:{n:"Lakelurk",hp:125,a:35,d:4,xp:60},
+  young_deathclaw:{n:"Young Deathclaw",hp:250,a:40,d:15,xp:100},
+  deathclaw:{n:"Deathclaw",hp:500,a:125,d:15,xp:200},
+
+  // Powder Gangers / convicts
+  convict:{n:"Escaped Convict",hp:55,a:18,d:2,xp:35},
+  escaped_convict:{n:"Escaped Convict",hp:40,a:9,d:2,xp:25},
+  bison_convict_boss:{n:"Escaped Convict Leader",hp:90,a:28,d:4,xp:75},
+  powder_ganger:{n:"Powder Ganger",hp:60,a:22,d:2,xp:45},
+  powder_ganger_leader:{n:"Powder Ganger Guard",hp:75,a:26,d:5,xp:55},
+  joe_cobb:{n:"Joe Cobb",hp:90,a:28,d:4,xp:90},
+
+  // Raiders / Freeside / gangs. Custom leader IDs are mapped to closest FNV-style variants.
+  freeside_thug:{n:"Freeside Thug",hp:55,a:16,d:1,xp:25},
+  fiend:{n:"Fiend",hp:70,a:28,d:3,xp:50},
+  fiend_leader:{n:"Fiend Leader",hp:95,a:34,d:6,xp:80},
+  jackal_raider:{n:"Jackal Gang Member",hp:55,a:20,d:1,xp:35},
+  jackal_veteran:{n:"Jackal Gang Leader",hp:70,a:28,d:6,xp:60},
+  viper_gunslinger:{n:"Viper Gunslinger",hp:65,a:26,d:2,xp:45},
+  viper_leader:{n:"Viper Gang Leader",hp:80,a:32,d:6,xp:70},
+  raider_leader:{n:"Raider Leader",hp:85,a:32,d:6,xp:70},
+  rogue_scavenger:{n:"Hostile Scavenger",hp:75,a:26,d:4,xp:55},
+
+  // Legion
+  legion_recruit:{n:"Legion Recruit",hp:65,a:24,d:3,xp:45},
+  legion_scout:{n:"Legion Scout",hp:60,a:24,d:2,xp:45},
+  legion_decanus:{n:"Legion Decanus",hp:90,a:34,d:8,xp:70},
+  legion_veteran:{n:"Legion Veteran",hp:120,a:40,d:8,xp:90},
+  legion_centurion:{n:"Legion Centurion",hp:180,a:55,d:12,xp:130},
+  legion_assassin:{n:"Legion Assassin",hp:110,a:42,d:8,xp:85},
+
+  // Khans / NCR / Brotherhood
+  great_khan:{n:"Great Khan",hp:85,a:28,d:4,xp:55},
+  khan_warrior:{n:"Great Khan Warrior",hp:95,a:34,d:6,xp:70},
+  ncr_trooper:{n:"NCR Trooper",hp:75,a:28,d:4,xp:45},
+  ncr_ranger:{n:"NCR Ranger",hp:110,a:42,d:10,xp:90},
+  ncr_heavy_trooper:{n:"NCR Heavy Trooper",hp:90,a:50,d:20,xp:120},
+  bos_knight:{n:"Brotherhood Knight",hp:90,a:40,d:20,xp:100},
+  bos_paladin:{n:"Brotherhood Paladin",hp:130,a:55,d:25,xp:140},
+
+  // Robots
+  securitron:{n:"Securitron",hp:150,a:45,d:12,xp:100},
+  protectron:{n:"Protectron",hp:40,a:8,d:8,xp:40},
+  mr_gutsy:{n:"Mister Gutsy",hp:60,a:14,d:6,xp:60},
+  sentry_bot:{n:"Sentry Bot",hp:150,a:25,d:14,xp:120}
+};
+function fnvEnemyData(id){
+  const base=ENEMIES[id];
+  if(!base)return null;
+  if(!FNV_ENEMY_STATS[id])console.warn('Missing FNV enemy stat override:',id);
+  return Object.assign({},base,FNV_ENEMY_STATS[id]||{});
+}
+function auditFNVEnemyStats(){
+  const defined=Object.keys(ENEMIES||{});
+  const statKeys=Object.keys(FNV_ENEMY_STATS||{});
+  const missing=defined.filter(id=>!FNV_ENEMY_STATS[id]);
+  const extra=statKeys.filter(id=>!ENEMIES[id]);
+  if(missing.length||extra.length)console.warn('FNV enemy stat audit',{missing,extra});
+  return {defined:defined.length,overrides:statKeys.length,missing,extra};
+}
+try{window.FNV_ENEMY_AUDIT=auditFNVEnemyStats();}catch(e){}
+
+
 // ============================================================
 // ENEMY FACTORY
 // ============================================================
 function mkEnemy(id){
-  const e=ENEMIES[id];if(!e)return{name:"Gecko",hp:25,maxHp:25,a:10,d:0,xp:20,e:"🦎",loot:[],id:"gecko"};
-  return{name:e.n,hp:e.hp,maxHp:e.hp,a:e.a,d:e.d,xp:e.xp,e:e.e,loot:clone(e.loot),id};
+  const e=fnvEnemyData(id);if(!e)return{name:"Young Gecko",hp:40,maxHp:40,a:10,d:0,xp:10,e:"🦎",loot:[],id:"gecko",type:"animal",fac:"wild"};
+  return{name:e.n,hp:e.hp,maxHp:e.hp,a:e.a,d:e.d,xp:e.xp,e:e.e,loot:clone(e.loot),id,type:e.type||"creature",fac:e.fac||"wild"};
 }
 
 // ============================================================
@@ -4214,16 +4418,18 @@ function rollPlayerCrit(vats=false){
 }
 function playerHitDamage(attack,target,vats=false){
   const crit=rollPlayerCrit(vats);
-  const mult=vats?(crit?2.25:1.5):(crit?2:1);
-  const variance=vats?rnd(0,2):rnd(-1,1);
-  let bonus=0;
-  // Perk damage bonuses
-  if(S.bloodyMess)bonus+=Math.max(1,Math.round(attack.atk*0.05));
-  if(S.nerdRage&&S.hp<=Math.floor(S.maxHp*0.25))bonus+=15;
-  if(S.entomologistPerk&&target.type==='insect')bonus+=Math.round(attack.atk*0.5);
-  if(S.hunterDmg&&(target.type==='animal'||target.type==='insect'))bonus+=S.hunterDmg;
-  if(S.centerMass&&attack.gun&&!vats)bonus+=S.centerMass;
-  return {crit,dmg:fnvDTDamage(Math.round(attack.atk*mult)+variance+bonus,target.d,FNV_NORMAL.playerDamage)};
+  const base=fnvBaseDamageForAttack(attack,vats);
+  const critPerk=S.betterCriticals?1.5:1;
+  let dmg=base+(crit?Math.round((attack.critDamage||0)*critPerk):0);
+  // Existing game perks layered onto the Fallout-style base formula.
+  if(S.bloodyMess)dmg+=Math.max(1,Math.round(base*0.05));
+  if(S.nerdRage&&S.hp<=Math.floor(S.maxHp*0.25))dmg+=15;
+  if(S.entomologistPerk&&target.type==='insect')dmg+=Math.round(base*0.5);
+  if(S.hunterDmg&&(target.type==='animal'||target.type==='insect'))dmg+=S.hunterDmg;
+  if(S.centerMass&&attack.gun&&!vats)dmg+=S.centerMass;
+  if(S.gunBonus&&attack.gun)dmg+=S.gunBonus;
+  const finalDmg=attack.weapon&&attack.weapon.ignoreDT?Math.max(1,Math.round(dmg*FNV_NORMAL.playerDamage)):fnvDTDamage(dmg,target.d,FNV_NORMAL.playerDamage);
+  return {crit,dmg:finalDmg};
 }
 function renderCombat(){
   if(!combat){$('CO').style.display='none';return}
@@ -4307,7 +4513,7 @@ function renderCombat(){
   <div onclick="openCombatInventory('weapons')" style="font-size:10px;color:var(--muted);margin-top:4px;cursor:pointer;display:flex;align-items:center;gap:4px;padding:3px 4px;border-radius:3px;background:#0d1f0d;border:1px solid #1a3a1a">${(()=>{const w=getEquippedWeapon();if(!w)return '<span>Weapon: Unarmed</span><span style="margin-left:auto;color:var(--amber);font-size:9px">TAP TO SWAP ›</span>';if(!w.ammo)return `<span>Weapon: ${w.e} ${w.n}</span><span style="margin-left:auto;color:var(--amber);font-size:9px">TAP TO SWAP ›</span>`;const ammoId=w.ammo;const ammo=ITEMS[ammoId];const ammoCount=countItem(ammoId);return `<span>Weapon: ${w.e} ${w.n} · ${ammo?ammo.e+' '+ammo.n:''} ×${ammoCount}</span><span style="margin-left:auto;color:var(--amber);font-size:9px">TAP TO SWAP ›</span>`})()}</div></div>
   <div class="combat-bar">
   <button class="bt go" onclick="combatAction('attack')">⚔ Attack</button>
-  <button class="bt pip" onclick="combatAction('vats')" ${S.ap<20?'disabled':''}>🎯 V.A.T.S. (20 AP)</button></div>
+  <button class="bt pip" onclick="combatAction('vats')" ${(S.ap<20||!canUseVatsWithCurrentWeapon())?'disabled':''}>🎯 V.A.T.S. (20 AP)</button></div>
   <div class="combat-bar">
   <button class="bt pip" onclick="openCombatInventory('aid')">🎒 Use Aid Item</button>
   <button class="bt dn" onclick="combatAction('flee')">🏃 Flee</button></div>
@@ -4421,9 +4627,8 @@ function combatAction(act){
       markEnemyHit(target,hit.crit);
       if(attack.gun&&attack.hadAmmo){
         combat.log.push(`${hit.crit?'CRITICAL HIT! ':''}You fire ${attack.weapon.n} and deal ${dmg} damage to ${target.name}.`);
-      }else if(attack.gun&&!attack.hadAmmo){
-        combat.log.push(`${hit.crit?'CRITICAL HIT! ':''}Out of ${attack.ammoName}! You swing ${attack.weapon.n} and deal ${dmg} damage to ${target.name}.`);
-        notify('Out of '+attack.ammoName+'! Weak melee attack only.');
+      }else if(attack.outOfAmmo){
+        compactEmptyAmmoLog(attack,target,dmg,hit.crit);
       }else{
         combat.log.push(`${hit.crit?'CRITICAL HIT! ':''}You deal ${dmg} damage to ${target.name}.`);
       }
@@ -4439,9 +4644,13 @@ function combatAction(act){
     case 'vats':{
       if(S.ap<20){notify('Not enough AP!');return}
       const attack=getCombatAttackProfile(true);
-      if(attack.gun&&!attack.hadAmmo){
-        notify('No '+attack.ammoName+' loaded.');
-        combat.log.push(`V.A.T.S. failed — no ${attack.ammoName}.`);
+      if(attack.outOfAmmo){
+        if(!combat._emptyAmmoWarned)combat._emptyAmmoWarned={};
+        const key='vats|'+attack.weapon.n+'|'+attack.ammoName;
+        if(!combat._emptyAmmoWarned[key]){
+          combat._emptyAmmoWarned[key]=true;
+          combat.log.push(`V.A.T.S. cannot fire ${attack.weapon.n}: no ${attack.ammoName}.`);
+        }
         renderCombat();
         return;
       }
@@ -4484,7 +4693,7 @@ function combatAction(act){
   // Enemy turn — group identical enemies in log
   const atkGroups={};
   survivors.forEach(en=>{
-    const eDmg=fnvDTDamage(en.a+rnd(-1,1),defPow(),FNV_NORMAL.enemyDamage);
+    const eDmg=fnvDTDamage(en.a,defPow(),FNV_NORMAL.enemyDamage);
     S.hp=Math.max(0,S.hp-eDmg);
     if(!atkGroups[en.name])atkGroups[en.name]={count:0,totalDmg:0};
     atkGroups[en.name].count++;
@@ -4499,6 +4708,68 @@ function combatAction(act){
   combat.turn++;
   renderCombat();
 }
+
+function compactEmptyAmmoLog(attack,target,dmg,crit){
+  if(!combat._emptyAmmoWarned)combat._emptyAmmoWarned={};
+  const key=(attack.weapon&&attack.weapon.n?attack.weapon.n:'weapon')+'|'+(attack.ammoName||'ammo');
+  if(!combat._emptyAmmoWarned[key]){
+    combat._emptyAmmoWarned[key]=true;
+    combat.log.push(`${attack.weapon.n} is out of ${attack.ammoName}. You stop trying to fire it and fight bare-handed.`);
+  }
+  combat.log.push(`${crit?'CRITICAL HIT! ':''}You strike ${target.name} for ${dmg} unarmed damage.`);
+}
+function canUseVatsWithCurrentWeapon(){
+  const w=getEquippedWeapon&&getEquippedWeapon();
+  if(!w||!w.ammo)return true;
+  return countItem(w.ammo)>0;
+}
+function factionDefeatTitle(fac){
+  const f=fac||'';
+  if(f==='NCR')return 'NCR Custody';
+  if(f==='Legion')return 'Marked by Caesar';
+  if(f==='BOS')return 'Brotherhood Warning';
+  if(f==='Khans')return 'Khan Beating';
+  if(f==='Kings')return 'Thrown from Freeside';
+  if(f==='PowderGangers')return 'Powder Ganger Ambush';
+  if(f==='Fiends')return 'Fiend Aftermath';
+  if(f==='House')return 'Securitron Enforcement';
+  return 'Faction Defeat';
+}
+function factionDefeatIcon(fac){
+  if(fac==='NCR')return '🪖';
+  if(fac==='Legion')return '🐂';
+  if(fac==='BOS')return '⚙';
+  if(fac==='Khans')return '🏍';
+  if(fac==='Kings')return '👑';
+  if(fac==='PowderGangers')return '🧨';
+  if(fac==='Fiends')return '☠';
+  if(fac==='House')return '🤖';
+  return '💀';
+}
+function factionDefeatLines(fac,enemies,lostCaps){
+  const name=FACTIONS[fac]||fac||'the faction';
+  const met=(enemies||[]).filter(e=>e&&e.name).map(e=>e.name);
+  const who=met.length?met.slice(0,2).join(' and '):name+' patrol';
+  const lines=[];
+  if(fac==='NCR')lines.push(`${who} patch you enough to walk, then dump you outside the patrol line with your pride missing.`);
+  else if(fac==='Legion')lines.push(`${who} leave you in the dust as an example. You wake with a warning carved into the day.`);
+  else if(fac==='BOS')lines.push(`${who} disable you cleanly, strip anything useful from reach, and leave a warning: do not test the Brotherhood again.`);
+  else if(fac==='Khans')lines.push(`${who} beat you down, laugh it off, and ride before you can stand.`);
+  else if(fac==='Kings')lines.push(`${who} make sure Freeside gets the message: do not swing at the Kings and expect applause.`);
+  else if(fac==='PowderGangers')lines.push(`${who} leave you ringing from a powder charge and lighter on caps.`);
+  else if(fac==='Fiends')lines.push(`${who} leave you alive by accident more than mercy.`);
+  else if(fac==='House')lines.push(`${who} enforce the rules with machine precision. You wake far from the trouble.`);
+  else lines.push(`${who} put you down and leave before you can get back up.`);
+  lines.push(`Lost ${lostCaps} caps.`);
+  lines.push(`${name} will remember this.`);
+  return lines;
+}
+function finishDefeatToWorld(){
+  try{if($('TO'))$('TO').classList.remove('A')}catch(e){}
+  try{if($('DO'))$('DO').classList.remove('A')}catch(e){}
+  upAll();
+}
+
 function endCombat(won,died){
   if(!combat){$('CO').style.display='none';return}
   const expArea=combat._expArea;
@@ -4509,12 +4780,18 @@ function endCombat(won,died){
   window._resumeStep=expStep||0;
 
   if(died){
-    S.hp=Math.floor(S.maxHp*.3);S.caps=Math.max(0,S.caps-rnd(10,30));
+    const fac=combat._provokedFac||combat._factionFac||null;
+    const defeatedEnemies=clone(combat.enemies||[]);
+    const lostCaps=rnd(10,30);
+    S.hp=Math.floor(S.maxHp*.3);S.caps=Math.max(0,S.caps-lostCaps);
     combat=null;save();
-    if(postT){
-      showResult('Knocked Out','💀',['You wake up later, stripped of some caps.','Lost some caps.'],'Continue','resumeTravelAfterCombat()');
+    if(fac){
+      try{if($('TO'))$('TO').classList.remove('A')}catch(e){}
+      showResult(factionDefeatTitle(fac),factionDefeatIcon(fac),factionDefeatLines(fac,defeatedEnemies,lostCaps),'Continue','finishDefeatToWorld()');
+    }else if(postT){
+      showResult('Knocked Out','💀',['You wake up later, stripped of some caps.','Lost '+lostCaps+' caps.'],'Continue','resumeTravelAfterCombat()');
     }else{
-      showResult('Knocked Out','💀',['You wake up later, stripped of some caps.','Lost some caps.'],'Continue','upAll()');
+      showResult('Knocked Out','💀',['You wake up later, stripped of some caps.','Lost '+lostCaps+' caps.'],'Continue','upAll()');
     }
     return;
   }
@@ -4580,7 +4857,7 @@ const PERKS=[
   // ── Combat — Tier 3 (late game) ──
   {id:'toughness_2',name:'Toughness II',icon:'🛡',cat:'Combat',desc:'+3 more DT. Heavy armour really matters now.',apply:s=>{s.def=(s.def||0)+3},req:{level:12,special:2,min:5,perk:'toughness'}},
   {id:'commando_2',name:'Commando II',icon:'⚔',cat:'Combat',desc:'+4 more gun damage. Elite marksman.',apply:s=>{s.gunBonus=(s.gunBonus||0)+4},req:{level:16,perk:'commando'}},
-  {id:'better_crits',name:'Better Criticals',icon:'💥',cat:'Combat',desc:'+5% critical chance. Luck builds hit harder.',apply:s=>{s.critBonus=(s.critBonus||0)+5},req:{level:16,special:6,min:6}},
+  {id:'better_crits',name:'Better Criticals',icon:'💥',cat:'Combat',desc:'+5% critical chance and stronger critical damage.',apply:s=>{s.critBonus=(s.critBonus||0)+5;s.betterCriticals=true},req:{level:16,special:6,min:6}},
   {id:'finesse',name:'Finesse',icon:'✨',cat:'Combat',desc:'+3% crit chance. Elegant precision.',apply:s=>{s.critBonus=(s.critBonus||0)+3},req:{level:10}},
   {id:'slayer',name:'Slayer',icon:'☠',cat:'Combat',desc:'+8 melee damage. The wasteland fears you.',apply:s=>{s.meleeBonus=(s.meleeBonus||0)+8},req:{level:18,special:0,min:7,perk:'piercing_strike'}},
   {id:'grim_reapers_sprint',name:"Grim Reaper's Sprint",icon:'💀',cat:'Combat',desc:'Killing a target in VATS restores 20 AP.',apply:s=>{s.grimReaper=true},req:{level:20,special:6,min:7}},
@@ -9505,12 +9782,20 @@ window.addEventListener('unhandledrejection',ev=>{
 'use strict';
 
 const COMPANION_DEFS={
- boone:{id:'boone',name:'Craig Boone',icon:'🎯',role:'1st Recon Sniper',loc:'Novac',reqText:'Complete Novac trust / have 10+ Novac rep',req:s=>(s.questsComplete||0)>=1||((s.rep&&s.rep.Novac)||0)>=10,baseHp:220,baseAtk:18,baseDef:6,carryBonus:50,ability:{id:'snipe',name:'First Shot',icon:'🎯',desc:'2.5× rifle shot at the toughest enemy.'},talk:['Still watching the road.','Pick your shot. Make it count.','I prefer quiet. Less movement.']},
- ede:{id:'ede',name:'ED-E',icon:'📡',role:'Eyebot Scout',loc:'Primm',reqText:'Reach Primm',req:s=>true,baseHp:160,baseAtk:12,baseDef:8,carryBonus:30,ability:{id:'scan',name:'Combat Scan',icon:'📡',desc:'+4 damage to your attacks this fight.'},talk:['ED-E chirps and projects a tiny radar sweep.','A happy burst of beeps follows you.','ED-E scans the horizon.']},
- veronica:{id:'veronica',name:'Veronica Santangelo',icon:'👊',role:'Brotherhood Scribe',loc:'HiddenValley',reqText:'20+ Brotherhood rep',req:s=>((s.rep&&s.rep.BOS)||0)>=20,baseHp:200,baseAtk:20,baseDef:10,carryBonus:60,ability:{id:'slam',name:'BOS Slam',icon:'👊',desc:'3× power-fist slam against the toughest enemy.'},talk:['Punching usually solves at least the first problem.','I miss dresses. And punching things.','Brotherhood politics are worse than cazadores.']},
- cass:{id:'cass',name:'Rose of Sharon Cassidy',icon:'🥃',role:'Caravan Shotgunner',loc:'TradingPost188',reqText:'Level 5+',req:s=>(s.level||1)>=5,baseHp:190,baseAtk:15,baseDef:7,carryBonus:40,ability:{id:'whiskey',name:'Whiskey Rose',icon:'🥃',desc:'Heal party and boost companion damage this fight.'},talk:['Roads are bad. People are worse. Still, we move.','If this goes sideways, I told you so.','A drink and a shotgun fix plenty.']},
- arcade:{id:'arcade',name:'Arcade Gannon',icon:'💉',role:'Followers Doctor',loc:'Freeside',reqText:'15+ Followers rep',req:s=>((s.rep&&s.rep.Followers)||0)>=15,baseHp:175,baseAtk:11,baseDef:6,carryBonus:20,ability:{id:'triage',name:'Field Triage',icon:'💉',desc:'Instantly heals you and all companions.'},talk:['I have several medical objections to this plan.','Try not to bleed on anything important.','This is why the Followers need funding.']},
- raul:{id:'raul',name:'Raul Tejada',icon:'🔧',role:'Ghoul Vaquero',loc:'Jacobstown',reqText:'Level 10+',req:s=>(s.level||1)>=10,baseHp:230,baseAtk:16,baseDef:9,carryBonus:45,ability:{id:'vaquero',name:'Old Vaquero',icon:'🔧',desc:'+3 companion attack and +3 player defence this fight.'},talk:['Sure thing, boss. I have only been alive forever.','These old bones still shoot straight.','Maintenance first. Heroics second.']}
+ boone:{id:'boone',name:'Craig Boone',icon:'🎯',role:'1st Recon Sniper',loc:'Novac',reqText:'Complete Novac trust / have 10+ Novac rep',req:s=>(s.questsComplete||0)>=1||((s.rep&&s.rep.Novac)||0)>=10,baseHp:220,baseDef:6,carryBonus:50,weapon:'boone_scoped_hunting_rifle',ability:{id:'snipe',name:'First Shot',icon:'🎯',desc:'Scoped hunting rifle critical shot.'},talk:['Still watching the road.','Pick your shot. Make it count.','I prefer quiet. Less movement.']},
+ ede:{id:'ede',name:'ED-E',icon:'📡',role:'Eyebot Scout',loc:'Primm',reqText:'Reach Primm',req:s=>true,baseHp:160,baseDef:8,carryBonus:30,weapon:'ede_laser',ability:{id:'scan',name:'Enhanced Sensors',icon:'📡',desc:'Highlights weak points for your next attacks.'},talk:['ED-E chirps and projects a tiny radar sweep.','A happy burst of beeps follows you.','ED-E scans the horizon.']},
+ veronica:{id:'veronica',name:'Veronica Santangelo',icon:'👊',role:'Brotherhood Scribe',loc:'HiddenValley',reqText:'20+ Brotherhood rep',req:s=>((s.rep&&s.rep.BOS)||0)>=20,baseHp:200,baseDef:10,carryBonus:60,weapon:'power_fist',ability:{id:'slam',name:'Power Fist Slam',icon:'👊',desc:'Power-fist heavy attack.'},talk:['Punching usually solves at least the first problem.','I miss dresses. And punching things.','Brotherhood politics are worse than cazadores.']},
+ cass:{id:'cass',name:'Rose of Sharon Cassidy',icon:'🥃',role:'Caravan Shotgunner',loc:'TradingPost188',reqText:'Level 5+',req:s=>(s.level||1)>=5,baseHp:190,baseDef:7,carryBonus:40,weapon:'caravan_shotgun',ability:{id:'whiskey',name:'Whiskey Rose',icon:'🥃',desc:'Heal party and boost companion damage this fight.'},talk:['Roads are bad. People are worse. Still, we move.','If this goes sideways, I told you so.','A drink and a shotgun fix plenty.']},
+ arcade:{id:'arcade',name:'Arcade Gannon',icon:'💉',role:'Followers Doctor',loc:'Freeside',reqText:'15+ Followers rep',req:s=>((s.rep&&s.rep.Followers)||0)>=15,baseHp:175,baseDef:6,carryBonus:20,weapon:'plasma_defender',ability:{id:'triage',name:'Field Triage',icon:'💉',desc:'Instantly heals you and all companions.'},talk:['I have several medical objections to this plan.','Try not to bleed on anything important.','This is why the Followers need funding.']},
+ raul:{id:'raul',name:'Raul Tejada',icon:'🔧',role:'Ghoul Vaquero',loc:'Jacobstown',reqText:'Level 10+',req:s=>(s.level||1)>=10,baseHp:230,baseDef:9,carryBonus:45,weapon:'revolver_44',ability:{id:'vaquero',name:'Old Vaquero',icon:'🔧',desc:'Steady .44 sidearm support and +3 player DT this fight.'},talk:['Sure thing, boss. I have only been alive forever.','These old bones still shoot straight.','Maintenance first. Heroics second.']}
+};
+const FNV_COMPANION_WEAPONS={
+ boone_scoped_hunting_rifle:{n:"Boone's Scoped Hunting Rifle",a:52,crit:15,skill:'guns',note:'unique companion hunting rifle'},
+ ede_laser:{n:"ED-E Laser",a:15,crit:0,skill:'energy',note:'eyebot laser attack'},
+ power_fist:{n:'Power Fist',a:40,crit:40,skill:'unarmed'},
+ caravan_shotgun:{n:'Caravan Shotgun',a:45,crit:6,skill:'guns'},
+ plasma_defender:{n:'Plasma Defender',a:38,crit:38,skill:'energy'},
+ revolver_44:{n:'.44 Magnum Revolver',a:36,crit:36,skill:'guns'}
 };
 window.COMPANION_DEFS=COMPANION_DEFS;
 
@@ -9518,8 +9803,11 @@ const locAliases={HiddenValley:['HiddenValley','Hidden Valley','HiddenValleyBunk
 function sameLoc(a,b){const arr=locAliases[b]||[b];return arr.includes(a)}
 function party(){if(!S)return[];S.companionSystem=S.companionSystem||{recruited:[],dismissed:[],aff:{}};S.companions=Array.isArray(S.companions)?S.companions:[];return S.companions}
 function compDef(id){return COMPANION_DEFS[id]||null}
-function compLevelBonus(){return Math.max(0,Math.floor(((S&&S.level)||1)/5))}
-function scaleComp(id){const d=compDef(id);if(!d)return null;const b=compLevelBonus();return {hp:d.baseHp+b*30,atk:d.baseAtk+b*2,def:d.baseDef+b,carry:d.carryBonus}}
+function companionNerveMult(){return 1+Math.max(0,Math.min(10,((S&&S.special)?S.special[3]:5)||5))*.05}
+function companionWeapon(id){const d=compDef(id);return d&&FNV_COMPANION_WEAPONS[d.weapon]?FNV_COMPANION_WEAPONS[d.weapon]:{n:'Unarmed',a:1,crit:0,skill:'unarmed'}}
+function companionDisplayAtk(id){return Math.max(1,Math.round((companionWeapon(id).a||1)*companionNerveMult()))}
+function companionDisplayDef(id){const d=compDef(id);return Math.max(0,Math.round((d?d.baseDef:0)*companionNerveMult()))}
+function scaleComp(id){const d=compDef(id);if(!d)return null;return {hp:d.baseHp,atk:companionDisplayAtk(id),def:companionDisplayDef(id),carry:d.carryBonus}}
 function normalizeCompanions(){
  if(!S)return;S.companionSystem=S.companionSystem||{recruited:[],dismissed:[],aff:{}};S.companions=Array.isArray(S.companions)?S.companions:[];
  S.companions=S.companions.map(c=>{
@@ -9580,12 +9868,23 @@ function companionCombatHtml(){
 }
 function livingEnemies(){return combat?combat.enemies.filter(e=>e.hp>0):[]}
 function strongestEnemy(){const a=livingEnemies();return a.sort((x,y)=>(y.hp+y.a*4)-(x.hp+x.a*4))[0]||null}
+function companionDamageRoll(c,target,power=1,forceCrit=false){
+ const w=companionWeapon(c.id);
+ const nerve=companionNerveMult();
+ const bonus=(combat&&combat.companionAtkBonus?combat.companionAtkBonus:0);
+ let preDT=Math.max(1,Math.round((w.a||1)*power*nerve+bonus));
+ const crit=forceCrit||(w.crit&&R()<0.05);
+ if(crit)preDT+=Math.round((w.crit||0)*nerve);
+ const dmg=fnvDTDamage(preDT,target.d||0,FNV_NORMAL.playerDamage);
+ return {dmg,crit,weapon:w};
+}
 function companionBasicAttacks(){
  if(!combat)return;normalizeCompanions();if(!party().length)return;
  party().filter(c=>c.hp>0).forEach(c=>{
   const d=compDef(c.id), target=strongestEnemy();if(!target)return;
-  let dmg=fnvDTDamage((c.atk||5)+rnd(-2,3)+(combat.companionAtkBonus||0),target.d||0,FNV_NORMAL.playerDamage);
-  target.hp=Math.max(0,target.hp-dmg);combat.log.push(`${d.icon} ${d.name} hits ${target.name} for ${dmg}.`);
+  const hit=companionDamageRoll(c,target,1,false);
+  target.hp=Math.max(0,target.hp-hit.dmg);
+  combat.log.push(`${d.icon} ${d.name} hits ${target.name} with ${hit.weapon.n} for ${hit.dmg}${hit.crit?' (CRIT)':''}.`);
   if(target.hp<=0){combat.log.push(`${target.name} is killed by ${d.name}!`);S.kills[target.id||'unknown']=(S.kills[target.id||'unknown']||0)+1;S.killCount++;}
  });
 }
@@ -9598,12 +9897,12 @@ function companionInterceptDamage(hpBefore){
 window.companionAbility=function(id){
  if(!combat)return;normalizeCompanions();const c=party().find(x=>x.id===id);const d=compDef(id);if(!c||!d||c.abilityUsed)return;
  c.abilityUsed=true;let target=strongestEnemy();
- if(id==='boone'&&target){let dmg=fnvDTDamage(Math.round((c.atk||10)*2.5),target.d||0,FNV_NORMAL.playerDamage);target.hp=Math.max(0,target.hp-dmg);combat.log.push(`🎯 Boone's First Shot deals ${dmg} to ${target.name}.`)}
+ if(id==='boone'&&target){let hit=companionDamageRoll(c,target,2,true);target.hp=Math.max(0,target.hp-hit.dmg);combat.log.push(`🎯 Boone's First Shot deals ${hit.dmg} to ${target.name} with ${hit.weapon.n}.`)}
  else if(id==='ede'){combat.playerScanBonus=(combat.playerScanBonus||0)+4;combat.log.push('📡 ED-E scans weak points. Your attacks hit harder this fight.');}
- else if(id==='veronica'&&target){let dmg=fnvDTDamage(Math.round((c.atk||10)*3),target.d||0,FNV_NORMAL.playerDamage);target.hp=Math.max(0,target.hp-dmg);combat.log.push(`👊 Veronica slams ${target.name} for ${dmg}.`)}
+ else if(id==='veronica'&&target){let hit=companionDamageRoll(c,target,2,true);target.hp=Math.max(0,target.hp-hit.dmg);combat.log.push(`👊 Veronica power-fist slams ${target.name} for ${hit.dmg}.`)}
  else if(id==='cass'){S.hp=Math.min(S.maxHp,S.hp+20);party().forEach(x=>x.hp=Math.min(x.maxHp,x.hp+20));combat.companionAtkBonus=(combat.companionAtkBonus||0)+4;combat.log.push('🥃 Cass rallies the party: +20 HP and companion damage up.');}
  else if(id==='arcade'){S.hp=Math.min(S.maxHp,S.hp+35);party().forEach(x=>x.hp=Math.min(x.maxHp,x.hp+15));combat.log.push('💉 Arcade performs field triage.');}
- else if(id==='raul'){combat.companionAtkBonus=(combat.companionAtkBonus||0)+3;combat.playerDefBonus=(combat.playerDefBonus||0)+3;combat.log.push('🔧 Raul keeps everyone steady: companions +3 ATK, you +3 DEF.');}
+ else if(id==='raul'){combat.playerDefBonus=(combat.playerDefBonus||0)+3;let hit=target?companionDamageRoll(c,target,1.5,true):null;if(target&&hit){target.hp=Math.max(0,target.hp-hit.dmg);combat.log.push(`🔧 Raul fires ${hit.weapon.n} for ${hit.dmg}. You gain +3 DT this fight.`)}else combat.log.push('🔧 Raul keeps you steady: +3 DT this fight.');}
  if(target&&target.hp<=0){combat.log.push(`${target.name} is eliminated!`);S.kills[target.id||'unknown']=(S.kills[target.id||'unknown']||0)+1;S.killCount++;}
  if(!livingEnemies().length){endCombat(true);return}save(true);renderCombat();
 };
@@ -9646,7 +9945,7 @@ function fnvCompanionCard(d,c){
    <div style="flex:1;min-width:0">
     <div style="font-size:13px;font-weight:bold;color:var(--amber)">${d.name}</div>
     <div style="font-size:12px;color:var(--muted)">${d.role} · ${companionStatusText(d)}</div>
-    ${inP?`<div style="font-size:10px;margin-top:5px">❤ ${c.hp}/${c.maxHp} · ⚔ ${c.atk} · 🛡 ${c.def} · 🎒 +${c.carryBonus}kg</div><div class="hb" style="margin-top:3px"><div class="hf hp" style="width:${hp}%"></div></div>`:`<div style="font-size:10px;color:${sameLoc(S.loc,d.loc)&&d.req(S)?'var(--green)':'var(--muted)'};margin-top:5px">${companionRecruitLine(d)}</div>`}
+    ${inP?`<div style="font-size:10px;margin-top:5px">❤ ${c.hp}/${c.maxHp} · ⚔ ${companionDisplayAtk(d.id)} · 🛡 ${companionDisplayDef(d.id)} · ${companionWeapon(d.id).n} · 🎒 +${c.carryBonus}kg</div><div class="hb" style="margin-top:3px"><div class="hf hp" style="width:${hp}%"></div></div>`:`<div style="font-size:10px;color:${sameLoc(S.loc,d.loc)&&d.req(S)?'var(--green)':'var(--muted)'};margin-top:5px">${companionRecruitLine(d)}</div>`}
     <div style="font-size:10px;color:var(--amber2);margin-top:4px">${d.ability.icon} ${d.ability.name} — ${d.ability.desc}</div>
     <div style="font-size:10px;color:var(--muted);margin-top:3px">Affinity ${aff}/100</div>
    </div>
@@ -9842,7 +10141,7 @@ const npcPatchPayDaily=window.payDaily;if(typeof npcPatchPayDaily==='function')w
  ],
  generic:[
   {id:'gen_lone_prospector_v2',icon:'⛏',title:'Old Prospector',body:'A weathered prospector tips his hat. “Seen anything worth salvaging east of here?”',choices:[{label:'🗺 Share road intel',fn:()=>{S.xp+=8;const p=rndA(['bobby_pin','duct_tape','scrap','pre_war_money','sunset_sars'].filter(id=>ITEMS[id]));if(p)giveItem(p);return '⭐ +8 XP. He trades you something useful.'},result:''},{label:'💰 Escort him',fn:()=>{advanceTime(2);const pay=rnd(20,45);S.caps+=pay;return '+'+pay+' caps. ⏰ 2 hours.'},result:''}]},
-  {id:'gen_mole_rat_colony_v2',icon:'🐀',title:'Mole Rat Colony',body:'The ground erupts. A colony of mole rats tunnels toward your footsteps.',choices:[fight('⚔ Fight them off',['mole_rat','mole_rat','mole_rat','mole_rat'],()=>{S.xp+=12;if(ITEMS.cram)giveItem('cram')}),{label:'🏃 Run for high ground',fn:()=>{advanceTime(1);if(R()<checkChance(statVal(5),5))return 'You outpace them on the rocks.';const d=rnd(6,14);S.hp=Math.max(1,S.hp-d);return '-'+d+' HP. You get clear, barely.'},result:''}]},
+  {id:'gen_mole_rat_colony_v2',icon:'🐀',title:'Mole Rat Colony',body:'The ground erupts. A colony of mole rats tunnels toward your footsteps.',choices:[fight('⚔ Fight them off',['mole_rat','mole_rat','mole_rat','mole_rat'],()=>{S.xp+=12}),{label:'🏃 Run for high ground',fn:()=>{advanceTime(1);if(R()<checkChance(statVal(5),5))return 'You outpace them on the rocks.';const d=rnd(6,14);S.hp=Math.max(1,S.hp-d);return '-'+d+' HP. You get clear, barely.'},result:''}]},
   {id:'gen_robot_patrol_old_v2',icon:'🤖',title:'Ancient Security Loop',body:'A protectron still follows a patrol route from before the war.',choices:[fight('⚔ Scrap it',['protectron'],()=>{if(ITEMS.scrap_electronics)giveItem('scrap_electronics');if(ITEMS.fission_battery)giveItem('fission_battery')}),{label:'🚶 Walk around it',fn:()=>{S.karma+=1;S.xp+=4;return '⚖ +1 karma. ⭐ +4 XP.'},result:''}]}
  ]};
  Object.keys(cards).forEach(k=>add(k,cards[k].filter(c=>!(ENCOUNTER_CARDS[k]||[]).some(x=>x.id===c.id))));
@@ -9877,6 +10176,808 @@ const npcPatchPayDaily=window.payDaily;if(typeof npcPatchPayDaily==='function')w
 console.log('[FNV-Patch final] NPC encounter cards, companion v2 overrides, expanded encounters and loot loaded.');
 })();
 
+
+// ============================================================
+// FNV CREATURE LOOT PATCH — geckos/scorpions/mantises/radroaches
+// ============================================================
+(function patchExactFNVSmallCreatureLoot(){
+  if(typeof ITEMS==='undefined' || typeof ENEMIES==='undefined')return;
+
+  const img=(src)=>`<img src="${src}" style="width:10%;height:10%;object-fit:contain;display:block;">`;
+  const addItem=(id,data)=>{ if(!ITEMS[id]) ITEMS[id]=data; else Object.assign(ITEMS[id],data); };
+
+  // Raw corpse drops/crafting components from Fallout: New Vegas.
+  // Keep Gecko Steak as a cooked/crafted item; corpses now drop raw Gecko Meat.
+  addItem('gecko_meat',{n:'Gecko Meat',t:'c',e:ITEMS.gecko_steak?ITEMS.gecko_steak.e:'🥩',hp:5,p:5,w:1,desc:'Raw gecko meat. Used for Gecko Steak/Kebab recipes.'});
+  addItem('fire_gecko_hide',{n:'Fire Gecko Hide',t:'m',e:ITEMS.gecko_hide?ITEMS.gecko_hide.e:img('NVImages/GeckohideIcon.png'),p:25,w:1,desc:'Hide taken from a fire gecko.'});
+  addItem('golden_gecko_hide',{n:'Golden Gecko Hide',t:'m',e:ITEMS.gecko_hide?ITEMS.gecko_hide.e:img('NVImages/GeckohideIcon.png'),p:25,w:1,desc:'Hide taken from a golden gecko.'});
+  addItem('green_gecko_hide',{n:'Green Gecko Hide',t:'m',e:ITEMS.gecko_hide?ITEMS.gecko_hide.e:img('NVImages/GeckohideIcon.png'),p:30,w:1,desc:'Hide taken from a green gecko.'});
+  addItem('mantis_egg',{n:'Mantis Egg',t:'m',e:'🥚',p:12,w:1,desc:'Egg laid by a giant mantis.'});
+  addItem('mole_rat_meat',{n:'Mole Rat Meat',t:'c',e:'🥩',hp:5,p:4,w:1,desc:'Raw mole rat meat. Used for Mole Rat Stew.'});
+
+  if(typeof FNV_ITEM_VALUES==='object'){
+    Object.assign(FNV_ITEM_VALUES,{gecko_meat:5,fire_gecko_hide:25,golden_gecko_hide:25,green_gecko_hide:30,mantis_egg:12,mole_rat_meat:4});
+  }
+
+  // Update visible enemy records too, so any fallback/inspection matches the real drops.
+  const setEnemyLoot=(id,loot)=>{ if(ENEMIES[id]) ENEMIES[id].loot=loot.slice(); };
+  setEnemyLoot('gecko',['gecko_hide','gecko_meat']);
+  setEnemyLoot('gecko_hunter',['gecko_hide','gecko_meat']);
+  setEnemyLoot('fire_gecko',['fire_gecko_hide','gecko_meat']);
+  setEnemyLoot('golden_gecko',['golden_gecko_hide','gecko_meat']);
+  setEnemyLoot('green_gecko',['green_gecko_hide','gecko_meat']);
+  setEnemyLoot('bark_scorpion',['bark_scorpion_gland']);
+  setEnemyLoot('radscorpion',['radscorpion_gland']);
+  setEnemyLoot('mantis',['giant_mantis_foreleg','mantis_egg']);
+  setEnemyLoot('radroach',['radroach_meat']);
+  setEnemyLoot('mole_rat',['mole_rat_meat']);
+
+  const oldBuild=window.buildEnemyLoot||buildEnemyLoot;
+
+  function entry(id){return ITEMS[id]?{type:'item',id,label:ITEMS[id].n,icon:ITEMS[id].e,taken:false}:null;}
+  function roll(ch){return Math.random()<ch;}
+  function pack(...ids){return ids.map(entry).filter(Boolean);}
+
+  const exact={
+    // Base game geckos: hide chance is 80%; raw gecko meat is the corpse food drop.
+    gecko:()=>{const out=[]; if(roll(.80))out.push(entry('gecko_hide')); if(roll(.75))out.push(entry('gecko_meat')); return out.filter(Boolean);},
+    gecko_hunter:()=>{const out=[]; if(roll(.80))out.push(entry('gecko_hide')); if(roll(.75))out.push(entry('gecko_meat')); return out.filter(Boolean);},
+
+    // Variant hides are separate New Vegas items. Golden hide is documented at 80%.
+    fire_gecko:()=>{const out=[]; if(roll(.80))out.push(entry('fire_gecko_hide')); if(roll(.75))out.push(entry('gecko_meat')); return out.filter(Boolean);},
+    golden_gecko:()=>{const out=[]; if(roll(.80))out.push(entry('golden_gecko_hide')); if(roll(.75))out.push(entry('gecko_meat')); return out.filter(Boolean);},
+    green_gecko:()=>{const out=[]; if(roll(.80))out.push(entry('green_gecko_hide')); if(roll(.75))out.push(entry('gecko_meat')); return out.filter(Boolean);},
+
+    // Scorpions do not naturally pay caps/antivenom/stimpaks; they give glands.
+    bark_scorpion:()=>roll(.85)?pack('bark_scorpion_gland'):[],
+    radscorpion:()=>pack('radscorpion_gland'),
+
+    // Giant mantises can yield forelegs and eggs. No caps.
+    mantis:()=>{const out=[]; if(roll(.75))out.push(entry('giant_mantis_foreleg')); if(roll(.35))out.push(entry('mantis_egg')); return out.filter(Boolean);},
+
+    // Radroaches drop meat only. No caps/junk/ammo.
+    radroach:()=>pack('radroach_meat'),
+
+    // Mole rats drop Mole Rat Meat only. No caps/Cram/dirty water.
+    mole_rat:()=>pack('mole_rat_meat')
+  };
+
+  window.buildEnemyLoot=buildEnemyLoot=function(enemy){
+    const id=String(enemy&&enemy.id||'').toLowerCase();
+    if(exact[id]){
+      const loot=exact[id]();
+      // Keep a tiny empty-corpse fallback only for UI sanity, but never add fake caps/items.
+      return loot;
+    }
+    return oldBuild?oldBuild(enemy):[];
+  };
+
+  window.auditFNVSmallCreatureLoot=function(){
+    const ids=['gecko','gecko_hunter','fire_gecko','golden_gecko','green_gecko','bark_scorpion','radscorpion','mantis','radroach','mole_rat'];
+    const missingItems=[];
+    ids.forEach(id=>(ENEMIES[id]?.loot||[]).forEach(x=>{if(!ITEMS[x])missingItems.push(id+':'+x)}));
+    if(missingItems.length)console.warn('[FNV loot audit] Missing loot items:',missingItems);
+    else console.log('[FNV loot audit] Small creature loot tables covered:',ids.length);
+    return {checked:ids.length,missingItems};
+  };
+  try{window.auditFNVSmallCreatureLoot();}catch(e){}
+})();
+
+
+
+// ============================================================
+// CAMPFIRE COOKING ENCOUNTER PATCH — vanilla-style gecko recipes
+// ============================================================
+(function patchCampfireCookingEncounter(){
+  if(typeof ITEMS==='undefined')return;
+
+  const img=(src)=>`<img src="${src}" style="width:10%;height:10%;object-fit:contain;display:block;">`;
+  const addItem=(id,data)=>{ if(!ITEMS[id])ITEMS[id]=data; else Object.assign(ITEMS[id],data); };
+
+  // Vanilla ingredients/cooked food used by the Mojave campfire recipes.
+  addItem('gecko_meat',{n:'Gecko Meat',t:'c',e:ITEMS.gecko_steak?ITEMS.gecko_steak.e:'🥩',hp:5,p:4,w:1,desc:'Raw gecko meat. Used for Gecko Steak/Kebab recipes.'});
+  addItem('banana_yucca',{n:'Banana Yucca Fruit',t:'c',e:'🌾',hp:7,p:6,w:0.5,desc:'Mojave fruit used in gecko kebabs.'});
+  addItem('jalapeno',{n:'Jalapeño Pepper',t:'c',e:'🌶️',hp:2,p:3,w:0.1,desc:'Hot pepper used in Mojave campfire recipes.'});
+  addItem('gecko_kebab',{n:'Gecko Kebab',t:'c',e:'🍢',hp:40,p:20,w:1,desc:'Gecko meat, banana yucca, and jalapeño cooked over a campfire.'});
+  addItem('mole_rat_meat',{n:'Mole Rat Meat',t:'c',e:'🥩',hp:5,p:4,w:1,desc:'Raw mole rat meat. Used for Mole Rat Stew.'});
+  addItem('mole_rat_stew',{n:'Mole Rat Stew',t:'c',e:'🍲',hp:60,p:25,w:1,desc:'Campfire stew made from mole rat meat, beer, maize, and pinto bean pod.'});
+  addItem('beer',{n:'Beer',t:'c',e:'🍺',hp:0,p:5,w:1,desc:'Alcohol used in several wasteland recipes.'});
+  addItem('maize',{n:'Maize',t:'c',e:'🌽',hp:3,p:3,w:0.5,desc:'Crop ingredient used in Mole Rat Stew.'});
+  addItem('pinto_bean_pod',{n:'Pinto Bean Pod',t:'c',e:'🫘',hp:3,p:3,w:0.5,desc:'Bean pod used in Mole Rat Stew.'});
+
+  if(typeof FNV_ITEM_VALUES==='object')Object.assign(FNV_ITEM_VALUES,{gecko_meat:4,banana_yucca:6,jalapeno:3,gecko_kebab:20,mole_rat_meat:4,mole_rat_stew:25,beer:5,maize:3,pinto_bean_pod:3});
+
+  const CAMPFIRE_RECIPES=[
+    {id:'cf_gecko_steak',out:'gecko_steak',qty:1,skill:25,mats:[{id:'gecko_meat',qty:1}],desc:'Vanilla FNV: Gecko Meat → Gecko Steak.'},
+    {id:'cf_gecko_kebab',out:'gecko_kebab',qty:2,skill:60,mats:[{id:'banana_yucca',qty:1},{id:'gecko_meat',qty:1},{id:'jalapeno',qty:1}],desc:'Vanilla FNV: Banana Yucca + Gecko Meat + Jalapeño → Gecko Kebab ×2.'},
+    {id:'cf_mole_rat_stew',out:'mole_rat_stew',qty:1,skill:65,mats:[{id:'beer',qty:1},{id:'maize',qty:1},{id:'mole_rat_meat',qty:1},{id:'pinto_bean_pod',qty:1}],desc:'Vanilla FNV: Beer + Maize + Mole Rat Meat + Pinto Bean Pod → Mole Rat Stew.'}
+  ];
+
+  function campfireSurvivalSkill(){
+    if(S&&S.skills&&S.skills.survival!=null)return fnvClampSkill(S.skills.survival);
+    const end=(S&&S.special?S.special[2]:5)||5;
+    const luck=(S&&S.special?S.special[6]:5)||5;
+    return fnvClampSkill(2+end*2+Math.ceil(luck/2));
+  }
+  function invCount(id){return S&&S.inv?S.inv.filter(x=>x===id).length:0}
+  function knownRecipe(r){return !r.flag || hasFlag(r.flag)}
+  function canCook(r){return knownRecipe(r)&&campfireSurvivalSkill()>=r.skill&&r.mats.every(m=>invCount(m.id)>=m.qty)}
+  function removeMats(mats){
+    mats.forEach(m=>{let removed=0;for(let i=S.inv.length-1;i>=0&&removed<m.qty;i--){if(S.inv[i]===m.id){S.inv.splice(i,1);removed++;}}});
+  }
+
+  window.campfireCook=function(recipeId){
+    const r=CAMPFIRE_RECIPES.find(x=>x.id===recipeId);if(!r)return;
+    if(!canCook(r)){notify(campfireSurvivalSkill()<r.skill?'Survival too low.':'Missing ingredients.');return;}
+    removeMats(r.mats);
+    for(let i=0;i<r.qty;i++)giveItem(r.out,1,{silent:true});
+    const out=ITEMS[r.out];
+    advanceTime(1);save();log('Cooked '+out.n+(r.qty>1?' ×'+r.qty:'')+' at a campfire.','e');
+    showResult('Cooked at Campfire','🔥',[`${renderIcon(out.e,24)} ${out.n}${r.qty>1?' ×'+r.qty:''}`,'⏰ 1 hour passed'],'Continue','openCampfire()');
+  };
+
+  window.openCampfire=function(resumeFn){
+    if(resumeFn)window._campfireResume=resumeFn;
+    const db=$('DB'),dlg=$('DO');if(!db||!dlg)return;
+    const survival=campfireSurvivalSkill();
+    db.innerHTML='';
+    const head=document.createElement('div');
+    head.innerHTML=`<div style="text-align:center"><div style="font-size:42px">🔥</div><div style="font-size:15px;font-weight:bold;color:var(--amber);margin-bottom:5px">Campfire</div><div style="font-size:11px;color:var(--muted);line-height:1.45;margin-bottom:10px">Cook raw Mojave ingredients if you know the recipe and meet the Survival requirement.<br>Survival: <b style="color:var(--amber)">${survival}</b></div></div>`;
+    db.appendChild(head);
+    CAMPFIRE_RECIPES.forEach(r=>{
+      const out=ITEMS[r.out];if(!out)return;
+      const ok=canCook(r);
+      const card=document.createElement('div');card.className='craft-card';
+      const matHtml=r.mats.map(m=>{const it=ITEMS[m.id],have=invCount(m.id),good=have>=m.qty;return `<span class="craft-mat ${good?'ok':'missing'}">${it?renderIcon(it.e,18):'?'} ${it?it.n:m.id} ${have}/${m.qty}</span>`}).join(' ');
+      const skillOk=survival>=r.skill;
+      card.innerHTML=`<div class="craft-row" style="margin-bottom:5px"><span class="craft-out-icon">${renderIcon(out.e,24)}</span><div style="flex:1"><div style="font-size:12px;font-weight:bold;color:${ok?'var(--green)':'var(--text)'}">${out.n}${r.qty>1?' ×'+r.qty:''}</div><div style="font-size:11px;color:var(--muted)">${r.desc}</div><div style="font-size:10px;color:${skillOk?'var(--green)':'var(--red)'};margin-top:3px">Survival ${r.skill}+ ${skillOk?'✓':'✕'}</div></div></div><div style="margin-bottom:6px">${matHtml}</div>`;
+      const b=document.createElement('button');b.className=ok?'bt go':'bt';b.textContent=ok?'🔥 Cook':'🔒 Missing recipe / skill / ingredients';b.disabled=!ok;b.onclick=()=>campfireCook(r.id);card.appendChild(b);db.appendChild(card);
+    });
+    const note=document.createElement('div');note.className='cd';note.innerHTML='<div style="font-size:11px;color:var(--muted);line-height:1.45">Radroach Meat stays as raw food in vanilla New Vegas and is not used to craft another consumable. Mole Rat Meat can be cooked into Mole Rat Stew. Mantis Eggs are kept as loot/quest-style items, not a normal cooking recipe.</div>';db.appendChild(note);
+    const leave=document.createElement('button');leave.className='bt';leave.style.textAlign='center';leave.textContent='Leave campfire';
+    leave.onclick=()=>{closeDlg();const fn=window._campfireResume;window._campfireResume=null;if(typeof fn==='function')fn();};
+    db.appendChild(leave);
+    dlg.classList.add('A');
+  };
+
+  window.showCampfireEncounter=function(area,step,isTravel){
+    $('TS').innerHTML='🔥';
+    $('TT').innerHTML='<b style="color:var(--amber)">Campfire</b><br><span style="font-size:11px;color:var(--muted)">A safe cooking fire is still warm enough to use.</span>';
+    const cd=$('TC');cd.innerHTML='';
+    const use=el('button','bt go','🔥 Use campfire');use.style.textAlign='center';
+    use.onclick=()=>openCampfire(()=>{if(isTravel)travelCont();else runExpedition(area,step)});
+    cd.appendChild(use);
+    const leave=el('button','bt','Keep moving');leave.style.textAlign='center';
+    leave.onclick=()=>{if(isTravel)travelCont();else runExpedition(area,step)};
+    cd.appendChild(leave);
+    $('TN').style.display='none';
+  };
+
+  const oldRun=window.runExpedition||runExpedition;
+  window.runExpedition=runExpedition=function(area,step){
+    const maxSteps=rnd(2,4);
+    if(step>=maxSteps){
+      $('TS').innerHTML=area.e;
+      $('TT').innerHTML=`Finished scouting <b>${area.n}</b>.`;
+      const cd=$('TC');cd.innerHTML='';
+      const cb=el('button','bt go','🔍 Keep exploring');cb.style.textAlign='center';
+      cb.onclick=()=>{cd.innerHTML='';$('TN').style.display='none';runExpedition(area,0)};cd.appendChild(cb);
+      const rb=el('button','bt','🔙 Return to '+LOCS[S.loc]?.n);rb.style.textAlign='center';
+      rb.onclick=()=>{$('TO').classList.remove('A');upAll()};cd.appendChild(rb);
+      $('TN').style.display='none';return;
+    }
+    advanceTime(1);
+    $('TB').style.width=Math.round(((step+1)/maxSteps)*100)+'%';
+    const r=R();
+    const _combatThresh=S.lightStepPerk?0.28:0.45;
+    if(r<_combatThresh){
+      const cnt=rnd(1,Math.min(2,area.en.length));
+      const enemies=buildCohesiveGroup(area.en,cnt);
+      if(!enemies.length){$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1);return}
+      preEncounter(enemies,area,step+1,false);
+    }else if(r<.65){
+      const li=rndA(area.lt);const it=ITEMS[li];
+      if(it){giveItem(li);log('Found '+it.n+' in '+area.n+'.','e');save();
+      $('TS').innerHTML='✨';
+      $('TT').innerHTML=`<div style="text-align:center"><div style="display:flex;align-items:center;justify-content:center;width:64px;height:64px;background:#0f0f08;border:1px solid #3a3828;border-radius:10px;margin:6px auto">${it.e}</div><b style="color:var(--green);display:block;margin-top:4px">${it.n}</b></div>`;
+      $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1)}
+    }else{
+      const facPat=R()<0.25?rollFactionPatrol(S.loc):null;
+      if(facPat&&facPat._factionAid){
+        const lines=handleFactionAid(facPat.aidData);
+        const facName=FACTIONS[facPat.aidData.fac]||facPat.aidData.fac;
+        $('TS').innerHTML='🏴';
+        $('TT').innerHTML=`<b>${facName} Patrol</b><br><span style="font-size:12px;color:var(--muted)">${lines.join('<br>')}</span>`;
+        $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1);
+        save();return;
+      }else if(facPat&&facPat.length){
+        preEncounter(facPat,area,step+1,false);return;
+      }
+      if(R()<0.18){showCampfireEncounter(area,step+1,false);return;}
+      const card=R()<0.60?rollEncounterCard(S.loc,area):null;
+      if(card){showEncounterCard(card,area,step+1);}else{
+        const scenes=['Tracks in the dirt — recent.','The wind shifts. Something watches.','Shell casings litter the ground.','A faded sign: DANGER - MINES','An old campfire, still warm.'];
+        $('TS').innerHTML=rndA(['🏜','💀','🪨','🌵']);
+        $('TT').innerHTML=rndA(scenes);
+        $('TC').innerHTML='';$('TN').style.display='block';$('TN').onclick=()=>runExpedition(area,step+1);
+      }
+    }
+  };
+
+  const oldGen=window.genTravelEv||genTravelEv;
+  window.genTravelEv=genTravelEv=function(days,from,to){
+    const evs=oldGen(days,from,to)||[];
+    evs.forEach(ev=>{
+      if(ev.tp==='scene' && Math.random()<0.16){
+        ev.tp='campfire';ev.e='🔥';ev.tx='<b style="color:var(--amber)">Campfire</b><br><span style="font-size:11px;color:var(--muted)">Smoke rises from a small roadside fire.</span>';
+        ev.fn=()=>showCampfireEncounter(null,0,true);
+      }
+    });
+    return evs;
+  };
+
+  window.auditCampfireCreatureLoot=function(){
+    const ids=['gecko','gecko_hunter','fire_gecko','golden_gecko','green_gecko','bark_scorpion','radscorpion','mantis','radroach','mole_rat'];
+    const sample={};
+    ids.forEach(id=>{const en={...(ENEMIES[id]||{}),id};sample[id]=(window.buildEnemyLoot?window.buildEnemyLoot(en):[]).map(x=>x.type==='caps'?'caps':x.id);});
+    const badCaps=Object.entries(sample).filter(([id,arr])=>arr.includes('caps')).map(([id])=>id);
+    if(badCaps.length)console.warn('[Campfire/loot audit] Unexpected creature caps:',badCaps);
+    else console.log('[Campfire/loot audit] Small creature loot gives no caps:',ids.length);
+    return {checked:ids.length,badCaps,sample};
+  };
+  try{window.auditCampfireCreatureLoot();}catch(e){}
+})();
+
+
+// Campfire polish: route events pause cleanly, and campfires can be foraged once for Mojave plants.
+(function polishCampfireCooking(){
+  if(typeof openCampfire!=='function')return;
+  const oldShowCampfire=window.showCampfireEncounter;
+  window.showCampfireEncounter=function(area,step,isTravel){
+    window._campfireForaged=false;
+    return oldShowCampfire(area,step,isTravel);
+  };
+
+  const oldOpenCampfire=window.openCampfire;
+  window.openCampfire=function(resumeFn){
+    oldOpenCampfire(resumeFn);
+    const db=$('DB');if(!db||db.querySelector('[data-campfire-forage]'))return;
+    const btn=document.createElement('button');btn.className='bt';btn.setAttribute('data-campfire-forage','1');btn.style.textAlign='center';
+    btn.textContent=window._campfireForaged?'Foraged nearby plants':'🌾 Forage near the campfire';
+    btn.disabled=!!window._campfireForaged;
+    btn.onclick=()=>{
+      window._campfireForaged=true;
+      const pool=['banana_yucca','jalapeno','herbs','maize','pinto_bean_pod'];
+      const found=[];
+      pool.forEach(id=>{if(ITEMS[id]&&Math.random()<0.45){giveItem(id,1,{silent:true});found.push(ITEMS[id].n);}});
+      if(found.length){log('Foraged near a campfire: '+found.join(', ')+'.','e');notify('Found '+found.join(', '));}
+      else notify('Nothing useful nearby.');
+      save();openCampfire();
+    };
+    const leave=[...db.querySelectorAll('button')].pop();
+    if(leave)db.insertBefore(btn,leave);else db.appendChild(btn);
+  };
+
+  const oldNext=window.nextTEv||nextTEv;
+  window.nextTEv=nextTEv=function(){
+    if(tQ&&tQ.length&&tQ[0].tp==='campfire'){
+      const ev=tQ.shift();
+      updateTravelMapProgress(ev._i+1,ev._t);
+      $('TB').style.width=Math.round(((ev._i+1)/ev._t)*100)+'%';
+      clearTravelEncounterIcons();
+      showCampfireEncounter(null,0,true);
+      return;
+    }
+    return oldNext();
+  };
+
+  const oldGen2=window.genTravelEv||genTravelEv;
+  window.genTravelEv=genTravelEv=function(days,from,to){
+    const evs=oldGen2(days,from,to)||[];
+    evs.forEach(ev=>{
+      if(ev.tp==='loot'&&Math.random()<0.18){
+        const roadPool=['banana_yucca','jalapeno','maize','pinto_bean_pod'];const fi=roadPool[Math.floor(Math.random()*roadPool.length)];const it=ITEMS[fi];
+        if(it){ev.e=it.e;ev.tx=`You spot a useful cooking ingredient: <b style="color:var(--green)">${it.e} ${it.n}</b>`;ev.fn=()=>{giveItem(fi);log('Found '+it.n+' on the road.','e')};}
+      }
+    });
+    return evs;
+  };
+})();
+
+
+// ============================================================
+// FNV PROPER SKILLS PATCH
+// Adds real New Vegas-style skills, tag skills, skill points, and UI allocation.
+// Skills are raised by level-up points, not random use spam.
+// ============================================================
+(function fnvProperSkillSystem(){
+  const SKILL_DEFS=[
+    {id:'barter',n:'Barter',icon:'💰',sp:3,desc:'Better buying and selling prices.'},
+    {id:'energy',n:'Energy Weapons',icon:'⚡',sp:1,desc:'Laser, plasma, and other energy weapon damage.'},
+    {id:'explosives',n:'Explosives',icon:'🧨',sp:1,desc:'Grenades, mines, dynamite, and explosive launchers.'},
+    {id:'guns',n:'Guns',icon:'🔫',sp:5,desc:'Conventional pistols, rifles, SMGs, and shotguns.'},
+    {id:'lockpick',n:'Lockpick',icon:'🪛',sp:1,desc:'Locks, safes, containers, and forced entry checks.'},
+    {id:'medicine',n:'Medicine',icon:'⚕️',sp:4,desc:'Healing items and medical checks.'},
+    {id:'melee',n:'Melee Weapons',icon:'🗡',sp:0,desc:'Knives, clubs, blades, and heavy melee weapons.'},
+    {id:'repair',n:'Repair',icon:'🔧',sp:4,desc:'Workbench repairs, ammo crafting, and machinery checks.'},
+    {id:'science',n:'Science',icon:'💻',sp:4,desc:'Terminals, robots, old-world tech, and lab checks.'},
+    {id:'sneak',n:'Sneak',icon:'👣',sp:5,desc:'Ambushes, stealth routes, and avoiding trouble.'},
+    {id:'speech',n:'Speech',icon:'🗣',sp:3,desc:'Persuasion, bluffing, and dialogue checks.'},
+    {id:'survival',n:'Survival',icon:'🔥',sp:2,desc:'Campfire cooking, foraging, wasteland food, and harsh travel.'},
+    {id:'unarmed',n:'Unarmed',icon:'🥊',sp:2,desc:'Bare fists, power fists, brass knuckles, and unarmed attacks.'}
+  ];
+  window.FNV_SKILL_DEFS=SKILL_DEFS;
+
+  function spVal(i){return Math.max(1,Math.min(10,((S&&S.special)?S.special[i]:5)||5))}
+  window.fnvSkillName=function(id){const d=SKILL_DEFS.find(x=>x.id===id);return d?d.n:id}
+  window.fnvSkillBase=function(id){
+    const d=SKILL_DEFS.find(x=>x.id===id);if(!d)return 15;
+    return fnvClampSkill(2+spVal(d.sp)*2+Math.ceil(spVal(6)/2));
+  };
+  window.fnvSkillPointsPerLevel=function(){
+    const educated=(S&&S.perks&&(S.perks||[]).includes('educated'))?2:0;
+    return Math.max(10,10+Math.floor(spVal(4)/2)+educated);
+  };
+  window.fnvBackgroundTags=function(bgId,cls){
+    const key=(cls||bgId||'courier').toLowerCase();
+    const map={
+      courier:['guns','speech','survival'],soldier:['guns','explosives','survival'],trooper:['guns','medicine','survival'],ranger:['guns','sneak','survival'],
+      tribal:['melee','survival','unarmed'],gambler:['barter','speech','sneak'],scavenger:['repair','lockpick','survival'],legion:['melee','unarmed','survival'],
+      doctor:['medicine','science','speech'],knight:['energy','repair','science'],guard:['guns','barter','survival'],runner:['guns','sneak','survival'],
+      mechanic:['repair','science','explosives'],scrapper:['melee','repair','sneak'],prospector:['melee','lockpick','survival'],medic:['medicine','guns','survival'],
+      hunter:['guns','survival','sneak'],operative:['guns','speech','sneak'],legionary:['melee','unarmed','survival'],scout:['guns','sneak','survival'],
+      khan:['guns','melee','survival'],scribe:['energy','science','repair'],king:['guns','speech','barter'],gunner:['guns','explosives','repair'],
+      chairman:['guns','speech','barter']
+    };
+    if(map[key])return map[key].slice();
+    if((bgId||'').includes('ranger'))return map.ranger.slice();
+    if((bgId||'').includes('brotherhood'))return map.knight.slice();
+    if((bgId||'').includes('legion'))return map.legionary.slice();
+    if((bgId||'').includes('khan'))return map.khan.slice();
+    return map.courier.slice();
+  };
+  window.fnvBuildSkills=function(tags){
+    const out={};SKILL_DEFS.forEach(d=>out[d.id]=fnvSkillBase(d.id));
+    (tags||[]).forEach(id=>{if(out[id]!=null)out[id]=fnvClampSkill(out[id]+15)});
+    return out;
+  };
+  window.fnvEnsureSkills=function(forceNew=false){
+    if(!S)return;
+    const tags=(S.tagSkills&&S.tagSkills.length)?S.tagSkills:fnvBackgroundTags(S.bg,S.class);
+    if(forceNew||!S.skills){S.tagSkills=tags.slice(0,3);S.skills=fnvBuildSkills(S.tagSkills);}
+    SKILL_DEFS.forEach(d=>{if(S.skills[d.id]==null)S.skills[d.id]=fnvSkillBase(d.id)});
+    if(S.skillPoints===undefined||S.skillPoints===null){
+      S.skillPoints=Math.max(0,((S.level||1)-1)*fnvSkillPointsPerLevel());
+    }
+    S.skillPoints=Math.max(0,Math.round(S.skillPoints||0));
+    S.spentSkillPoints=Math.max(0,Math.round(S.spentSkillPoints||0));
+    S.atk=0; // weapon/skill formula handles damage; no fake base attack.
+    S.def=0; // armour/perks handle DT; no fake base defence.
+  };
+
+  const oldMigrateSkills=window.migrate||migrate;
+  window.migrate=migrate=function(){oldMigrateSkills.apply(this,arguments);fnvEnsureSkills(false)};
+
+  const oldQuickStartSkills=window.quickStart||quickStart;
+  window.quickStart=quickStart=function(){
+    oldQuickStartSkills.apply(this,arguments);
+    fnvEnsureSkills(true);
+    const tags=(S.tagSkills||[]).map(fnvSkillName).join(', ');
+    log('Tagged skills: '+tags+'.','e');
+    save(true);upAll();
+  };
+
+  // Replaces the older level-up path so level-ups grant New Vegas-style skill points
+  // and do not add fake base ATK/DEF/AP increases.
+  window.chkLU=chkLU=function(){
+    let levelled=false,pts=0;
+    fnvEnsureSkills(false);
+    while(S.xp>=xpNeed(S.level)){
+      S.xp-=xpNeed(S.level);S.level++;
+      syncFNVStats(true);
+      const add=fnvSkillPointsPerLevel();
+      S.skillPoints=(S.skillPoints||0)+add;pts+=add;
+      log('Level up! Now level '+S.level+'. +5 HP, +'+add+' skill points.','q');
+      if(calcPerkDue(S.level))_pendingLevelUps++;
+      levelled=true;
+    }
+    if(pts)notify('⬆ LEVEL '+S.level+' · +'+pts+' skill points');
+    if(_pendingLevelUps)showPerkScreen();
+    else if(levelled)upSB();
+    save();
+  };
+
+  window.spendSkillPoint=function(id,amt=1){
+    fnvEnsureSkills(false);
+    const d=SKILL_DEFS.find(x=>x.id===id);if(!d)return;
+    amt=Math.max(1,Math.min(10,Math.round(amt||1)));
+    if((S.skillPoints||0)<=0){notify('No skill points. Level up to gain more.');return;}
+    const can=Math.min(amt,S.skillPoints,100-(S.skills[id]||0));
+    if(can<=0){notify(d.n+' is already 100.');return;}
+    S.skills[id]+=can;S.skillPoints-=can;S.spentSkillPoints=(S.spentSkillPoints||0)+can;
+    log('Raised '+d.n+' to '+S.skills[id]+'.','q');
+    save();upAll();
+  };
+
+  window.skillCheck=function(id,req){fnvEnsureSkills(false);return fnvSkill(id)>=req;};
+  window.skillCheckText=function(id,req){const ok=skillCheck(id,req);return `<span style="color:${ok?'var(--green)':'var(--red)'}">${fnvSkillName(id)} ${req}+ ${ok?'✓':'✕'}</span>`;};
+
+  const oldUpCharSkills=window.upChar||upChar;
+  window.upChar=upChar=function(){
+    oldUpCharSkills.apply(this,arguments);
+    try{
+      fnvEnsureSkills(false);
+      const tab=$('char-tab');if(!tab)return;
+      const wrap=el('div','');
+      const pts=S.skillPoints||0;
+      wrap.appendChild(el('div','sh','Skills'));
+      const box=el('div','cd');
+      box.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <div style="font-size:11px;color:var(--muted)">Fallout-style skills. Raise them with level-up skill points.</div>
+        <div style="font-size:12px;color:${pts?'var(--green)':'var(--muted)'}"><b>${pts}</b> pts</div>
+      </div>`;
+      SKILL_DEFS.forEach(d=>{
+        const v=fnvSkill(d.id),tag=(S.tagSkills||[]).includes(d.id);
+        const row=document.createElement('div');
+        row.style.cssText='display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:1px solid #1a1810';
+        row.innerHTML=`<div style="width:24px;text-align:center">${d.icon}</div>
+          <div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;gap:6px"><b style="font-size:11px;color:${tag?'var(--amber)':'var(--text)'}">${d.n}${tag?' ★':''}</b><span style="font-size:12px;color:var(--green)">${v}</span></div>
+          <div class="hb" style="margin-top:3px"><div class="hf ${v>=75?'g':v>=50?'lo':'ap'}" style="width:${v}%"></div></div>
+          <div style="font-size:9px;color:var(--muted);line-height:1.35">${d.desc}</div></div>
+          <div style="display:flex;gap:3px;flex-direction:column"><button class="bt sm" style="min-height:28px;padding:3px 7px;text-align:center" onclick="spendSkillPoint('${d.id}',1)" ${pts<=0||v>=100?'disabled':''}>+1</button>
+          <button class="bt sm" style="min-height:28px;padding:3px 7px;text-align:center" onclick="spendSkillPoint('${d.id}',5)" ${pts<=0||v>=100?'disabled':''}>+5</button></div>`;
+        box.appendChild(row);
+      });
+      wrap.appendChild(box);
+      const perks=[...tab.querySelectorAll('.sh')].find(x=>/Perks/.test(x.textContent||''));
+      if(perks)tab.insertBefore(wrap,perks);else tab.appendChild(wrap);
+    }catch(e){console.warn('skill UI failed',e)}
+  };
+
+  // Skill-aware trade prices. Barter now matters directly instead of only perk/Charisma.
+  window.barterBuyPrice=barterBuyPrice=function(baseP){
+    fnvEnsureSkills(false);
+    const b=fnvSkill('barter');
+    const perk=(S.barterPerk||0)/100;
+    return Math.max(1,Math.round((baseP||1)*Math.max(0.55,1.08-(b*0.0045)-perk)));
+  };
+  window.barterSellPrice=barterSellPrice=function(baseP){
+    fnvEnsureSkills(false);
+    const b=fnvSkill('barter');
+    const perk=(S.barterPerk||0)/200;
+    return Math.max(1,Math.floor((baseP||1)*Math.min(0.78,0.35+(b*0.0035)+perk)));
+  };
+
+  // Medicine now improves healing items. Keeps existing perks working on top.
+  const oldCombatUseItemSkills=window.combatUseItem||combatUseItem;
+  window.combatUseItem=combatUseItem=function(id){
+    const it=ITEMS[id];
+    if(combat&&it&&it.hp){
+      const old=it.hp;
+      const med=fnvSkill('medicine');
+      it.hp=Math.max(1,Math.round(old*(0.75+med/100)));
+      try{return oldCombatUseItemSkills.apply(this,arguments)}finally{it.hp=old;}
+    }
+    return oldCombatUseItemSkills.apply(this,arguments);
+  };
+
+  // Repair skill now affects the existing workshop repair/ammo actions indirectly by showing
+  // the real value and unlocking a generic quick tune-up for owned workshop users.
+  window.fnvRepairTune=function(){
+    fnvEnsureSkills(false);
+    const req=35;if(!skillCheck('repair',req)){notify('Repair '+req+' required.');return;}
+    const si=S.inv.indexOf('scrap');if(si<0){notify('Need Scrap Metal.');return;}
+    S.inv.splice(si,1);advanceTime(1);S.ap=Math.min(S.maxAp,S.ap+10);
+    log('You tune your gear with Repair '+fnvSkill('repair')+'.','e');
+    showResult('Gear Tuned','🔧',['Repair '+fnvSkill('repair'),'Used Scrap Metal','⚡ +10 AP','⏰ 1 hour passed'],'Continue','upAll()');
+    save();
+  };
+
+  // Campfire forage gives Survival a visible purpose without random skill XP.
+  const oldOpenCampfireSkills=window.openCampfire;
+  if(typeof oldOpenCampfireSkills==='function'){
+    window.openCampfire=function(resumeFn){oldOpenCampfireSkills(resumeFn);const db=$('DB');if(!db)return;const note=document.createElement('div');note.className='cd';note.innerHTML='<div style="font-size:10px;color:var(--muted)">Survival affects which campfire recipes you can cook. Raise Survival from the Skills section after levelling up.</div>';const leave=[...db.querySelectorAll('button')].pop();if(leave)db.insertBefore(note,leave);else db.appendChild(note);};
+  }
+
+  try{fnvEnsureSkills(false)}catch(e){}
+})();
+
+
+
+// ============================================================
+// FNV ECONOMY LOCK PATCH — exact base values + GECK barter prices
+// ============================================================
+(function patchFNVEconomyValues(){
+  if(typeof ITEMS==='undefined')return;
+
+  // These are Fallout: New Vegas base item values for direct counterparts.
+  // Items that are custom/quest-only in this browser game are intentionally
+  // left alone and listed by auditFNVEconomyValues().
+  const FNV_EXACT_ITEM_VALUES={
+    // Aid / food / chems
+    stimpak:75,super_stimpak:150,doctor_bag:55,
+    purified_water:20,dirty_water:10,sunset_sars:3,nuka_cola:20,
+    fancy_lad:5,cram:5,iguana_bits:5,instamash:5,dandy_boy_apples:5,pork_n_beans:5,
+    gecko_steak:5,gecko_meat:4,gecko_kebab:20,bighorner_meat:5,brahmin_steak:5,
+    bloatfly_meat:10,radroach_meat:4,giant_ant_meat:4,giant_mantis_foreleg:5,
+    mole_rat_meat:4,mole_rat_stew:25,lakelurk_meat:12,desert_salad:20,
+    banana_yucca:6,jalapeno:3,maize:3,pinto_bean_pod:3,beer:5,
+    healing_powder:20,antivenom:30,herbs:4,
+    jet:20,psycho:20,med_x:20,buffout:20,mentats:20,steady:40,fixer:20,hydra:35,
+    stealth_boy:100,weapon_binding_ritual:25,
+
+    // Creature parts / misc valuables / junk
+    gecko_hide:10,fire_gecko_hide:25,golden_gecko_hide:25,green_gecko_hide:30,
+    radscorpion_gland:25,bark_scorpion_gland:15,cazador_poison_gland:30,
+    nightstalker_blood:25,mantis_egg:12,deathclaw_hand:75,irradiated_blood:15,
+    scrap:10,duct_tape:20,bobby_pin:1,sensor_module:50,pre_war_money:10,
+    powder_charge:25,dynamite:25,legion_coin:5,dog_tags:8,ncr_dogtags:5,
+    wonderglue:10,wrench:75,scrap_electronics:25,fission_battery:75,camera:65,
+    cigarette_pack:10,cigarette_carton:40,silverware:10,silver_watch:50,gold_necklace:125,
+    conductor:10,laser_focusing_lens:25,microfusion_regulator:50,servo_motor:25,
+    targeting_module:50,power_armor_parts:75,weapon_repair_kit:20,
+    coffee_mug:2,pilot_light:8,surgical_tubing:12,glass_bottles:1,clipboards:1,
+    pencils:1,hot_plate:15,lunchbox:10,caravan_cards:1,
+
+    // Ammo
+    ammo_9mm:1,ammo_10mm:3,ammo_357:2,ammo_556:2,ammo_308:3,
+    ammo_shells:3,energy_cell:1,microfusion_cell:3,electron_charge_pack:1,
+    ammo_44:3,ammo_45_70:5,ammo_50:8,ammo_40mm:25,
+
+    // Guns / energy / explosives
+    pistol_9mm:100,maria:1000,pistol_10mm:750,revolver_357:110,smg_9mm:850,
+    varmint_rifle:75,boones_varmint_rifle:2200,cowboy_repeater:800,trail_carbine:3900,
+    brush_gun:4900,service_rifle:540,marksman_carbine:5200,assault_carbine:3950,
+    hunting_rifle:2200,sniper_rifle:4100,anti_materiel:5600,
+    caravan_shotgun:675,combat_shotgun:3800,single_shotgun:175,riot_shotgun:5500,
+    laser_pistol:175,plasma_defender:3000,recharger_pistol:2700,laser_rcw:2150,
+    laser_rifle:800,plasma_rifle:1300,multiplas_rifle:2500,gauss_rifle:3000,
+    plasma_caster:7000,grenade_rifle:300,
+
+    // Melee / unarmed
+    machete:50,combat_knife:500,switchblade:35,straight_razor:35,cleaver:20,
+    fire_axe:2500,chainsaw:2800,thermic_lance:5500,pickaxe:75,rebar_club:500,
+    tire_iron:40,lead_pipe:75,oh_baby:6200,throwing_spear:25,
+    power_fist:800,ballistic_fist:7800,brass_knuckles:120,
+
+    // Armor / clothing
+    leather_armor:160,reinforced_leather_armor:1200,raider_armor:80,metal_armor:1100,
+    metal_helmet:120,combat_armor:6500,combat_helmet:800,power_armor:4500,
+    ncr_armor:300,ncr_ranger_combat:7500,ncr_salvaged_pa:4000,
+    legion_centurion_armor:2800,riot_gear:7500,gecko_leather:200,
+    headwrap:5,prospector_hat:15,boones_beret:40,authority_glasses:10,
+    initiate_robes:75,scribe_robes:75,bos_recon_armor:7200,bos_recon_helmet:110,
+    bos_combat_armor:6500,bos_power_armor:4500
+  };
+
+  function fnvBaseValue(id){
+    const it=ITEMS[id];
+    if(!it)return 0;
+    if(Object.prototype.hasOwnProperty.call(FNV_EXACT_ITEM_VALUES,id))return FNV_EXACT_ITEM_VALUES[id];
+    return Math.max(0,Math.round(Number(it.p)||0));
+  }
+
+  window.fnvBaseValue=fnvBaseValue;
+  window.FNV_EXACT_ITEM_VALUES=FNV_EXACT_ITEM_VALUES;
+
+  Object.entries(FNV_EXACT_ITEM_VALUES).forEach(([id,val])=>{
+    if(ITEMS[id]){ITEMS[id].p=val;ITEMS[id].fnvValueLocked=true;}
+  });
+
+  function fnvBarterSkill(){
+    try{if(typeof fnvEnsureSkills==='function')fnvEnsureSkills(false)}catch(e){}
+    const raw=(S&&S.skills&&S.skills.barter!=null)?S.skills.barter:((S&&S.special)?2+(S.special[3]||5)*2+Math.ceil((S.special[6]||5)/2):15);
+    return Math.max(0,Math.min(100,Math.round(raw)));
+  }
+
+  // Fallout 3/New Vegas GECK barter settings:
+  // Buy = value * (1.55 + Barter * -0.45 / 100)
+  // Sell = value * (0.45 + Barter *  0.45 / 100)
+  // Buy cannot go below item value; sell cannot exceed item value.
+  window.barterBuyPrice=barterBuyPrice=function(baseP){
+    const value=Math.max(1,Math.round(Number(baseP)||1));
+    const b=fnvBarterSkill();
+    const perk=(S&&S.barterPerk?S.barterPerk:0)/100;
+    const price=Math.round(value*(1.55-(b*0.45/100))*(1-perk));
+    return Math.max(1,Math.max(value,price));
+  };
+  window.barterSellPrice=barterSellPrice=function(baseP){
+    const value=Math.max(1,Math.round(Number(baseP)||1));
+    const b=fnvBarterSkill();
+    const price=Math.round(value*(0.45+(b*0.45/100)));
+    return Math.max(1,Math.min(value,price));
+  };
+
+  // Make sure the trade UI always prices from locked base value even if a future
+  // item accidentally changes p after this patch.
+  const oldTradeRenderItems=window.tradeRenderItems||tradeRenderItems;
+  window.tradeRenderItems=tradeRenderItems=function(){
+    Object.entries(FNV_EXACT_ITEM_VALUES).forEach(([id,val])=>{if(ITEMS[id])ITEMS[id].p=val;});
+    return oldTradeRenderItems.apply(this,arguments);
+  };
+  const oldTradeRenderFooter=window.tradeRenderFooter||tradeRenderFooter;
+  window.tradeRenderFooter=tradeRenderFooter=function(){
+    Object.entries(FNV_EXACT_ITEM_VALUES).forEach(([id,val])=>{if(ITEMS[id])ITEMS[id].p=val;});
+    return oldTradeRenderFooter.apply(this,arguments);
+  };
+  const oldTradeExecute=window.tradeExecute||tradeExecute;
+  window.tradeExecute=tradeExecute=function(){
+    Object.entries(FNV_EXACT_ITEM_VALUES).forEach(([id,val])=>{if(ITEMS[id])ITEMS[id].p=val;});
+    return oldTradeExecute.apply(this,arguments);
+  };
+
+  window.auditFNVEconomyValues=function(){
+    const missing=[];
+    Object.keys(ITEMS).forEach(id=>{
+      const it=ITEMS[id];
+      if(!it)return;
+      const has=Object.prototype.hasOwnProperty.call(FNV_EXACT_ITEM_VALUES,id);
+      const quest=/quest|paperwork|bill of sale|town supplies|dynamite bundle|holotape|slate|toolkit|badge|ear/i.test((it.n||'')+' '+(it.desc||''));
+      if(!has&&!quest)missing.push(id+': '+(it.n||id));
+    });
+    if(missing.length)console.warn('Items without direct FNV value lock/custom analogues:',missing);
+    else console.log('FNV economy audit: all non-quest items have value locks.');
+    return {locked:Object.keys(FNV_EXACT_ITEM_VALUES).filter(id=>ITEMS[id]).length,unlocked:missing};
+  };
+  try{window.auditFNVEconomyValues()}catch(e){}
+})();
+
+
+
+// ============================================================
+// FNV EXACT VALUE + WEIGHT FINAL AUDIT PATCH
+// ============================================================
+(function(){
+  if(typeof ITEMS==='undefined')return;
+
+  // Final exact locks for direct Fallout: New Vegas counterparts.
+  // Custom/project-only quest items are deliberately excluded.
+  const FNV_FINAL_ITEM_VALUES={
+    // Aid / food / chems / drinks
+    stimpak:75,super_stimpak:150,doctor_bag:55,antivenom:25,
+    purified_water:20,dirty_water:10,sunset_sars:3,nuka_cola:20,beer:2,
+    fancy_lad:5,cram:5,iguana_bits:5,instamash:5,dandy_boy_apples:5,pork_n_beans:5,
+    gecko_meat:4,gecko_steak:5,gecko_kebab:4,bighorner_meat:5,brahmin_steak:5,
+    bloatfly_meat:4,radroach_meat:2,giant_mantis_foreleg:1,
+    mole_rat_meat:4,mole_rat_stew:25,lakelurk_meat:12,desert_salad:5,
+    banana_yucca:6,jalapeno:5,maize:5,pinto_bean_pod:0,
+    healing_powder:5,herbs:4,jet:20,psycho:20,med_x:20,buffout:20,mentats:20,
+    steady:20,fixer:20,hydra:55,turbo:20,stealth_boy:100,weapon_binding_ritual:50,giant_ant_meat:4,leather_armor_rl:1200,
+
+    // Creature parts / misc / junk / valuables
+    gecko_hide:10,fire_gecko_hide:25,golden_gecko_hide:25,green_gecko_hide:30,
+    radscorpion_gland:25,bark_scorpion_gland:35,cazador_poison_gland:85,
+    nightstalker_blood:5,mantis_egg:0,deathclaw_hand:75,irradiated_blood:15,
+    scrap:10,duct_tape:20,bobby_pin:1,sensor_module:50,pre_war_money:10,
+    powder_charge:20,dynamite:25,legion_coin:5,dog_tags:8,ncr_dogtags:5,
+    wonderglue:10,wrench:75,scrap_electronics:25,fission_battery:75,camera:65,
+    cigarette_pack:10,cigarette_carton:40,silverware:10,silver_watch:50,gold_necklace:125,
+    conductor:10,laser_focusing_lens:25,microfusion_regulator:50,servo_motor:25,
+    targeting_module:50,weapon_repair_kit:20,
+    tin_can:1,coffee_mug:2,pilot_light:8,surgical_tubing:12,glass_bottles:1,
+    clipboards:1,pencils:1,hot_plate:15,lunchbox:10,caravan_cards:1,
+
+    // Ammo values. Carry weight is handled below as normal-mode 0.
+    ammo_9mm:1,ammo_10mm:3,ammo_357:2,ammo_556:2,ammo_308:3,
+    ammo_shells:3,energy_cell:1,microfusion_cell:3,electron_charge_pack:1,
+    ammo_44:3,ammo_45_70:5,ammo_50:8,ammo_40mm:25,
+
+    // Armor / clothing
+    leather_armor:160,reinforced_leather_armor:1200,raider_armor:80,metal_armor:1100,
+    metal_helmet:250,combat_armor:6500,combat_helmet:800,power_armor:5200,
+    ncr_armor:300,ncr_ranger_combat:7500,ncr_salvaged_pa:4000,
+    legion_centurion_armor:2800,riot_gear:7500,gecko_leather:500,
+    headwrap:5,prospector_hat:15,boones_beret:40,first_recon_beret:40,authority_glasses:10,
+    initiate_robes:75,scribe_robes:75,bos_recon_armor:7200,bos_recon_helmet:110,
+    bos_combat_armor:6500,bos_power_armor:4500
+  };
+
+  const FNV_FINAL_ITEM_WEIGHTS={
+    // Aid / food / chems / drinks
+    stimpak:0,super_stimpak:0,doctor_bag:1,antivenom:0,
+    purified_water:1,dirty_water:1,sunset_sars:1,nuka_cola:1,beer:1,
+    fancy_lad:1,cram:1,iguana_bits:1,instamash:1,dandy_boy_apples:1,pork_n_beans:1,
+    gecko_meat:1,gecko_steak:1,gecko_kebab:0.25,bighorner_meat:0.8,brahmin_steak:0.8,
+    bloatfly_meat:1,radroach_meat:1,giant_mantis_foreleg:0,
+    mole_rat_meat:1,mole_rat_stew:1,lakelurk_meat:1,desert_salad:0.2,
+    banana_yucca:0.5,jalapeno:0.02,maize:0.25,pinto_bean_pod:0.05,
+    healing_powder:0.03,herbs:0.01,jet:0,psycho:0,med_x:0,buffout:0,mentats:0,
+    steady:0,fixer:0,hydra:0,turbo:0,stealth_boy:1,weapon_binding_ritual:0.5,giant_ant_meat:1,leather_armor_rl:15,
+
+    // Creature parts / misc / junk / valuables
+    gecko_hide:1,fire_gecko_hide:1,golden_gecko_hide:1,green_gecko_hide:1,
+    radscorpion_gland:1,bark_scorpion_gland:1,cazador_poison_gland:1,
+    nightstalker_blood:1,mantis_egg:0,deathclaw_hand:3,irradiated_blood:0.5,
+    scrap:1,duct_tape:1,bobby_pin:0,sensor_module:2,pre_war_money:0,
+    powder_charge:1,dynamite:1,legion_coin:0,dog_tags:0,ncr_dogtags:0,
+    wonderglue:1,wrench:3,scrap_electronics:2,fission_battery:6,camera:3,
+    cigarette_pack:0,cigarette_carton:0.5,silverware:1,silver_watch:0,gold_necklace:0,
+    conductor:2,laser_focusing_lens:0.2,microfusion_regulator:1,servo_motor:4,
+    targeting_module:2,weapon_repair_kit:1,
+    tin_can:0.1,coffee_mug:0.3,pilot_light:0.2,surgical_tubing:0.2,glass_bottles:0.3,
+    clipboards:0.3,pencils:0.1,hot_plate:2,lunchbox:0.5,caravan_cards:0,
+
+    // Normal Fallout: New Vegas has weightless ammo outside Hardcore Mode.
+    ammo_9mm:0,ammo_10mm:0,ammo_357:0,ammo_556:0,ammo_308:0,
+    ammo_shells:0,energy_cell:0,microfusion_cell:0,electron_charge_pack:0,
+    ammo_44:0,ammo_45_70:0,ammo_50:0,ammo_40mm:0,
+
+    // Armor / clothing
+    leather_armor:15,reinforced_leather_armor:15,raider_armor:15,metal_armor:30,
+    metal_helmet:3,combat_armor:25,combat_helmet:3,power_armor:45,
+    ncr_armor:20,ncr_ranger_combat:30,ncr_salvaged_pa:40,
+    legion_centurion_armor:35,riot_gear:23,gecko_leather:15,
+    headwrap:1,prospector_hat:1,boones_beret:0.1,first_recon_beret:0.1,authority_glasses:0,
+    initiate_robes:2,scribe_robes:2,bos_recon_armor:20,bos_recon_helmet:3,
+    bos_combat_armor:25,bos_power_armor:45
+  };
+
+  function applyFNVFinalItemLocks(){
+    // Keep weapon value/weight locks from the weapon stat table, because that table also locks damage/AP/ammo.
+    if(typeof FNV_WEAPON_STATS!=='undefined'){
+      Object.entries(FNV_WEAPON_STATS).forEach(([id,st])=>{
+        if(!ITEMS[id])return;
+        if(st.p!=null)ITEMS[id].p=st.p;
+        if(st.w!=null)ITEMS[id].w=st.w;
+      });
+    }
+    Object.entries(FNV_FINAL_ITEM_VALUES).forEach(([id,val])=>{if(ITEMS[id])ITEMS[id].p=val;});
+    Object.entries(FNV_FINAL_ITEM_WEIGHTS).forEach(([id,val])=>{if(ITEMS[id])ITEMS[id].w=val;});
+  }
+
+  applyFNVFinalItemLocks();
+
+  // Use final locked base value for barter even if older code asks fnvBaseValue().
+  window.FNV_FINAL_ITEM_VALUES=FNV_FINAL_ITEM_VALUES;
+  window.FNV_FINAL_ITEM_WEIGHTS=FNV_FINAL_ITEM_WEIGHTS;
+  const oldFnvBaseValue=window.fnvBaseValue;
+  window.fnvBaseValue=fnvBaseValue=function(id){
+    const it=ITEMS[id];
+    if(!it)return 0;
+    if(typeof FNV_WEAPON_STATS!=='undefined'&&FNV_WEAPON_STATS[id]&&FNV_WEAPON_STATS[id].p!=null)return FNV_WEAPON_STATS[id].p;
+    if(Object.prototype.hasOwnProperty.call(FNV_FINAL_ITEM_VALUES,id))return FNV_FINAL_ITEM_VALUES[id];
+    return oldFnvBaseValue?oldFnvBaseValue(id):Math.max(0,Math.round(Number(it.p)||0));
+  };
+
+  // Re-lock before screens that display or price items.
+  ['tradeRenderItems','tradeRenderFooter','tradeExecute','renderInv','upInv','upAll'].forEach(fn=>{
+    const old=window[fn]||(typeof globalThis!=='undefined'?globalThis[fn]:null);
+    if(typeof old!=='function')return;
+    window[fn]=globalThis[fn]=function(){
+      applyFNVFinalItemLocks();
+      return old.apply(this,arguments);
+    };
+  });
+
+  window.auditFNVItemValuesWeights=function(){
+    applyFNVFinalItemLocks();
+    const valueMismatch=[],weightMismatch=[],unlocked=[];
+    Object.keys(ITEMS).forEach(id=>{
+      const it=ITEMS[id];
+      if(!it)return;
+      let expectedV=null,expectedW=null;
+      if(typeof FNV_WEAPON_STATS!=='undefined'&&FNV_WEAPON_STATS[id]){
+        expectedV=FNV_WEAPON_STATS[id].p; expectedW=FNV_WEAPON_STATS[id].w;
+      }
+      if(Object.prototype.hasOwnProperty.call(FNV_FINAL_ITEM_VALUES,id))expectedV=FNV_FINAL_ITEM_VALUES[id];
+      if(Object.prototype.hasOwnProperty.call(FNV_FINAL_ITEM_WEIGHTS,id))expectedW=FNV_FINAL_ITEM_WEIGHTS[id];
+      if(expectedV!=null&&Number(it.p)!==Number(expectedV))valueMismatch.push(`${id}: ${it.p} should ${expectedV}`);
+      if(expectedW!=null&&Number(it.w)!==Number(expectedW))weightMismatch.push(`${id}: ${it.w} should ${expectedW}`);
+      const quest=/quest|paperwork|bill of sale|town supplies|dynamite bundle|holotape|slate|toolkit|badge|ear|schoolhouse/i.test((it.n||'')+' '+(it.desc||''));
+      if(expectedV==null&&expectedW==null&&!quest)unlocked.push(id+': '+(it.n||id));
+    });
+    const out={
+      total:Object.keys(ITEMS).length,
+      lockedValues:Object.keys(FNV_FINAL_ITEM_VALUES).filter(id=>ITEMS[id]).length+(typeof FNV_WEAPON_STATS!=='undefined'?Object.keys(FNV_WEAPON_STATS).filter(id=>ITEMS[id]&&!FNV_FINAL_ITEM_VALUES[id]).length:0),
+      lockedWeights:Object.keys(FNV_FINAL_ITEM_WEIGHTS).filter(id=>ITEMS[id]).length+(typeof FNV_WEAPON_STATS!=='undefined'?Object.keys(FNV_WEAPON_STATS).filter(id=>ITEMS[id]&&!FNV_FINAL_ITEM_WEIGHTS[id]).length:0),
+      valueMismatch,weightMismatch,customOrQuestUnlocked:unlocked
+    };
+    if(valueMismatch.length||weightMismatch.length)console.warn('FNV item economy audit mismatch:',out);
+    else console.log('FNV item economy audit OK:',out);
+    return out;
+  };
+  try{window.auditFNVItemValuesWeights()}catch(e){}
+})();
 </script>
 </body>
 </html>
