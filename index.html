@@ -10,6 +10,20 @@
 <meta name="theme-color" content="#1a1a0e">
 <title>Fallout: New Vegas RPG</title>
 <style>
+/*
+============================================================
+QUICK EDITING MAP - CSS
+============================================================
+1. Core mobile layout: body, wrapper, header, status bar, nav
+2. Reusable UI: cards, buttons, bars, overlays, dialog/result popup
+3. Trade/inventory/loot: trade overlay, item cards, found-item display
+4. Combat UI: combat panel, enemy portrait, corpse/loot cards
+5. Map/travel/mobile fixes: map icons, pan/zoom, safe-area fixes
+6. Patch CSS: later injected styles are kept in JS patch sections
+
+Safe edits here: sizes, spacing, colours, borders, icon sizes.
+Risky edits here: overlay IDs, display rules, position/z-index values.
+*/
 :root{--bg:#1a1a0e;--panel:#242418;--panel2:#1e1e14;--amber:#f0c850;--amber2:#c9a230;--green:#4aff4a;--green2:#2ecc2e;--red:#ff4444;--blue:#4488cc;--text:#e8e4d0;--muted:#9a9680;--line:#3a3828;--pip:#14cc64;--hp-red:#cc3333;--ap-blue:#3388cc;--xp-gold:#ccaa33;--st:max(env(safe-area-inset-top,0px),10px);--sb:max(env(safe-area-inset-bottom,0px),8px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 @font-face{font-family:'Pip';src:local('Courier New'),local('Courier');font-weight:normal}
@@ -169,13 +183,6 @@ text-transform:uppercase;transition:transform 60ms,box-shadow 60ms}
 /* Inventory card */
 .inv-card{background:var(--panel2);border:1px solid #2a2818;border-radius:5px;padding:6px 8px;margin:3px 0}
 .inv-row{display:flex;align-items:center;justify-content:space-between;gap:6px}
-/* Combat */
-.combat-panel{background:#1a0a0a;border:1px solid #3a1818;border-radius:6px;padding:10px;margin:4px 0}
-.enemy-portrait{text-align:center;font-size:48px;margin:8px 0}
-.icon-wrap{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;line-height:1;flex:0 0 auto}
-.icon-wrap img,.icon-wrap svg{width:100%;height:100%;object-fit:contain;display:block}
-.combat-bar{display:flex;gap:4px;margin:4px 0;flex-wrap:wrap}
-.combat-bar .bt{flex:1;min-width:80px;text-align:center}
 /* Combat */
 .combat-panel{background:#1a0a0a;border:1px solid #3a1818;border-radius:6px;padding:10px;margin:4px 0}
 .enemy-portrait{text-align:center;font-size:48px;margin:8px 0}
@@ -468,6 +475,25 @@ html,body,#W,#C,#N,button{touch-action:manipulation}
 <div id="NF"></div>
 <div id="PO"><div id="PP"></div></div>
 <script>
+/*
+============================================================
+QUICK EDITING MAP - JAVASCRIPT
+============================================================
+EDITABLE DATA SECTIONS
+01. LOCS      = locations, buildings shown there, surrounding areas
+02. ROADS     = travel links between locations
+03. ITEMS     = item names, icons, values, weights, effects
+04. ENEMIES   = enemy stats, icons, loot pools
+05. BLDS      = building definitions and location screens
+06. NPC DATA  = named NPCs, faction data, background starts
+07. QUESTS    = encounter cards, side boards, bounties, world events
+08. TRADE     = trade categories, shop stock, recipes, properties
+09. MAP       = map coordinates, map icons, travel scenes
+10. PATCHES   = late safe overrides, NPC flavour cards, compatibility fixes
+
+Safe edits: data values inside objects/arrays, flavour text, icon paths.
+Risky edits: function names, HTML IDs, save keys, onclick handler names.
+*/
 // ============================================================
 // UTILITIES
 // ============================================================
@@ -665,7 +691,9 @@ function confirmNewGame(){
 }
 
 // ============================================================
-// DATA - LOCATIONS
+// EDITABLE DATA 01 - LOCATIONS AND SURROUNDINGS
+// Edit here for: towns, regions, building lists, scavenging areas,
+// local enemy pools and local loot pools.
 // ============================================================
 const LOCS={
 Goodsprings:{n:"Goodsprings",r:"Mojave South",d:"A quiet frontier town. Clean water, honest people.",e:'<img src="NVImages/GoodspringsIcon.png" style="width:80px;height:80px;object-fit:contain;">',t:"town",
@@ -778,6 +806,10 @@ HooverDam:{n:"Hoover Dam",r:"East Mojave",d:"The prize everyone's fighting for."
   sur:[{n:"Dam Exterior",e:"🌊",d:"NCR patrols. Legion scouts across the river.",en:["legion_scout","legion_scout","lakelurk"],lt:["ammo_556","stimpak","ncr_armor"]}]}
 };
 
+// ============================================================
+// EDITABLE DATA 02 - ROADS / TRAVEL LINKS
+// Edit here for: which locations connect, and travel difficulty.
+// ============================================================
 const ROADS={
 Goodsprings:{Primm:1,FreesideN:4,Sloan:2,MojaveOutpost:2,NCRCF:2},
 Primm:{Goodsprings:1,Nipton:2,Novac:2,CampMcCarran:3,MojaveOutpost:1,NCRCF:1},
@@ -843,7 +875,9 @@ function applyEndgameRoutes(){
 
 
 // ============================================================
-// DATA - ITEMS
+// EDITABLE DATA 03 - ITEMS
+// Edit here for: item names, icons, values, weights, healing,
+// weapon damage, ammo, armour, junk, quest items and consumables.
 // ============================================================
 const ITEMS={
 // FNV_VALUE_WEIGHT_AUDIT_2026_05_02: Direct Fallout: New Vegas counterparts have exact base cap value `p` and exact item weight `w` patched into this file. Custom/fan quest items with no direct FNV counterpart keep project values.
@@ -1254,7 +1288,9 @@ const FNV_ITEM_VALUES={stimpak:75,super_stimpak:150,purified_water:20,dirty_wate
 Object.entries(FNV_ITEM_VALUES).forEach(([id,val])=>{if(ITEMS[id])ITEMS[id].p=val});
 
 // ============================================================
-// DATA - ENEMIES
+// EDITABLE DATA 04 - ENEMIES
+// Edit here for: enemy names, icons, HP, attack, faction, loot,
+// caps and combat difficulty.
 // ============================================================
 // Fallout: New Vegas weapon stat lock.
 // DAM/crit/AP/weight/value are copied as direct FNV counterparts where the item exists in FNV.
@@ -1395,6 +1431,11 @@ sentry_bot:{n:"Sentry Bot",hp:150,a:25,d:14,xp:65,e:"🤖",loot:["energy_cell","
 };
 
 // Buildings
+// ============================================================
+// EDITABLE DATA 05 - BUILDINGS
+// Edit here for: location building cards, building descriptions,
+// and which action function opens each building.
+// ============================================================
 const BLDS={
 saloon:{n:"Prospector Saloon",e:'<img src="NVImages/ProspectorsaloonIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',am:["The radio plays Big Iron...","Trudy wipes the counter.","Someone argues in the corner."]},
 general_store:{n:"General Store",e:'<img src="NVImages/ChetgeneralstoreIcon.png" style="width:30%;height:30%;object-fit:contain;display:block;">',am:["Dusty shelves. The essentials.","Chet looks suspicious.","Ammo behind the counter."]},
@@ -1490,6 +1531,10 @@ dam_power:{n:"Dam Power Plant",e:"⚡",am:["Turbines hum. The Mojave's lifeline.
 };
 
 // Factions
+// ============================================================
+// EDITABLE DATA 06 - FACTIONS AND NAMED NPCS
+// Edit here for: faction names, reputation groups and named NPCs.
+// ============================================================
 const FACTIONS={NCR:"New California Republic",Legion:"Caesar\'s Legion",House:"Mr. House",BOS:"Brotherhood of Steel",Followers:"Followers of the Apocalypse",Kings:"The Kings",Khans:"Great Khans",Boomers:"Nellis Boomers",PowderGangers:"Powder Gangers",
 // Location factions (independent settlements)
 Goodsprings:"Goodsprings",Primm:"Primm",Novac:"Novac",BoulderCity:"Boulder City",Freeside:"Freeside",Westside:"Westside",Jacobstown:"Jacobstown",Sloan:"Sloan",CinderGulch:"Cinder Gulch",TradingPost188:"188 Trading Post"};
@@ -2896,17 +2941,47 @@ function upWorld(){
 }
 
 // ============================================================
-// SCAVENGE SYSTEM (Tap mechanic from Elder to King)
+// CORE GAMEPLAY - SCAVENGE SYSTEM
+// This is where tap-scavenging chooses combat, caps, items or NPCs.
+// Be careful here: this changes the actual gameplay roll.
 // ============================================================
 function doScavenge(){
   if(combat)return;
-  S.scavengeCount++;
+  S.scavengeCount=(S.scavengeCount||0)+1;
+  S.scavSinceNpc=(S.scavSinceNpc||0)+1;
   S.lastScavengeTick={day:S.days,hour:S.hours||8};
   advanceTime(1);
-  const loc=LOCS[S.loc];
-  const r=R();
 
-  if(r<.20*loc.dg){
+  const loc=LOCS[S.loc]||{};
+  const r=R();
+  const forcedNpc=S.scavSinceNpc>=5;
+
+  // Random NPCs now have a real, early roll in scavenging.
+  // You should meet someone roughly 1 in 4 scavenges, with a hard pity at 5.
+  if(forcedNpc||r<0.26){
+    if(typeof spawnRandomNpcEncounter==='function'){
+      spawnRandomNpcEncounter({loc:S.loc});
+    }else{
+      const npc=mkNPC({loc:S.loc});
+      if(!S.relationships)S.relationships=[];
+      let rel=S.relationships.find(r2=>r2.name===npc.name);
+      if(!rel){
+        rel={
+          name:npc.name,rel:'stranger',aff:0,male:npc.male,age:npc.age,
+          role:npc.role,loc:S.loc,fac:npc.fac||((LOCS[S.loc]||{}).fac)||'',
+          icon:npc.icon||inferNpcIcon(npc),met:S.days
+        };
+        S.relationships.push(rel);
+      }
+      S.scavSinceNpc=0;
+      S.lastNpcScavTick={day:S.days,hour:S.hours||8,loc:S.loc};
+      save();
+      openNPCInteraction(npc,rel);
+    }
+    return;
+  }
+
+  if(r<0.26+(0.18*(loc.dg||1))){
     const surs=loc.sur||[];
     const area=surs.length?rndA(surs):null;
     const enPool=area?area.en:['gecko','radroach'];
@@ -2914,44 +2989,44 @@ function doScavenge(){
     if(validPool.length){
       const enemies=buildCohesiveGroup(validPool,rnd(1,Math.min(2,validPool.length)));
       if(enemies.length){
-        // Scavenge encounters go straight to pre-encounter via a quick overlay
         $('TO').classList.add('A');
+        if(area)area._noResume=true;
         preEncounter(enemies,area,0,false);
         return;
       }
     }
   }
-  if(r<.45){
-    // Find caps
-    const g=rnd(2,8+S.level*2);S.caps+=g;S.capsEarned+=g;
+
+  if(r<0.66){
+    const g=rnd(2,8+S.level*2);
+    S.caps+=g;
+    S.capsEarned=(S.capsEarned||0)+g;
     log('Found '+g+' caps scavenging.','e');
     notify('💰 +'+g+' caps');
-  } else if(r<.70){
-    // Find item
+  }else if(r<0.88){
     const surs=loc.sur||[];
     const area=surs.length?rndA(surs):null;
     const ltPool=area?area.lt:['herbs','scrap'];
     const bonusPool=getBonusLootPool(S.loc,area);
-    const fi=rndA(ltPool.concat(bonusPool));const it=ITEMS[fi];
+    const fi=rndA(ltPool.concat(bonusPool));
+    const it=ITEMS[fi];
     if(it){giveItem(fi);log('Found '+it.n+'.','e');showItemFound('Scavenged',it.n,it.e)}
-  } else if(r<.82){
-    // NPC encounter
-    const npc=mkNPC({loc:S.loc});
-    if(!S.relationships.find(r2=>r2.name===npc.name)){
-      S.relationships.push({name:npc.name,rel:'stranger',aff:0,male:npc.male,age:npc.age,loc:S.loc,met:S.days});
-    }
-    openNPCInteraction(npc,S.relationships.find(r2=>r2.name===npc.name));
-    return;
-  } else {
-    // Flavor text
-    const scenes=["The wind carries the smell of dust and decay.","You hear gunshots in the distance.","A tumbleweed rolls past.","The Pip-Boy crackles with static.","You spot tracks in the sand — something big.",
-    "An old billboard reads: 'NEVADA: Silver State'","Brahmin bones bleach in the sun.","The heat is oppressive."];
-    log(rndA(scenes),'n');
-    notify(rndA(scenes));
+  }else{
+    const scenes=[
+      'The wind carries the smell of dust and decay.',
+      'You hear gunshots in the distance.',
+      'A tumbleweed rolls past.',
+      'The Pip-Boy crackles with static.',
+      'You spot tracks in the sand — something big.',
+      'An old billboard reads: NEVADA: Silver State',
+      'Brahmin bones bleach in the sun.',
+      'The heat is oppressive.'
+    ];
+    const scene=rndA(scenes);
+    log(scene,'n');notify(scene);
   }
-  chkLU();upAll();
+  chkLU();save();upAll();
 }
-
 // ============================================================
 // ENCOUNTER CARD SYSTEM
 // ============================================================
@@ -2960,6 +3035,10 @@ function doScavenge(){
 // fn runs when chosen, result is the text shown in outcome popup.
 // Cards are tagged with location keys, faction keys, or 'generic'.
 
+// ============================================================
+// EDITABLE DATA 07 - QUESTS / ENCOUNTER CARDS
+// Edit here for: scripted encounter cards and non-main quest content.
+// ============================================================
 const ENCOUNTER_CARDS={
 
 // ── GOODSPRINGS ─────────────────────────────────────────────
@@ -3807,7 +3886,7 @@ function preEncounter(enemies,area,step,travelMode=false){
       style:'bt go',
       fn:()=>{
         if(travelMode){startCombat(enemies);if(combat){combat.postT=tDest;if(isHuman&&fac)combat._factionFac=fac}}
-        else{startCombat(enemies);if(combat){combat._expArea=area;combat._expStep=step;if(isHuman&&fac)combat._factionFac=fac}}
+        else{startCombat(enemies);if(combat){if(!(area&&area._noResume)){combat._expArea=area;combat._expStep=step}if(isHuman&&fac)combat._factionFac=fac}}
       }
     });
   }else if(isAnimal||isUndead){
@@ -3817,7 +3896,7 @@ function preEncounter(enemies,area,step,travelMode=false){
       style:'bt go',
       fn:()=>{
         if(travelMode){startCombat(enemies);if(combat){combat.postT=tDest;if(isHuman&&fac)combat._factionFac=fac}}
-        else{startCombat(enemies);if(combat){combat._expArea=area;combat._expStep=step;if(isHuman&&fac)combat._factionFac=fac}}
+        else{startCombat(enemies);if(combat){if(!(area&&area._noResume)){combat._expArea=area;combat._expStep=step}if(isHuman&&fac)combat._factionFac=fac}}
       }
     });
   }
@@ -3830,7 +3909,7 @@ function preEncounter(enemies,area,step,travelMode=false){
       fn:()=>{
         S.rep[fac]=(S.rep[fac]||0)-5;S.karma=(S.karma||0)-3;
         if(travelMode){startCombat(enemies);if(combat){combat.postT=tDest;combat._factionFac=fac;combat._provokedFac=fac;combat._noResumeOnDefeat=true;combat.log.unshift('You attacked a '+facName+' patrol. This will have consequences.')}}
-        else{startCombat(enemies);if(combat){combat._expArea=area;combat._expStep=step;combat._factionFac=fac;combat._provokedFac=fac;combat._noResumeOnDefeat=true;combat.log.unshift('You attacked a '+facName+' patrol. This will have consequences.')}}
+        else{startCombat(enemies);if(combat){if(!(area&&area._noResume)){combat._expArea=area;combat._expStep=step}combat._factionFac=fac;combat._provokedFac=fac;combat._noResumeOnDefeat=true;combat.log.unshift('You attacked a '+facName+' patrol. This will have consequences.')}}
       }
     });
   }
@@ -4763,36 +4842,69 @@ function factionDefeatLines(fac,enemies,lostCaps){
   return lines;
 }
 function finishDefeatToWorld(){
+  combat=null;tQ=[];tDest=null;tOrigin=null;tTravelActive=false;
+  window._resumeArea=null;window._resumeStep=0;
+  try{if($('CO'))$('CO').style.display='none'}catch(e){}
   try{if($('TO'))$('TO').classList.remove('A')}catch(e){}
   try{if($('DO'))$('DO').classList.remove('A')}catch(e){}
-  upAll();
+  try{if($('BO'))$('BO').classList.remove('A')}catch(e){}
+  save();upAll();
 }
 
 function endCombat(won,died){
-  if(!combat){$('CO').style.display='none';return}
+  if(!combat){
+    try{if($('CO'))$('CO').style.display='none'}catch(e){}
+    return;
+  }
+
   const expArea=combat._expArea;
   const expStep=combat._expStep;
   const postT=combat.postT;
-  $('CO').style.display='none';
+  const fac=combat._provokedFac||combat._factionFac||null;
+  const defeatedEnemies=clone(combat.enemies||[]);
+
+  function closeCombatScreens(){
+    try{if($('CO'))$('CO').style.display='none'}catch(e){}
+    try{if($('TO'))$('TO').classList.remove('A')}catch(e){}
+    try{if($('DO'))$('DO').classList.remove('A')}catch(e){}
+  }
+
+  closeCombatScreens();
   window._resumeArea=expArea||null;
   window._resumeStep=expStep||0;
 
   if(died){
-    const fac=combat._provokedFac||combat._factionFac||null;
-    const defeatedEnemies=clone(combat.enemies||[]);
-    const lostCaps=rnd(10,30);
-    S.hp=Math.floor(S.maxHp*.3);S.caps=Math.max(0,S.caps-lostCaps);
-    combat=null;save();
+    const lostCaps=Math.min(S.caps||0,rnd(10,30));
+    S.hp=Math.max(1,Math.floor((S.maxHp||100)*0.35));
+    S.ap=Math.max(0,Math.floor((S.maxAp||60)*0.35));
+    S.caps=Math.max(0,(S.caps||0)-lostCaps);
+
+    // Death should never leave the player trapped in travel/combat state.
+    combat=null;
+    tQ=[];tDest=null;tOrigin=null;tTravelActive=false;
+    window._resumeArea=null;window._resumeStep=0;
+
+    log('You were knocked out and dragged yourself back together. Lost '+lostCaps+' caps.','c');
+    save();
+
     if(fac){
-      try{if($('TO'))$('TO').classList.remove('A')}catch(e){}
-      showResult(factionDefeatTitle(fac),factionDefeatIcon(fac),factionDefeatLines(fac,defeatedEnemies,lostCaps),'Continue','finishDefeatToWorld()');
-    }else if(postT){
-      showResult('Knocked Out','💀',['You wake up later, stripped of some caps.','Lost '+lostCaps+' caps.'],'Continue','resumeTravelAfterCombat()');
+      showResult(
+        factionDefeatTitle(fac),
+        factionDefeatIcon(fac),
+        factionDefeatLines(fac,defeatedEnemies,lostCaps),
+        'Continue',
+        'finishDefeatToWorld()'
+      );
     }else{
-      showResult('Knocked Out','💀',['You wake up later, stripped of some caps.','Lost '+lostCaps+' caps.'],'Continue','upAll()');
+      showResult(
+        'Knocked Out','💀',
+        ['You wake up later, bruised and stripped of some caps.','Lost '+lostCaps+' caps.','Your travel/combat state has been cleared safely.'],
+        'Continue','finishDefeatToWorld()'
+      );
     }
     return;
   }
+
   if(!won){
     combat=null;save();
     if(postT){showResult('Escaped Combat','🏃',['You got away and kept moving.'],'Continue','resumeTravelAfterCombat()');}
@@ -4820,7 +4932,6 @@ function endCombat(won,died){
   renderCombat();
   return;
 }
-
 
 
   
@@ -7000,6 +7111,11 @@ function bldShop(body,bId){
 // ============================================================
 // TRADE SYSTEM
 // ============================================================
+// ============================================================
+// EDITABLE DATA 08 - TRADE / CRAFTING / PROPERTIES
+// Edit here for: shop categories, trade screens, recipes, properties
+// and bounty/property definitions.
+// ============================================================
 const TRADE_CATS={
   all:  {label:'All',     filter:()=>true},
   weap: {label:'Weapons', filter:it=>it.t==='w'},
@@ -8403,6 +8519,10 @@ function sellJunk(){
 // Geographic coordinates as % of a 400×580 viewBox
 // Based on real FNV Mojave map proportions (south=bottom, east=right)
 let _mapSel=null;
+// ============================================================
+// EDITABLE DATA 09 - MAP / TRAVEL PRESENTATION
+// Edit here for: map node positions, icons and travel scene flavour.
+// ============================================================
 const MAP_COORDS={
   // === FAR WEST ===
   MojaveOutpost:   {x:38,  y:510},  // SW corner, end of I-15 south
@@ -10010,6 +10130,10 @@ function npcFacName(npc){const f=npc&&npc.fac;return f&&FACTIONS&&FACTIONS[f]?FA
 function npcIcon(npc,size){return renderIcon(inferNpcIcon(npc||{}),size||56)}
 
 // NPC portrait sizing.
+// ============================================================
+// PATCH SECTION 10A - NPC CARD / COMPANION CSS OVERRIDES
+// Late CSS kept here so it safely overrides older styles above.
+// ============================================================
 (function injectNpcEncounterCss(){
  const old=document.getElementById('npc-encounter-patch-css');if(old)old.remove();
  const s=document.createElement('style');s.id='npc-encounter-patch-css';
@@ -10028,6 +10152,11 @@ function npcIcon(npc,size){return renderIcon(inferNpcIcon(npc||{}),size||56)}
 })();
 
 // Replace BitLife relationship chat with encounter-card options.
+// ============================================================
+// PATCH SECTION 10B - RANDOM NPC FLAVOUR PROFILES
+// Edit here for: random NPC card speech, action labels, rumours,
+// role/faction-specific work/help/trade behaviour.
+// ============================================================
 const NPC_FLAVOUR={
  generic:{
   tag:'Road-worn stranger',tone:'Neutral',
@@ -11588,6 +11717,26 @@ console.log('[FNV-Patch final] NPC encounter cards, companion v2 overrides, expa
   function addRep(fac,amt){if(!fac||!amt)return;if(!S.rep)S.rep={};S.rep[fac]=(S.rep[fac]||0)+amt}
   function boostRel(name,amt){const r=npcRecord(name);if(!r)return;r.aff=Math.max(0,Math.min(100,(r.aff||0)+amt));if(r.aff>=30&&r.rel==='stranger')r.rel='friend'}
 
+  function mergeNpcIntoRel(npc,existing){
+    npc=npc||{};
+    if(!S.relationships)S.relationships=[];
+    let rel=existing||S.relationships.find(r=>r.name===npc.name);
+    if(!rel){
+      rel={name:npc.name||'Wastelander',rel:'stranger',aff:0,met:S.days};
+      S.relationships.push(rel);
+    }else if(!S.relationships.includes(rel)){
+      S.relationships.push(rel);
+    }
+    rel.name=rel.name||npc.name||'Wastelander';
+    rel.role=rel.role||npc.role||'Wastelander';
+    rel.loc=rel.loc||npc.loc||S.loc;
+    rel.fac=rel.fac||npc.fac||((LOCS[rel.loc||S.loc]||{}).fac)||'';
+    rel.icon=rel.icon||npc.icon||inferNpcIcon(rel);
+    rel.age=rel.age||npc.age||rnd(19,55);
+    rel.male=rel.male==null?npc.male:rel.male;
+    return rel;
+  }
+
   const oldOpen=window.openNPCInteraction;
   window.openNPCInteraction=function(npc,existing){
     npc=npc||{};
@@ -11793,17 +11942,17 @@ console.log('[FNV-Patch final] NPC encounter cards, companion v2 overrides, expa
     advanceTime(1);
 
     const loc=LOCS[S.loc]||{};
-    const forcedNpc=S.scavSinceNpc>=8;
+    const forcedNpc=S.scavSinceNpc>=5;
     const r=R();
 
     // Give random people a real slot in scavenging instead of burying them
     // behind loot/combat. Also guarantees one after a dry spell.
-    if(forcedNpc||r<0.22){
+    if(forcedNpc||r<0.26){
       spawnRandomNpcEncounter({loc:S.loc});
       return;
     }
 
-    if(r<0.22+(0.18*(loc.dg||1))){
+    if(r<0.26+(0.18*(loc.dg||1))){
       const surs=loc.sur||[];
       const area=surs.length?rndA(surs):null;
       const enPool=area?area.en:['gecko','radroach'];
@@ -11818,12 +11967,12 @@ console.log('[FNV-Patch final] NPC encounter cards, companion v2 overrides, expa
       }
     }
 
-    if(r<0.62){
+    if(r<0.66){
       const g=rnd(2,8+S.level*2);
       S.caps+=g;S.capsEarned=(S.capsEarned||0)+g;
       log('Found '+g+' caps scavenging.','e');
       notify('💰 +'+g+' caps');
-    }else if(r<0.86){
+    }else if(r<0.88){
       const surs=loc.sur||[];
       const area=surs.length?rndA(surs):null;
       const ltPool=area?area.lt:['herbs','scrap'];
@@ -11847,19 +11996,276 @@ console.log('[FNV-Patch final] NPC encounter cards, companion v2 overrides, expa
     chkLU();save();upAll();
   };
 
-  // Expedition/light exploration can now bump into talkable NPCs too.
-  // This is deliberately modest so it does not replace enemies, campfires or cards.
-  const oldRun=window.runExpedition;
-  if(typeof oldRun==='function'){
-    window.runExpedition=runExpedition=function(area,step){
-      if(!combat&&area&&step>0&&R()<0.10){
-        $('TO').classList.remove('A');
-        spawnRandomNpcEncounter({loc:S.loc});
-        return;
-      }
-      return oldRun(area,step);
-    };
+  // Expedition NPC hook disabled in this stability patch.
+  // Random NPCs are now wired through scavenging only, so combat/travel can finish cleanly.
+})();
+
+
+
+// ============================================================
+// FINAL STABLE NPC ENCOUNTER PATCH
+// Purpose: one self-contained NPC interaction system.
+// Fixes missing npcProfile/mergeNpcIntoRel scope errors and stops
+// scavenge combat from resuming into another random fight.
+// ============================================================
+(function(){
+  window.__FINAL_STABLE_NPC_PATCH = true;
+
+  const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const jss = s => String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,' ');
+  const key = v => String(v||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const pick = a => a && a.length ? a[Math.floor(Math.random()*a.length)] : '';
+
+  const FALLBACK_FLAVOUR = {
+    generic:{tag:'Road-worn stranger',scene:['They pause with one hand near their gear, watching the road behind you.'],greet:['Keep it quick. The road is not getting safer.'],actions:['🗣 Ask what they have seen','📜 Ask if they need something done','🔄 Barter road supplies','🤝 Lend a hand','⭐ Do a useful favour'],rumours:['Two caravans turned back this week. Something has the road spooked.'],noWork:['Nothing clean. Nothing safe. That is about the whole list.'],trade:'Road trade. Whatever keeps us alive.',help:'They need food, water, medicine, or time.'},
+    caravan:{tag:'Caravan road hand',scene:['A pack brahmin bell clanks nearby while they check the straps.'],greet:['Caravan is moving soon. Talk while I work.'],actions:['🗣 Ask about the trade road','📜 Ask for caravan work','🔄 Swap road goods','🤝 Help secure the load','⭐ Scout the next stretch'],rumours:['Toll gangs are testing smaller caravans again.'],noWork:['Nothing unless you can walk ten miles without complaining.'],trade:'Caravan rules: fair weight, fair risk.',help:'They need help checking straps and watching the ridge.'},
+    NCR:{tag:'NCR personnel',scene:['Their uniform is dusty but maintained. They watch you like paperwork with a trigger finger.'],greet:['Civilian, keep your hands where I can see them.'],actions:['🗣 Ask for patrol intel','📜 Ask for NCR work','🔄 Trade field supplies','🤝 Offer backup','⭐ Report hostile movement'],rumours:['Supply lines are ugly. One broken caravan and an outpost goes hungry.'],noWork:['Officially? No. Unofficially? Ask at an outpost.'],trade:'Field barter only.',help:'They could use a watch partner, spare water, or medical help.'},
+    Legion:{tag:'Legion aligned',scene:['They stand too still for a normal traveller. Their stare lands before the words do.'],greet:['Speak carefully, profligate.'],actions:['🗣 Ask what the Legion knows','📜 Ask for brutal work','🔄 Offer a hard trade','🤝 Prove useful','⭐ Pass on road weakness'],rumours:['NCR patrols are tired. Tired men break before lines do.'],noWork:['You are not trusted with orders. Survive longer.'],trade:'Value for value, or walk away.',help:'Help here feels more like proving you are not useless.'},
+    BOS:{tag:'Brotherhood operative',scene:['Their gear is cleaner than the road around it. They notice every piece of tech you carry.'],greet:['State your business. Briefly.'],actions:['🗣 Ask about tech activity','📜 Ask for Brotherhood work','🔄 Trade technical parts','🤝 Assist the patrol','⭐ Hand over useful tech'],rumours:['Energy cells are disappearing faster than patrol logs admit.'],noWork:['Not without clearance. Bring useful components first.'],trade:'Technical barter. Components, cells, tools.',help:'They need spare parts, medical aid, or a lookout.'},
+    PowderGangers:{tag:'Powder Ganger',scene:['They grin like they are deciding whether this is a chat or a robbery.'],greet:['You got caps, friend, or are we doing this loud?'],actions:['🗣 Ask who they are watching','📜 Ask for dirty work','🔄 Trade shady supplies','🤝 Patch them up','⭐ Tip them off'],rumours:['Prison boys are splitting into crews. More knives, fewer rules.'],noWork:['Work costs trust. You look expensive.'],trade:'No receipts, no refunds.',help:'They hate needing help, but bleeding makes people practical.'},
+    GreatKhans:{tag:'Great Khan',scene:['A Khan patch catches the light. They measure you without asking permission.'],greet:['You got Khan business, or are you just staring?'],actions:['🗣 Ask Khan road gossip','📜 Ask for Khan work','🔄 Trade chems and supplies','🤝 Offer respect/help','⭐ Share road gossip'],rumours:['Red Rock hears things before Vegas does.'],noWork:['Khan work is Khan business. Earn a name first.'],trade:'Khan trade is quick. No begging.',help:'Respectful help goes further than polite words.'},
+    Followers:{tag:'Followers medic',scene:['A patched medical satchel hangs from one shoulder. The work clearly never stops.'],greet:['Are you hurt, or are you here to help?'],actions:['🗣 Ask about local trouble','📜 Ask for relief work','🔄 Trade medical supplies','🤝 Help treat people','⭐ Donate clean supplies'],rumours:['Most violence starts as hunger, thirst, or fear. Then someone finds a gun.'],noWork:['There is always work. I just cannot promise pay.'],trade:'Medical barter. Clean supplies only.',help:'They can turn food, water, or a stimpak into goodwill.'},
+    Kings:{tag:'Kings local',scene:['The jacket is cleaner than the street, somehow. They lean like the alley is a stage.'],greet:['You looking for trouble or style advice?'],actions:['🗣 Ask Freeside gossip','📜 Ask for local work','🔄 Trade street goods','🤝 Help the neighbourhood','⭐ Back up a local'],rumours:['Freeside remembers who shares water and who only flashes caps.'],noWork:['Freeside has hungry hands everywhere. Ask around.'],trade:'Street trade. Keep it friendly.',help:'Food, medicine, or standing up for someone weaker.'},
+    Boomers:{tag:'Boomer',scene:['They squint at the sky more than at you, judging distance by instinct.'],greet:['You are standing very close for an outsider.'],actions:['🗣 Ask Nellis rumours','📜 Ask for repair work','🔄 Trade parts and ammo','🤝 Help with maintenance','⭐ Hand over spare parts'],rumours:['Engines tell the truth before people do. Listen for the cough.'],noWork:['Bring parts. Then we can talk about jobs.'],trade:'Parts, ammo, tools. No useless trinkets.',help:'Tools held, parts found, wounds patched.'},
+    merchant:{tag:'Wasteland trader',scene:['Their pack is arranged by value, not comfort. They have the smile of someone who survived bad customers.'],greet:['Buying, selling, or wasting daylight?'],actions:['🗣 Ask market gossip','📜 Ask for paid errands','🔄 Make a quick trade','🤝 Help the trader','⭐ Guard their pack'],rumours:['Ammo moves fastest before a battle. Food moves fastest after one.'],noWork:['I pay for results, not heroic promises.'],trade:'Quick barter. Deals should end before gunfire.',help:'Guarding, lifting, patching, or watching the crowd.'},
+    guard:{tag:'Armed guard',scene:['Their weapon is not raised, but it is already partway into the conversation.'],greet:['State business and keep moving.'],actions:['🗣 Ask about nearby threats','📜 Ask for security work','🔄 Trade guard supplies','🤝 Stand watch','⭐ Check the blind spot'],rumours:['Most ambushes start with something placed too neatly in the road.'],noWork:['Security work needs references or desperation.'],trade:'Ammo, water, bandages. Guard work burns all three.',help:'Another pair of eyes is useful.'},
+    doctor:{tag:'Field doctor',scene:['They count supplies under their breath, already unhappy with the number.'],greet:['Symptoms first, story second.'],actions:['🗣 Ask medical rumours','📜 Ask for clinic work','🔄 Trade medicine','🤝 Help with treatment','⭐ Donate medical supplies'],rumours:['People wait too long before using stimpaks. Pride kills quietly.'],noWork:['Bring clean water, stimpaks, or bandages. That is always work.'],trade:'Medical supplies only.',help:'Supplies or an hour of triage support.'},
+    mechanic:{tag:'Mechanic',scene:['Their nails are black with grease. They look at your gear like it owes them caps.'],greet:['You got parts or problems?'],actions:['🗣 Ask about broken tech','📜 Ask for repair work','🔄 Trade parts','🤝 Help with repairs','⭐ Hand over spare parts'],rumours:['Scrap electronics are drying up. Somebody is buying every board they can find.'],noWork:['Bring me parts and I will invent work.'],trade:'Parts trade. Tools, tape, electronics, batteries.',help:'Hands, parts, or time.'},
+    rancher:{tag:'Ranch hand',scene:['Dusty boots, rope burns, and a look that has seen too many brahmin do stupid things.'],greet:['Mind the ground. Tracks tell more truth than people.'],actions:['🗣 Ask about local tracks','📜 Ask for ranch work','🔄 Trade food and hides','🤝 Help with the herd','⭐ Watch for predators'],rumours:['Predators follow water. So do people. Same problem, different teeth.'],noWork:['Not unless you can mend fences and shoot straight.'],trade:'Food, hides, water. Ranch trade is simple.',help:'Water, food, medicine, or watching for predators.'}
+  };
+
+  function flav(){
+    try{ if(typeof NPC_FLAVOUR !== 'undefined' && NPC_FLAVOUR) return NPC_FLAVOUR; }catch(e){}
+    return FALLBACK_FLAVOUR;
   }
+  function getLoc(id){ try{return LOCS[id||S.loc]||{}}catch(e){return {}} }
+  function getFac(npc){ return npc.fac || getLoc(npc.loc||S.loc).fac || ''; }
+  function kindOf(npc){
+    npc=npc||{};
+    const role=key(npc.role), fac=key(getFac(npc));
+    if(role.includes('caravan'))return 'caravan';
+    if(role.includes('merchant')||role.includes('trader'))return 'merchant';
+    if(role.includes('doctor')||role.includes('medic'))return 'doctor';
+    if(role.includes('mechanic')||role.includes('engineer')||role.includes('technician'))return 'mechanic';
+    if(role.includes('scribe')||fac==='bos'||fac==='brotherhood')return 'BOS';
+    if(role.includes('guard')||role.includes('law')||role.includes('deputy')||role.includes('ranger')||role.includes('trooper'))return fac==='ncr'?'NCR':'guard';
+    if(role.includes('ranch'))return 'rancher';
+    if(fac==='ncr')return 'NCR';
+    if(fac==='legion')return 'Legion';
+    if(fac==='powdergangers'||fac==='powderganger')return 'PowderGangers';
+    if(fac==='greatkhans'||fac==='khans')return 'GreatKhans';
+    if(fac==='followers')return 'Followers';
+    if(fac==='kings')return 'Kings';
+    if(fac==='boomers')return 'Boomers';
+    return 'generic';
+  }
+  function profile(npc){ const f=flav(); return f[kindOf(npc)] || f.generic || FALLBACK_FLAVOUR.generic; }
+
+  window.npcProfile = profile;
+  window.mergeNpcIntoRel = function(npc,existing){
+    npc=npc||{};
+    if(!S.relationships)S.relationships=[];
+    let rel=existing || S.relationships.find(r=>r.name===npc.name);
+    if(!rel){
+      rel={name:npc.name||'Wastelander',rel:'stranger',aff:0,male:npc.male,age:npc.age,loc:npc.loc||S.loc,met:S.days};
+      S.relationships.push(rel);
+    }
+    ['role','fac','icon','age','male','loc'].forEach(k=>{ if(npc[k]!==undefined && npc[k]!==null && npc[k]!=='') rel[k]=npc[k]; });
+    rel.role=rel.role||'Wastelander';
+    rel.loc=rel.loc||S.loc;
+    rel.fac=rel.fac||getFac(rel);
+    try{ rel.icon=rel.icon||npc.icon||inferNpcIcon(rel,{loc:rel.loc}); }catch(e){ rel.icon=rel.icon||npc.icon||'👤'; }
+    return rel;
+  };
+  function npcRec(name){
+    if(!S.relationships)S.relationships=[];
+    let rel=S.relationships.find(r=>r.name===name);
+    if(!rel){ rel=window.mergeNpcIntoRel({name:name,role:'Wastelander',loc:S.loc},null); }
+    return rel;
+  }
+  window.npcRecord = npcRec;
+  function iconOf(npc,size){
+    try{ if(typeof npcIcon==='function')return npcIcon(npc,size||56); }catch(e){}
+    return `<span style="font-size:${size||56}px">${esc(npc.icon||'👤')}</span>`;
+  }
+  function itemLabel(id){ try{return itemName(id)}catch(e){return (ITEMS[id]&&ITEMS[id].n)||id} }
+  function itemPic(id){ try{return itemIcon(id)}catch(e){return (ITEMS[id]&&ITEMS[id].e)||'🎒'} }
+  function addStanding(fac,amt){ if(!fac||!amt)return; if(!S.rep)S.rep={}; S.rep[fac]=(S.rep[fac]||0)+amt; }
+  function boost(name,amt){ const r=npcRec(name); r.aff=Math.max(0,Math.min(100,(r.aff||0)+amt)); if(r.aff>=25&&r.rel==='stranger')r.rel='friendly'; }
+  function removeItem(id){ if(typeof remItem==='function')return remItem(id); const i=(S.inv||[]).indexOf(id); if(i>=0){S.inv.splice(i,1);return true} return false; }
+
+  function actionInfo(rel){
+    const k=kindOf(rel), fac=getFac(rel);
+    const map={
+      NCR:{need:['ammo_556','ammo_10mm','stimpak','purified_water'],reward:['ammo_556','stimpak','ncr_dogtag'],rep:'NCR',karma:1,done:'You pass on a useful report and help the patrol tighten its route.'},
+      Legion:{need:['machete','healing_powder','legion_coin'],reward:['legion_coin','healing_powder'],rep:'Legion',karma:-1,done:'You give them something useful and earn a cold nod of approval.'},
+      BOS:{need:['scrap_electronics','sensor_module','energy_cell','microfusion_cell'],reward:['energy_cell','microfusion_cell','scrap_electronics'],rep:'BOS',karma:0,done:'You hand over useful tech and get a clipped Brotherhood thanks.'},
+      PowderGangers:{need:['dynamite','powder_charge','ammo_9mm'],reward:['dynamite','ammo_9mm','jet'],rep:'PowderGangers',karma:-1,done:'You help them with something shady enough that nobody writes it down.'},
+      GreatKhans:{need:['jet','psycho','ammo_357','stimpak'],reward:['jet','ammo_357','healing_powder'],rep:'GreatKhans',karma:0,done:'You show respect and share something useful for the road.'},
+      Followers:{need:['stimpak','purified_water','antivenom'],reward:['stimpak','doctor_bag','purified_water'],rep:'Followers',karma:2,done:'You help treat people who had nobody else coming.'},
+      Kings:{need:['cram','purified_water','stimpak'],reward:['pre_war_money','switchblade','sunset_sars'],rep:'Kings',karma:1,done:'You help a local and the King\'s people notice.'},
+      Boomers:{need:['scrap_electronics','pilot_light','duct_tape','energy_cell'],reward:['ammo_556','energy_cell','scrap_electronics'],rep:'Boomers',karma:0,done:'You help with maintenance and avoid touching anything explosive.'},
+      caravan:{need:['purified_water','cram','ammo_9mm','stimpak'],reward:['sunset_sars','ammo_9mm','pre_war_money'],rep:'',karma:1,done:'You secure the load and watch the ridge until the road feels safer.'},
+      merchant:{need:['pre_war_money','cigarette_pack','scrap','duct_tape'],reward:['bobby_pin','sunset_sars','ammo_9mm'],rep:'',karma:0,done:'You guard the pack while they settle a quick bit of business.'},
+      doctor:{need:['stimpak','purified_water','antivenom'],reward:['stimpak','healing_powder','purified_water'],rep:'Followers',karma:2,done:'You assist with treatment and keep supplies moving.'},
+      mechanic:{need:['scrap','duct_tape','scrap_electronics','wrench'],reward:['scrap_electronics','duct_tape','energy_cell'],rep:'',karma:1,done:'You hold parts, pass tools, and stop something important from smoking.'},
+      guard:{need:['ammo_9mm','ammo_10mm','purified_water','stimpak'],reward:['ammo_9mm','stimpak','pre_war_money'],rep:fac,karma:1,done:'You cover their blind spot long enough to make the road feel less wrong.'},
+      rancher:{need:['purified_water','gecko_steak','bighorner_meat','stimpak'],reward:['bighorner_meat','gecko_hide','brahmin_steak'],rep:'Goodsprings',karma:1,done:'You help keep the herd calm and the predators away.'},
+      generic:{need:['purified_water','cram','stimpak','ammo_9mm'],reward:['bobby_pin','sunset_sars','pre_war_money'],rep:fac,karma:1,done:'You lend a hand without making a speech out of it.'}
+    };
+    return map[k]||map.generic;
+  }
+
+  window.openNPCInteraction=function(npc,existing){
+    const rel=window.mergeNpcIntoRel(npc||{},existing);
+    const p=profile(rel), loc=getLoc(rel.loc), fac=getFac(rel);
+    const actions=(p.actions&&p.actions.length>=4?p.actions:FALLBACK_FLAVOUR.generic.actions);
+    const name=jss(rel.name);
+    let h='';
+    h+=`<div class="npc-encounter-portrait" style="text-align:center;padding:10px 0 6px">${iconOf(rel,56)}</div>`;
+    h+=`<div style="text-align:center;font-size:16px;font-weight:bold;color:var(--amber);margin-bottom:3px">${esc(rel.name)}</div>`;
+    h+=`<div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:5px">${esc(rel.role||'Wastelander')}${fac?' · '+esc(fac):''}</div>`;
+    h+=`<div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-bottom:8px"><span style="font-size:10px;color:var(--amber2);border:1px solid #2a2818;border-radius:10px;padding:2px 7px">${esc(p.tag)}</span><span style="font-size:10px;color:var(--muted);border:1px solid #2a2818;border-radius:10px;padding:2px 7px">${esc(loc.n||rel.loc||'Mojave')}</span></div>`;
+    h+=`<div class="npc-line">${esc(pick(p.scene)||'They watch you carefully.')}</div>`;
+    h+=`<div class="npc-line" style="margin-bottom:12px">"${esc(pick(p.greet)||'Talk.') }"</div>`;
+    h+=`<button class="bt" onclick="window.npcEncounterRumour('${name}')">${actions[0]}</button>`;
+    h+=`<button class="bt pip" onclick="window.npcEncounterWork('${name}')">${actions[1]}</button>`;
+    h+=`<button class="bt" onclick="window.npcEncounterTrade('${name}')">${actions[2]}</button>`;
+    h+=`<button class="bt go" onclick="window.npcEncounterHelp('${name}')">${actions[3]}</button>`;
+    h+=`<button class="bt go" onclick="window.npcEncounterSpecial('${name}')">${actions[4]||'⭐ Do a useful favour'}</button>`;
+    h+=`<button class="bt dn" onclick="closeDlg()">Walk away</button>`;
+    openDlg(h);
+  };
+  try{ openNPCInteraction=window.openNPCInteraction; }catch(e){}
+
+  window.npcEncounterRumour=function(name){
+    const rel=npcRec(name), p=profile(rel), loc=getLoc(rel.loc);
+    let list=[];
+    list=list.concat(p.rumours||[], [`People around ${loc.n||'this place'} are watching strangers more closely than usual.`]);
+    const r=pick(list)||'Nothing useful today.';
+    advanceTime(1); boost(name,2); closeDlg(); log(rel.name+' says: '+r,'e');
+    showResult(p.tag,'🗣',[`"${esc(r)}"`,'⏰ 1 hour passed'],'Continue','upAll()');
+  };
+  window.npcEncounterWork=function(name){
+    const rel=npcRec(name), p=profile(rel);
+    closeDlg();
+    if(typeof mkQuest==='function' && Math.random()<0.5){
+      const q=mkQuest(rel.name); window._pendingQuest=q;
+      showResult('Work Available','📜',[`<b>${esc(q.name)}</b>`,esc(q.desc),`${capIcon()} ${q.rg} caps · ⭐ ${q.rx} XP`],'Accept','acceptPendingQuest()');
+      return;
+    }
+    showResult(rel.name,'📋',[esc(pick(p.noWork)||'No paid work right now.')],'Continue','upAll()');
+  };
+  window.npcEncounterTrade=function(name){
+    const rel=npcRec(name), p=profile(rel), info=actionInfo(rel);
+    const mine=(S.inv||[]).filter(id=>ITEMS[id]&&ITEMS[id].p>0&&ITEMS[id].p<100);
+    if(!mine.length){closeDlg();notify('Nothing worth trading right now.');return;}
+    const rewards=(info.reward||[]).concat(['stimpak','purified_water','sunset_sars','ammo_9mm','ammo_357','cram','healing_powder','bobby_pin','pre_war_money']).filter(id=>ITEMS[id]);
+    const give=pick(mine), get=pick(rewards)||give;
+    closeDlg();
+    openDlg(`<div style="text-align:center;padding:8px 0 4px"><span style="font-size:36px">🔄</span></div><div style="font-size:15px;font-weight:bold;color:var(--amber);text-align:center;margin-bottom:8px">${esc(p.tag)} Trade</div><div class="npc-line">"${esc(p.trade||'Fair swap, no fuss.')}"</div><div class="npc-line">Give ${itemPic(give)} <b style="color:var(--text)">${esc(itemLabel(give))}</b> for ${itemPic(get)} <b style="color:var(--text)">${esc(itemLabel(get))}</b>.</div><button class="bt go" onclick="window.doNpcTradeStable('${jss(give)}','${jss(get)}','${jss(name)}')">Accept trade</button><button class="bt dn" onclick="closeDlg()">Decline</button>`);
+  };
+  window.doNpcTradeStable=function(give,get,name){
+    if(!removeItem(give)){notify('You no longer have that item.');return;}
+    giveItem(get,1,{ignoreLimit:true}); boost(name,3); closeDlg();
+    log('Traded with '+name+'.','e');
+    showResult('Trade Complete','🔄',[`Lost ${itemPic(give)} ${esc(itemLabel(give))}.`,`Gained ${itemPic(get)} ${esc(itemLabel(get))}.`],'Continue','upAll()');
+  };
+  window.npcEncounterHelp=function(name){
+    const rel=npcRec(name), p=profile(rel), info=actionInfo(rel);
+    const have=(info.need||[]).find(id=>(S.inv||[]).includes(id));
+    const n=jss(name);
+    let h=`<div style="font-size:15px;font-weight:bold;color:var(--amber);text-align:center;margin-bottom:8px">${esc(p.tag)} Actions</div>`;
+    h+=`<div class="npc-line">${esc(p.help||'They could use practical help.')}</div>`;
+    if(have)h+=`<button class="bt go" onclick="window.doNpcHelpStable('item','${jss(have)}','${n}')">Give ${itemPic(have)} ${esc(itemLabel(have))}</button>`;
+    h+=`<button class="bt go" onclick="window.doNpcHelpStable('time','1','${n}')">Spend 1 hour helping</button>`;
+    h+=`<button class="bt" onclick="window.doNpcHelpStable('caps','12','${n}')">Offer ${capIcon()} 12 caps</button>`;
+    h+=`<button class="bt dn" onclick="window.openNPCInteraction(window.npcRecord('${n}'),window.npcRecord('${n}'))">Back</button>`;
+    openDlg(h);
+  };
+  window.npcEncounterSpecial=function(name){
+    const rel=npcRec(name), info=actionInfo(rel);
+    const have=(info.need||[]).find(id=>(S.inv||[]).includes(id));
+    if(have)return window.doNpcHelpStable('item',have,name);
+    return window.doNpcHelpStable('time',1,name);
+  };
+  window.doNpcHelpStable=function(type,val,name){
+    const rel=npcRec(name), info=actionInfo(rel);
+    if(type==='item'){
+      if(!removeItem(val)){notify('You no longer have that item.');return;}
+    }else if(type==='caps'){
+      const amt=Number(val)||0; if((S.caps||0)<amt){notify('Not enough caps.');return;} S.caps-=amt;
+    }else{
+      advanceTime(Number(val)||1);
+    }
+    S.karma=(S.karma||0)+(info.karma||0); addStanding(info.rep,1); boost(name,5);
+    const reward=pick((info.reward||[]).filter(id=>ITEMS[id]));
+    if(reward && Math.random()<0.5)giveItem(reward,1,{ignoreLimit:true});
+    closeDlg(); save(); log('Helped '+name+': '+info.done,'q');
+    const lines=[esc(info.done)];
+    if(info.karma)lines.push('⚖ Karma '+(info.karma>0?'+':'')+info.karma);
+    if(info.rep)lines.push('★ '+esc(info.rep)+' reputation +1');
+    if(reward)lines.push(`They give you ${itemPic(reward)} ${esc(itemLabel(reward))}.`);
+    showResult('Action Complete','🤝',lines,'Continue','upAll()');
+  };
+  window.npcAct=function(action,name){
+    if(action==='rumour'||action==='chat')return window.npcEncounterRumour(name);
+    if(action==='quest')return window.npcEncounterWork(name);
+    if(action==='trade')return window.npcEncounterTrade(name);
+    if(action==='special')return window.npcEncounterSpecial(name);
+    return window.npcEncounterHelp(name);
+  };
+  try{ npcAct=window.npcAct; }catch(e){}
+
+  window.spawnRandomNpcEncounter=function(ctx){
+    ctx=ctx||{};
+    const npc=(typeof mkNPC==='function') ? mkNPC({loc:ctx.loc||S.loc,bId:ctx.bId||'',fac:ctx.fac}) : {name:'Wasteland Stranger',role:'Wastelander',loc:S.loc,fac:getLoc(S.loc).fac,icon:'👤'};
+    const rel=window.mergeNpcIntoRel(npc,null);
+    S.scavSinceNpc=0;
+    S.lastNpcScavTick={day:S.days,hour:S.hours||8,loc:S.loc};
+    save();
+    window.openNPCInteraction(npc,rel);
+    return npc;
+  };
+
+  window.doScavenge=function(){
+    if(combat)return;
+    S.scavengeCount=(S.scavengeCount||0)+1;
+    S.scavSinceNpc=(S.scavSinceNpc||0)+1;
+    S.lastScavengeTick={day:S.days,hour:S.hours||8};
+    advanceTime(1);
+    const loc=getLoc(S.loc);
+    const r=Math.random();
+    if(S.scavSinceNpc>=5 || r<0.24){ window.spawnRandomNpcEncounter({loc:S.loc}); return; }
+    if(r<0.24+(0.18*(loc.dg||1))){
+      const surs=loc.sur||[];
+      const area=surs.length?pick(surs):null;
+      const pool=(area&&area.en?area.en:['gecko','radroach']).filter(id=>ENEMIES[id]);
+      if(pool.length){
+        const enemies=buildCohesiveGroup(pool,rnd(1,Math.min(2,pool.length)));
+        if(enemies.length){
+          try{ if($('TO'))$('TO').classList.remove('A'); }catch(e){}
+          startCombat(enemies);
+          if(combat){ combat._expArea=null; combat.postT=null; combat._scavenge=true; }
+          return;
+        }
+      }
+    }
+    if(r<0.66){
+      const g=rnd(2,8+(S.level||1)*2); S.caps=(S.caps||0)+g; S.capsEarned=(S.capsEarned||0)+g;
+      log('Found '+g+' caps scavenging.','e'); notify('💰 +'+g+' caps'); save(); upAll(); return;
+    }
+    if(r<0.88){
+      const surs=loc.sur||[], area=surs.length?pick(surs):null;
+      const lt=(area&&area.lt?area.lt:['herbs','scrap']);
+      let bonus=[]; try{ bonus=getBonusLootPool(S.loc,area)||[]; }catch(e){}
+      const fi=pick(lt.concat(bonus).filter(id=>ITEMS[id]));
+      if(fi&&ITEMS[fi]){ giveItem(fi); log('Found '+ITEMS[fi].n+'.','e'); showItemFound('Scavenged',ITEMS[fi].n,ITEMS[fi].e); return; }
+    }
+    log(pick(['The wind carries dust across the road.','You find tracks, but nothing worth following.','The Pip-Boy crackles with static.']),'e');
+    notify('Nothing useful found.'); save(); upAll();
+  };
+  try{ doScavenge=window.doScavenge; }catch(e){}
 })();
 
 </script>
