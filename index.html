@@ -846,28 +846,29 @@ function applyEndgameRoutes(){
 // DATA - ITEMS
 // ============================================================
 const ITEMS={
+// FNV_VALUE_WEIGHT_AUDIT_2026_05_02: Direct Fallout: New Vegas counterparts have exact base cap value `p` and exact item weight `w` patched into this file. Custom/fan quest items with no direct FNV counterpart keep project values.
 // FNV_WEAPON_STATS_AUDIT: official weapon entries use Fallout: New Vegas value/weight where there is a direct counterpart.
 // GAME_BALANCED_WEAPON_ATTACK: attack `a` is intentionally scaled for this simplified browser RPG, not raw FNV DAM.
 
 // Official Fallout: New Vegas items below use canonical base cap values where an exact FNV counterpart exists. Fan/custom quest items retain project-specific values.
 // Consumables
-stimpak:{n:"Stimpak",t:"c",e:'<img src="NVImages/StimpakIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',hp:40,p:75,w:0.1},
-super_stimpak:{n:"Super Stimpak",t:"c",e:'<img src="NVImages/SuperstimpakIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',hp:80,p:150,w:0.1,rare:1},
+stimpak:{n:"Stimpak",t:"c",e:'<img src="NVImages/StimpakIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',hp:40,p:75,w:0},
+super_stimpak:{n:"Super Stimpak",t:"c",e:'<img src="NVImages/SuperstimpakIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',hp:80,p:150,w:0,rare:1},
 purified_water:{n:"Purified Water",t:"c",e:'<img src="NVImages/PurifiedwaterIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',hp:8,p:20,w:1},
 sunset_sars:{n:"Sunset Sarsaparilla",t:"c",e:'<img src="NVImages/SunsetsarsasparillaIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',hp:5,p:3,w:1},
 nuka_cola:{n:"Nuka-Cola",t:"c",e:'<img src="NVImages/NukacolaIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:6,p:20,w:1},
-fancy_lad:{n:"Fancy Lads Snack",t:"c",e:'<img src="NVImages/FancyladssnackIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:10,p:5,w:0.5},
+fancy_lad:{n:"Fancy Lads Snack",t:"c",e:'<img src="NVImages/FancyladssnackIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:10,p:5,w:1},
 gecko_steak:{n:"Gecko Steak",t:"c",e:'<img src="NVImages/GeckosteakIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:15,p:5,w:1},
-bighorner_meat:{n:"Bighorner Steak",t:"c",e:'<img src="NVImages/BighornermeatIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:20,p:5,w:1},
-healing_powder:{n:"Healing Powder",t:"c",e:'<img src="NVImages/HealingpowderIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:18,p:20,w:0},
-antivenom:{n:"Antivenom",t:"c",e:'<img src="NVImages/AntivenomIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:10,p:30,w:0.1},
+bighorner_meat:{n:"Bighorner Steak",t:"c",e:'<img src="NVImages/BighornermeatIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:20,p:5,w:0.8},
+healing_powder:{n:"Healing Powder",t:"c",e:'<img src="NVImages/HealingpowderIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:18,p:5,w:0.03},
+antivenom:{n:"Antivenom",t:"c",e:'<img src="NVImages/AntivenomIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:10,p:25,w:0},
 radscorpion_gland:{n:"Radscorpion Poison Gland",t:"m",e:'<img src="NVImages/RadscoprionpoisonglandIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:25,w:1,desc:"Venom sac harvested from a radscorpion."},
-bark_scorpion_gland:{n:"Bark Scorpion Poison Gland",t:"m",e:'<img src="NVImages/RadscoprionpoisonglandIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:10,w:1,desc:"Small venom gland from a bark scorpion."},
+bark_scorpion_gland:{n:"Bark Scorpion Poison Gland",t:"m",e:'<img src="NVImages/RadscoprionpoisonglandIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:35,w:1,desc:"Small venom gland from a bark scorpion."},
 bloatfly_meat:{n:"Bloatfly Meat",t:"c",e:'<img src="NVImages/BloatflymeatIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:8,p:4,w:1},
-radroach_meat:{n:"Radroach Meat",t:"c",e:'<img src="NVImages/RadroachmeatIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:5,p:4,w:1},
-giant_mantis_foreleg:{n:"Giant Mantis Foreleg",t:"c",e:"🦗",hp:6,p:4,w:1},
-cazador_poison_gland:{n:"Cazador Poison Gland",t:"m",e:"🐝",p:50,w:1,desc:"A venom gland cut from a cazador."},
-nightstalker_blood:{n:"Nightstalker Blood",t:"m",e:"🩸",p:50,w:0.5,desc:"Useful for Mojave chems and recipes."},
+radroach_meat:{n:"Radroach Meat",t:"c",e:'<img src="NVImages/RadroachmeatIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:5,p:2,w:1},
+giant_mantis_foreleg:{n:"Giant Mantis Foreleg",t:"c",e:'<img src="NVImages/GiantmantisforelegIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:6,p:1,w:0},
+cazador_poison_gland:{n:"Cazador Poison Gland",t:"m",e:"🐝",p:85,w:1,desc:"A venom gland cut from a cazador."},
+nightstalker_blood:{n:"Nightstalker Blood",t:"m",e:"🩸",p:5,w:1,desc:"Useful for Mojave chems and recipes."},
 herbs:{n:"Wasteland Herbs",t:"c",e:'<img src="NVImages/WastelandherbsIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:5,p:4,w:0.1},
 // Chems
 jet:{n:"Jet",t:"chem",e:'<img src="NVImages/JetIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:20,w:0,buff:{ap:20}},
@@ -898,10 +899,10 @@ maria:{n:"Maria",t:"w",e:"🔫",a:13,p:1000,desc:"Benny's gun. 9mm, gold-plated.
 leather_armor:{n:"Leather Armor",t:"a",e:"🧥",d:6,p:160,w:15,slot:"body"},
 ncr_armor:{n:"NCR Trooper Armor",t:"a",e:"🦺",d:10,p:300,w:20,slot:"body"},
 metal_armor:{n:"Metal Armor",t:"a",e:"🛡",d:14,p:1100,w:25,slot:"body",rare:1},
-combat_armor:{n:"Combat Armor",t:"a",e:"🛡",d:18,p:6500,w:20,slot:"body",rare:1},
+combat_armor:{n:"Combat Armor",t:"a",e:"🛡",d:18,p:6500,w:25,slot:"body",rare:1},
 power_armor:{n:"T-45d Power Armor",t:"a",e:"🤖",d:28,p:4500,w:45,slot:"body",rare:2},
 headwrap:{n:"Head Wrap",t:"a",e:"🪖",d:1,p:6,w:1,slot:"head"},
-patched_vault_jacket:{n:"Patched Vault Jacket",t:"a",e:"🧥",d:3,p:35,w:4,slot:"body",desc:"Cheap early protection patched together from old vault cloth and leather scraps."},
+patched_vault_jacket:{n:"Patched Vault Jacket",t:"a",e:"🧥",d:3,p:6,w:3,slot:"body",desc:"Cheap early protection patched together from old vault cloth and leather scraps."},
 settler_utility_vest:{n:"Settler Utility Vest",t:"a",e:"🦺",d:4,p:55,w:6,slot:"body",desc:"Light Goodsprings starter armour with pockets for ammo and tools."},
 prospector_hat:{n:"Prospector Hat",t:"a",e:"🤠",d:1,p:15,w:1,slot:"head",desc:"Not much protection, but it keeps the Mojave sun out of your eyes."},
 schoolhouse_pad:{n:"Schoolhouse Desk Pad",t:"m",e:"📓",p:8,w:1,desc:"Old classroom junk. Chet might still buy it."},
@@ -912,21 +913,21 @@ boone_bill_of_sale:{n:"Bill of Sale: Carla Boone",t:"m",e:"📄",p:0,w:0,rare:2,
 goodsprings_town_supplies:{n:"Goodsprings Town Supplies",t:"m",e:"📦",p:0,w:0,rare:1,desc:"Ammo, food, and spare goods Chet set aside for Goodsprings defence."},
 goodsprings_dynamite_bundle:{n:"Easy Pete Dynamite Bundle",t:"m",e:"🧨",p:0,w:0,rare:1,desc:"Old dynamite Easy Pete agreed to spare for the Goodsprings fight."},
 // Ammo
-ammo_9mm:{n:"9mm Rounds",t:"ammo",e:'<img src="NVImages/9mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:0,stack:1},
-ammo_10mm:{n:"10mm Rounds",t:"ammo",e:'<img src="NVImages/10mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:2,w:0,stack:1},
-ammo_357:{n:".357 Magnum Rounds",t:"ammo",e:"🔸",p:2,w:0,stack:1},
-ammo_556:{n:"5.56mm Rounds",t:"ammo",e:'<img src="NVImages/5.56mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:2,w:0,stack:1},
-ammo_308:{n:".308 Rounds",t:"ammo",e:'<img src="NVImages/308mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:4,w:0,stack:1},
-ammo_shells:{n:"Shotgun Shells",t:"ammo",e:'<img src="NVImages/ShotgunshellsIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:3,w:0,stack:1},
-energy_cell:{n:"Energy Cells",t:"ammo",e:'<img src="NVImages/EnergycellIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:0,stack:1},
-doctor_bag:{n:"Doctor's Bag",t:"c",e:"🩹",hp:55,p:55,w:1},
+ammo_9mm:{n:"9mm Rounds",t:"ammo",e:'<img src="NVImages/9mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:0.029,stack:1},
+ammo_10mm:{n:"10mm Rounds",t:"ammo",e:'<img src="NVImages/10mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:2,w:0.033,stack:1},
+ammo_357:{n:".357 Magnum Rounds",t:"ammo",e:"🔸",p:2,w:0.035,stack:1},
+ammo_556:{n:"5.56mm Rounds",t:"ammo",e:'<img src="NVImages/5.56mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:2,w:0.026,stack:1},
+ammo_308:{n:".308 Rounds",t:"ammo",e:'<img src="NVImages/308mmammoIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:3,w:0.055,stack:1},
+ammo_shells:{n:"Shotgun Shells",t:"ammo",e:'<img src="NVImages/ShotgunshellsIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:2,w:0.075,stack:1},
+energy_cell:{n:"Energy Cells",t:"ammo",e:'<img src="NVImages/EnergycellIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:0.03,stack:1},
+doctor_bag:{n:"Doctor's Bag",t:"c",e:'<img src="NVImages/DoctorsbagIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:55,p:55,w:1},
 primm_sheriff_badge:{n:"Primm Sheriff's Badge",t:"m",e:"⭐",p:120,w:0,rare:2,desc:"A restored Primm badge from the sheriff's office."},
 primm_sheriff_papers:{n:"Primm Sheriff Paperwork",t:"m",e:"📄",p:45,w:0,rare:1,desc:"Authority papers for appointing a new sheriff in Primm."},
 cowboy_repeater:{n:"Cowboy Repeater",t:"w",e:'<img src="NVImages/CowboyrepeaterIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',a:14,p:800,w:5,ammo:"ammo_357"},
 pickaxe:{n:"Pickaxe",t:"w",e:"⛏",a:10,p:55,w:8},
 // Materials
-scrap:{n:"Scrap Metal",t:"m",e:'<img src="NVImages/ScrapmetalIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:2},
-duct_tape:{n:"Duct Tape",t:"m",e:'<img src="NVImages/DucttapeIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:1},
+scrap:{n:"Scrap Metal",t:"m",e:'<img src="NVImages/ScrapmetalIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:1},
+duct_tape:{n:"Duct Tape",t:"m",e:'<img src="NVImages/DucttapeIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:5,w:1},
 bobby_pin:{n:"Bobby Pin",t:"m",e:'<img src="NVImages/BobbypinIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:0},
 sensor_module:{n:"Sensor Module",t:"m",e:"📡",p:30,w:2},
 pre_war_money:{n:"Pre-War Money",t:"m",e:'<img src="NVImages/PrewarmoneyIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',p:10,w:0},
@@ -936,30 +937,30 @@ gecko_hide:{n:"Gecko Hide",t:"m",e:'<img src="NVImages/GeckohideIcon.png" style=
 deathclaw_hand:{n:"Deathclaw Hand",t:"m",e:"🦖",p:75,w:3,desc:"A massive claw torn from a deathclaw. Valuable."},
 lakelurk_meat:{n:"Lakelurk Meat",t:"c",e:"🐟",hp:8,p:12,w:1},
 giant_ant_meat:{n:"Giant Ant Meat",t:"c",e:"🐜",hp:5,p:4,w:1},
-irradiated_blood:{n:"Irradiated Blood",t:"m",e:"🩸",p:15,w:0.5,desc:"Glowing blood from a feral ghoul. Alchemical use."},
-dog_tags:{n:"Dog Tags",t:"m",e:"🏷",p:8,w:0,desc:"NCR military identification tags."},
+irradiated_blood:{n:"Irradiated Blood",t:"m",e:"🩸",p:15,w:0,desc:"Glowing blood from a feral ghoul. Alchemical use."},
+dog_tags:{n:"Dog Tags",t:"m",e:"🏷",p:1,w:0,desc:"NCR military identification tags."},
 rebar_club:{n:"Rebar Club",t:"w",e:"🏏",a:14,p:45,w:5},
-legion_coin:{n:"Legion Denarius",t:"m",e:'<img src="NVImages/LegiondenariusIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',p:10,w:0},
-dirty_water:{n:"Dirty Water",t:"c",e:"💧",hp:3,p:10,w:1},
+legion_coin:{n:"Legion Denarius",t:"m",e:'<img src="NVImages/LegiondenariusIcon.png" style="width:20%;height:20%;object-fit:contain;display:block;">',p:4,w:0.01},
+dirty_water:{n:"Dirty Water",t:"c",e:'<img src="NVImages/DirtywaterIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:3,p:10,w:1},
 cram:{n:"Cram",t:"c",e:'<img src="NVImages/CramIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:12,p:5,w:1},
 iguana_bits:{n:"Iguana Bits",t:"c",e:'<img src="NVImages/IguanabitsIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:14,p:5,w:1},
-tire_iron:{n:"Tire Iron",t:"w",e:"🔧",a:8,p:25,w:3},
+tire_iron:{n:"Tire Iron",t:"w",e:"🔧",a:8,p:40,w:3},
 single_shotgun:{n:"Single Shotgun",t:"w",e:'<img src="NVImages/SingleshotgunIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',a:13,p:175,w:7,ammo:"ammo_shells"},
 trail_carbine:{n:"Trail Carbine",t:"w",e:'<img src="NVImages/TrailcarbineIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',a:19,p:3900,w:5.5,ammo:"ammo_357"},
 smg_9mm:{n:"9mm SMG",t:"w",e:'<img src="NVImages/9mmsmgIconIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',a:8,p:850,w:4,ammo:"ammo_9mm",rare:1},
-reinforced_leather_armor:{n:"Reinforced Leather Armor",t:"a",e:"🧥",d:8,p:250,w:18,slot:"body"},
+reinforced_leather_armor:{n:"Reinforced Leather Armor",t:"a",e:"🧥",d:8,p:250,w:15,slot:"body"},
 metal_helmet:{n:"Metal Helmet",t:"a",e:"🪖",d:6,p:125,w:5,slot:"head"},
-wonderglue:{n:"Wonderglue",t:"m",e:"🧴",p:1,w:1,desc:"Useful junk for repairs."},
-wrench:{n:"Wrench",t:"m",e:'<img src="NVImages/WrenchIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:3,desc:"Heavy tool with trade value."},
-scrap_electronics:{n:"Scrap Electronics",t:"m",e:'<img src="NVImages/ScrapelectronicsIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:2,desc:"Salvageable circuitry and parts."},
+wonderglue:{n:"Wonderglue",t:"m",e:'<img src="NVImages/WonderglueIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:10,w:1,desc:"Useful junk for repairs."},
+wrench:{n:"Wrench",t:"m",e:'<img src="NVImages/WrenchIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:1,desc:"Heavy tool with trade value."},
+scrap_electronics:{n:"Scrap Electronics",t:"m",e:'<img src="NVImages/ScrapelectronicsIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:1,desc:"Salvageable circuitry and parts."},
 fission_battery:{n:"Fission Battery",t:"m",e:"🔋",p:75,w:6,desc:"Valuable old world power cell."},
-camera:{n:"Camera",t:"m",e:'<img src="NVImages/CameraIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:65,w:3,desc:"A pre-war camera in workable condition."},
-cigarette_pack:{n:"Cigarette Pack",t:"m",e:'<img src="NVImages/CigarettepackIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:10,w:0,desc:"A common barter item."},
-cigarette_carton:{n:"Cigarette Carton",t:"m",e:'<img src="NVImages/CigarettecartonIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:50,w:0.5,desc:"A valuable sealed carton."},
+camera:{n:"Camera",t:"m",e:'<img src="NVImages/CameraIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:5,w:1,desc:"A pre-war camera in workable condition."},
+cigarette_pack:{n:"Cigarette Pack",t:"m",e:'<img src="NVImages/CigarettepackIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:10,w:0.5,desc:"A common barter item."},
+cigarette_carton:{n:"Cigarette Carton",t:"m",e:'<img src="NVImages/CigarettecartonIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:40,w:2,desc:"A valuable sealed carton."},
 silverware:{n:"Silverware",t:"m",e:'<img src="NVImages/SilverwareIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:1,desc:"Useful to sell for quick caps."},
 silver_watch:{n:"Silver Pocket Watch",t:"m",e:"⌚",p:25,w:0,desc:"A valuable pre-war keepsake."},
 gold_necklace:{n:"Gold Necklace",t:"m",e:'<img src="NVImages/GoldnecklaceIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:25,w:0,desc:"High-value jewelry."},
-conductor:{n:"Conductors",t:"m",e:"h",p:15,w:2,desc:"Electronic salvage with decent value."},
+conductor:{n:"Conductors",t:"m",e:"h",p:30,w:5,desc:"Electronic salvage with decent value."},
 laser_focusing_lens:{n:"Laser Focusing Lens",t:"m",e:"h",p:25,w:0.2,desc:"A precision lens used in Brotherhood energy weapon servicing."},
 microfusion_regulator:{n:"Microfusion Regulator",t:"m",e:"🔋",p:25,w:1,desc:"A compact power-control component prized by Brotherhood scribes."},
 servo_motor:{n:"Servo Motor",t:"m",e:"⚙️",p:25,w:4,desc:"Useful for armor joints, lifts, and repair work."},
@@ -968,83 +969,83 @@ targeting_module:{n:"Targeting Module",t:"m",e:"🎯",p:50,w:2,desc:"A broken bu
 power_armor_parts:{n:"Power Armor Parts",t:"m",e:"🦾",p:78,w:8,desc:"Heavy frame and servo pieces stripped from Brotherhood-grade equipment."},
 knight_toolkit:{n:"Knight Toolkit",t:"m",e:"🧰",p:52,w:6,desc:"A Brotherhood field repair kit packed with specialist tools."},
 scribe_data_slate:{n:"Scribe Data Slate",t:"m",e:"📓",p:38,w:1,desc:"A rugged slate full of maintenance notes and encrypted technical records."},
-initiate_robes:{n:"Initiate Robes",t:"a",e:"🥋",d:4,p:95,w:2,slot:"body",desc:"Simple Brotherhood initiate robes reinforced for bunker duty."},
-scribe_robes:{n:"Scribe Robes",t:"a",e:"🥼",d:5,p:120,w:3,slot:"body",desc:"Specialist robes worn by Brotherhood scribes working below ground."},
+initiate_robes:{n:"Initiate Robes",t:"a",e:"🥋",d:4,p:6,w:3,slot:"body",desc:"Simple Brotherhood initiate robes reinforced for bunker duty."},
+scribe_robes:{n:"Scribe Robes",t:"a",e:"🥼",d:5,p:6,w:3,slot:"body",desc:"Specialist robes worn by Brotherhood scribes working below ground."},
 weapon_repair_kit:{n:"Weapon Repair Kit",t:"m",e:"🛠",p:20,w:2,desc:"A compact set of oils, springs, and tools used for field weapon maintenance."},
 bos_recon_armor:{n:"Brotherhood Recon Armor",t:"a",e:"🛡",d:12,p:7200,w:20,slot:"body",desc:"Light Brotherhood field armor favored by scouts and patrols."},
-bos_recon_helmet:{n:"Brotherhood Recon Helmet",t:"a",e:"🪖",d:5,p:110,w:3,slot:"head",desc:"A reinforced recon helmet with Brotherhood markings."},
+bos_recon_helmet:{n:"Brotherhood Recon Helmet",t:"a",e:"🪖",d:5,p:100,w:3,slot:"head",desc:"A reinforced recon helmet with Brotherhood markings."},
 bos_combat_armor:{n:"Brotherhood Combat Armor",t:"a",e:"🛡",d:22,p:6500,w:25,slot:"body",rare:1,desc:"Upgraded combat armor issued to trusted Brotherhood personnel."},
 bos_power_armor:{n:"Brotherhood Power Armor",t:"a",e:"🤖",d:34,p:4500,w:45,slot:"body",rare:2,desc:"Heavy Brotherhood power armor reserved for the most trusted allies."},
-plasma_defender:{n:"Plasma Defender",t:"w",e:"⚡",a:18,p:3000,w:3,ammo:"energy_cell",desc:"A compact Brotherhood-favored plasma sidearm."},
+plasma_defender:{n:"Plasma Defender",t:"w",e:"⚡",a:18,p:3000,w:2,ammo:"energy_cell",desc:"A compact Brotherhood-favored plasma sidearm."},
 multiplas_rifle:{n:"Multiplas Rifle",t:"w",e:"⚡",a:26,p:2500,w:12,ammo:"energy_cell",rare:2,desc:"A dangerous burst plasma rifle kept under Brotherhood lock and key."},
 laser_rcw:{n:"Laser RCW",t:"w",e:"⚡",a:13,p:2150,w:4,ammo:"energy_cell",rare:1,desc:"A rapid-fire laser weapon pulled from old world stock."},
 bos_holotape:{n:"Brotherhood Holotape",t:"m",e:"💾",p:55,w:0,desc:"Encrypted Brotherhood field notes and requisition records."},
 // ── New Weapons ──
-pistol_9mm:{n:"9mm Pistol",t:"w",e:"🔫",a:8,ammo:"ammo_9mm",desc:"Standard 9mm sidearm.",p:120,w:1.2},
-pistol_10mm:{n:"10mm Pistol",t:"w",e:"🔫",a:10,ammo:"ammo_10mm",desc:"Reliable 10mm pistol.",p:175,w:1.4},
-revolver_357:{n:".357 Revolver",t:"w",e:"🔫",a:14,ammo:"ammo_357",desc:"Six-shooter. Hits hard.",p:220,w:1.5},
-smg_9mm:{n:"9mm SMG",t:"w",e:"🔫",a:9,ammo:"ammo_9mm",desc:"Fast-firing submachine gun.",p:280,w:3.5},
-brush_gun:{n:"Brush Gun",t:"w",e:"🔫",a:22,ammo:"ammo_45_70",desc:"Lever-action powerhouse.",p:950,w:4.5},
-anti_materiel:{n:"Anti-Materiel Rifle",t:"w",e:"🔫",a:32,ammo:"ammo_50",desc:"Devastating heavy sniper rifle.",p:4800,w:12},
-marksman_carbine:{n:"Marksman Carbine",t:"w",e:"🔫",a:18,ammo:"ammo_556",desc:"Scoped semi-auto. Precise.",p:1200,w:4.5},
-riot_shotgun:{n:"Riot Shotgun",t:"w",e:"🔫",a:16,ammo:"ammo_shells",desc:"Semi-auto shotgun. Devastating up close.",p:1400,w:4.8},
-grenade_rifle:{n:"Grenade Rifle",t:"w",e:"💥",a:20,ammo:"ammo_40mm",desc:"Single-shot grenade launcher.",p:1800,w:4.0},
-plasma_caster:{n:"Plasma Caster",t:"w",e:"⚡",a:28,ammo:"energy_cell",desc:"Heavy plasma weapon. Melts everything.",p:3200,w:6.0},
-gauss_rifle:{n:"Gauss Rifle",t:"w",e:"⚡",a:30,ammo:"microfusion_cell",desc:"Pre-war electromagnetic weapon. Devastating.",p:5500,w:8.0},
-recharger_pistol:{n:"Recharger Pistol",t:"w",e:"⚡",a:7,desc:"Never runs out. Self-charging energy pistol.",p:200,w:1.0},
-oh_baby:{n:"Oh, Baby!",t:"w",e:"🔨",a:24,desc:"Unique super sledge. Massive damage.",p:2800,w:10},
-ballistic_fist:{n:"Ballistic Fist",t:"w",e:"👊",a:20,desc:"Shotgun strapped to your fist.",p:2000,w:3.5},
-chainsaw:{n:"Chainsaw",t:"w",e:"🪚",a:18,desc:"Buzzing melee terror.",p:1500,w:7.0},
-cleaver:{n:"Cleaver",t:"w",e:"🔪",a:10,desc:"Sharp kitchen blade. Fast.",p:80,w:0.8},
-lead_pipe:{n:"Lead Pipe",t:"w",e:"🪈",a:7,desc:"Heavy blunt weapon.",p:40,w:2.0},
-brass_knuckles:{n:"Brass Knuckles",t:"w",e:"👊",a:6,desc:"Fist-mounted brawling gear.",p:50,w:0.5},
-straight_razor:{n:"Straight Razor",t:"w",e:"🪒",a:8,desc:"Fast, sharp, discreet.",p:55,w:0.3},
-fire_axe:{n:"Fire Axe",t:"w",e:"🪓",a:14,desc:"Heavy axe. Slow but devastating.",p:180,w:4.0},
-throwing_spear:{n:"Throwing Spear",t:"w",e:"🗡",a:12,desc:"Legion-issue throwing weapon.",p:60,w:1.5},
+pistol_9mm:{n:"9mm Pistol",t:"w",e:"🔫",a:8,ammo:"ammo_9mm",desc:"Standard 9mm sidearm.",p:100,w:1.5},
+pistol_10mm:{n:"10mm Pistol",t:"w",e:"🔫",a:10,ammo:"ammo_10mm",desc:"Reliable 10mm pistol.",p:750,w:3},
+revolver_357:{n:".357 Revolver",t:"w",e:"🔫",a:14,ammo:"ammo_357",desc:"Six-shooter. Hits hard.",p:110,w:2},
+smg_9mm:{n:"9mm SMG",t:"w",e:"🔫",a:9,ammo:"ammo_9mm",desc:"Fast-firing submachine gun.",p:850,w:4},
+brush_gun:{n:"Brush Gun",t:"w",e:"🔫",a:22,ammo:"ammo_45_70",desc:"Lever-action powerhouse.",p:4900,w:5},
+anti_materiel:{n:"Anti-Materiel Rifle",t:"w",e:"🔫",a:32,ammo:"ammo_50",desc:"Devastating heavy sniper rifle.",p:5600,w:20},
+marksman_carbine:{n:"Marksman Carbine",t:"w",e:"🔫",a:18,ammo:"ammo_556",desc:"Scoped semi-auto. Precise.",p:5200,w:6},
+riot_shotgun:{n:"Riot Shotgun",t:"w",e:"🔫",a:16,ammo:"ammo_shells",desc:"Semi-auto shotgun. Devastating up close.",p:5500,w:5},
+grenade_rifle:{n:"Grenade Rifle",t:"w",e:"💥",a:20,ammo:"ammo_40mm",desc:"Single-shot grenade launcher.",p:300,w:6},
+plasma_caster:{n:"Plasma Caster",t:"w",e:"⚡",a:28,ammo:"energy_cell",desc:"Heavy plasma weapon. Melts everything.",p:7000,w:20},
+gauss_rifle:{n:"Gauss Rifle",t:"w",e:"⚡",a:30,ammo:"microfusion_cell",desc:"Pre-war electromagnetic weapon. Devastating.",p:3000,w:7},
+recharger_pistol:{n:"Recharger Pistol",t:"w",e:"⚡",a:7,desc:"Never runs out. Self-charging energy pistol.",p:2700,w:7},
+oh_baby:{n:"Oh, Baby!",t:"w",e:"🔨",a:24,desc:"Unique super sledge. Massive damage.",p:6200,w:20},
+ballistic_fist:{n:"Ballistic Fist",t:"w",e:"👊",a:20,desc:"Shotgun strapped to your fist.",p:7800,w:6},
+chainsaw:{n:"Chainsaw",t:"w",e:"🪚",a:18,desc:"Buzzing melee terror.",p:2800,w:20},
+cleaver:{n:"Cleaver",t:"w",e:"🔪",a:10,desc:"Sharp kitchen blade. Fast.",p:20,w:2},
+lead_pipe:{n:"Lead Pipe",t:"w",e:"🪈",a:7,desc:"Heavy blunt weapon.",p:75,w:3},
+brass_knuckles:{n:"Brass Knuckles",t:"w",e:"👊",a:6,desc:"Fist-mounted brawling gear.",p:120,w:1},
+straight_razor:{n:"Straight Razor",t:"w",e:"🪒",a:8,desc:"Fast, sharp, discreet.",p:35,w:1},
+fire_axe:{n:"Fire Axe",t:"w",e:"🪓",a:14,desc:"Heavy axe. Slow but devastating.",p:75,w:8},
+throwing_spear:{n:"Throwing Spear",t:"w",e:"🗡",a:12,desc:"Legion-issue throwing weapon.",p:25,w:0.5},
 // ── New Ammo ──
-ammo_45_70:{n:".45-70 Gov't",t:"ammo",e:"🔸",p:5,w:0.02},
-ammo_50:{n:".50 MG",t:"ammo",e:"🔸",p:8,w:0.04},
-ammo_40mm:{n:"40mm Grenade",t:"ammo",e:"💥",p:25,w:0.2},
-microfusion_cell:{n:"Microfusion Cell",t:"ammo",e:"⚡",p:4,w:0.02},
+ammo_45_70:{n:".45-70 Gov't",t:"ammo",e:"🔸",p:5,w:0.065},
+ammo_50:{n:".50 MG",t:"ammo",e:"🔸",p:8,w:0.25},
+ammo_40mm:{n:"40mm Grenade",t:"ammo",e:"💥",p:25,w:0.25},
+microfusion_cell:{n:"Microfusion Cell",t:"ammo",e:"⚡",p:1,w:0.025},
 // ── New Armor ──
-leather_armor_rl:{n:"Reinforced Leather Mk II",t:"a",e:"🧥",d:8,desc:"Double-layered wasteland armor.",p:450,w:8},
-ncr_ranger_combat:{n:"NCR Ranger Combat Armor",t:"a",e:"🪖",d:18,desc:"The iconic black armor of the desert rangers.",p:5500,w:15},
-ncr_salvaged_pa:{n:"NCR Salvaged Power Armor",t:"a",e:"🪖",d:16,desc:"Stripped-down power armor. No training needed.",p:4000,w:18},
-legion_centurion_armor:{n:"Legion Centurion Armor",t:"a",e:"🛡",d:14,desc:"Heavy armor made from conquered enemies' gear.",p:2800,w:14},
-riot_gear:{n:"Riot Gear",t:"a",e:"🪖",d:15,desc:"Pre-war riot control armor.",p:3500,w:12},
-gecko_leather:{n:"Gecko-Backed Leather",t:"a",e:"🧥",d:5,desc:"Light armor reinforced with gecko hide.",p:200,w:5},
-raider_armor:{n:"Raider Armor",t:"a",e:"🧥",d:3,desc:"Scrap metal and leather. Better than nothing.",p:80,w:6},
+leather_armor_rl:{n:"Reinforced Leather Mk II",t:"a",e:"🧥",d:8,desc:"Double-layered wasteland armor.",p:250,w:15},
+ncr_ranger_combat:{n:"NCR Ranger Combat Armor",t:"a",e:"🪖",d:18,desc:"The iconic black armor of the desert rangers.",p:7500,w:30},
+ncr_salvaged_pa:{n:"NCR Salvaged Power Armor",t:"a",e:"🪖",d:16,desc:"Stripped-down power armor. No training needed.",p:4500,w:40},
+legion_centurion_armor:{n:"Legion Centurion Armor",t:"a",e:"🛡",d:14,desc:"Heavy armor made from conquered enemies' gear.",p:800,w:35},
+riot_gear:{n:"Riot Gear",t:"a",e:"🪖",d:15,desc:"Pre-war riot control armor.",p:7500,w:25},
+gecko_leather:{n:"Gecko-Backed Leather",t:"a",e:"🧥",d:5,desc:"Light armor reinforced with gecko hide.",p:250,w:15},
+raider_armor:{n:"Raider Armor",t:"a",e:"🧥",d:3,desc:"Scrap metal and leather. Better than nothing.",p:180,w:15},
 // ── New Headgear ──
-first_recon_beret:{n:"1st Recon Beret",t:"a",slot:"head",e:"🎖",d:1,desc:"+1 PER. NCR elite marksman.",p:350,w:0.2},
-authority_glasses:{n:"Authority Glasses",t:"a",slot:"head",e:"🕶",d:0,desc:"+1 CHA. Look official.",p:120,w:0.1},
+first_recon_beret:{n:"1st Recon Beret",t:"a",slot:"head",e:"🎖",d:1,desc:"+1 PER. NCR elite marksman.",p:40,w:0.1},
+authority_glasses:{n:"Authority Glasses",t:"a",slot:"head",e:"🕶",d:0,desc:"+1 CHA. Look official.",p:5,w:0.1},
 // ── New Consumables ──
-gecko_stew:{n:"Gecko Stew",t:"c",e:'<img src="NVImages/GeckostewIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:25,desc:"Hot gecko meat in broth.",p:18,w:0.5},
-brahmin_steak:{n:"Brahmin Steak",t:"c",e:"🥩",hp:30,desc:"Grilled two-headed beef.",p:22,w:0.5},
-desert_salad:{n:"Desert Salad",t:"c",e:"🥗",hp:15,desc:"Edible plants from the Mojave.",p:8,w:0.3},
-instamash:{n:"InstaMash",t:"c",e:"🥔",hp:12,desc:"Instant mashed potatoes. Still edible.",p:6,w:0.3},
-dandy_boy_apples:{n:"Dandy Boy Apples",t:"c",e:"🍎",hp:10,desc:"Pre-war apple snack.",p:5,w:0.2},
-pork_n_beans:{n:"Pork n' Beans",t:"c",e:"🥫",hp:15,desc:"Canned pre-war meal.",p:10,w:0.5},
+gecko_stew:{n:"Gecko Stew",t:"c",e:'<img src="NVImages/GeckostewIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:25,desc:"Hot gecko meat in broth.",p:25,w:1},
+brahmin_steak:{n:"Brahmin Steak",t:"c",e:"🥩",hp:30,desc:"Grilled two-headed beef.",p:5,w:0.8},
+desert_salad:{n:"Desert Salad",t:"c",e:"🥗",hp:15,desc:"Edible plants from the Mojave.",p:5,w:0.2},
+instamash:{n:"InstaMash",t:"c",e:"🥔",hp:12,desc:"Instant mashed potatoes. Still edible.",p:5,w:1},
+dandy_boy_apples:{n:"Dandy Boy Apples",t:"c",e:"🍎",hp:10,desc:"Pre-war apple snack.",p:5,w:1},
+pork_n_beans:{n:"Pork n' Beans",t:"c",e:"🥫",hp:15,desc:"Canned pre-war meal.",p:5,w:1},
 // ── New Chems ──
-turbo:{n:"Turbo",t:"chem",e:"💊",buff:{ap:15},desc:"+15 AP. Slows time perception.",p:60,w:0.1},
-buffout:{n:"Buffout",t:"chem",e:"💊",buff:{dmg:3,dr:2},desc:"+3 DMG, +2 DR. Pre-war steroids.",p:45,w:0.1},
-mentats:{n:"Mentats",t:"chem",e:"💊",buff:{},desc:"+1 PER, +1 INT (story checks).",p:35,w:0.1},
-steady:{n:"Steady",t:"chem",e:"💊",buff:{dmg:2},desc:"+2 DMG. Eliminates weapon sway.",p:40,w:0.1},
-fixer:{n:"Fixer",t:"chem",e:"💊",hp:10,desc:"Chem detox. Restores 10 HP.",p:30,w:0.1},
-hydra:{n:"Hydra",t:"chem",e:"💊",hp:35,buff:{},desc:"Powerful healing chem.",p:65,w:0.1},
-weapon_binding_ritual:{n:"Weapon Binding Ritual",t:"chem",e:"🪶",buff:{dmg:4},desc:"Legion ritual. +4 DMG temporarily.",p:20,w:0.1},
+turbo:{n:"Turbo",t:"chem",e:"💊",buff:{ap:15},desc:"+15 AP. Slows time perception.",p:20,w:0},
+buffout:{n:"Buffout",t:"chem",e:"💊",buff:{dmg:3,dr:2},desc:"+3 DMG, +2 DR. Pre-war steroids.",p:20,w:0},
+mentats:{n:"Mentats",t:"chem",e:"💊",buff:{},desc:"+1 PER, +1 INT (story checks).",p:20,w:0},
+steady:{n:"Steady",t:"chem",e:"💊",buff:{dmg:2},desc:"+2 DMG. Eliminates weapon sway.",p:20,w:0},
+fixer:{n:"Fixer",t:"chem",e:"💊",hp:10,desc:"Chem detox. Restores 10 HP.",p:20,w:0},
+hydra:{n:"Hydra",t:"chem",e:"💊",hp:35,buff:{},desc:"Powerful healing chem.",p:55,w:0},
+weapon_binding_ritual:{n:"Weapon Binding Ritual",t:"chem",e:"🪶",buff:{dmg:4},desc:"Legion ritual. +4 DMG temporarily.",p:50,w:0.5},
 // ── New Misc Items ──
-tin_can:{n:"Tin Can",t:"m",e:"🥫",p:1,w:0.1},
-coffee_mug:{n:"Coffee Mug",t:"m",e:"☕",p:2,w:0.3},
-pilot_light:{n:"Pilot Light",t:"m",e:"🔥",p:8,w:0.2},
-surgical_tubing:{n:"Surgical Tubing",t:"m",e:"🔧",p:12,w:0.2},
-glass_bottles:{n:"Empty Bottles",t:"m",e:"🍾",p:2,w:0.3},
-clipboards:{n:"Clipboard",t:"m",e:"📋",p:3,w:0.3},
-pencils:{n:"Pencils",t:"m",e:"✏",p:1,w:0.1},
-hot_plate:{n:"Hot Plate",t:"m",e:"🔌",p:15,w:2.0},
-lunchbox:{n:"Lunchbox",t:"m",e:"🧰",p:10,w:0.5},
-caravan_cards:{n:"Caravan Cards",t:"m",e:"🃏",p:15,w:0.2},
-ncr_dogtags:{n:"NCR Dog Tags",t:"m",e:"🏷",p:5,w:0.1},
-legion_ears:{n:"Legion Ears",t:"m",e:"👂",p:8,w:0.1},
+tin_can:{n:"Tin Can",t:"m",e:"🥫",p:1,w:1},
+coffee_mug:{n:"Coffee Mug",t:"m",e:'<img src="NVImages/CoffeIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:1,w:1},
+pilot_light:{n:"Pilot Light",t:"m",e:"🔥",p:14,w:1},
+surgical_tubing:{n:"Surgical Tubing",t:"m",e:"🔧",p:10,w:1},
+glass_bottles:{n:"Empty Bottles",t:"m",e:"🍾",p:2,w:1},
+clipboards:{n:"Clipboard",t:"m",e:"📋",p:1,w:1},
+pencils:{n:"Pencils",t:"m",e:"✏",p:1,w:0},
+hot_plate:{n:"Hot Plate",t:"m",e:"🔌",p:15,w:2},
+lunchbox:{n:"Lunchbox",t:"m",e:"🧰",p:3,w:1},
+caravan_cards:{n:"Caravan Cards",t:"m",e:"🃏",p:0,w:1},
+ncr_dogtags:{n:"NCR Dog Tags",t:"m",e:"🏷",p:1,w:0},
+legion_ears:{n:"Legion Ears",t:"m",e:"👂",p:1,w:0},
 
 };
 
@@ -3342,7 +3343,7 @@ generic:[
   {id:'gen_gecko_variants',icon:'🦎',title:'Gecko Hunting Ground',
    body:'The ground is scratched with fresh tracks. Green and golden geckos move between the rocks.',
    choices:[fightChoice('⚔ Hunt the geckos',['green_gecko','golden_gecko','gecko_hunter'],'You skin the geckos and pack the meat.',()=>{giveItem('gecko_hide');giveItem('gecko_steak')})]},
-  {id:'gen_molerat_nest',icon:'🐀',title:'Mole Rat Nest',
+  {id:'gen_molerat_nest',icon:'<img src="NVImages/MoleratIcon.png" style="width:150%;height:150%;object-fit:contain;display:block;">',title:'Mole Rat Nest',
    body:'Loose dirt caves inward and mole rats spill from the tunnel mouth.',
    choices:[fightChoice('⚔ Fight the mole rats',['mole_rat','mole_rat','mole_rat'],'The nest is cleared.',()=>giveItem('tin_can'))]},
   {id:'gen_raider_chain',icon:'☠',title:'Raider Chain Gang',
@@ -10192,8 +10193,8 @@ console.log('[FNV-Patch final] NPC encounter cards, companion v2 overrides, expa
   addItem('fire_gecko_hide',{n:'Fire Gecko Hide',t:'m',e:ITEMS.gecko_hide?ITEMS.gecko_hide.e:img('NVImages/GeckohideIcon.png'),p:25,w:1,desc:'Hide taken from a fire gecko.'});
   addItem('golden_gecko_hide',{n:'Golden Gecko Hide',t:'m',e:ITEMS.gecko_hide?ITEMS.gecko_hide.e:img('NVImages/GeckohideIcon.png'),p:25,w:1,desc:'Hide taken from a golden gecko.'});
   addItem('green_gecko_hide',{n:'Green Gecko Hide',t:'m',e:ITEMS.gecko_hide?ITEMS.gecko_hide.e:img('NVImages/GeckohideIcon.png'),p:30,w:1,desc:'Hide taken from a green gecko.'});
-  addItem('mantis_egg',{n:'Mantis Egg',t:'m',e:'🥚',p:12,w:1,desc:'Egg laid by a giant mantis.'});
-  addItem('mole_rat_meat',{n:'Mole Rat Meat',t:'c',e:'🥩',hp:5,p:4,w:1,desc:'Raw mole rat meat. Used for Mole Rat Stew.'});
+  addItem('mantis_egg',{n:'Mantis Egg',t:'m',e:'<img src="NVImages/MantiseggIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',p:12,w:1,desc:'Egg laid by a giant mantis.'});
+  addItem('mole_rat_meat',{n:'Mole Rat Meat',t:'c',e:'<img src="NVImages/MoleratmeatIcon.png" style="width:10%;height:10%;object-fit:contain;display:block;">',hp:5,p:4,w:1,desc:'Raw mole rat meat. Used for Mole Rat Stew.'});
 
   if(typeof FNV_ITEM_VALUES==='object'){
     Object.assign(FNV_ITEM_VALUES,{gecko_meat:5,fire_gecko_hide:25,golden_gecko_hide:25,green_gecko_hide:30,mantis_egg:12,mole_rat_meat:4});
@@ -10978,6 +10979,369 @@ console.log('[FNV-Patch final] NPC encounter cards, companion v2 overrides, expa
   };
   try{window.auditFNVItemValuesWeights()}catch(e){}
 })();
+
+// ============================================================
+// STARTS / NAMES / FLAVOUR EXPANSION PATCH
+// ============================================================
+(function(){
+  const addUnique=(arr,vals)=>vals.forEach(v=>{if(arr.indexOf(v)===-1)arr.push(v)});
+
+  addUnique(FM,["Ash","Caleb","Silas","Mason","Cooper","Jonah","Eli","Wyatt","Miles","Nate","Samson","Knox","Rourke","Grady","Tate","Logan","Cade","Duke","Sawyer","Emmett","Harlan","Jesse","Colton","Ford","Ranger","Otis","Tex","Harvey","Lyle","Malcolm","Tobias","Jonas"]);
+  addUnique(FF,["Mara","June","Ivy","Clara","Mabel","Nina","Elsie","Ada","Pearl","Mae","Sadie","Daisy","Mina","Kit","Wren","Vera","Hazel","Iris","Opal","Lana","Molly","Rhea","Nell","Cora","Lena","Tess","Etta","Bonnie","Annie","Mira","Josie","Willa"]);
+  addUnique(LN,["Hawthorne","McBride","Crowe","Mercer","Ashford","Holloway","Marlow","Graves","Hollis","Drummond","Kincaid","Bishop","Harrow","Booth","Sutter","Lowell","Frost","Hale","Booker","Wells","Carver","Barker","Finch","Pierce","Sawyer","Caine","Dalton","Holliday","Rook","Denton","Vale","Maddox"]);
+
+  const WASTE_NICKS=["Two-Shot","Dust-Eye","Lucky","Red","Gravewake","Brahmin-Blessed","Tin-Heart","Dry Creek","Six-Caps","Long Road","Blacktop","Mojave","Sundown","Snakebite","Noon","Rust","Deadlight","Coyote","Bad Water","Bottlecap"];
+  const START_TRAITS=["keeps a hidden stash map","hates owing favours","checks every doorway twice","never sleeps near windows","counts bullets like prayers","knows when a smile is fake","can spot fresh tracks in dust","keeps old-world scraps for luck","remembers every bad deal","walks like trouble is behind them","has a soft spot for small towns","keeps one cap they never spend"];
+  const START_HOOKS=["A stranger in the saloon swears they have seen your face on an old notice.","Someone scratched your name into a ruined mailbox outside town.","Your last job left a loose end, and loose ends walk fast in the Mojave.","A trader recognises your gear and suddenly refuses to meet your eyes.","You wake with a song stuck in your head and no idea where you heard it.","The first person you help may decide which faction hears about you first.","A torn caravan receipt points toward Primm, but the signature is burned away.","Every radio crackle sounds like it might be meant for you.","You are alive, which means somebody made a mistake.","The Mojave has already started keeping score."];
+
+  const MORE_BACKGROUNDS=[
+    {id:'sloan_quarry_hand',n:'Sloan Quarry Hand',d:'You broke rocks, dodged deathclaws, and learned when to run.',gold:42,atk:6,def:5,spd:3,items:['pickaxe','dynamite','leather_armor','stimpak','purified_water'],loc:'Sloan',class:'laborer',karma:1},
+    {id:'mojave_outpost_runner',n:'Mojave Outpost Runner',d:'You carried messages through bad roads and worse weather.',gold:58,atk:4,def:3,spd:7,items:['pistol_9mm','ammo_9mm','ammo_9mm','stimpak','sunset_sars'],loc:'MojaveOutpost',class:'runner',karma:3,fac:'NCR'},
+    {id:'westside_farmer',n:'Westside Farmer',d:'You know water, hunger, and what desperate people do for both.',gold:38,atk:3,def:4,spd:4,items:['varmint_rifle','ammo_556','ammo_556','purified_water','herbs','gecko_steak'],loc:'Westside',class:'farmer',karma:6},
+    {id:'188_trader',n:'188 Trader',d:'You bought low, sold high, and slept with one eye open.',gold:110,atk:3,def:3,spd:4,items:['pistol_9mm','ammo_9mm','pre_war_money','bobby_pin','sunset_sars'],loc:'TradingPost188',class:'merchant',karma:0},
+    {id:'helios_technician',n:'HELIOS Technician',d:'You know enough about old-world power to be useful, or dangerous.',gold:52,atk:4,def:3,spd:4,items:['laser_pistol','energy_cell','energy_cell','scrap_electronics','sensor_module','stimpak'],loc:'HeliosOne',class:'technician',karma:2},
+    {id:'searchlight_survivor',n:'Searchlight Survivor',d:'The camp burned green behind you. You walked out coughing but alive.',gold:26,atk:5,def:4,spd:5,items:['revolver_357','ammo_357','ammo_357','radaway','stimpak'],loc:'CampSearchlight',class:'survivor',karma:4},
+    {id:'nellis_runaway',n:'Nellis Runaway',d:'You left the safety of the guns and found the world much bigger.',gold:44,atk:5,def:4,spd:5,items:['varmint_rifle','ammo_556','ammo_556','scrap','duct_tape','stimpak'],loc:'NellisAFB',class:'runaway',karma:1,fac:'Boomers'},
+    {id:'forlorn_hope_vet',n:'Forlorn Hope Veteran',d:'You survived the posting everyone whispers about.',gold:62,atk:7,def:5,spd:4,items:['service_rifle','ammo_556','ammo_556','ammo_556','ncr_armor','stimpak'],loc:'CampForlornHope',class:'veteran',karma:5,fac:'NCR'},
+    {id:'cottonwood_escapee',n:'Cottonwood Escapee',d:'You ran from chains, blades, and the river road.',gold:18,atk:4,def:3,spd:7,items:['machete','healing_powder','purified_water','bobby_pin'],loc:'CottonwoodCove',class:'escapee',karma:8},
+    {id:'bitter_springs_refugee',n:'Bitter Springs Refugee',d:'You learned that history does not end just because people stop talking.',gold:24,atk:3,def:3,spd:5,items:['varmint_rifle','ammo_556','healing_powder','purified_water','gecko_steak'],loc:'BitterSprings',class:'refugee',karma:7},
+    {id:'nellis_bomb_runner',n:'Boomer Bomb Runner',d:'Fast feet, loud friends, and no patience for quiet roads.',gold:48,atk:6,def:4,spd:7,items:['dynamite','varmint_rifle','ammo_556','scrap','stimpak'],loc:'NellisAFB',class:'runner',karma:0,fac:'Boomers'},
+    {id:'boulder_city_hostage',n:'Boulder City Hostage',d:'You walked away from a standoff with dust in your teeth and names to remember.',gold:33,atk:4,def:4,spd:5,items:['revolver_357','ammo_357','stimpak','pre_war_money'],loc:'BoulderCity',class:'survivor',karma:4},
+    {id:'gomorrah_exile',n:'Gomorrah Exile',d:'You saw too much behind the velvet curtains and left before the knives came out.',gold:125,atk:4,def:2,spd:6,items:['switchblade','pistol_9mm','ammo_9mm','pre_war_money','fancy_lad'],loc:'TheStrip',class:'exile',karma:-4,fac:'House'},
+    {id:'jacobstown_guide',n:'Jacobstown Guide',d:'You guided travellers through cold trails and cazador country.',gold:46,atk:5,def:4,spd:6,items:['cowboy_repeater','ammo_357','antivenom','bighorner_meat','stimpak'],loc:'Jacobstown',class:'guide',karma:5},
+    {id:'cinder_gulch_drifter',n:'Cinder Gulch Drifter',d:'Ash storms, bad water, and stranger company shaped you.',gold:31,atk:5,def:4,spd:5,items:['combat_knife','revolver_357','ammo_357','dirty_water','duct_tape'],loc:'CinderGulch',class:'drifter',karma:0}
+  ];
+  MORE_BACKGROUNDS.forEach(bg=>{if(!BACKGROUNDS.some(x=>x.id===bg.id))BACKGROUNDS.push(bg)});
+
+  addUnique(START_PRESETS,[
+    {id:'lucky_fool',n:'Lucky Fool',d:'Bad plans survive because luck keeps interfering.',special:[3,5,4,4,5,6,9]},
+    {id:'old_world_mind',n:'Old-World Mind',d:'Brains, science, and fragile bones.',special:[3,6,3,4,9,5,5]},
+    {id:'iron_hide',n:'Iron Hide',d:'Slow, stubborn, and hard to kill.',special:[7,4,9,3,4,3,5]},
+    {id:'fast_talker',n:'Fast Talker',d:'Words first, bullets if cornered.',special:[3,5,4,9,6,5,4]},
+    {id:'night_runner',n:'Night Runner',d:'Built for sneaking, moving, and hitting first.',special:[4,7,4,3,5,9,4]},
+    {id:'junk_doctor',n:'Junk Doctor',d:'Keeps people alive with scrap, tape, and nerve.',special:[4,5,6,5,8,4,3]}
+  ]);
+
+  window.randomFullName=function(male){
+    const first=male?rndA(FM):rndA(FF);
+    const last=rndA(LN);
+    if(R()<.22)return first+' "'+rndA(WASTE_NICKS)+'" '+last;
+    if(R()<.12)return first+' '+rndA(male?FM:FF)+' '+last;
+    if(R()<.08)return rndA(WASTE_NICKS)+' '+last;
+    return first+' '+last;
+  };
+  randomFullName=window.randomFullName;
+
+  window.initCustomState=function(bgIndex){
+    const male=R()<.5;
+    const bg=BACKGROUNDS[bgIndex]||BACKGROUNDS[0];
+    window._custom={
+      name:randomFullName(male),male,bgI:bgIndex,presetI:rnd(0,START_PRESETS.length-1),
+      age:rnd(18,44),trait:rndA(START_TRAITS),hook:rndA(START_HOOKS),originNote:bg.d
+    };
+  };
+  initCustomState=window.initCustomState;
+
+  function bgTags(bg){
+    const tags=[];
+    if(bg.fac)tags.push(FACTIONS[bg.fac]||bg.fac);
+    tags.push((LOCS[bg.loc]&&LOCS[bg.loc].n)||'Mojave');
+    if(bg.atk>=7)tags.push('hard hitter');
+    if(bg.def>=6)tags.push('armoured');
+    if(bg.spd>=7)tags.push('quick');
+    if(bg.gold>=90)tags.push('well funded');
+    if(bg.karma>=6)tags.push('good reputation');
+    if(bg.karma<=-5)tags.push('bad reputation');
+    return tags.slice(0,4).join(' · ');
+  }
+
+  window.rerollStartDetails=function(){
+    if(!window._custom)initCustomState(0);
+    window._custom.trait=rndA(START_TRAITS);
+    window._custom.hook=rndA(START_HOOKS);
+    renderStartPreview();
+  };
+
+  window.renderStartPreview=function(){
+    const bg=getCurrentCustomBg();
+    const preset=getCurrentSpecialPreset();
+    const c=window._custom||{};
+    const gender=c.male?'👨':'👩';
+    const shortName=(c.name||'Wanderer').split(' ')[0];
+    openDlg(`<div style="text-align:center">
+    <div style="font-size:48px;margin-bottom:6px">${gender}</div>
+    <div style="font-size:16px;font-weight:bold;margin-bottom:4px;color:var(--amber)">${c.name||'Wanderer'}</div>
+    <div style="font-size:12px;color:var(--green);margin-bottom:4px">${bg.n}</div>
+    <div style="font-size:10px;color:var(--amber2);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">${bgTags(bg)}</div>
+    <div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:8px">${bg.d}</div>
+    <div class="npc-line" style="text-align:left">${c.name||'Wanderer'} ${c.trait||rndA(START_TRAITS)}. ${c.hook||rndA(START_HOOKS)}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;font-size:10px;margin-bottom:8px">
+      <div style="background:var(--panel2);padding:4px;border-radius:3px">⚔ ATK ${bg.atk}</div>
+      <div style="background:var(--panel2);padding:4px;border-radius:3px">🛡 DEF ${bg.def}</div>
+      <div style="background:var(--panel2);padding:4px;border-radius:3px">💨 SPD ${bg.spd}</div>
+      <div style="background:var(--panel2);padding:4px;border-radius:3px">💰 ${bg.gold} caps</div>
+      <div style="background:var(--panel2);padding:4px;border-radius:3px">📍 ${(LOCS[bg.loc]&&LOCS[bg.loc].n)||'Goodsprings'}</div>
+      <div style="background:var(--panel2);padding:4px;border-radius:3px">⚖ Karma ${bg.karma}</div>
+      ${bg.fac?`<div style="grid-column:1/-1;background:var(--panel2);padding:4px;border-radius:3px">🏴 Faction ${FACTIONS[bg.fac]||bg.fac}</div>`:''}
+    </div>
+    <div style="background:var(--panel2);padding:7px;border-radius:5px;margin-bottom:10px;font-size:10px">
+      <div style="color:var(--amber);margin-bottom:4px">SPECIAL PRESET — ${preset.n}</div>
+      <div style="color:var(--muted);margin-bottom:6px">${preset.d}</div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">
+        ${SPECIAL_LABELS.map((label,idx)=>`<div style='background:#1a1a10;padding:4px 2px;border-radius:3px'><div style='color:var(--amber2)'>${label}</div><div>${preset.special[idx]}</div></div>`).join('')}
+      </div>
+    </div>
+    <button class="bt go" style="text-align:center" onclick="quickStart()">Begin as ${shortName}</button>
+    <button class="bt" style="text-align:center" onclick="rerollStart()">🔄 Reroll Start</button>
+    <button class="bt" style="text-align:center" onclick="rerollStartDetails()">🎭 Reroll Flavour</button>
+    <button class="bt" style="text-align:center" onclick="customChar()">✏ Customize</button>
+    </div>`);
+  };
+  renderStartPreview=window.renderStartPreview;
+
+  const oldRenderCustomChar=window.renderCustomChar||renderCustomChar;
+  window.renderCustomChar=function(){
+    oldRenderCustomChar();
+    const db=$('DB');
+    if(db&&window._custom){
+      const flavour=document.createElement('div');
+      flavour.className='npc-line';
+      flavour.style.marginTop='8px';
+      flavour.innerHTML=`<b style="color:var(--amber)">Start flavour:</b> ${window._custom.trait||rndA(START_TRAITS)}. ${window._custom.hook||rndA(START_HOOKS)}`;
+      const btn=document.createElement('button');
+      btn.className='bt sm';btn.style.width='100%';btn.style.textAlign='center';btn.textContent='🎭 Reroll Flavour';
+      btn.onclick=function(){window._custom.trait=rndA(START_TRAITS);window._custom.hook=rndA(START_HOOKS);renderCustomChar()};
+      db.insertBefore(flavour,db.lastElementChild);
+      db.insertBefore(btn,db.lastElementChild);
+    }
+  };
+  renderCustomChar=window.renderCustomChar;
+
+  window.quickStart=function(){
+    const bg=getCurrentCustomBg();
+    const preset=getCurrentSpecialPreset();
+    const cfg=window._custom||{};
+    S.name=(cfg.name||randomFullName(cfg.male!==false)).trim();
+    S.isMale=cfg.male!==false;
+    S.age=Math.max(16,Math.min(70,parseInt(cfg.age,10)||25));
+    S.special=clone(preset.special);
+    S.atk=bg.atk;S.def=bg.def;S.spd=bg.spd;
+    S.caps=bg.gold;S.bg=bg.id;S.class=bg.class;S.karma=bg.karma||0;
+    S.loc=(bg.loc&&LOCS[bg.loc])?bg.loc:'Goodsprings';
+    S.inv=clone(bg.items||[]);
+    S.originTrait=cfg.trait||rndA(START_TRAITS);
+    S.originHook=cfg.hook||rndA(START_HOOKS);
+    if(bg.fac&&S.rep&&S.rep[bg.fac]!==undefined)S.rep[bg.fac]=Math.max(S.rep[bg.fac],12);
+    if(bg.fac==='Boomers')setFlag('ally_boomers_start',true);
+    syncFNVStats(true);
+    closeDlg();
+    log(S.name+' — '+bg.n+'.','q');
+    log(bg.d,'e');
+    log('Start flavour: '+S.originTrait+'. '+S.originHook,'e');
+    log('SPECIAL preset: '+preset.n+'.','e');
+    upAll();save(true);showOpeningAfterNewGame(bg.id);
+  };
+  quickStart=window.quickStart;
+
+  window.startStory=function(bgId){
+    const bg=BACKGROUNDS.find(b=>b.id===(bgId||(S&&S.bg)))||BACKGROUNDS[0];
+    const loc=LOCS[(S&&S.loc)||bg.loc]||LOCS.Goodsprings;
+    const first=[
+      `You come to in ${loc.n}, with dust in your throat and the Mojave already moving around you.`,
+      `${loc.n} is not safe, but it is a start. The road out is watching, and so are the people.`,
+      `Your old life is behind you. ${loc.n} is where the next one begins.`
+    ];
+    const advice=loc.sur&&loc.sur.length?`Early advice: search ${loc.sur[0].n}, sell spare junk, and avoid pushing into high-danger roads until you have ammo and healing.`:'Early advice: check local buildings, sell spare junk, restock healing, and do not rush the hardest roads.';
+    const lines=[
+      `<b>${bg.n}</b>`,
+      bg.d,
+      rndA(first),
+      (S&&S.originTrait?`You ${S.originTrait}.`:rndA(START_TRAITS)),
+      (S&&S.originHook)||rndA(START_HOOKS),
+      advice
+    ];
+    try{showResult('New Mojave Start','📜',lines,'Begin');}catch(e){notify(bg.d)}
+  };
+  startStory=window.startStory;
+
+  const FLAVOUR={
+    Goodsprings:["A windmill clicks slowly over the town.","Someone at the saloon laughs, then goes quiet when the road gets mentioned.","Dust rolls down from the cemetery like it remembers you."],
+    Primm:["The rollercoaster creaks above the rooftops.","A distant gunshot echoes from the highway.","Old casino lights blink like they are trying to wake up."],
+    FreesideN:["Somebody nearby is selling a miracle cure and a worse problem.","The Kings' music leaks through a cracked doorway.","A hungry kid watches the street for dropped caps."],
+    TheStrip:["Neon turns every lie into something expensive.","A securitron rolls past like it already knows your mistake.","Music, perfume, and old blood hang in the casino air."],
+    HiddenValley:["Static crawls across the bunker frequencies.","A sandstorm hides the patrol tracks, but not all of them.","Something metal moves beneath the valley floor."],
+    Sloan:["Quarry dust coats every bottle, boot, and throat.","Workers speak softly when the deathclaws are mentioned.","The rocks look ordinary until one of them moves."],
+    NellisAFB:["Thunder rolls from guns that are not aimed at the sky.","Every Boomer kid can point out where the shells landed.","The runway smells of oil, hot dust, and old ambition."],
+    CinderGulch:["Ash drifts sideways even when the air is still.","Old signs here look burned from the inside.","The gulch keeps its secrets under black dust."]
+  };
+  function locFlavour(id){
+    const list=FLAVOUR[id]||["The Mojave feels bigger than the map suggests.","The road ahead looks quiet, which usually means it is lying.","A bottlecap rolls somewhere nearby and stops on its edge.","The radio catches half a song, then loses it to static."];
+    return list[((S&&S.days)||1)+String(id||'x').length % list.length]||rndA(list);
+  }
+
+  const oldUpWorld=window.upWorld||upWorld;
+  window.upWorld=function(){
+    oldUpWorld.apply(this,arguments);
+    const tab=$('world-tab');
+    if(!tab||!S)return;
+    const card=el('div','cd');
+    card.innerHTML=`<div style="font-size:10px;color:var(--amber2);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Local Colour</div><div style="font-size:11px;color:var(--muted);font-style:italic">${locFlavour(S.loc)}</div>`;
+    tab.appendChild(card);
+  };
+  upWorld=window.upWorld;
+
+  const oldAdvanceTime=window.advanceTime||advanceTime;
+  window.advanceTime=function(hours){
+    const before=S?S.days:0;
+    const out=oldAdvanceTime.apply(this,arguments);
+    if(S&&S.days!==before&&R()<.55){
+      log(rndA(["A new day drifts in on warm dust.","Somewhere out there, a radio tower keeps talking to nobody.","The Mojave wakes up mean, bright, and hungry.","You check your gear before the sun gets too high.","The road has fresh tracks by morning."]),'e');
+    }
+    return out;
+  };
+  advanceTime=window.advanceTime;
+})();
+
+
+// ============================================================
+// CHET / DOC MITCHELL CANONICAL GOODSERVICE PATCH
+// ============================================================
+(function(){
+  function addItem(id,data){
+    if(typeof ITEMS==='undefined')return;
+    if(!ITEMS[id])ITEMS[id]=data;
+    else Object.assign(ITEMS[id],data);
+  }
+
+  // Small vendor-only items so Chet can mirror his FNV merchant list better.
+  addItem('ammo_38_special',{n:'.38 Special Ammo Box',t:'a',e:'📦',p:20,w:0,desc:'Boxed .38 Special rounds. Chet is known for always restocking one.'});
+  addItem('bulk_small_energy_cell',{n:'Bulk Small Energy Cell Box',t:'a',e:'🔋',p:50,w:0,desc:'Bulk energy cell box. Cheap, rough, and always in Chet\'s restock.'});
+  addItem('prospector_outfit',{n:'Prospector Outfit',t:'armor',e:'🥾',def:1,p:5,w:2,desc:'Plain wasteland prospecting clothes.'});
+  addItem('mod_varmint_ext_mag',{n:'Mod: Varmint Rifle Extended Mags',t:'misc',e:'🔧',p:250,w:1,desc:'Tier-one gun mod sold randomly by Chet.'});
+  addItem('mod_varmint_night_scope',{n:'Mod: Varmint Rifle Night Scope',t:'misc',e:'🔧',p:300,w:1,desc:'Tier-one gun mod sold randomly by Chet.'});
+  addItem('mod_varmint_silencer',{n:'Mod: Varmint Rifle Silencer',t:'misc',e:'🔧',p:250,w:1,desc:'Tier-one gun mod sold randomly by Chet.'});
+  addItem('mod_9mm_ext_mag',{n:'Mod: 9mm Pistol Extended Mags',t:'misc',e:'🔧',p:150,w:1,desc:'Tier-one gun mod sold randomly by Chet.'});
+  addItem('mod_9mm_scope',{n:'Mod: 9mm Pistol Scope',t:'misc',e:'🔧',p:150,w:1,desc:'Tier-one gun mod sold randomly by Chet.'});
+  addItem('mod_357_long_barrel',{n:'Mod: .357 Revolver Long Barrel',t:'misc',e:'🔧',p:250,w:1,desc:'Tier-one gun mod sold randomly by Chet.'});
+  addItem('mod_357_hd_cylinder',{n:'Mod: .357 Revolver HD Cylinder',t:'misc',e:'🔧',p:250,w:1,desc:'Tier-one gun mod sold randomly by Chet.'});
+
+  function chetRandomMods(){
+    const mods=['mod_varmint_ext_mag','mod_varmint_night_scope','mod_varmint_silencer','mod_9mm_ext_mag','mod_9mm_scope','mod_357_long_barrel','mod_357_hd_cylinder'];
+    const day=(S&&S.days)||1;
+    return mods.filter((id,i)=>((day*7+i*3+String(id).length)%5)<3).map(id=>({id,qty:1}));
+  }
+
+  window.getChetStock=function(){
+    const stock=[
+      // Guaranteed / carried Chet items
+      {id:'ammo_38_special',qty:1},{id:'bulk_small_energy_cell',qty:1},
+      {id:'revolver_357',qty:1},{id:'prospector_outfit',qty:1},{id:'stimpak',qty:1},
+
+      // Ammunition
+      {id:'ammo_9mm',qty:28},{id:'ammo_10mm',qty:16},{id:'ammo_357',qty:18},
+      {id:'ammo_556',qty:20},{id:'ammo_shells',qty:10},{id:'energy_cell',qty:12},
+
+      // Weapons Chet commonly covers as a low/mid early merchant
+      {id:'varmint_rifle',qty:1},{id:'pistol_9mm',qty:1},{id:'pistol_10mm',qty:1},
+      {id:'single_shotgun',qty:1},{id:'caravan_shotgun',qty:1},
+      {id:'cleaver',qty:1},{id:'combat_knife',qty:1},{id:'switchblade',qty:1},
+      {id:'tire_iron',qty:1},{id:'lead_pipe',qty:1},{id:'brass_knuckles',qty:1},
+
+      // Armour / clothing
+      {id:'leather_armor',qty:1},{id:'reinforced_leather_armor',qty:1},
+      {id:'prospector_hat',qty:1},{id:'headwrap',qty:1},
+
+      // Cards, chems, explosives, misc/general goods
+      {id:'caravan_cards',qty:1},{id:'stimpak',qty:4},{id:'doctor_bag',qty:1},
+      {id:'antivenom',qty:2},{id:'med_x',qty:1},{id:'healing_powder',qty:3},
+      {id:'dynamite',qty:3},{id:'purified_water',qty:5},{id:'dirty_water',qty:4},
+      {id:'sunset_sars',qty:8},{id:'nuka_cola',qty:4},{id:'cram',qty:4},
+      {id:'iguana_bits',qty:3},{id:'fancy_lad',qty:2},{id:'instamash',qty:3},
+      {id:'pork_n_beans',qty:3},{id:'dandy_boy_apples',qty:2},
+      {id:'bobby_pin',qty:6},{id:'duct_tape',qty:4},{id:'wonderglue',qty:2},
+      {id:'wrench',qty:1},{id:'scrap',qty:4},{id:'cigarette_pack',qty:3},
+      {id:'pre_war_money',qty:3}
+    ];
+    return stock.concat(chetRandomMods()).filter(x=>ITEMS[x.id]);
+  };
+
+  window.openGoodspringsTrade=function(){
+    openTrade(getChetStock(),'general_store',"Chet's Store");
+  };
+  openGoodspringsTrade=window.openGoodspringsTrade;
+
+  window.docMitchellTreatmentCost=function(){
+    const hp=S&&S.maxHp?Math.max(0,Math.min(1,(S.hp||0)/S.maxHp)):1;
+    if(hp>=1&&(!S.ap||S.ap>=S.maxAp))return 0;
+    if(hp<=.33)return 100;
+    if(hp<=.65)return 75;
+    return 50;
+  };
+  docMitchellTreatmentCost=window.docMitchellTreatmentCost;
+
+  window.goodspringsDocTreatment=function(){
+    const cost=docMitchellTreatmentCost();
+    if(cost<=0){notify("Doc Mitchell says you don't look hurt enough to need treatment.");return}
+    if((S.caps||0)<cost){notify('You do not have enough caps yet. Full treatment costs '+cost+' caps.');return}
+    S.caps-=cost;S.hp=S.maxHp;S.ap=S.maxAp;advanceTime(1);
+    log('Doc Mitchell patches you up for '+cost+' caps.','e');
+    closeDlg();closeBld();
+    showResult('Doc Mitchell','💉',['❤ Full HP restored','⚡ AP restored','⏰ 1 hour passed',`${capIcon()} -${cost} caps`],'Continue','upAll()');
+  };
+  goodspringsDocTreatment=window.goodspringsDocTreatment;
+
+
+  // Keep Chet's New Vegas-style rotating stock in code only. No visible patch/debug note.
+  const oldBldGoodspringsStore=window.bldGoodspringsStore||bldGoodspringsStore;
+  window.bldGoodspringsStore=function(body){
+    oldBldGoodspringsStore(body);
+  };
+  bldGoodspringsStore=window.bldGoodspringsStore;
+
+  const oldBldGoodspringsDoc=window.bldGoodspringsDoc||bldGoodspringsDoc;
+  window.bldGoodspringsDoc=function(body){
+    oldBldGoodspringsDoc(body);
+    const cards=body.querySelectorAll('.cd');
+    cards.forEach(c=>{c.innerHTML=c.innerHTML.replace(/Full treatment price: \d+ caps/g,'Full treatment price: '+(docMitchellTreatmentCost()||50)+' caps')});
+  };
+  bldGoodspringsDoc=window.bldGoodspringsDoc;
+
+  const oldOpenGoodspringsNPC=window.openGoodspringsNPC||openGoodspringsNPC;
+  window.openGoodspringsNPC=function(id){
+    oldOpenGoodspringsNPC.apply(this,arguments);
+    if(id==='doc_mitchell'){
+      const db=$('DB');
+      if(db)db.innerHTML=db.innerHTML.replace(/Ask for full treatment \([^)]* caps\)/g,'Ask for full treatment ('+(docMitchellTreatmentCost()||50)+' caps)');
+    }
+  };
+  openGoodspringsNPC=window.openGoodspringsNPC;
+
+  // Make the flavour reroll visibly useful: it now says exactly what changed.
+  window.rerollStartDetails=function(){
+    if(!window._custom)initCustomState(0);
+    window._custom.trait=rndA(START_TRAITS);
+    window._custom.hook=rndA(START_HOOKS);
+    window._custom.flavourFlash=true;
+    renderStartPreview();
+    notify('Flavour rerolled: personality + story hook changed. Stats/name stayed the same.');
+  };
+  rerollStartDetails=window.rerollStartDetails;
+
+  const prevRenderStartPreview=window.renderStartPreview;
+  window.renderStartPreview=function(){
+    prevRenderStartPreview();
+    const db=$('DB');
+    if(!db||!window._custom)return;
+    const line=db.querySelector('.npc-line');
+    if(line){
+      line.innerHTML=`<div style="font-size:10px;color:var(--amber2);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Start flavour ${window._custom.flavourFlash?'— changed':''}</div><div><b style="color:var(--amber)">Personality:</b> ${window._custom.trait||rndA(START_TRAITS)}</div><div style="margin-top:3px"><b style="color:var(--amber)">Story hook:</b> ${window._custom.hook||rndA(START_HOOKS)}</div><div style="font-size:10px;color:var(--muted);margin-top:5px">This only changes roleplay flavour. It does not change your stats, name, location, or gear.</div>`;
+      line.style.borderColor=window._custom.flavourFlash?'var(--green)':'var(--amber2)';
+    }
+    window._custom.flavourFlash=false;
+  };
+  renderStartPreview=window.renderStartPreview;
+})();
+
 </script>
 </body>
 </html>
