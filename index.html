@@ -1089,6 +1089,8 @@ const ICONS={
     MALE:           "👨",
     FEMALE:         "👩",
     CIVILIAN:       "👤",
+    DRIFTER:        '<img src="NVImages/WastelanddrifterIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
+    FREESIDE_THUG:  '<img src="NVImages/FreesidethugIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
     MERCHANT:       "💰",
     COOK:           "🍲",
     LAW:            "👮",
@@ -1112,7 +1114,7 @@ const ICONS={
     NCR_SCOUT:      "🔭",
     BOS:            '<img src="NVImages/BOS Icon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
     BOS_SCRIBE:     "🔬",
-    FOLLOWERS:      "⚕️",
+    FOLLOWERS:      '<img src="NVImages/FolloweroftheapocalypseIcon.png" style="width:200%;height:200%;object-fit:contain;display:block;">',
     KINGS:          "👑",
     POWDER_GANGER:  "💥",
     POWDER_TRADER:  "💰",
@@ -1177,7 +1179,7 @@ function npcImg(filename,...fallbacks){
 // So to add a new named NPC icon, you ONLY touch ICONS.NPC — nothing else.
 // Role/faction keys (all-caps generic words) are excluded from auto-matching.
 const _NPC_ROLE_KEYS=new Set(['MALE','FEMALE','CIVILIAN','MERCHANT','COOK','LAW','DOCTOR','MECHANIC',
-  'RANCHER','ENTERTAINER','PILOT','TOWN','MOTEL','WRANGLER','CYBERDOG','PRISONER',
+  'RANCHER','ENTERTAINER','DRIFTER','FREESIDE_THUG','PILOT','TOWN','MOTEL','WRANGLER','CYBERDOG','PRISONER',
   'SECURITRON','NCR','NCR_RANGER','NCR_COMMAND','NCR_MEDIC','NCR_SCOUT',
   'BOS','BOS_SCRIBE','FOLLOWERS','KINGS','POWDER_GANGER','POWDER_TRADER','BOOMERS','DINO']);
 // Special key→name overrides for names that don't convert cleanly from UPPER_SNAKE
@@ -5476,7 +5478,8 @@ function getNpcRolePool(ctx={}){
   if(fac==='powdergangers'||locId==='NCRCF'||bId.includes('ncrcf'))return['Powder Ganger','Powder Ganger Trader','Prisoner','Powder Ganger Guard','Escaped Convict'];
   if(fac==='legion'||locId==='TheFort'||locId==='NelsonCamp'||locId==='CottonwoodCove'||/(legion|caesar|cove)/.test(bId))return['Legion Recruit','Legion Veteran','Legion Scout','Legion Handler','Legion Priest'];
   if(fac==='boomers'||locId==='NellisAFB'||bId.includes('nellis'))return['Boomer Guard','Boomer Mechanic','Boomer Pilot','Boomer Loader','Boomer Doctor'];
-  if(fac==='kings'||locId==='FreesideN'||/(king|wrangler|mick|mormon|silver_rush|cerulean)/.test(bId))return['Merchant','Drifter','King Member','Mechanic','Doctor','Guard'];
+  if(fac==='followers'||bId.includes('mormon'))return['Follower Doctor','Follower Medic','Follower Volunteer','Follower Administrator','Doctor'];
+  if(fac==='kings'||locId==='FreesideN'||/(king|wrangler|mick|silver_rush|cerulean)/.test(bId))return['Merchant','Drifter','King Member','Freeside Thug','Mechanic','Doctor','Guard'];
   return['Trader','Prospector','Drifter','NCR Trooper','Caravan Guard','Settler','Scavenger','Doctor','Gambler','Bounty Hunter','Mechanic','Farmer'];
 }
 function inferNpcIcon(npc,ctx={}){
@@ -5501,6 +5504,7 @@ function inferNpcIcon(npc,ctx={}){
   if(fac==='powdergangers'||locId==='NCRCF'||bId.includes('ncrcf')||role.includes('powder ganger'))return role.includes('trader')?ICONS.NPC.POWDER_TRADER:(role.includes('prisoner')||role.includes('convict')?ICONS.NPC.PRISONER:ICONS.NPC.POWDER_GANGER);
   if(fac==='kings'||role.includes('king'))return ICONS.NPC.KINGS;
   if(fac==='boomers'||locId==='NellisAFB'||bId.includes('nellis')||role.includes('boomer'))return role.includes('doctor')?ICONS.NPC.DOCTOR:(role.includes('mechanic')?ICONS.NPC.MECHANIC:ICONS.NPC.BOOMERS);
+  if(role.includes('freeside thug')||role==='thug'||(role.includes('thug')&&locId==='FreesideN'))return ICONS.NPC.FREESIDE_THUG;
   if(role.includes('merchant')||role.includes('trader'))return ICONS.NPC.MERCHANT;
   if(role.includes('cook'))return ICONS.NPC.COOK;
   if(role.includes('robot'))return ICONS.NPC.ROBOT;
@@ -5509,6 +5513,7 @@ function inferNpcIcon(npc,ctx={}){
   if(role.includes('mechanic')||role.includes('engineer')||role.includes('technician'))return ICONS.NPC.MECHANIC;
   if(role.includes('ranch'))return ICONS.NPC.RANCHER;
   if(role.includes('entertainer'))return ICONS.NPC.ENTERTAINER;
+  if(role.includes('drifter'))return ICONS.NPC.DRIFTER;
   return npc.male?ICONS.NPC.MALE:ICONS.NPC.FEMALE;
 }
 function mkNPC(ctx={}){
